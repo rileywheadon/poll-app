@@ -4,16 +4,22 @@
 
   </head>
   <body>
+
     <h1>{{ user.username }}</h1>
     <h2>{{ user.email }}</h2>
 
     {% for poll in polls %}
     <p>{{ poll.question }}</p>
-    <ul>
+    <form action="{{ url_for('respond') }}" action="POST">
+      <input type="hidden" name="user_id" value="{{ user.id }}" />
       {% for answer in poll.answers %}
-      <li>{{ answer.answer }}</li>
+      <input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input>
       {% endfor %}
-    </ul>
+      <div>
+        <input type="submit" value="Submit">
+      </div>
+    </form>
     {% endfor %}
+
   </body>
 </html>

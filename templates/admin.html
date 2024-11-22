@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  </head>
+  <body>
+
+    <h1>Admin</h1>
+
+    <table>
+    <tr>
+      <th>Date</th>
+      <th>User</th>
+      <th>Poll</th>
+      <th>Answer</th>
+    </tr>
+    {% for response in responses %}
+    <tr>
+      <td>{{ response.timestamp }}</td>
+      <td>{{ response.user.username }}</td>
+      <td>{{ response.poll.question }}</td>
+      <td>{{ response.answer.answer }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+
+  </body>
+</html>
