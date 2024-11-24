@@ -1,0 +1,53 @@
+{% extends "admin.html" %}
+
+{% block content %}
+<br><br>
+
+  {% for poll in polls %}
+    {% if active|int == poll.id %}
+      <form action="{{ url_for('save_poll') }}">
+        <input type="hidden" name="poll_id" value="{{ poll.id }}" required>
+        <input type="submit" value="Save">
+        <input name="poll_text" value="{{ poll.question }}" placeholder="Question">
+      </form>
+      <ul>
+        {% for answer in poll.answers %}
+        <li>
+          <form action="{{ url_for('delete_answer') }}">
+            <input type="hidden" name="poll_id" value="{{ poll.id }}">
+            <input type="hidden" name="answer_id" value="{{ answer.id }}" required>
+            <input type="submit" value="Delete">
+            <span>{{ answer.answer }}</span>
+          </form>
+        </li>
+        {% endfor %}
+        <li>
+          <form action="{{ url_for('create_answer') }}">
+            <input type="hidden" name="poll_id" value="{{ poll.id }}">
+            <input name="answer_text" placeholder="Answer">
+            <input type="submit" value="Add">
+          </form>
+        </li>
+      </ul>
+    {% else %}
+      <form>
+        <input type="hidden" name="poll_id" value="{{ poll.id }}" required>
+        <input type="hidden" name="action" value="edit" required>
+        <input type="submit" formaction="{{ url_for('delete_poll') }}" value="Delete">
+        <input type="submit" formaction="{{ url_for('edit_poll') }}" value="Edit">
+        <span>{{ poll.question }}</span>
+      </form>
+      <ul>
+        {% for answer in poll.answers %}
+        <li>{{ answer.answer }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endfor %}
+
+<hr>
+<form action="{{ url_for('create_poll') }}" action="POST">
+  <button type="submit">Add Poll</button>
+</form>
+
+{% endblock %}

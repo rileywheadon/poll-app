@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+  </head>
+  <body>
+
+    <h1>Admin</h1>
+    <a href="{{ url_for('admin_edit') }}">Edit Polls</a>
+    <a href="{{ url_for('admin_dashboard') }}">View Responses</a>
+  
+    {% block content %}
+
+    {% endblock %}
+
+  </body>
+</html>

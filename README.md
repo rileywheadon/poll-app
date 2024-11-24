@@ -7,7 +7,7 @@ Virtual Environment:
 - Load: `source venv/bin/activate`
 
 Flask (`flask`):
-- Run: `flask --app app run --debug --port=5000`
+- Run: `flask run --debug --port=5000`
 
 ## Flask
 
