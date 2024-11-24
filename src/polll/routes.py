@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, request
-from app import app, db
-from app.models import *
+from polll import app, db
+from polll.models import *
 
 # Landing page for advertising to potential users
 @app.route("/")

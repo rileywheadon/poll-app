@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import sqlalchemy as sa
@@ -32,12 +32,12 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 # Import data models from models.py 
-from app.models import *
+from polll.models import *
 
 # Create database tables
 with app.app_context():
     db.create_all()
 
 # Define HTTP endpoints in routes.py
-from app.routes import *
+from polll.routes import *
 

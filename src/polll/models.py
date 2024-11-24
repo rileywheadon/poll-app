@@ -1,4 +1,4 @@
-from app import db
+from polll import db
 from typing import List
 from datetime import datetime, timezone
 import sqlalchemy as sa
