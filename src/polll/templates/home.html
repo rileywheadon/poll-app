@@ -1,25 +1,25 @@
-<!DOCTYPE html>
-<html>
-  <head>
+{% extends "base.html" %}
 
-  </head>
-  <body>
+{% block title %}
+Polll - Home
+{% endblock %}
 
-    <h1>{{ user.username }}</h1>
-    <h2>{{ user.email }}</h2>
+{% block body %}
 
-    {% for poll in polls %}
-    <p>{{ poll.question }}</p>
-    <form action="{{ url_for('respond') }}" action="POST">
-      <input type="hidden" name="user_id" value="{{ user.id }}" />
-      {% for answer in poll.answers %}
-      <input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input>
-      {% endfor %}
-      <div>
-        <input type="submit" value="Submit">
-      </div>
-    </form>
-    {% endfor %}
+<h1>{{ user.username }}</h1>
+<h2>{{ user.email }}</h2>
 
-  </body>
-</html>
+{% for poll in polls %}
+<p>{{ poll.question }}</p>
+<form action="{{ url_for('respond') }}" action="POST">
+  <input type="hidden" name="user_id" value="{{ user.id }}" />
+  {% for answer in poll.answers %}
+  <input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input>
+  {% endfor %}
+  <div>
+    <input type="submit" value="Submit">
+  </div>
+</form>
+{% endfor %}
+
+{% endblock %}
