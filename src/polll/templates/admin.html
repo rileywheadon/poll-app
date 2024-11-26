@@ -1,17 +1,27 @@
-<!DOCTYPE html>
-<html>
-  <head>
+{% extends "base.html" %}
 
-  </head>
-  <body>
+{% block title %}
+Polll - Admin
+{% endblock %}
 
-    <h1>Admin</h1>
-    <a href="{{ url_for('admin_edit') }}">Edit Polls</a>
-    <a href="{{ url_for('admin_dashboard') }}">View Responses</a>
-  
-    {% block content %}
+{% block body %}
 
-    {% endblock %}
+<h1>Manage Polls</h1>
 
-  </body>
-</html>
+<h2>Active Polls</h2>
+
+{% for poll in polls %}
+  {% include "admin/poll-inactive.html" %}
+{% endfor %}
+
+<button hx-get="{{ url_for('create_poll') }}"
+        hx-target="previous div"
+        hx-swap="afterend">
+  <b>Create Poll</b>
+</button>
+
+<h1>View Responses</h1>
+
+{% include "admin/response-table.html" %}
+
+{% endblock %}

@@ -1,17 +1,16 @@
-from flask import render_template, redirect, url_for, request
-from polll import app, db
+from flask import render_template, redirect, url_for, request, current_app
 from polll.models import *
 
 # Landing page for advertising to potential users
-@app.route("/")
+@current_app.route("/")
 def index():
     return render_template("index.html")
 
 # Login window for authenticating users
-# @app.route("/login")
+# @current_app.route("/login")
 
 # Main app page for answering polls
-@app.route("/home")
+@current_app.route("/home")
 def home():
 
     # Check if the user is logged in, if not, redirect to landing
@@ -28,7 +27,7 @@ def home():
 
 
 # HTTP endpoint for responding to polls
-@app.route("/home/respond", methods = ["GET", "POST"])
+@current_app.route("/home/respond", methods = ["GET", "POST"])
 def respond():
 
     # Get the user ID and answer ID from the request
@@ -43,88 +42,80 @@ def respond():
         poll_id = Poll.query.get(answer.poll_id).id
 
         # Create a new Response and add it to the database
-        response = Response(user_id = user_id, poll_id = poll_id, answer_id = answer_id)
+        response = Response(
+            user_id = user_id, 
+            poll_id = poll_id, 
+            answer_id = answer_id
+        )
+
         db.session.add(response)
         db.session.commit()
 
     return redirect(url_for("home"))
 
+
 # Admin endpoint for getting to the editor and responses
-@app.route("/admin")
+@current_app.route("/admin")
 def admin():
-    return render_template("admin.html")
-
-# Admin endpoint for editing the polls. 
-@app.route("/admin/edit")
-def admin_edit():
-    active = request.args.get('poll_id')
     polls = db.session.execute(db.select(Poll)).scalars().all()
-    return render_template("admin-edit.html", polls=polls, active=active)
-
-# Admin endpoint for editing a poll
-@app.route("/admin/edit/editpoll", methods = ["GET", "POST"])
-def edit_poll():
-    poll_id = request.args.get('poll_id')
-    return redirect(url_for("admin_edit", poll_id=poll_id))
-
-# Admin endpoint for saving a poll, setting poll_id to 0
-@app.route("/admin/edit/savepoll", methods = ["GET", "POST"])
-def save_poll():
-    poll_id = request.args.get('poll_id')
-    poll = Poll.query.get(poll_id)
-    poll_text = request.args.get('poll_text')
-
-    if poll_text:
-        poll.question = poll_text
-        db.session.commit()
-
-    return redirect(url_for("admin_edit", poll_id=0))
+    responses = db.session.execute(db.select(Response)).scalars().all()
+    return render_template("admin.html", polls = polls, responses = responses)
 
 
-# Routes for creating/deleting/updating polls 
-@app.route("/admin/edit/createpoll", methods = ["GET", "POST"])
+@current_app.route("/admin/createpoll")
 def create_poll():
-    poll = Poll(question='')
+    poll = Poll(question = '')
     db.session.add(poll)
     db.session.commit()
-    return redirect(url_for("admin_edit", poll_id = poll.id))
+    return render_template("admin/poll-active.html", poll = poll)
 
 
-# Delete all PollAnswers as well as the poll itself
-@app.route("/admin/edit/deletepoll", methods = ["GET", "POST"])
-def delete_poll():
-    poll_id = request.args.get('poll_id')
-    Poll.query.filter_by(id = poll_id).delete()
-    PollAnswer.query.filter_by(poll_id = poll_id).delete()
-    Response.query.filter_by(poll_id = poll_id).delete()
+@current_app.route("/admin/deletepoll/<poll_id>")
+def delete_poll(poll_id):
+    Poll.query.filter(Poll.id == poll_id).delete()
+    PollAnswer.query.filter(PollAnswer.poll_id == poll_id).delete()
+    Response.query.filter(Response.poll_id == poll_id).delete()
     db.session.commit()
-    return redirect(url_for("admin_edit"))
+    return ""
 
 
-@app.route("/admin/edit/createanswer", methods = ["GET", "POST"])
-def create_answer():
-    poll_id = request.args.get('poll_id')
-    answer_text = request.args.get('answer_text')
+@current_app.route("/admin/editpoll/<poll_id>")
+def edit_poll(poll_id):
+    poll = Poll.query.get(poll_id)
+    return render_template("admin/poll-active.html", poll = poll)
 
-    if answer_text:
-        answer = PollAnswer(answer = answer_text, poll_id = poll_id)
-        db.session.add(answer)
-        db.session.commit()
 
-    return redirect(url_for("admin_edit", poll_id = poll_id))
+@current_app.route("/admin/savepoll/<poll_id>")
+def save_poll(poll_id):
+    poll = Poll.query.get(poll_id)
+    poll.question = request.args.get("poll_text")
 
-@app.route("/admin/edit/deleteanswer", methods = ["GET", "POST"])
-def delete_answer():
-    poll_id = request.args.get('poll_id')
-    answer_id= request.args.get('answer_id')
-    PollAnswer.query.filter_by(id = answer_id).delete()
-    Response.query.filter_by(answer_id = answer_id).delete()
+    for key, value in request.args.items():
+        answer_id = key.split("_")[1]
+
+        try:
+            answer = PollAnswer.query.get(int(answer_id))
+            answer.answer = request.args.get(key)
+        except:
+            continue
+
     db.session.commit()
-    return redirect(url_for("admin_edit", poll_id = poll_id))
+    return render_template("admin/poll-inactive.html", poll = poll)
 
 
-# Admin endpoint for viewing the responses
-@app.route("/admin/dashboard")
-def admin_dashboard():
-    responses = db.session.execute(db.select(Response)).scalars().all()
-    return render_template("admin-dashboard.html", responses=responses)
+@current_app.route("/admin/addanswer/<poll_id>")
+def add_answer(poll_id):
+    answer_text = request.args.get("answer_text")
+    answer = PollAnswer(answer = answer_text, poll_id = poll_id)
+    db.session.add(answer)
+    db.session.commit()
+    poll = Poll.query.get(poll_id)
+    return render_template("admin/poll-active-list.html", poll = poll)
+
+
+@current_app.route("/admin/deleteanswer/<answer_id>")
+def delete_answer(answer_id):
+    PollAnswer.query.filter(PollAnswer.id == answer_id).delete()
+    db.session.commit()
+    return ""
+

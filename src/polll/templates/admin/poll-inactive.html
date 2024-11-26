@@ -1,0 +1,27 @@
+<div>
+
+  ({{ poll.id }}) <b>{{ poll.question }}</b>
+
+  <ul>
+    {% for answer in poll.answers %}
+    <li>{{ answer.answer }}</li>
+    {% endfor %}
+  </ul>
+
+  <button hx-get="{{ url_for('edit_poll', poll_id = poll.id) }}"
+          hx-target="closest div"
+          hx-swap="outerHTML">
+    Edit
+  </button>
+  <button hx-get="{{ url_for('delete_poll', poll_id=poll.id) }}"
+          hx-target="closest div"
+          hx-swap="outerHTML">
+    Delete
+  </button>
+
+<hr>
+
+</div>
+
+
+
