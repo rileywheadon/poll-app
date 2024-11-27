@@ -22,3 +22,15 @@ Using in three easy steps:
 1. Go to https://tailwindcss.com/docs/installation
 2. Open quick search and type in what you want to do to the page
 3. Pick an element and give it a `class` attribute
+
+URLs:
+- base URL: `index.html`
+- `/home` is `home.html`
+- `/admin` is `admin.html`
+
+git for dummies:
+- `git add --all` to stage your changes
+- `git status` to view staged changes
+- `git commit -m "..."` to commit changes. PLEASE WRITE INTELLIGENCE COMMIT MESSASGES.
+- `git push` to push changes to github on the current branch.
+
