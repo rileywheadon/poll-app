@@ -6,27 +6,32 @@ Polll - Home
 
 {% block body %}
 
-<h1 class="text-xl">Hello, {{ user.username }}</h1>
-<h2 class="text-l">Email: {{ user.email }}</h2>
-<a class="bg-zinc-300 rounded-lg w-48 h-10 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.logout') }}">
-  Log Out
-</a>
-<br>
+<div class="p-4">
+  <h1 class="text-xl">Hello, {{ user.username }}</h1>
+  <h2 class="text-l">Email: {{ user.email }}</h2>
+  <a class="bg-zinc-300 rounded-lg w-48 h-10 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.logout') }}">
+    Log Out
+  </a>
+</div>
 
+<hr>
+
+<div class="p-4">
 {% for poll in polls %}
-<p class="text-l font-bold">{{ poll.question }}</p>
-<form action="{{ url_for('respond') }}" action="POST">
-  <input type="hidden" name="user_id" value="{{ user.id }}" />
-  {% for answer in poll.answers %}
-  <input type="radio" name="answer_id" value="{{ answer.id }}">
-    {{ answer.answer }}
-  </input>
-  <br>
-  {% endfor %}
-  <div>
-    <input class="bg-zinc-300 rounded-lg w-48 h-8 m-4 flex justify-center items-center hover:bg-zinc-200" type="submit" value="Submit">
-  </div>
-</form>
+  {% if poll.poll_type.name == "CHOOSE_ONE" %}
+    {% include "home/choose-one.html" %}
+  {% elif poll.poll_type.name == "CHOOSE_MANY" %}
+    {% include "home/choose-many.html" %}
+  {% elif poll.poll_type.name == "NUMERIC_STAR" %}
+    {% include "home/choose-one.html" %}
+  {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
+    {% include "home/choose-one.html" %}
+  {% elif poll.poll_type.name == "RANKED_POLL" %}
+    {% include "home/choose-one.html" %}
+  {% elif poll.poll_type.name == "TIER_LIST" %}
+    {% include "home/choose-one.html" %}
+  {% endif %}
 {% endfor %}
+</div>
 
 {% endblock %}

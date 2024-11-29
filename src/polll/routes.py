@@ -63,7 +63,14 @@ def admin():
 @current_app.route("/admin/createpoll")
 @requires_auth
 def create_poll():
-    poll = Poll(question = '')
+    poll = Poll(
+        user = current_user,
+        question = '', 
+        poll_type = request.args.get("poll_type"), 
+        reveals = 0,
+        reports = 0,
+    )
+
     db.session.add(poll)
     db.session.commit()
     return render_template("admin/poll-active.html", poll = poll)

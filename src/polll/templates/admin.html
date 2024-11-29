@@ -6,22 +6,32 @@ Polll - Admin
 
 {% block body %}
 
-<h1>Manage Polls</h1>
+<h1 class="text-xl p-2">Manage Polls</h1>
+<h2 class="text-l p-2">Active Polls</h2>
+<hr>
 
-<h2>Active Polls</h2>
-
+<div id="poll_list">
 {% for poll in polls %}
   {% include "admin/poll-inactive.html" %}
 {% endfor %}
+</div>
 
-<button hx-get="{{ url_for('create_poll') }}"
-        hx-target="previous div"
-        hx-swap="afterend">
+<select class="p-2 rounded-lg m-2" name="poll_type" id="poll_type">
+  <option value="CHOOSE_ONE">Choose One</option>
+  <option value="CHOOSE_MANY">Choose Many</option>
+  <option value="NUMERIC_STAR">Stars (1-5)</option>
+  <option value="NUMERIC_SCALE">Scale (1-10)</option>
+  <option value="RANKED_POLL">Ranked Poll</option>
+  <option value="TIER_LIST">Tier List</option>
+</select>
+<button class="bg-blue-400 rounded-lg w-48 h-8 m-2"
+        hx-get="{{ url_for('create_poll') }}"
+        hx-include="previous select"
+        hx-target="#poll_list"
+        hx-swap="beforeend">
   <b>Create Poll</b>
 </button>
 
-<h1>View Responses</h1>
-
-{% include "admin/response-table.html" %}
+<h1 class="text-l p-2">View Responses</h1>
 
 {% endblock %}
