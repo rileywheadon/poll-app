@@ -23,12 +23,10 @@ Polll
       Explore, interact, and engage with your favourite topics through polling. 100% free. Completely secure. No ads, ever.
     </h1>
     <div class="flex items-center flex-row text-2xl">
-      <a class="bg-[#9ed1b8] rounded-lg grow h-12 m-4 flex justify-center items-center hover:bg-emerald-200"
-              href="/home">
+      <a class="bg-[#9ed1b8] rounded-lg grow h-12 m-4 flex justify-center items-center hover:bg-emerald-200" href="{{ url_for('auth.register') }}">
         Register
       </a>
-      <a class="bg-zinc-300 rounded-lg grow h-12 m-4 flex justify-center items-center hover:bg-zinc-200"
-              href="/home">
+      <a class="bg-zinc-300 rounded-lg grow h-12 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.login') }}">
         Login
       </a>
     </div>
