@@ -2,6 +2,8 @@
 
 See [here](https://docs.google.com/document/d/1rV5vO5JzADLJp9fIChyTnYNT_mIAT9rMD2FZ7_xElhQ/edit?tab=t.0) for documentation.
 
+**Update:** It is now required to the app with `python3 src/app.py`, which automatically hosts the site on the corret port in order to connect to the development authentication server. In order to use `auth0`, you need to host on `https`, which will cause your browser to get quite upset about a self-signed certificate. In order to run the project locally, you will now need to add a permanent exception to the localhost address.
+
 ## ignacio styling instructions 
 
 1. The only folder you are allowed to change is `src/polll/templates`

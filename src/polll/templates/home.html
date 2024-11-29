@@ -6,18 +6,25 @@ Polll - Home
 
 {% block body %}
 
-<h1>{{ user.username }}</h1>
-<h2>{{ user.email }}</h2>
+<h1 class="text-xl">Hello, {{ user.username }}</h1>
+<h2 class="text-l">Email: {{ user.email }}</h2>
+<a class="bg-zinc-300 rounded-lg w-48 h-10 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.logout') }}">
+  Log Out
+</a>
+<br>
 
 {% for poll in polls %}
-<p>{{ poll.question }}</p>
+<p class="text-l font-bold">{{ poll.question }}</p>
 <form action="{{ url_for('respond') }}" action="POST">
   <input type="hidden" name="user_id" value="{{ user.id }}" />
   {% for answer in poll.answers %}
-  <input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input>
+  <input type="radio" name="answer_id" value="{{ answer.id }}">
+    {{ answer.answer }}
+  </input>
+  <br>
   {% endfor %}
   <div>
-    <input type="submit" value="Submit">
+    <input class="bg-zinc-300 rounded-lg w-48 h-8 m-4 flex justify-center items-center hover:bg-zinc-200" type="submit" value="Submit">
   </div>
 </form>
 {% endfor %}
