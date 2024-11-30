@@ -2,12 +2,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+  
+  <!-- Custom Styles -->
   <link href="../static/output.css" rel="stylesheet">
+  <link href="../static/styles/star-selector.css" rel="stylesheet">
+
+  <!-- Import HTMX -->
   <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+
+  <!-- Custom Scripts -->
+  <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
+  <script src="{{ url_for('static', filename='scripts/drag-drop.js') }}"></script>
+
   <title>{% block title %}{% endblock %}</title>
 </head>
 
