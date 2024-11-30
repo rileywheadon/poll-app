@@ -7,11 +7,11 @@
 {% block body %}
 
 <!--background-->
-<div class="w-screen h-screen bg-[#212327]">
+<div class="w-full h-full bg-[#212327]">
 
   <!-- Header with Logo -->
   <div class="w-100%">
-    <img class="w-36 p-4" src="../static/logo-name2.svg">
+    <img class="w-36 p-4" src="../static/assets/logo-name2.svg">
   </div>
 
   <!-- Document Body -->
@@ -20,17 +20,13 @@
   <!-- Left Sidebar -->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
     <div class="sticky top-0 p-4 w-full h-full">
+      <div class="text-xl font-display font-light text-zinc-200 pb-8">
+        <h1>{{ user.username }}</h1>
+        <h1>{{ user.email }}</h1>
+      </div>
       <a class="bg-zinc-300 rounded-lg w-48 h-10 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.logout') }}">
         Log Out
       </a>
-      <div class="text-xl font-display font-light text-[#88BBD0] pb-8">
-        <h1>{{ user.username }}</h1>
-        <h1>{{ user.email }}</h1>
-      </div>
-      <div class="text-xl font-display font-light text-[#B6D7A8] pb-8">
-        <h1>{{ user.username }}</h1>
-        <h1>{{ user.email }}</h1>
-      </div>
     </div>
   </div>
 
@@ -60,7 +56,7 @@
 
         <!-- Include the submit button -->
         <div>
-          <input class="border border-black px-2 my-2" type="submit" value="Submit">
+          <input class="border border-zinc-200 px-2 my-2" type="submit" value="Submit">
         </div>
       </form>
     {% endfor %}
@@ -70,13 +66,8 @@
   
   <!--Right Sidebar-->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-    <!-- fixed-width -->
-    <div class="flex sm:flex-col px-2">
-      <div class="text-xl font-display font-light text-zinc-200 pb-8">
-        <h1>{{ user.username }}</h1>
-        <h1>{{ user.email }}</h1>
-        </div>
-      </div>
+    <div class="text-xl font-display font-light text-zinc-200 pb-8">
+      <h1>TBD</h1>
     </div>
   </div>
 

@@ -566,6 +566,14 @@ video {
   position: static;
 }
 
+.sticky {
+  position: sticky;
+}
+
+.top-0 {
+  top: 0px;
+}
+
 .m-2 {
   margin: 0.5rem;
 }
@@ -680,6 +688,10 @@ video {
   width: 36rem;
 }
 
+.w-full {
+  width: 100%;
+}
+
 .w-min {
   width: -moz-min-content;
   width: min-content;
@@ -689,8 +701,20 @@ video {
   width: 100vw;
 }
 
+.flex-shrink {
+  flex-shrink: 1;
+}
+
 .shrink-0 {
   flex-shrink: 0;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.flex-grow-0 {
+  flex-grow: 0;
 }
 
 .grow {
@@ -719,6 +743,14 @@ video {
   flex-direction: row;
 }
 
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .items-center {
   align-items: center;
 }
@@ -729,6 +761,34 @@ video {
 
 .justify-center {
   justify-content: center;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+.overflow-y-hidden {
+  overflow-y: hidden;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
+.overscroll-auto {
+  overscroll-behavior: auto;
+}
+
+.overscroll-none {
+  overscroll-behavior: none;
 }
 
 .rounded-lg {
@@ -753,6 +813,16 @@ video {
   border-color: rgb(161 161 170 / var(--tw-border-opacity, 1));
 }
 
+.border-zinc-200 {
+  --tw-border-opacity: 1;
+  border-color: rgb(228 228 231 / var(--tw-border-opacity, 1));
+}
+
+.bg-\[\#212327\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(33 35 39 / var(--tw-bg-opacity, 1));
+}
+
 .bg-\[\#9ed1b8\] {
   --tw-bg-opacity: 1;
   background-color: rgb(158 209 184 / var(--tw-bg-opacity, 1));
@@ -771,6 +841,16 @@ video {
 .bg-zinc-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(212 212 216 / var(--tw-bg-opacity, 1));
+}
+
+.bg-zinc-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(63 63 70 / var(--tw-bg-opacity, 1));
+}
+
+.bg-zinc-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(39 39 42 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-tr {
@@ -814,6 +894,16 @@ video {
   padding-right: 6rem;
 }
 
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 .py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -829,6 +919,11 @@ video {
   padding-bottom: 6rem;
 }
 
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 .pb-8 {
   padding-bottom: 2rem;
 }
@@ -839,6 +934,10 @@ video {
 
 .pl-3 {
   padding-left: 0.75rem;
+}
+
+.pt-1 {
+  padding-top: 0.25rem;
 }
 
 .text-2xl {
@@ -865,6 +964,20 @@ video {
   font-weight: 700;
 }
 
+.font-light {
+  font-weight: 300;
+}
+
+.text-\[\#88BBD0\] {
+  --tw-text-opacity: 1;
+  color: rgb(136 187 208 / var(--tw-text-opacity, 1));
+}
+
+.text-\[\#B6D7A8\] {
+  --tw-text-opacity: 1;
+  color: rgb(182 215 168 / var(--tw-text-opacity, 1));
+}
+
 .text-zinc-200 {
   --tw-text-opacity: 1;
   color: rgb(228 228 231 / var(--tw-text-opacity, 1));
@@ -885,89 +998,10 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-@scope (.star-selector) {
-  .rating-group {
-    display: inline-flex;
-  }
-
-  /* make hover effect work properly in IE */
-
-  .rating__icon {
-    pointer-events: none;
-  }
-
-  /* hide radio inputs */
-
-  .rating__input {
-    position: absolute !important;
-    left: -9999px !important;
-  }
-
-  /* set icon padding and size */
-
-  .rating__label {
-    cursor: pointer;
-    /* if you change the left/right padding, update the margin-right property of .rating__label--half as well. */
-    padding: 0 0.1em;
-    font-size: 2rem;
-  }
-
-  /* add padding and positioning to half star labels */
-
-  .rating__label--half {
-    padding-right: 0;
-    margin-right: -0.6em;
-    z-index: 2;
-  }
-
-  /* set default star color */
-
-  .rating__icon--star {
-    color: orange;
-  }
-
-  /* set color of none icon when unchecked */
-
-  .rating__icon--none {
-    color: #eee;
-  }
-
-  /* if none icon is checked, make it red */
-
-  .rating__input--none:checked + .rating__label .rating__icon--none {
-    color: red;
-  }
-
-  /* if any input is checked, make its following siblings grey */
-
-  .rating__input:checked ~ .rating__label .rating__icon--star {
-    color: #ddd;
-  }
-
-  /* make all stars orange on rating group hover */
-
-  .rating-group:hover .rating__label .rating__icon--star,
-  .rating-group:hover .rating__label--half .rating__icon--star {
-    color: orange;
-  }
-
-  /* make hovered input's following siblings grey on hover */
-
-  .rating__input:hover ~ .rating__label .rating__icon--star,
-  .rating__input:hover ~ .rating__label--half .rating__icon--star {
-    color: #ddd;
-  }
-
-  /* make none icon grey on rating group hover */
-
-  .rating-group:hover .rating__input--none:not(:hover) + .rating__label .rating__icon--none {
-    color: #eee;
-  }
-
-  /* make none icon red on hover */
-
-  .rating__input--none:hover + .rating__label .rating__icon--none {
-    color: red;
+@media (min-width: 640px) {
+  .w-fixed {
+    flex: 0 1 320px;
+    min-width: 320px;
   }
 }
 
@@ -981,3 +1015,16 @@ video {
   background-color: rgb(228 228 231 / var(--tw-bg-opacity, 1));
 }
 
+@media (min-width: 640px) {
+  .sm\:flex-row {
+    flex-direction: row;
+  }
+
+  .sm\:flex-col {
+    flex-direction: column;
+  }
+
+  .sm\:flex-nowrap {
+    flex-wrap: nowrap;
+  }
+}
