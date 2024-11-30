@@ -1,22 +1,31 @@
 <ul id="active-answers">
   {% for answer in poll.answers %}
     <li>
-      <button hx-get="{{ url_for('delete_answer', answer_id=answer.id) }}"
+      <button class="border border-black px-2"
+              hx-get="{{ url_for('delete_answer', answer_id=answer.id) }}"
               hx-target="closest li"
               hx-swap="outerHTML">
         Delete
       </button>
-      <input type="text" name="answer_{{ answer.id }}" value="{{ answer.answer }}">
+      <input class="border border-black my-1 px-2"
+             type="text" 
+             name="answer_{{ answer.id }}" 
+             value="{{ answer.answer }}">
     </li>
   {% endfor %}
   <li>
-    <button hx-get="{{ url_for('add_answer', poll_id=poll.id) }}"
+    <button class="border border-black px-2"
+            hx-get="{{ url_for('add_answer', poll_id=poll.id) }}"
             hx-trigger="click, keydown[keyCode==13] from:[id='answer_input']"
             hx-include="next input"
             hx-target="[id='active-answers']"
             hx-swap="outerHTML">
       Add
     </button>
-    <input id="answer_input" type="text" name="answer_text" placeholder="Answer">
+    <input class="border border-black my-1 px-2"
+           id="answer_input" 
+           type="text" 
+           name="answer_text" 
+           placeholder="Answer">
   </li>
 </ul>
