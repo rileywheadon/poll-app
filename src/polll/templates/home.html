@@ -5,60 +5,81 @@
 {% endblock %}
 
 {% block body %}
-    <!--background-->
-    <div class="w-screen h-screen bg-[#212327]">
 
-    <!--logo-->
-    <div class="w-100%">
-        <img class="w-36 p-4" src="../static/logo-name2.svg">
-    </div>
+<!--background-->
+<div class="w-screen h-screen bg-[#212327]">
 
-    <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
-        <!--left side bar-->
-        <!-- fixed-width -->
-        <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-            <div class="sticky top-0 p-4 w-full h-full">
-                <div class="text-xl font-display font-light text-[#88BBD0] pb-8">
-                    <h1>{{ user.username }}</h1>
-                    <h1>{{ user.email }}</h1>
-                </div>
-                <div class="text-xl font-display font-light text-[#B6D7A8] pb-8">
-                    <h1>{{ user.username }}</h1>
-                    <h1>{{ user.email }}</h1>
-                </div>
-            </div>
-        </div>
-        <!--main bar-->
-        <main role="main" class="w-full flex-grow pt-1 px-3">
-        <div class="text-xl font-display font-light	text-zinc-200 pb-8">
-            {% for poll in polls %}
-                <p>{{ poll.question }}</p>
-                <form action="{{ url_for('respond') }}" action="POST">
-                    <input type="hidden" name="user_id" value="{{ user.id }}"/>
-                    {% for answer in poll.answers %}
-                        <h1><input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input></h1>
-                    {% endfor %}
-                    <div>
-                        <a class="bg-[#B6D7A8] rounded-lg grow h-12 m-4 flex justify-center items-center hover:bg-[#A1D0B7]">
-                             <input type="submit" value="Submit">
-                        </a>
-                    </div>
-                </form>
-                <div class="p-2"> </div>
-            {% endfor %}
-        </div>
-        </main>
+  <!-- Header with Logo -->
+  <div class="w-100%">
+    <img class="w-36 p-4" src="../static/logo-name2.svg">
+  </div>
 
-        <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-            <!--right side bar-->
-            <!-- fixed-width -->
-            <div class="flex sm:flex-col px-2">
-                <div class="text-xl font-display font-light text-zinc-200 pb-8">
-                    <h1>{{ user.username }}</h1>
-                    <h1>{{ user.email }}</h1>
-                </div>
-            </div>
+  <!-- Document Body -->
+  <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+
+  <!-- Left Sidebar -->
+  <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
+    <div class="sticky top-0 p-4 w-full h-full">
+      <a class="bg-zinc-300 rounded-lg w-48 h-10 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.logout') }}">
+        Log Out
+      </a>
+      <div class="text-xl font-display font-light text-[#88BBD0] pb-8">
+        <h1>{{ user.username }}</h1>
+        <h1>{{ user.email }}</h1>
+      </div>
+      <div class="text-xl font-display font-light text-[#B6D7A8] pb-8">
+        <h1>{{ user.username }}</h1>
+        <h1>{{ user.email }}</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Column (Polls) -->
+  <main role="main" class="w-full flex-grow pt-1 px-3">
+    <div class="text-xl font-display font-light	text-zinc-200 pb-8">
+    {% for poll in polls %}
+      <!-- Include the poll question -->
+      <p class="text-l font-bold">{{ poll.question }}</p>
+
+      <form action="{{ url_for('respond') }}" action="POST">
+
+        <!-- Include the correct answer display template -->
+        {% if poll.poll_type.name == "CHOOSE_ONE" %}
+          {% include "home/choose-one.html" %}
+        {% elif poll.poll_type.name == "CHOOSE_MANY" %}
+          {% include "home/choose-many.html" %}
+        {% elif poll.poll_type.name == "NUMERIC_STAR" %}
+          {% include "home/numeric-star.html" %}
+        {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
+          {% include "home/numeric-scale.html" %}
+        {% elif poll.poll_type.name == "RANKED_POLL" %}
+          {% include "home/ranked-poll.html" %}
+        {% elif poll.poll_type.name == "TIER_LIST" %}
+          {% include "home/tier-list.html" %}
+        {% endif %}
+
+        <!-- Include the submit button -->
+        <div>
+          <input class="border border-black px-2 my-2" type="submit" value="Submit">
         </div>
+      </form>
+    {% endfor %}
+
     </div>
+  </main>
+  
+  <!--Right Sidebar-->
+  <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
+    <!-- fixed-width -->
+    <div class="flex sm:flex-col px-2">
+      <div class="text-xl font-display font-light text-zinc-200 pb-8">
+        <h1>{{ user.username }}</h1>
+        <h1>{{ user.email }}</h1>
+        </div>
+      </div>
     </div>
+  </div>
+
+</div>
+
 {% endblock %}

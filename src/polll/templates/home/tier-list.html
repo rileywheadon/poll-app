@@ -1,0 +1,33 @@
+<div id="tier-list" class="w-[36rem] mt-4">
+
+  {% for tier in ["S", "A", "B", "C", "D", "F"] %}
+    <div class="flex flex-row h-16">
+      <div class="w-16 border border-black mt-[-1px] ml-[-1px] flex items-center justify-center">
+        <span class="text-2xl">{{ tier }}</span>
+      </div>
+      <div class="border border-black mt-[-1px] ml-[-1px] grow flex flex-row justify-start"
+           ondragstart="tierDragStart(event)"
+           ondragenter="tierDragEnter(event)" 
+           ondragover="cancelDefault(event)" 
+           ondragexit="tierDragExit(event)"
+           ondrop="tierDrop(event)">
+        <!-- define invisible ghost -->
+      </div>
+    </div>
+  {% endfor %}
+
+</div>
+
+<div class="flex flex-row h-16 w-min my-4">
+  {% for answer in poll.answers %}
+    <div class="bg-zinc-200 rounded-xl h-full w-32 flex items-center justify-center"
+         draggable="true"
+         ondragstart="tierDragStart(event)"
+         ondragenter="cancelDefault(event)" 
+         ondragover="cancelDefault(event)" 
+         ondragexit="cancelDefault(event)"
+         ondrop="cancelDefault(event)">
+      {{ answer.answer }}
+    </div>
+  {% endfor %}
+</div>
