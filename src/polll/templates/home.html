@@ -18,19 +18,32 @@ Polll - Home
 
 <div class="p-4">
 {% for poll in polls %}
-  {% if poll.poll_type.name == "CHOOSE_ONE" %}
-    {% include "home/choose-one.html" %}
-  {% elif poll.poll_type.name == "CHOOSE_MANY" %}
-    {% include "home/choose-many.html" %}
-  {% elif poll.poll_type.name == "NUMERIC_STAR" %}
-    {% include "home/choose-one.html" %}
-  {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
-    {% include "home/choose-one.html" %}
-  {% elif poll.poll_type.name == "RANKED_POLL" %}
-    {% include "home/choose-one.html" %}
-  {% elif poll.poll_type.name == "TIER_LIST" %}
-    {% include "home/choose-one.html" %}
-  {% endif %}
+  <!-- Include the poll question -->
+  <p class="text-l font-bold">{{ poll.question }}</p>
+
+  <form action="{{ url_for('respond') }}" action="POST">
+
+    <!-- Include the correct answer display template -->
+    {% if poll.poll_type.name == "CHOOSE_ONE" %}
+      {% include "home/choose-one.html" %}
+    {% elif poll.poll_type.name == "CHOOSE_MANY" %}
+      {% include "home/choose-many.html" %}
+    {% elif poll.poll_type.name == "NUMERIC_STAR" %}
+      {% include "home/numeric-star.html" %}
+    {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
+      {% include "home/numeric-scale.html" %}
+    {% elif poll.poll_type.name == "RANKED_POLL" %}
+      {% include "home/ranked-poll.html" %}
+    {% elif poll.poll_type.name == "TIER_LIST" %}
+      {% include "home/tier-list.html" %}
+    {% endif %}
+
+    <!-- Include the submit button -->
+    <div>
+      <input class="border border-black px-2 my-2" type="submit" value="Submit">
+    </div>
+  </form>
+
 {% endfor %}
 </div>
 
