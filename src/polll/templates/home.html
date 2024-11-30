@@ -1,25 +1,64 @@
 {% extends "base.html" %}
 
 {% block title %}
-Polll - Home
+    Polll - Home
 {% endblock %}
 
 {% block body %}
+    <!--background-->
+    <div class="w-screen h-screen bg-[#212327]">
 
-<h1>{{ user.username }}</h1>
-<h2>{{ user.email }}</h2>
+    <!--logo-->
+    <div class="w-100%">
+        <img class="w-36 p-4" src="../static/logo-name2.svg">
+    </div>
 
-{% for poll in polls %}
-<p>{{ poll.question }}</p>
-<form action="{{ url_for('respond') }}" action="POST">
-  <input type="hidden" name="user_id" value="{{ user.id }}" />
-  {% for answer in poll.answers %}
-  <input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input>
-  {% endfor %}
-  <div>
-    <input type="submit" value="Submit">
-  </div>
-</form>
-{% endfor %}
+    <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+        <!--left side bar-->
+        <!-- fixed-width -->
+        <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
+            <div class="sticky top-0 p-4 w-full h-full">
+                <div class="text-xl font-display font-light text-[#88BBD0] pb-8">
+                    <h1>{{ user.username }}</h1>
+                    <h1>{{ user.email }}</h1>
+                </div>
+                <div class="text-xl font-display font-light text-[#B6D7A8] pb-8">
+                    <h1>{{ user.username }}</h1>
+                    <h1>{{ user.email }}</h1>
+                </div>
+            </div>
+        </div>
+        <!--main bar-->
+        <main role="main" class="w-full flex-grow pt-1 px-3">
+        <div class="text-xl font-display font-light	text-zinc-200 pb-8">
+            {% for poll in polls %}
+                <p>{{ poll.question }}</p>
+                <form action="{{ url_for('respond') }}" action="POST">
+                    <input type="hidden" name="user_id" value="{{ user.id }}"/>
+                    {% for answer in poll.answers %}
+                        <h1><input type="radio" name="answer_id" value="{{ answer.id }}">{{ answer.answer }}</input></h1>
+                    {% endfor %}
+                    <div>
+                        <a class="bg-[#B6D7A8] rounded-lg grow h-12 m-4 flex justify-center items-center hover:bg-[#A1D0B7]">
+                             <input type="submit" value="Submit">
+                        </a>
+                    </div>
+                </form>
+                <div class="p-2"> </div>
+            {% endfor %}
+        </div>
+        </main>
 
+        <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
+            <!--right side bar-->
+            <!-- fixed-width -->
+            <div class="flex sm:flex-col px-2">
+                <div class="text-xl font-display font-light text-zinc-200 pb-8">
+                    <h1>{{ user.username }}</h1>
+                    <h1>{{ user.email }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 {% endblock %}

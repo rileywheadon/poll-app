@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (min-width: 640px) {
+    .w-fixed {
+        flex: 0 1 320px;
+        min-width: 320px;
+    }
+}
