@@ -7,11 +7,15 @@
 {% block body %}
 
 <!--background-->
-<div class="w-full h-full bg-[#212327]">
+<div class="w-full h-full bg-[#191c21]">
 
   <!-- Header with Logo -->
-  <div class="w-100%">
+  <div class="w-100% flex items-center border-b border-zinc-400 bg-[#212327]">
     <img class="w-36 p-4" src="../static/assets/logo-name2.svg">
+    <a class="bg-zinc-300 rounded-lg w-32 h-10 mx-4 ml-auto flex justify-center items-center" 
+       href="{{ url_for('auth.logout') }}">
+      Log Out
+    </a>
   </div>
 
   <!-- Document Body -->
@@ -19,49 +23,34 @@
 
   <!-- Left Sidebar -->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-    <div class="sticky top-0 p-4 w-full h-full">
-      <div class="text-xl font-display font-light text-zinc-200 pb-8">
-        <h1>{{ user.username }}</h1>
-        <h1>{{ user.email }}</h1>
+      <div class="text-zinc-200 text-xl leading-8">
+        <p>Hello, {{ user.username }}</p>
+        <p>{{ user.email }}</p>
       </div>
-      <a class="bg-zinc-300 rounded-lg w-48 h-10 m-4 flex justify-center items-center hover:bg-zinc-200" href="{{ url_for('auth.logout') }}">
-        Log Out
-      </a>
-    </div>
   </div>
 
   <!-- Main Column (Polls) -->
   <main role="main" class="w-full flex-grow pt-1 px-3">
-    <div class="text-xl font-display font-light	text-zinc-200 pb-8">
     {% for poll in polls %}
-      <!-- Include the poll question -->
-      <p class="text-l font-bold">{{ poll.question }}</p>
+    <div class="poll-card text-xl font-display font-light text-zinc-200 pb-4 border rounded-md border-zinc-400 mb-4 p-4 bg-[#212327]">
 
-      <form action="{{ url_for('respond') }}" action="POST">
-
-        <!-- Include the correct answer display template -->
-        {% if poll.poll_type.name == "CHOOSE_ONE" %}
-          {% include "home/choose-one.html" %}
-        {% elif poll.poll_type.name == "CHOOSE_MANY" %}
-          {% include "home/choose-many.html" %}
-        {% elif poll.poll_type.name == "NUMERIC_STAR" %}
-          {% include "home/numeric-star.html" %}
-        {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
-          {% include "home/numeric-scale.html" %}
-        {% elif poll.poll_type.name == "RANKED_POLL" %}
-          {% include "home/ranked-poll.html" %}
-        {% elif poll.poll_type.name == "TIER_LIST" %}
-          {% include "home/tier-list.html" %}
-        {% endif %}
-
-        <!-- Include the submit button -->
-        <div>
-          <input class="border border-zinc-200 px-2 my-2" type="submit" value="Submit">
-        </div>
-      </form>
-    {% endfor %}
+      <!-- Include the correct answer display template -->
+      {% if poll.poll_type.name == "CHOOSE_ONE" %}
+        {% include "home/choose-one.html" %}
+      {% elif poll.poll_type.name == "CHOOSE_MANY" %}
+        {% include "home/choose-many.html" %}
+      {% elif poll.poll_type.name == "NUMERIC_STAR" %}
+        {% include "home/numeric-star.html" %}
+      {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
+        {% include "home/numeric-scale.html" %}
+      {% elif poll.poll_type.name == "RANKED_POLL" %}
+        {% include "home/ranked-poll.html" %}
+      {% elif poll.poll_type.name == "TIER_LIST" %}
+        {% include "home/tier-list.html" %}
+      {% endif %}
 
     </div>
+    {% endfor %}
   </main>
   
   <!--Right Sidebar-->

@@ -1,9 +1,33 @@
-<div class="my-2 flex align-center">
-  <input type="range" 
-         value="50" 
-         min="0" 
-         max="100"
-         autocomplete="off"
-         oninput="this.nextElementSibling.innerHTML = this.value">
-  <span class="range-slider__value pl-3">50</span><span>/100</span>
+<!-- Include the poll question -->
+<p class="text-xl font-bold pb-4">{{ poll.question }}</p>
+<form class="pb-4"
+      hx-post="/home/respond" 
+      hx-target="closest .poll-card"
+      hx-trigger="submit"
+      hx-swap="innerHTML">
+
+  <!-- Hidden inputs that include poll/user ID in the HTTP request -->
+  <input type="hidden" name="poll_id" value="{{ poll.id }}">
+
+  <div class="my-2 flex align-center">
+    <input type="range" 
+           name="slider_rating"
+           value="50" 
+           min="0" 
+           max="100"
+           autocomplete="off"
+           oninput="this.nextElementSibling.innerHTML = this.value">
+    <span class="range-slider__value pl-3">50</span><span>/100</span>
+  </div>
+
+<!-- Include the submit button -->
+<div>
+  <input class="border border-zinc-200 px-2 mt-4" type="submit" value="Submit">
 </div>
+</form>
+
+<hr>
+
+<p class="text-xl font-bold py-4">Results</p>
+<p>Responses: {{ poll.response_count() }}</p>
+<p>Data: {{ poll.response_data() }}</p>
