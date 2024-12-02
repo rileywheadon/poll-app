@@ -1,0 +1,12 @@
+{% extends "results/results-base.html" %}
+
+{% block result_content %}
+
+<p>Responses: {{ poll.response_count() }}</p>
+<ul class="px-2 list-disc list-inside">
+  {% for row in poll.response_data() %}
+  <li>{{ row["text"] }}: {{ row["count"] }}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

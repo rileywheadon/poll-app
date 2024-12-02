@@ -32,24 +32,39 @@
   <!-- Main Column (Polls) -->
   <main role="main" class="w-full flex-grow pt-1 px-3">
     {% for poll in polls %}
-    <div class="poll-card text-xl font-display font-light text-zinc-200 pb-4 border rounded-md border-zinc-400 mb-4 p-4 bg-[#212327]">
 
-      <!-- Include the correct answer display template -->
+      <!-- NOTE: After adding the admin account, users should only see the poll OR results -->
+
+      <!-- Display the poll, including the corret answer display template -->
       {% if poll.poll_type.name == "CHOOSE_ONE" %}
-        {% include "home/choose-one.html" %}
+        {% include "polls/choose-one.html" %}
       {% elif poll.poll_type.name == "CHOOSE_MANY" %}
-        {% include "home/choose-many.html" %}
+        {% include "polls/choose-many.html" %}
       {% elif poll.poll_type.name == "NUMERIC_STAR" %}
-        {% include "home/numeric-star.html" %}
+        {% include "polls/numeric-star.html" %}
       {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
-        {% include "home/numeric-scale.html" %}
+        {% include "polls/numeric-scale.html" %}
       {% elif poll.poll_type.name == "RANKED_POLL" %}
-        {% include "home/ranked-poll.html" %}
+        {% include "polls/ranked-poll.html" %}
       {% elif poll.poll_type.name == "TIER_LIST" %}
-        {% include "home/tier-list.html" %}
+        {% include "polls/tier-list.html" %}
       {% endif %}
 
-    </div>
+      <!-- Display the results, including the correct results display template -->
+      {% if poll.poll_type.name == "CHOOSE_ONE" %}
+        {% include "results/choose-one.html" %}
+      {% elif poll.poll_type.name == "CHOOSE_MANY" %}
+        {% include "results/choose-many.html" %}
+      {% elif poll.poll_type.name == "NUMERIC_STAR" %}
+        {% include "results/numeric-star.html" %}
+      {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
+        {% include "results/numeric-scale.html" %}
+      {% elif poll.poll_type.name == "RANKED_POLL" %}
+        {% include "results/ranked-poll.html" %}
+      {% elif poll.poll_type.name == "TIER_LIST" %}
+        {% include "results/tier-list.html" %}
+      {% endif %}
+
     {% endfor %}
   </main>
   
