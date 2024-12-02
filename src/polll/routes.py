@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, request, current_app, session
 from flask_login import current_user
 from polll.models import *
+from polll.handlers import * 
 from polll.decorators import requires_auth
 
 
@@ -27,27 +28,24 @@ def home():
 @requires_auth
 def respond():
 
-    # Get the user ID and answer ID from the request
-    user_id = request.args.get('user_id')
-    answer_id = request.args.get('answer_id')
+    poll_id = request.form.get('poll_id')
+    poll = Poll.query.get(poll_id)
 
-    # Only process the request if answer_id exists
-    if answer_id:
+    match poll.poll_type:
+        case PollType.CHOOSE_ONE:
+            return choose_one(request, poll, current_user)
+        case PollType.CHOOSE_MANY:
+            return choose_many(request, poll, current_user)
+        case PollType.NUMERIC_STAR:
+            return numeric_star(request, poll, current_user)
+        case PollType.NUMERIC_SCALE:
+            return numeric_scale(request, poll, current_user)
+        case PollType.RANKED_POLL:
+            return ranked_poll(request, poll, current_user)
+        case PollType.TIER_LIST:
+            return tier_list(request, poll, current_user)
 
-        # Get the poll ID byq uerying the database 
-        answer = PollAnswer.query.get(answer_id)
-        poll_id = Poll.query.get(answer.poll_id).id
-
-        # Create a new Response and add it to the database
-        response = Response(
-            user_id = user_id, 
-            poll_id = poll_id, 
-            answer_id = answer_id
-        )
-
-        db.session.add(response)
-        db.session.commit()
-
+    # This should never happen
     return redirect(url_for("home"))
 
 

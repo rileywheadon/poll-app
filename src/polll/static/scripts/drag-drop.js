@@ -54,21 +54,40 @@ var activeTierItem = null;
 
 function tierDragStart(e) {
   activeTierItem = e.target;
-  console.log(activeTierItem);
 }
 
 function tierDragEnter(e) {
   cancelDefault(e);
-  // e.target.classList.add("text-zinc-400")
 }
 
 function tierDragExit(e) {
   cancelDefault(e);
-  // e.target.classList.remove("text-zinc-400")
 }
 
 function tierDrop(e) {
   cancelDefault(e);
+
+  // Get the tier that the item is being dropped into
+  var tier = null;
+  for (const className of e.target.classList) {
+    if (className.startsWith("tier")) {
+      tier = className.split("-").pop();
+    }
+  }
+
+  // Add or change a hidden input tag containing the tier of the item
+  inputTag = activeTierItem.querySelector("input[name='answer_tier'")
+  if (inputTag != null) { 
+    inputTag.setAttribute("value", tier);
+  } else {
+    // Add a hidden input tag to the activeTierItem element with the tier
+    var newInput = document.createElement("input");
+    newInput.setAttribute("type", "hidden"); 
+    newInput.setAttribute("name", "answer_tier"); 
+    newInput.setAttribute("value", tier); 
+    activeTierItem.appendChild(newInput);
+  }
+
   activeTierItem.remove();
   e.target.appendChild(activeTierItem);
   activeTierItem = null;
