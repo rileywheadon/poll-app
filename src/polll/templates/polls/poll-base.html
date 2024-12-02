@@ -1,0 +1,21 @@
+<div class="poll-card text-xl font-display font-light text-zinc-200 pb-4 border rounded-md border-zinc-400 mb-4 p-4 bg-[#212327]">
+
+  <!-- Include the poll question -->
+  <p class="text-xl font-bold pb-4">{{ poll.question }}</p>
+  <form class="pb-4"
+        hx-post="/home/respond/{{ poll.id }}" 
+        hx-target="closest .poll-card"
+        hx-trigger="submit"
+        hx-swap="outerHTML">
+
+    {% block poll_content %}
+
+    {% endblock %}
+
+  <!-- Include the submit button -->
+  <div>
+    <input class="border border-zinc-200 px-2 mt-4" type="submit" value="Submit">
+  </div>
+  </form>
+
+</div>

@@ -1,0 +1,17 @@
+<div class="result-card text-xl font-display font-light text-zinc-200 pb-4 border rounded-md border-zinc-400 mb-4 p-4 bg-[#27292d]">
+
+  <p class="text-xl font-bold pb-4">Results</p>
+
+    {% block result_content %}
+
+    {% endblock %}
+
+  <!-- Include a refresh button -->
+  <form hx-post="/home/results/{{ poll.id }}" 
+        hx-target="closest .result-card"
+        hx-trigger="submit"
+        hx-swap="outerHTML">
+    <input class="border border-zinc-200 px-2 mt-4" type="submit" value="Refresh">
+  </form>
+
+</div>

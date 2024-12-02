@@ -1,7 +1,8 @@
 from flask import render_template, redirect, url_for, request, current_app, session
 from flask_login import current_user
 from polll.models import *
-from polll.handlers import * 
+import polll.response_handlers as response
+import polll.result_handlers as result
 from polll.decorators import requires_auth
 
 
@@ -24,26 +25,48 @@ def home():
 
 
 # HTTP endpoint for responding to polls
-@current_app.route("/home/respond", methods = ["GET", "POST"])
+@current_app.route("/home/respond/<poll_id>", methods = ["GET", "POST"])
 @requires_auth
-def respond():
+def respond(poll_id):
 
-    poll_id = request.form.get('poll_id')
     poll = Poll.query.get(poll_id)
-
     match poll.poll_type:
         case PollType.CHOOSE_ONE:
-            return choose_one(request, poll, current_user)
+            return response.choose_one(request, poll, current_user)
         case PollType.CHOOSE_MANY:
-            return choose_many(request, poll, current_user)
+            return response.choose_many(request, poll, current_user)
         case PollType.NUMERIC_STAR:
-            return numeric_star(request, poll, current_user)
+            return response.numeric_star(request, poll, current_user)
         case PollType.NUMERIC_SCALE:
-            return numeric_scale(request, poll, current_user)
+            return response.numeric_scale(request, poll, current_user)
         case PollType.RANKED_POLL:
-            return ranked_poll(request, poll, current_user)
+            return response.ranked_poll(request, poll, current_user)
         case PollType.TIER_LIST:
-            return tier_list(request, poll, current_user)
+            return response.tier_list(request, poll, current_user)
+
+    # This should never happen
+    return redirect(url_for("home"))
+
+
+# HTTP endpoint for refreshing the results 
+@current_app.route("/home/results/<poll_id>", methods = ["GET", "POST"])
+@requires_auth
+def results(poll_id):
+
+    poll = Poll.query.get(poll_id)
+    match poll.poll_type:
+        case PollType.CHOOSE_ONE:
+            return result.choose_one(request, poll)
+        case PollType.CHOOSE_MANY:
+            return result.choose_many(request, poll)
+        case PollType.NUMERIC_STAR:
+            return result.numeric_star(request, poll)
+        case PollType.NUMERIC_SCALE:
+            return result.numeric_scale(request, poll)
+        case PollType.RANKED_POLL:
+            return result.ranked_poll(request, poll)
+        case PollType.TIER_LIST:
+            return result.tier_list(request, poll)
 
     # This should never happen
     return redirect(url_for("home"))

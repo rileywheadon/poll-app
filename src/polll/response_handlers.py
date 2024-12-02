@@ -12,7 +12,7 @@ def choose_one(request, poll, user):
         response = Response.create(poll = poll, user = user)
         discrete = DiscreteResponse.create(answer = answer, response = response)
 
-    return render_template("home/choose-one.html", poll=poll, stats=stats)
+    return render_template("polls/choose-one.html", poll=poll)
 
 def choose_many(request, poll, user):
 
@@ -24,7 +24,7 @@ def choose_many(request, poll, user):
             answer = PollAnswer.query.get(id)
             discrete = DiscreteResponse.create(answer = answer, response = response)
 
-    return render_template("home/choose-many.html", poll=poll)
+    return render_template("polls/choose-many.html", poll=poll)
 
 def numeric_star(request, poll, user):
 
@@ -34,7 +34,7 @@ def numeric_star(request, poll, user):
         response = Response.create(poll = poll, user = user)
         numeric = NumericResponse.create(value = rating, response = response)
     
-    return render_template("home/numeric-star.html", poll=poll)
+    return render_template("polls/numeric-star.html", poll=poll)
 
 def numeric_scale(request, poll, user):
 
@@ -44,7 +44,7 @@ def numeric_scale(request, poll, user):
         response = Response.create(poll = poll, user = user)
         numeric = NumericResponse.create(value = rating, response = response)
 
-    return render_template("home/numeric-scale.html", poll=poll)
+    return render_template("polls/numeric-scale.html", poll=poll)
 
 def ranked_poll(request, poll, user):
 
@@ -60,7 +60,7 @@ def ranked_poll(request, poll, user):
                 rank = idx + 1
             )
 
-    return render_template("home/ranked-poll.html", poll=poll)
+    return render_template("polls/ranked-poll.html", poll=poll)
 
 def tier_list(request, poll, user):
 
@@ -79,5 +79,5 @@ def tier_list(request, poll, user):
             print(tiered)
         print(response)
 
-    return render_template("home/tier-list.html", poll=poll)
+    return render_template("polls/tier-list.html", poll=poll)
 
