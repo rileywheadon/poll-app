@@ -8,3 +8,7 @@
         min-width: 320px;
     }
 }
+
+/* stop tailwind from fucking with plotly */
+/* DO NOT CHANGE THIS UNDER ANY CIRCUMSTANCES */
+.main-svg { position: absolute; }
