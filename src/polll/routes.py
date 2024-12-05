@@ -1,10 +1,11 @@
 from flask import render_template, redirect, url_for, request, current_app, session
 from flask_login import current_user
 from polll.models import *
-import polll.response_handlers as response
-import polll.result_handlers as result
+import polll.responses as response
 from polll.decorators import requires_auth
 
+# Import result handlers
+import polll.results as result
 
 # Landing page for advertising to potential users
 @current_app.route("/")

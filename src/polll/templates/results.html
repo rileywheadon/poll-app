@@ -2,16 +2,20 @@
 
   <p class="text-xl font-bold pb-4">Results</p>
 
-    {% block result_content %}
-
-    {% endblock %}
+  <!-- Include a plot if one was provided -->
+  <div class="reset-tw chart" id="graph-{{ poll.id }}">
+    <script>
+        var graph = {{ plot | safe }};
+        Plotly.react("graph-{{ poll.id }}", graph);
+    </script>
+  </div>
 
   <!-- Include a refresh button -->
   <form hx-post="/home/results/{{ poll.id }}" 
         hx-target="closest .result-card"
         hx-trigger="submit"
         hx-swap="outerHTML">
-    <input class="border border-zinc-200 px-2 mt-4" type="submit" value="Refresh">
+    <input class="border border-zinc-200 px-2 mt-4 z-20" type="submit" value="Refresh">
   </form>
 
 </div>

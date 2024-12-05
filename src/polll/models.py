@@ -96,29 +96,6 @@ class Poll(BaseMixin, db.Model):
     responses : so.Mapped[List["Response"]] = so.relationship("Response", back_populates="poll")
     answers : so.Mapped[List["PollAnswer"]] = so.relationship("PollAnswer", back_populates="poll")
 
-    def response_count(self):
-        return len(self.responses)
-
-    def response_data(self):
-
-        data = []
-        if self.poll_type in [PollType.CHOOSE_ONE, PollType.CHOOSE_MANY]:
-            for answer in self.answers:
-                data.append(self.__discrete_data(answer))
-
-        elif self.poll_type in [PollType.NUMERIC_STAR, PollType.NUMERIC_SCALE]:
-            data = self.__numeric_data()
-
-        elif self.poll_type in [PollType.RANKED_POLL]:
-            for answer in self.answers:
-                data.append(self.__ranked_data(answer))
-
-        elif self.poll_type in [PollType.TIER_LIST]:
-            for answer in self.answers:
-                data.append(self.__tiered_data(answer))
-
-        return data
-
     def __discrete_data(self, answer):
         count = (db.session
             .query(DiscreteResponse)
