@@ -9,6 +9,13 @@
     }
 }
 
+.montserrat {
+  font-family: "Montserrat", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
 /* stop tailwind from fucking with plotly */
 /* DO NOT CHANGE THIS UNDER ANY CIRCUMSTANCES */
 .main-svg { position: absolute; }

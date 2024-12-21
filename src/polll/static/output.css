@@ -661,6 +661,11 @@ video {
   height: 2rem;
 }
 
+.h-fit {
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
 .h-full {
   height: 100%;
 }
@@ -671,6 +676,10 @@ video {
 
 .w-16 {
   width: 4rem;
+}
+
+.w-3\/12 {
+  width: 25%;
 }
 
 .w-32 {
@@ -687,6 +696,10 @@ video {
 
 .w-48 {
   width: 12rem;
+}
+
+.w-9\/12 {
+  width: 75%;
 }
 
 .w-\[36rem\] {
@@ -728,6 +741,10 @@ video {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
 }
 
 .select-none {
@@ -832,6 +849,21 @@ video {
   background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1));
 }
 
+.bg-neutral-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(38 38 38 / var(--tw-bg-opacity, 1));
+}
+
+.bg-neutral-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(23 23 23 / var(--tw-bg-opacity, 1));
+}
+
+.bg-slate-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity, 1));
+}
+
 .bg-zinc-300 {
   --tw-bg-opacity: 1;
   background-color: rgb(212 212 216 / var(--tw-bg-opacity, 1));
@@ -840,6 +872,10 @@ video {
 .bg-zinc-700 {
   --tw-bg-opacity: 1;
   background-color: rgb(63 63 70 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[url\(\'assets\/background-3-2\.png\'\)\] {
+  background-image: url('assets/background-3-2.png');
 }
 
 .bg-gradient-to-tr {
@@ -859,6 +895,10 @@ video {
 
 .to-zinc-900 {
   --tw-gradient-to: #18181b var(--tw-gradient-to-position);
+}
+
+.bg-cover {
+  background-size: cover;
 }
 
 .p-2 {
@@ -913,6 +953,11 @@ video {
   padding-bottom: 1rem;
 }
 
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
 .pb-4 {
   padding-bottom: 1rem;
 }
@@ -931,6 +976,10 @@ video {
 
 .pt-1 {
   padding-top: 0.25rem;
+}
+
+.align-top {
+  vertical-align: top;
 }
 
 .text-2xl {
@@ -965,6 +1014,11 @@ video {
   line-height: 2rem;
 }
 
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
 .text-zinc-200 {
   --tw-text-opacity: 1;
   color: rgb(228 228 231 / var(--tw-text-opacity, 1));
@@ -980,9 +1034,55 @@ video {
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
 }
 
+.text-slate-50 {
+  --tw-text-opacity: 1;
+  color: rgb(248 250 252 / var(--tw-text-opacity, 1));
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+.opacity-90 {
+  opacity: 0.9;
+}
+
+.opacity-95 {
+  opacity: 0.95;
+}
+
+.opacity-85 {
+  opacity: 0.85;
+}
+
+.opacity-80 {
+  opacity: 0.8;
+}
+
+.shadow-\[0_0px_30px\] {
+  --tw-shadow: 0 0px 30px;
+  --tw-shadow-colored: 0 0px 30px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.brightness-\[1\.0\] {
+  --tw-brightness: brightness(1.0);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .drop-shadow-2xl {
   --tw-drop-shadow: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.backdrop-blur-\[100px\] {
+  --tw-backdrop-blur: blur(100px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 
 @media (min-width: 640px) {
@@ -990,6 +1090,13 @@ video {
     flex: 0 1 320px;
     min-width: 320px;
   }
+}
+
+.montserrat {
+  font-family: "Montserrat", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 /* stop tailwind from fucking with plotly */
@@ -1008,6 +1115,10 @@ video {
 .hover\:bg-zinc-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(228 228 231 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:underline:hover {
+  text-decoration-line: underline;
 }
 
 @media (min-width: 640px) {

@@ -13,6 +13,11 @@ def index():
     return render_template("index.html")
 
 
+# UI dev endpoint 
+@current_app.route("/ui")
+def ui():
+    return render_template("ui.html")
+
 # Main app page for answering polls
 @current_app.route("/home")
 @requires_auth
