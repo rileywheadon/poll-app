@@ -1,38 +1,78 @@
-# poll-app
+# polll
 
-See [here](https://docs.google.com/document/d/1rV5vO5JzADLJp9fIChyTnYNT_mIAT9rMD2FZ7_xElhQ/edit?tab=t.0) for documentation.
+## Technology Stack
 
-**Update:** It is now required to the app with `python3 src/app.py`, which automatically hosts the site on the corret port in order to connect to the development authentication server. In order to use `auth0`, you need to host on `https`, which will cause your browser to get quite upset about a self-signed certificate. In order to run the project locally, you will now need to add a permanent exception to the localhost address.
+[Hatch](https://hatch.pypa.io/1.9/) for project management (i.e. publishing, versioning, etc.)
 
-## ignacio styling instructions 
+[Flask](https://flask.palletsprojects.com/en/stable/) (Python) for handling HTTP requests and reading/writing to the database:
 
-1. The only folder you are allowed to change is `src/polll/templates`
-2. `base.html` inherited by all of the HTML templates. you should not need to change this
-3. Three "main" pages:
-	1. `admin.html` (admin dashboard) 
-	2. `index.html` (landing page)
-	3. `home.html` (main page)
-4. Do not touch HTML attributes that already exist. Do not touch anything in `{{` or `{%`
-5. Feel free to add divs or to change HTML tags as long as shit doesn't break
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/stable/) is an ORM (represents database as Python objects)
+- [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/index.html) for updating the database when the schema changes (migrations)
+- [Pytest](https://docs.pytest.org/en/stable/) and [Coverage](https://coverage.readthedocs.io/en/7.6.9/) for testing
+- [Authlib](https://authlib.org/), dotenv, and requests for authentication with [Auth0](https://auth0.com/)
+- [Flask-Login](https://flask-login.readthedocs.io/en/latest/) for handling user sessions
 
-Running the app (three easy steps):
-1. Open a terminal. Type `source .venv/bin/activate`. Turn it off with `deactivate`
-2. From the same terminal, type in `flask run --debug`
-3. Open a *second* terminal. Type in `cd src/polll/static`. Type in `./tailwindcss -i input.css -o output.css --watch` and press enter. This will start the tailwind compiler.
+[HTMX](https://htmx.org/) for additional front-end functionality (more nuanced HTTP requests/responses)
 
-Using in three easy steps:
-1. Go to https://tailwindcss.com/docs/installation
-2. Open quick search and type in what you want to do to the page
-3. Pick an element and give it a `class` attribute
+[TailwindCSS](https://tailwindcss.com/) for front-end design
 
-URLs:
-- base URL: `index.html`
-- `/home` is `home.html`
-- `/admin` is `admin.html`
+[Railway](https://railway.com/) for hosting the prototype, [Google Cloud](https://cloud.google.com/?hl=en) for hosting production
 
-git for dummies:
-- `git add --all` to stage your changes
-- `git status` to view staged changes
-- `git commit -m "..."` to commit changes. PLEASE WRITE INTELLIGENCE COMMIT MESSASGES.
-- `git push` to push changes to github on the current branch.
+### Philosophy
 
+Before adding a new technology, ask yourself the following three questions:
+
+1. Is this new technology required to implement a feature?
+2. If so, how painful would it be to build this feature with our current stack?
+3. Does the pain of building this feature with our current stack outweight the [Technical Debt](https://en.wikipedia.org/wiki/Technical_debt) created by adding a new technology to the stack?
+
+If the answer to all three of the questions is "yes", add the new technology to the stack.
+
+## Project Layout
+
+`/requirements.txt` contains dependencies (see [Setup Instructions](#setup-instructions)).
+
+`/tests` contains unit tests (currently incomplete).
+
+`/src/instance` and `/src/migrations` store database files and can be ignored.
+
+`/src/app.py` launches the app (see [Setup Instructions](#setup-instructions)).
+
+`/src/polll` contains the source code for the app:
+
+- `/templates` contains the [Jinja2](https://jinja.palletsprojects.com/en/stable/) templates used to generate the app
+- `/static` contains static files (i.e. images, the logo, etc.)
+- `/results` contains database queries for getting poll results
+- `authentication.py` sets up user authentication with Auth0
+- `models.py` contains the database schema implemented in SQLAlchemy
+- `responses.py` updates the database when the user responds to a poll
+- `routes.py` defines HTTP endpoints (where the client interacts with the server)
+
+## Setup Instructions
+
+In order to run the app locally, you will need a [Virtual Environment](https://docs.python.org/3/library/venv.html), which can be created using the `venv` library provided with the base installation of Python3. To create a new virtual environment from the `requirements.txt` file following these steps:
+
+- Open a terminal and `cd` to the root directory of the project
+- Run `python3 -m venv venv`. This will create a new virtual environment called `venv` within the root directory of the project.
+- Run `source venv/bin/activate` to enter the virtual environment.
+- Use `pip install -r requirements.txt` to install the packages listed in `requirements.txt` in the virtual environment.
+
+To run the app, type `python3 src/app.py` into a terminal from the root directory.
+
+If you are making changes to the HTML using TailwindCSS, you will also need to enable the Tailwind watcher. To do this, open another terminal window (separate from the one that is running the app), `cd` to `src/polll/static` and type in the following command:
+
+```
+./tailwindcss -i input.css -o output.css --watch
+```
+
+## Git
+
+If you would like to contribute code to the project, you must have a working understanding of [git](https://git-scm.com/) and [GitHub](https://github.com/). _This is not negotiable_. To get a big picture idea of how `git` works, I recommend you read [this](https://missing.csail.mit.edu/2020/version-control/) guide. After doing this, you should be able to answer the following questions:
+
+- What is a staging area? How do I `add` changes to a staging area?
+- What is a remote? How do I add a remote to a repository?
+- What does a `commit`/`push` do? Which one updates a remote?
+- How do I get recent changes from a remote?
+- How do I commit my changes to a branch and then create a pull request?
+
+Please write clear commit messages in the present tense (i.e. "Update response UI" instead of "Updated response UI"). Additionally, try to make a commit every time you make a signfiicant change. I am happy to get involved with the trickier parts of `git` (i.e. merge conflicts), but you should be able to handle most stuff (i.e. pulling changes, committing to a branch, opening a pull request) on your own.
