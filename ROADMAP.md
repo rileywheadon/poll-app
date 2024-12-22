@@ -1,9 +1,23 @@
 # Development Roadmap
 
-**Useful Links**:
-
 - [Master Checklist](https://docs.google.com/spreadsheets/d/1_l05MRtndCjIhHvqixORiueiIIFqz9E6iD2b9xADoRE/edit?usp=sharing) (contains non-technical items as well)
 - [Database Schema](https://drive.google.com/file/d/1miwHyiKxAsvqpu6lSzgJPm7c2lLgoC4g/view?usp=drive_link)
+
+## Pull Requests
+
+These are development items that I think someone other than me (Riley) could do. If you are going to take on one of these, please create a branch, and then submit a pull request when you are finished.
+
+| Difficulty | Task                                                     |
+| ---------- | -------------------------------------------------------- |
+| 3/10       | Add light-mode compatible logo. See (1).                 |
+| 4/10       | Test compatibility with different screen sizes. See (2). |
+| 7/10       | Prototype in-house results visualization. See (3).       |
+
+**1**: In addition to an SVG file containing the new logo, this pull request may also implement switching between logos depending on the `localStorage.theme` variable. This variable is updated when the user toggles light/dark mode.
+
+**2**: This is trickier than it sounds. You need to ensure the app works properly on screens of all different sizes. Check the Tailwind docs for instructions on how to implement CSS breakpoints, which you will need to learn.
+
+**3**: Start with the simplest poll (choose one). You will have to create a new Jinja2 template that displays the results for choose one. Instead of making calls to plotly from Python, send the data to the client and use Javascript to render a homemade bar chart. I would prefer if we avoided Javascript plotting libraries and did everything by hand, as I think this would be the most flexible implementation. However, I am open to other ideas. If you are interested in attempting this, please let me know and I will give you more information.
 
 ## 1: Minimum Viable App
 
