@@ -7,16 +7,18 @@ from polll.decorators import requires_auth
 # Import result handlers
 import polll.results as result
 
+
 # Landing page for advertising to potential users
 @current_app.route("/")
 def index():
     return render_template("index.html")
 
 
-# UI dev endpoint 
+# UI dev endpoint
 @current_app.route("/ui")
 def ui():
     return render_template("ui.html")
+
 
 # Main app page for answering polls
 @current_app.route("/home")
@@ -27,11 +29,11 @@ def home():
     polls = db.session.execute(db.select(Poll)).scalars().all()
 
     # Render the template
-    return render_template("home.html", user = current_user, polls = polls)
+    return render_template("home.html", user=current_user, polls=polls)
 
 
 # HTTP endpoint for responding to polls
-@current_app.route("/home/respond/<poll_id>", methods = ["GET", "POST"])
+@current_app.route("/home/respond/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def respond(poll_id):
 
@@ -54,8 +56,8 @@ def respond(poll_id):
     return redirect(url_for("home"))
 
 
-# HTTP endpoint for refreshing the results 
-@current_app.route("/home/results/<poll_id>", methods = ["GET", "POST"])
+# HTTP endpoint for refreshing the results
+@current_app.route("/home/results/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def results(poll_id):
 
@@ -84,23 +86,23 @@ def results(poll_id):
 def admin():
     polls = db.session.execute(db.select(Poll)).scalars().all()
     responses = db.session.execute(db.select(Response)).scalars().all()
-    return render_template("admin.html", polls = polls, responses = responses)
+    return render_template("admin.html", polls=polls, responses=responses)
 
 
 @current_app.route("/admin/createpoll")
 @requires_auth
 def create_poll():
     poll = Poll(
-        user = current_user,
-        question = '', 
-        poll_type = request.args.get("poll_type"), 
-        reveals = 0,
-        reports = 0,
+        user=current_user,
+        question='',
+        poll_type=request.args.get("poll_type"),
+        reveals=0,
+        reports=0,
     )
 
     db.session.add(poll)
     db.session.commit()
-    return render_template("admin/poll-active.html", poll = poll)
+    return render_template("admin/poll-active.html", poll=poll)
 
 
 @current_app.route("/admin/deletepoll/<poll_id>")
@@ -117,7 +119,7 @@ def delete_poll(poll_id):
 @requires_auth
 def edit_poll(poll_id):
     poll = Poll.query.get(poll_id)
-    return render_template("admin/poll-active.html", poll = poll)
+    return render_template("admin/poll-active.html", poll=poll)
 
 
 @current_app.route("/admin/savepoll/<poll_id>")
@@ -136,18 +138,18 @@ def save_poll(poll_id):
             continue
 
     db.session.commit()
-    return render_template("admin/poll-inactive.html", poll = poll)
+    return render_template("admin/poll-inactive.html", poll=poll)
 
 
 @current_app.route("/admin/addanswer/<poll_id>")
 @requires_auth
 def add_answer(poll_id):
     answer_text = request.args.get("answer_text")
-    answer = PollAnswer(answer = answer_text, poll_id = poll_id)
+    answer = PollAnswer(answer=answer_text, poll_id=poll_id)
     db.session.add(answer)
     db.session.commit()
     poll = Poll.query.get(poll_id)
-    return render_template("admin/poll-active-list.html", poll = poll)
+    return render_template("admin/poll-active-list.html", poll=poll)
 
 
 @current_app.route("/admin/deleteanswer/<answer_id>")
@@ -156,4 +158,3 @@ def delete_answer(answer_id):
     PollAnswer.query.filter(PollAnswer.id == answer_id).delete()
     db.session.commit()
     return ""
-
