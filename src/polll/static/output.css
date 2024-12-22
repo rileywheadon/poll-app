@@ -570,12 +570,24 @@ video {
   position: static;
 }
 
+.fixed {
+  position: fixed;
+}
+
+.z-10 {
+  z-index: 10;
+}
+
 .m-2 {
   margin: 0.5rem;
 }
 
 .m-4 {
   margin: 1rem;
+}
+
+.m-auto {
+  margin: auto;
 }
 
 .mx-2 {
@@ -642,6 +654,18 @@ video {
   margin-top: 3rem;
 }
 
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
+}
+
+.mr-4 {
+  margin-right: 1rem;
+}
+
 .block {
   display: block;
 }
@@ -695,6 +719,18 @@ video {
   height: 100dvh;
 }
 
+.h-96 {
+  height: 24rem;
+}
+
+.h-4\/6 {
+  height: 66.666667%;
+}
+
+.h-2\/3 {
+  height: 66.666667%;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -746,6 +782,22 @@ video {
 
 .w-screen {
   width: 100vw;
+}
+
+.w-96 {
+  width: 24rem;
+}
+
+.w-4\/6 {
+  width: 66.666667%;
+}
+
+.w-2\/3 {
+  width: 66.666667%;
+}
+
+.w-10 {
+  width: 2.5rem;
 }
 
 .flex-shrink {
@@ -962,6 +1014,11 @@ video {
   background-color: rgb(191 97 106 / var(--tw-bg-opacity, 1));
 }
 
+.bg-nord-3 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(76 86 106 / var(--tw-bg-opacity, 1));
+}
+
 .bg-\[url\(\'assets\/background-3-2\.png\'\)\] {
   background-image: url('assets/background-3-2.png');
 }
@@ -1051,6 +1108,11 @@ video {
   padding-right: 0.25rem;
 }
 
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
 .pb-0 {
   padding-bottom: 0px;
 }
@@ -1079,6 +1141,10 @@ video {
   vertical-align: top;
 }
 
+.align-middle {
+  vertical-align: middle;
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1097,6 +1163,11 @@ video {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 
 .font-bold {
@@ -1156,6 +1227,15 @@ video {
   color: rgb(67 76 94 / var(--tw-text-opacity, 1));
 }
 
+.text-nord-6 {
+  --tw-text-opacity: 1;
+  color: rgb(236 239 244 / var(--tw-text-opacity, 1));
+}
+
+.underline {
+  text-decoration-line: underline;
+}
+
 .accent-nord-4 {
   accent-color: #D8DEE9;
 }
@@ -1197,6 +1277,18 @@ video {
 
 .backdrop-blur-\[100px\] {
   --tw-backdrop-blur: blur(100px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+
+.backdrop-blur-md {
+  --tw-backdrop-blur: blur(12px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+}
+
+.backdrop-blur-sm {
+  --tw-backdrop-blur: blur(4px);
   -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
@@ -1255,6 +1347,11 @@ video {
 .dark\:border-nord-5:where(.dark, .dark *) {
   --tw-border-opacity: 1;
   border-color: rgb(229 233 240 / var(--tw-border-opacity, 1));
+}
+
+.dark\:border-nord-2:where(.dark, .dark *) {
+  --tw-border-opacity: 1;
+  border-color: rgb(67 76 94 / var(--tw-border-opacity, 1));
 }
 
 .dark\:bg-nord-0:where(.dark, .dark *) {

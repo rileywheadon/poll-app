@@ -6,6 +6,9 @@
 
 {% block body %}
 
+<!-- Settings modal (hidden by default) -->
+{% include "settings.html" %}
+
 <!-- Background -->
 <div class="w-full h-full bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
 
@@ -16,15 +19,36 @@
     <a href="/">
       <img class="w-36 p-6" src="../static/assets/logo-name2.svg">
     </a>
+    
+    <!-- Settings menu -->
+    <div class="ml-auto text-xl px-2 mr-4">
+      <p>
+        Hello, 
+        <a class="underline" onclick="open_settings()">{{ user.username }}</a>
+        !
+      </p>
+    </div>
 
-    <!-- light/dark mode toggle -->
-    <button class="ml-auto px-2" onclick="toggleColourScheme()">
+    <!-- Light/dark mode toggle -->
+    <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 mr-4 flex justify-center items-center" onclick="toggleColourScheme()">
       <i id="colour-icon" class="fas fa-moon text-2xl"></i>
     </button>
 
+    <!-- Poll history button -->
+    <a class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+       href="">
+      History
+    </a>
+
+    <!-- Create poll button -->
+    <a class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+       href="">
+      Create
+    </a>
+
 
     <!-- Log Out button -->
-    <a class="bg-nord-8 text-nord-0  dark:bg-nord-4 dark:text-nord-0 rounded-lg w-32 h-10 mx-4 flex justify-center items-center" 
+    <a class="bg-nord-8 text-nord-0 dark:bg-nord-7 dark:text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
        href="{{ url_for('auth.logout') }}">
       Log Out
     </a>
@@ -35,10 +59,7 @@
 
   <!-- Left Sidebar -->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-      <div class="text-xl leading-8">
-        <p>Hello, {{ user.username }}</p>
-        <p>{{ user.email }}</p>
-      </div>
+
   </div>
 
   <!-- Main Column (Polls) -->
@@ -70,9 +91,7 @@
   
   <!--Right Sidebar-->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-    <div class="text-xl font-display pb-8">
-      <h1>TBD</h1>
-    </div>
+
   </div>
 
 </div>

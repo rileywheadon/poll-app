@@ -77,12 +77,11 @@
 
 ### Styling and Cross-Device Support
 
-- [ ] Switch to the Nord colour palette
-- [ ] Add light/dark mode toggle
+- [x] Switch to the Nord colour palette
+- [x] Add light/dark mode toggle
 - [ ] Encode logo in SVG/HTML
 - [ ] Ensure pages are responsive to changes in window size
-- [ ] Ensure there are no scroll overflow bugs
-- [ ] Phase 2: Minimum Viable Product
+- [x] Ensure there are no scroll overflow bugs
 
 ## 2: Launch
 
