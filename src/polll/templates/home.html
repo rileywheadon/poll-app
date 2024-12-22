@@ -6,13 +6,25 @@
 
 {% block body %}
 
-<!--background-->
-<div class="w-full h-full bg-[#191c21]">
+<!-- Background -->
+<div class="w-full h-full bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
 
-  <!-- Header with Logo -->
-  <div class="w-100% flex items-center border-b border-zinc-400 bg-[#212327]">
-    <img class="w-36 p-4" src="../static/assets/logo-name2.svg">
-    <a class="bg-zinc-300 rounded-lg w-32 h-10 mx-4 ml-auto flex justify-center items-center" 
+  <!-- Header -->
+<div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-3 dark:border-nord-4 dark:bg-nord-0">
+
+    <!-- Logo image, also redirects to home -->
+    <a href="/">
+      <img class="w-36 p-6" src="../static/assets/logo-name2.svg">
+    </a>
+
+    <!-- light/dark mode toggle -->
+    <button class="ml-auto px-2" onclick="toggleColourScheme()">
+      <i id="colour-icon" class="fas fa-moon text-2xl"></i>
+    </button>
+
+
+    <!-- Log Out button -->
+    <a class="bg-nord-8 text-nord-0  dark:bg-nord-4 dark:text-nord-0 rounded-lg w-32 h-10 mx-4 flex justify-center items-center" 
        href="{{ url_for('auth.logout') }}">
       Log Out
     </a>
@@ -23,7 +35,7 @@
 
   <!-- Left Sidebar -->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-      <div class="text-zinc-200 text-xl leading-8">
+      <div class="text-xl leading-8">
         <p>Hello, {{ user.username }}</p>
         <p>{{ user.email }}</p>
       </div>
@@ -58,7 +70,7 @@
   
   <!--Right Sidebar-->
   <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-    <div class="text-xl font-display font-light text-zinc-200 pb-8">
+    <div class="text-xl font-display pb-8">
       <h1>TBD</h1>
     </div>
   </div>

@@ -6,10 +6,10 @@
 
   {% for tier in ["S", "A", "B", "C", "D", "F"] %}
     <div class="flex flex-row h-16">
-      <div class="w-16 border border-black mt-[-1px] ml-[-1px] flex items-center justify-center">
+      <div class="w-16 border border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] flex items-center justify-center">
         <span class="text-2xl">{{ tier }}</span>
       </div>
-      <div class="border border-black mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}"
+      <div class="border border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}"
            ondragstart="tierDragStart(event)"
            ondragenter="tierDragEnter(event)" 
            ondragover="cancelDefault(event)" 
@@ -23,7 +23,7 @@
 
 <div class="flex flex-row h-16 w-min my-4">
   {% for answer in poll.answers %}
-    <div class="bg-zinc-700 rounded-xl h-full w-32 flex items-center justify-center"
+    <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full w-32 flex items-center justify-center"
          draggable="true"
          ondragstart="tierDragStart(event)"
          ondragenter="cancelDefault(event)" 
