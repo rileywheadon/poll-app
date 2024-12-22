@@ -9,7 +9,9 @@ These are development items that I think someone other than me (Riley) could do.
 
 | Difficulty | Task                                                     |
 | ---------- | -------------------------------------------------------- |
+|            | Assorted UI improvements (i.e. hover effects)            |
 | 3/10       | Add light-mode compatible logo. See (1).                 |
+| 3/10       | Improving the Poll UI. See (4).                          |
 | 4/10       | Test compatibility with different screen sizes. See (2). |
 | 7/10       | Prototype in-house results visualization. See (3).       |
 
@@ -18,6 +20,8 @@ These are development items that I think someone other than me (Riley) could do.
 **2**: This is trickier than it sounds. You need to ensure the app works properly on screens of all different sizes. Check the Tailwind docs for instructions on how to implement CSS breakpoints, which you will need to learn.
 
 **3**: Start with the simplest poll (choose one). You will have to create a new Jinja2 template that displays the results for choose one. Instead of making calls to plotly from Python, send the data to the client and use Javascript to render a homemade bar chart. I would prefer if we avoided Javascript plotting libraries and did everything by hand, as I think this would be the most flexible implementation. However, I am open to other ideas. If you are interested in attempting this, please let me know and I will give you more information.
+
+**4**: In particular we need to add a "share" link (use the FontAwesome icons) and a "created by" line in the bottom right corner of every poll. You do not have to actually implement these features, just write the HTML and style it.
 
 ## 1: Minimum Viable App
 
