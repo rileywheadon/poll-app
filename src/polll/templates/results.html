@@ -5,7 +5,7 @@
   <!-- Include a plot if one was provided -->
   <div class="reset-tw chart" id="graph-{{ poll.id }}">
     <script>
-      var graph = {{ plot }};
+      var graph = {{ plot | safe }};
       Plotly.react("graph-{{ poll.id }}", graph);
     </script>
   </div>
