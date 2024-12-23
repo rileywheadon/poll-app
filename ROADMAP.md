@@ -7,16 +7,16 @@
 
 These are development items that I think someone other than me (Riley) could do. If you are going to take on one of these, please create a branch, and then submit a pull request when you are finished.
 
-| ID  | Difficulty | Task                                                     |
-| --- | ---------- | -------------------------------------------------------- |
-|     |            | Assorted UI improvements (i.e. hover effects)            |
-|     |            | Test UI with unusually long questions/answers. Hover?    |
-|     | 4/10       | Make tier list expand when line is full.                 |
-|     | 2/10       | Replace the choose one/many interface with boxes. Hover? |
-| 1   | 3/10       | Add light-mode compatible logo. See (1).                 |
-| 4   | 3/10       | Improving the Poll UI. See (4).                          |
-| 2   | 4/10       | Test compatibility with different screen sizes. See (2). |
-| 3   | 7/10       | Prototype in-house results visualization. See (3).       |
+| ID | Difficulty | Task                                                     |
+|----| ---------- | -------------------------------------------------------- |
+| 1  |            | Assorted UI improvements (i.e. hover effects)            |
+| 2  |            | Test UI with unusually long questions/answers. Hover?    |
+| 3  | 4/10       | Make tier list expand when line is full.                 |
+| 4  | 2/10       | Replace the choose one/many interface with boxes. Hover? |
+| 5  | 3/10       | Add light-mode compatible logo. See (1).                 |
+| 6  | 3/10       | Improving the Poll UI. See (4).                          |
+| 7  | 4/10       | Test compatibility with different screen sizes. See (2). |
+| 8  | 7/10       | Prototype in-house results visualization. See (3).       |
 
 **1**: In addition to an SVG file containing the new logo, this pull request may also implement switching between logos depending on the `localStorage.theme` variable. This variable is updated when the user toggles light/dark mode. In the appropriate template file, add an `id` to the logo element. Then in `dark-mode.js`, update the event listener so that on page load, the correct logo gets displayed. Additionally, you will need to update the `setLightMode()` and `setDarkMode()` functions so that the logo changes when somebody clicks the light/dark mode toggle.
 
