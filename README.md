@@ -1,5 +1,12 @@
 # polll
 
+## Subscriptions
+
+| Subscription           | Expiry     | Price    |
+| ---------------------- | ---------- | -------- |
+| [polll.org](polll.org) | 11/24/2025 | $10/year |
+| admin@polll.org        | 02/23/2025 | $2/month |
+
 ## Technology Stack
 
 [Hatch](https://hatch.pypa.io/1.9/) for project management (i.e. publishing, versioning, etc.)
@@ -76,3 +83,7 @@ If you would like to contribute code to the project, you must have a working und
 - How do I commit my changes to a branch and then create a pull request?
 
 Please write clear commit messages in the present tense (i.e. "Update response UI" instead of "Updated response UI"). Additionally, try to make a commit every time you make a signfiicant change. I am happy to get involved with the trickier parts of `git` (i.e. merge conflicts), but you should be able to handle most stuff (i.e. pulling changes, committing to a branch, opening a pull request) on your own.
+
+## Mail Setup
+
+See the instructions [here](https://www.namecheap.com/support/knowledgebase/article.aspx/9188/2175/gmail-fetcher-setup-for-namecheap-private-email/) to link the company email to your personal gmail account. Our company email address is admin@polll.org. Please set your name to "Admin" to retain anonymity. When choosing a port to send from, use SSL on port 465. Contact me for the account password.
