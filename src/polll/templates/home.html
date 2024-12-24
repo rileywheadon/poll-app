@@ -10,7 +10,7 @@
 {% include "settings.html" %}
 
 <!-- Background -->
-<div class="w-full h-full bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
+<div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
 
   <!-- Header -->
 <div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-3 dark:border-nord-4 dark:bg-nord-0">
@@ -34,21 +34,8 @@
       <i id="colour-icon" class="fas fa-moon text-2xl"></i>
     </button>
 
-    <!-- Poll history button -->
-    <a class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-       href="">
-      History
-    </a>
-
-    <!-- Create poll button -->
-    <a class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-       href="">
-      Create
-    </a>
-
-
     <!-- Log Out button -->
-    <a class="bg-nord-8 text-nord-0 dark:bg-nord-7 dark:text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+    <a class="bg-nord-8 text-nord-0 dark:bg-nord-10 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
        href="{{ url_for('auth.logout') }}">
       Log Out
     </a>
@@ -63,30 +50,10 @@
   </div>
 
   <!-- Main Column (Polls) -->
-  <main role="main" class="w-full flex-grow pt-1 px-3">
-    {% for poll in polls %}
+  <main id="home-content" role="main" class="w-full flex-grow pt-1 px-3">
+    
+    {% include "home/menu.html" %}
 
-      <!-- NOTE: After adding the admin account, users should only see the poll OR results -->
-
-      <!-- Display the poll, including the corret answer display template -->
-      {% if poll.poll_type.name == "CHOOSE_ONE" %}
-        {% include "polls/choose-one.html" %}
-      {% elif poll.poll_type.name == "CHOOSE_MANY" %}
-        {% include "polls/choose-many.html" %}
-      {% elif poll.poll_type.name == "NUMERIC_STAR" %}
-        {% include "polls/numeric-star.html" %}
-      {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
-        {% include "polls/numeric-scale.html" %}
-      {% elif poll.poll_type.name == "RANKED_POLL" %}
-        {% include "polls/ranked-poll.html" %}
-      {% elif poll.poll_type.name == "TIER_LIST" %}
-        {% include "polls/tier-list.html" %}
-      {% endif %}
-
-      <!-- Display the results, including the correct results display template -->
-      {% include "results.html" %}
-
-    {% endfor %}
   </main>
   
   <!--Right Sidebar-->

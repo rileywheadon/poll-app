@@ -7,24 +7,24 @@
 
 These are development items that I think someone other than me (Riley) could do. If you are going to take on one of these, please create a branch, and then submit a pull request when you are finished.
 
-| ID | Difficulty | Task                                                     |
-|----| ---------- | -------------------------------------------------------- |
-| 1  |            | Assorted UI improvements (i.e. hover effects)            |
-| 2  |            | Test UI with unusually long questions/answers. Hover?    |
-| 3  | 4/10       | Make tier list expand when line is full.                 |
-| 4  | 2/10       | Replace the choose one/many interface with boxes. Hover? |
-| 5  | 3/10       | Add light-mode compatible logo. See (1).                 |
-| 6  | 3/10       | Improving the Poll UI. See (4).                          |
-| 7  | 4/10       | Test compatibility with different screen sizes. See (2). |
-| 8  | 7/10       | Prototype in-house results visualization. See (3).       |
+| ID  | Difficulty | Task                                                     |
+| --- | ---------- | -------------------------------------------------------- |
+| 1   |            | Assorted UI improvements (i.e. hover effects)            |
+| 2   |            | Test UI with unusually long questions/answers. Hover?    |
+| 3   | 4/10       | Make tier list expand when line is full.                 |
+| 4   | 2/10       | Replace the choose one/many interface with boxes. Hover? |
+| 5   | 3/10       | Add light-mode compatible logo.                          |
+| 6   | 3/10       | Improving the Poll UI.                                   |
+| 7   | 4/10       | Test compatibility with different screen sizes.          |
+| 8   | 7/10       | Prototype in-house results visualization.                |
 
-**1**: In addition to an SVG file containing the new logo, this pull request may also implement switching between logos depending on the `localStorage.theme` variable. This variable is updated when the user toggles light/dark mode. In the appropriate template file, add an `id` to the logo element. Then in `dark-mode.js`, update the event listener so that on page load, the correct logo gets displayed. Additionally, you will need to update the `setLightMode()` and `setDarkMode()` functions so that the logo changes when somebody clicks the light/dark mode toggle.
+**5**: In addition to an SVG file containing the new logo, this pull request may also implement switching between logos depending on the `localStorage.theme` variable. This variable is updated when the user toggles light/dark mode. In the appropriate template file, add an `id` to the logo element. Then in `dark-mode.js`, update the event listener so that on page load, the correct logo gets displayed. Additionally, you will need to update the `setLightMode()` and `setDarkMode()` functions so that the logo changes when somebody clicks the light/dark mode toggle.
 
-**2**: This is trickier than it sounds. You need to ensure the app works properly on screens of all different sizes. Check the Tailwind docs for instructions on how to implement CSS breakpoints, which you will need to learn.
+**6**: In particular we need to add a "share" link (use the FontAwesome icons) and a "created by" line in the bottom right corner of every poll. You do not have to actually implement these features, just write the HTML and style it.
 
-**3**: Start with the simplest poll (choose one). You will have to create a new Jinja2 template that displays the results for choose one. Instead of making calls to plotly from Python, send the data to the client and use Javascript to render a homemade bar chart. I would prefer if we avoided Javascript plotting libraries and did everything by hand, as I think this would be the most flexible implementation. However, I am open to other ideas. If you are interested in attempting this, please let me know and I will give you more information.
+**7**: This is trickier than it sounds. You need to ensure the app works properly on screens of all different sizes. Check the Tailwind docs for instructions on how to implement CSS breakpoints, which you will need to learn.
 
-**4**: In particular we need to add a "share" link (use the FontAwesome icons) and a "created by" line in the bottom right corner of every poll. You do not have to actually implement these features, just write the HTML and style it.
+**8**: Start with the simplest poll (choose one). You will have to create a new Jinja2 template that displays the results for choose one. Instead of making calls to plotly from Python, send the data to the client and use Javascript to render a homemade bar chart. I would prefer if we avoided Javascript plotting libraries and did everything by hand, as I think this would be the most flexible implementation. However, I am open to other ideas. If you are interested in attempting this, please let me know and I will give you more information.
 
 ## 1: Minimum Viable App
 
@@ -58,7 +58,7 @@ These are development items that I think someone other than me (Riley) could do.
 
 ### Administrator
 
-- [ ] Create admin@polll.org email address
+- [x] Create admin@polll.org email address
 - [ ] The administrator should have the following privileges:
 - [ ] Respond multiple times to the same poll
 - [ ] Edit/Delete any poll on the website
