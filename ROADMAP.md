@@ -60,10 +60,11 @@ These are development items that I think someone other than me (Riley) could do.
 
 - [x] Create admin@polll.org email address
 - [ ] The administrator should have the following privileges:
-- [ ] Respond multiple times to the same poll
-- [ ] Edit/Delete any poll on the website
-- [ ] View results for all polls
-- [ ] Sort polls
+  - Respond multiple times to the same poll
+  - Edit/Delete any poll on the website
+  - Remove people's responses
+  - View results for all polls
+  - Query users/polls/responses/etc.
 
 ### Poll Creation
 
@@ -92,9 +93,10 @@ These are development items that I think someone other than me (Riley) could do.
 ### Custom Results Interface
 
 - [ ] Generate charts using raw HTML/JS using server-side data
-- [ ] Customize for each poll type
-- [ ] Iterate on the design, build once
-- [ ] This will be tedious and time consuming
+  - Customize for each poll type
+  - Iterate on the design, build once
+  - This will be tedious and time consuming
+  - Remove bloat (i.e. numpy, plotly) afterwards
 
 ### Styling and Cross-Device Support
 
