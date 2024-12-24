@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, request, current_app, sess
 from flask_login import current_user
 from polll.models import *
 import polll.responses as response
-from polll.decorators import requires_auth
+from polll.decorators import requires_auth, requires_admin
 
 # Import result handlers
 import polll.results as result
@@ -112,7 +112,7 @@ def results(poll_id):
 
 # Admin endpoint for getting to the editor and responses
 @current_app.route("/admin")
-@requires_auth
+@requires_admin
 def admin():
     polls = db.session.execute(db.select(Poll)).scalars().all()
     responses = db.session.execute(db.select(Response)).scalars().all()

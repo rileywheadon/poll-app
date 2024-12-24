@@ -7,36 +7,80 @@ Polll - Admin
 {% block body %}
 <!--<div class="w-screen h-screen bg-gradient-to-tr from-zinc-900 via-[#002333] to-zinc-900">-->
 
-<div class="w-100%">
-  <img class="w-36 p-4" src="../static/assets/logo-name2.svg">
+<!-- Background -->
+<div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
+
+  <!-- Header -->
+  <div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-3 dark:border-nord-4 dark:bg-nord-0">
+
+    <!-- Logo image, also redirects to home -->
+    <a href="/">
+      <img class="w-36 p-6" src="../static/assets/logo-name2.svg">
+    </a>
+    
+    <!-- Light/dark mode toggle -->
+    <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 ml-auto mr-4 flex justify-center items-center" onclick="toggleColourScheme()">
+      <i id="colour-icon" class="fas fa-moon text-2xl"></i>
+    </button>
+    
+      <a class="bg-nord-15 text-nord-0 dark:bg-nord-15 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+         href="{{ url_for('home') }}">
+        Home
+      </a>
+
+    <!-- Log Out button -->
+    <a class="bg-nord-8 text-nord-0 dark:bg-nord-10 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+       href="{{ url_for('auth.logout') }}">
+      Log Out
+    </a>
+  </div>
+
+  <!-- Document Body -->
+  <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+
+  <!-- Left Sidebar -->
+  <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
+
+  </div>
+
+  <!-- Main Column -->
+  <main id="home-content" role="main" class="w-full flex-grow pt-1 px-3">
+ 
+    <h1 class="text-xl font-bold p-2">Manage Polls</h1>
+
+    <hr>
+
+    <div id="poll_list">
+    {% for poll in polls %}
+      {% include "admin/poll-inactive.html" %}
+    {% endfor %}
+    </div>
+
+    <select class="text-nord-0 p-2 rounded-lg m-2" 
+            name="poll_type" 
+            id="poll_type">
+      <option value="CHOOSE_ONE">Choose One</option>
+      <option value="CHOOSE_MANY">Choose Many</option>
+      <option value="NUMERIC_STAR">Stars (1-5)</option>
+      <option value="NUMERIC_SCALE">Scale (1-10)</option>
+      <option value="RANKED_POLL">Ranked Poll</option>
+      <option value="TIER_LIST">Tier List</option>
+    </select>
+
+    <button class="bg-nord-11 rounded-lg w-48 h-8 m-2"
+            hx-get="{{ url_for('create_poll') }}"
+            hx-include="previous select"
+            hx-target="#poll_list"
+            hx-swap="beforeend">
+      <b>Create Poll</b>
+    </button>
+
+  </main>
+  
+  <!--Right Sidebar-->
+  <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
+
+  </div>
+
 </div>
-
-<h1 class="text-xl p-2">Manage Polls</h1>
-<h2 class="text-l p-2">Active Polls</h2>
-<hr>
-
-<div id="poll_list">
-{% for poll in polls %}
-  {% include "admin/poll-inactive.html" %}
-{% endfor %}
-</div>
-
-<select class="p-2 rounded-lg m-2" name="poll_type" id="poll_type">
-  <option value="CHOOSE_ONE">Choose One</option>
-  <option value="CHOOSE_MANY">Choose Many</option>
-  <option value="NUMERIC_STAR">Stars (1-5)</option>
-  <option value="NUMERIC_SCALE">Scale (1-10)</option>
-  <option value="RANKED_POLL">Ranked Poll</option>
-  <option value="TIER_LIST">Tier List</option>
-</select>
-<button class="bg-blue-400 rounded-lg w-48 h-8 m-2"
-        hx-get="{{ url_for('create_poll') }}"
-        hx-include="previous select"
-        hx-target="#poll_list"
-        hx-swap="beforeend">
-  <b>Create Poll</b>
-</button>
-
-<h1 class="text-l p-2">View Responses</h1>
-
 {% endblock %}

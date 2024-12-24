@@ -20,6 +20,7 @@
       <img class="w-36 p-6" src="../static/assets/logo-name2.svg">
     </a>
     
+
     <!-- Settings menu -->
     <div class="ml-auto text-xl px-2 mr-4">
       <p>
@@ -33,6 +34,14 @@
     <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 mr-4 flex justify-center items-center" onclick="toggleColourScheme()">
       <i id="colour-icon" class="fas fa-moon text-2xl"></i>
     </button>
+    
+    <!-- Admin panel, if loged in as administrator --> 
+    {% if current_user.email == "admin@polll.org" %}
+      <a class="bg-nord-15 text-nord-0 dark:bg-nord-15 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+         href="{{ url_for('admin') }}">
+        Admin
+      </a>
+    {% endif %}
 
     <!-- Log Out button -->
     <a class="bg-nord-8 text-nord-0 dark:bg-nord-10 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
