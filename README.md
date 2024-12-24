@@ -86,4 +86,4 @@ Please write clear commit messages in the present tense (i.e. "Update response U
 
 ## Mail Setup
 
-See the instructions [here](https://www.namecheap.com/support/knowledgebase/article.aspx/9188/2175/gmail-fetcher-setup-for-namecheap-private-email/) to link the company email to your personal gmail account. Our company email address is admin@polll.org. Please set your name to "Admin" to retain anonymity. When choosing a port to send from, use SSL on port 465. Contact me for the account password.
+See the instructions [here](https://www.namecheap.com/support/knowledgebase/article.aspx/9188/2175/gmail-fetcher-setup-for-namecheap-private-email/) to link the company email to your personal gmail account. Our company email address is admin@polll.org. Please set your name to "Admin" to retain anonymity. When choosing a port to send from, use SSL on port 465. Contact me for the email account password and the development account password (these are not the same).

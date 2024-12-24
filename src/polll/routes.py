@@ -14,22 +14,52 @@ def index():
     return render_template("index.html")
 
 
-# UI dev endpoint
-@current_app.route("/ui")
-def ui():
-    return render_template("ui.html")
-
-
-# Main app page for answering polls
+# Home page (empty)
 @current_app.route("/home")
 @requires_auth
 def home():
+
+    # Render the template
+    return render_template("home.html", user=current_user)
+
+
+# Home page (poll feed)
+@current_app.route("/home/feed")
+@requires_auth
+def feed():
 
    # Query the database to get all polls
     polls = db.session.execute(db.select(Poll)).scalars().all()
 
     # Render the template
-    return render_template("home.html", user=current_user, polls=polls)
+    return render_template("home/feed.html", user=current_user, polls=polls, tab='feed')
+
+
+# Home page (response history)
+@current_app.route("/home/history")
+@requires_auth
+def history():
+
+    # Render the template
+    return render_template("home/history.html", user=current_user, tab='history')
+
+
+# Home page (create poll)
+@current_app.route("/home/create")
+@requires_auth
+def create():
+
+    # Render the template
+    return render_template("home/create.html", user=current_user, tab='create')
+
+
+# Home page (user's polls)
+@current_app.route("/home/mypolls")
+@requires_auth
+def mypolls():
+
+    # Render the template
+    return render_template("home/mypolls.html", user=current_user, tab='mypolls')
 
 
 # HTTP endpoint for responding to polls
