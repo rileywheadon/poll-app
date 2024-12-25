@@ -1,7 +1,7 @@
-src/__pycache__/**
+**/__pycache__/**
+**/.DS_Store
 src/instance/**
 .env
-.DS_store
 .coverage
 .venv/**
 htmlcov/**
