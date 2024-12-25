@@ -24,7 +24,7 @@ Polll - Admin
     </button>
     
       <a class="bg-nord-15 text-nord-0 dark:bg-nord-15 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-         href="{{ url_for('home') }}">
+         href="{{ url_for('poll.home') }}">
         Home
       </a>
 
@@ -45,15 +45,40 @@ Polll - Admin
 
   <!-- Main Column -->
   <main id="home-content" role="main" class="w-full flex-grow pt-1 px-3">
+
+    <h1 class="text-xl font-bold p-2">Manage Users</h1>
+
+    <hr>
+
+    <div class="flex flex-row p-2 mt-4">
+      <select class="text-nord-0 p-2 rounded-lg mr-4 w-32" 
+              name="search_column">
+        <option value="username">Username</option>
+        <option value="email">Email</option>
+      </select>
+
+      <input class="text-nord-0 px-2 rounded-md h-10 grow mr-4"
+             type="text"
+             name="search_value">
+
+      <button class="dark:bg-nord-4 dark:text-nord-0 px-2 rounded-md h-10 w-16"
+              hx-get="{{ url_for('admin.search') }}"
+              hx-include="[name='search_column'], [name='search_value']"
+              hx-target="#search-list"
+              hx-swap="innerHTML">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+
+    <div id="search-list">
+
+    </div>
  
     <h1 class="text-xl font-bold p-2">Manage Polls</h1>
 
     <hr>
 
     <div id="poll_list">
-    {% for poll in polls %}
-      {% include "admin/poll-inactive.html" %}
-    {% endfor %}
     </div>
 
     <select class="text-nord-0 p-2 rounded-lg m-2" 
@@ -68,7 +93,7 @@ Polll - Admin
     </select>
 
     <button class="bg-nord-11 rounded-lg w-48 h-8 m-2"
-            hx-get="{{ url_for('create_poll') }}"
+            hx-get="{{ url_for('admin.createpoll') }}"
             hx-include="previous select"
             hx-target="#poll_list"
             hx-swap="beforeend">

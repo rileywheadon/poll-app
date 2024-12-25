@@ -25,7 +25,7 @@
     <div class="ml-auto text-xl px-2 mr-4">
       <p>
         Hello, 
-        <a class="underline" onclick="open_settings()">{{ user.username }}</a>
+        <a class="underline" onclick="open_settings()">{{ user["username"] }}</a>
         !
       </p>
     </div>
@@ -36,9 +36,9 @@
     </button>
     
     <!-- Admin panel, if loged in as administrator --> 
-    {% if current_user.email == "admin@polll.org" %}
+    {% if user["email"] == "admin@polll.org" %}
       <a class="bg-nord-15 text-nord-0 dark:bg-nord-15 dark:text-nord-6 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-         href="{{ url_for('admin') }}">
+         href="{{ url_for('admin.home') }}">
         Admin
       </a>
     {% endif %}

@@ -1,3 +1,9 @@
+__pycache__/**
 .env
-venv/**
+.DS_store
+.coverage
+.venv/**
 htmlcov/**
+instance/**
+cert.pem
+key.pem
