@@ -1,33 +1,40 @@
 import json
+import os
 from urllib.parse import quote_plus, urlencode
 from os import environ as env
 from flask import Flask, redirect, render_template, session, url_for
-from flask_login import LoginManager
-from flask_migrate import Migrate
 
-def create_app(test = False):
+def create_app(test_config = None):
 
     # Create a new Flask application
-    app = Flask(__name__)
-    app.secret_key = env.get("APP_SECRET_KEY")
-    db_url = "test.db" if test else "app.db"
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_url}"
+    app = Flask(__name__, instance_relative_config=True)
+    app.config.from_mapping(
+        SECRET_KEY = env.get("APP_SECRET_KEY"),
+        DATABASE = os.path.join(app.instance_path, "polll.sqlite")
+    )
 
-    # Link the app to the database
-    from polll.models import db
+    # Load the instance config, if it exists, when not testing
+    if test_config is None:
+        app.config.from_pyfile("config.py", silent=True)
+
+    # Load the test config if passed in
+    else:
+        app.config.update(test_config)
+
+
+    # Ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
+
+
+    # Register the database commands
+    from . import db
     db.init_app(app)
 
-    # Import data models and routes, then initialize the database
-    with app.app_context():
-        from . import routes
-        db.create_all()
-
-    # Enable database migrations
-    if not test: 
-        migrate = Migrate(app, db)
-
-    # Register the application with 0Auth
-    from polll.authentication import oauth
+    # Register the application with Auth0
+    from polll.auth import oauth
     domain = env.get("AUTH0_DOMAIN")
     oauth.init_app(app)
     oauth.register(
@@ -38,8 +45,12 @@ def create_app(test = False):
         server_metadata_url=f'https://{domain}/.well-known/openid-configuration'
     )
 
-    # Register the authentication blueprint and add the login manager
-    from polll.authentication import auth, login_manager
+
+    # Register the authentication, poll, and admin blueprints
+    from polll.auth import auth
+    from polll.poll import poll
+    from polll.admin import admin
     app.register_blueprint(auth)
-    login_manager.init_app(app)
+    app.register_blueprint(poll)
+    app.register_blueprint(admin)
     return app

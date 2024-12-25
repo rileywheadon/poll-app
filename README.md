@@ -13,11 +13,8 @@
 
 [Flask](https://flask.palletsprojects.com/en/stable/) (Python) for handling HTTP requests and reading/writing to the database:
 
-- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/stable/) is an ORM (represents database as Python objects)
-- [Flask-Migrate](https://flask-migrate.readthedocs.io/en/latest/index.html) for updating the database when the schema changes (migrations)
 - [Pytest](https://docs.pytest.org/en/stable/) and [Coverage](https://coverage.readthedocs.io/en/7.6.9/) for testing
-- [Authlib](https://authlib.org/), dotenv, and requests for authentication with [Auth0](https://auth0.com/)
-- [Flask-Login](https://flask-login.readthedocs.io/en/latest/) for handling user sessions
+- [Authlib](https://authlib.org/), [python-dotenv](https://pypi.org/project/python-dotenv/), and [requests](https://docs.python-requests.org/en/latest/index.html) for authentication with [Auth0](https://auth0.com/)
 
 [HTMX](https://htmx.org/) for additional front-end functionality (more nuanced HTTP requests/responses)
 

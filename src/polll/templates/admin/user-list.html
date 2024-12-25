@@ -1,0 +1,21 @@
+<div class="grid grid-cols-1 border-t border-nord-4 border-collapse my-2">
+{% for user in users %}
+<div class="border-x border-b border-nord-4 p-4">
+
+  <div class="flex flex-row">
+    <p>
+      <span class="font-bold">{{ user.username }}</span> 
+      ({{ user.email }})
+    </p>
+    <button class="ml-auto" onclick="toggle_user_information({{ user.id }})">
+      <i class="fa fa-angle-right" id="user-toggle-{{ user.id }}"></i>
+    </button>
+  </div>
+
+  <div class="hidden" id="user-info-{{ user.id }}">
+    Account Created: {{ user.account_created }}
+  </div>
+
+</div>
+{% endfor %}
+</div>
