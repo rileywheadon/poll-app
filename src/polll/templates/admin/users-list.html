@@ -1,0 +1,60 @@
+<div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-4 border-collapse my-2">
+{% for user in users %}
+<div class="border-x border-b border-nord-0 dark:border-nord-4 p-4">
+
+  <div class="flex flex-row" onclick="toggle_user_information({{ user.id }})">
+    <p class="text-l">
+      <span class="font-bold">{{ user.username }}</span> 
+      ({{ user.email }})
+    </p>
+    <button class="ml-auto">
+      <i class="fa fa-angle-right" id="user-toggle-{{ user.id }}"></i>
+    </button>
+  </div>
+
+  <div class="hidden" id="user-info-{{ user.id }}">
+    <table class="border-collapse my-4">
+      <tbody>
+        <tr>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            Account Created
+          </td>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            {{ user.account_created }}
+          </td>
+        </tr>
+        <tr>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            Last Poll Created
+          </td>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            {{ user.last_poll_created }}
+          </td>
+        </tr>
+        <tr>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            On Poll Cooldown
+          </td>
+          <td id="user-cooldown-{{ user.id }}"
+              class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            {{ user.on_cooldown }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="flex flex-row">
+      <input class="hidden" name="user_id" value="{{ user.id }}">
+      <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-4 h-8 rounded-md"
+          onclick="reset_poll_cooldown({{ user.id }})"
+          hx-get="{{ url_for('admin.resetcooldown') }}"
+          hx-include="previous input"
+          hx-swap="none">
+        Reset Poll Cooldown<i class="fa fa-refresh ml-2"></i>
+      </button>
+    </div>
+  </div>
+
+</div>
+{% endfor %}
+</div>

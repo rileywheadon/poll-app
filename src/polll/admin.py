@@ -1,96 +1,80 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session
+from datetime import datetime
+
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
+from polll.models import on_cooldown 
 
-admin = Blueprint('admin', __name__, template_folder = 'templates')
+admin = Blueprint('admin', __name__, template_folder = 'templates/admin')
 
 # Admin endpoint for getting to the editor and responses
 @admin.route("/admin")
 @requires_admin
 def home():
-    return render_template("admin.html")
+    return render_template("admin.html", user=session["user"], admin=True)
 
 
-@admin.route("/admin/search")
+@admin.route("/admin/users")
+@requires_admin
+def users():
+    return render_template("users.html", tab="users") 
+
+@admin.route("/admin/users/search")
 @requires_admin
 def search():
 
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Get the headers from the HTTP request
     col = request.args.get("search_column")
     val = "%{}%".format(request.args.get("search_value"))
 
-    db = get_db()
-    cur = db.cursor()
+    # Query the database for all users matching the search
     res = cur.execute("SELECT * FROM user WHERE ? LIKE ?", (col, val))
     users = [dict(row) for row in res.fetchall()]
-    return render_template("admin/user-list.html", users=users)
+
+    # Update the cooldown state for each user
+    for user in users:
+        user["on_cooldown"] = on_cooldown(user)
+
+    return render_template("users-list.html", users=users)
 
 
-@admin.route("/admin/createpoll")
+@admin.route("/admin/users/resetcooldown")
 @requires_admin
-def createpoll():
-    poll = Poll(
-        user=current_user,
-        question='',
-        poll_type=request.args.get("poll_type"),
-        reveals=0,
-        reports=0,
-    )
+def resetcooldown():
 
-    db.session.add(poll)
-    db.session.commit()
-    return render_template("admin/poll-active.html", poll=poll)
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
 
+    # Get the user ID from the HTTP request
+    user_id = request.args.get("user_id")
 
-@admin.route("/admin/deletepoll/<poll_id>")
-@requires_admin
-def delete_poll(poll_id):
-    Poll.query.filter(Poll.id == poll_id).delete()
-    PollAnswer.query.filter(PollAnswer.poll_id == poll_id).delete()
-    Response.query.filter(Response.poll_id == poll_id).delete()
-    db.session.commit()
+    # Update the user's next_poll_allowed value
+    query = """
+    UPDATE user 
+    SET next_poll_allowed = ?
+    WHERE id = ?
+    """
+    now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    res = cur.execute(query, (now, user_id))
+    db.commit()
+
+    # UI Changes are handled in Javascript
     return ""
 
 
-@admin.route("/admin/editpoll/<poll_id>")
+
+@admin.route("/admin/polls")
 @requires_admin
-def edit_poll(poll_id):
-    poll = Poll.query.get(poll_id)
-    return render_template("admin/poll-active.html", poll=poll)
+def polls():
+    return render_template("polls.html", tab="polls") 
 
 
-@admin.route("/admin/savepoll/<poll_id>")
+@admin.route("/admin/reports")
 @requires_admin
-def save_poll(poll_id):
-    poll = Poll.query.get(poll_id)
-    poll.question = request.args.get("poll_text")
-
-    for key, value in request.args.items():
-        answer_id = key.split("_")[1]
-
-        try:
-            answer = PollAnswer.query.get(int(answer_id))
-            answer.answer = request.args.get(key)
-        except:
-            continue
-
-    db.session.commit()
-    return render_template("admin/poll-inactive.html", poll=poll)
-
-
-@admin.route("/admin/addanswer/<poll_id>")
-@requires_admin
-def add_answer(poll_id):
-    answer_text = request.args.get("answer_text")
-    answer = PollAnswer(answer=answer_text, poll_id=poll_id)
-    db.session.add(answer)
-    db.session.commit()
-    poll = Poll.query.get(poll_id)
-    return render_template("admin/poll-active-list.html", poll=poll)
-
-
-@admin.route("/admin/deleteanswer/<answer_id>")
-@requires_admin
-def delete_answer(answer_id):
-    PollAnswer.query.filter(PollAnswer.id == answer_id).delete()
-    db.session.commit()
-    return ""
+def reports():
+    return render_template("reports.html", tab="reports") 

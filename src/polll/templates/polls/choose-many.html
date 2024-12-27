@@ -3,7 +3,7 @@
 {% block poll_content %}
 
 {% for answer in poll.answers %}
-  <input type="checkbox" name="answer_id" value="{{ answer.id }}">
+  <input type="checkbox" class="mb-2" name="answer_id" value="{{ answer.id }}">
     {{ answer.answer }}
   </input>
   <br>
