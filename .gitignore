@@ -7,3 +7,7 @@ src/instance/**
 htmlcov/**
 .venv/**
 .coverage
+
+cert.pem
+key.pem
+.env
