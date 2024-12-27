@@ -1,0 +1,44 @@
+<!-- Header -->
+<div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-3 dark:border-nord-4 dark:bg-nord-0">
+
+  <!-- Logo image, also redirects to home -->
+  <a href="/">
+    <img class="w-36 p-6" src="../static/assets/logo-name.svg">
+  </a>
+  
+  <!-- Settings menu -->
+  <div class="ml-auto text-xl px-2 mr-4">
+    <p>
+      Hello, 
+      <a class="underline" onclick="open_settings()">{{ user.username }}</a>
+      !
+    </p>
+  </div>
+
+  <!-- Light/dark mode toggle -->
+  <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 mr-4 flex justify-center items-center" onclick="toggleColourScheme()">
+    <i id="colour-icon" class="fas fa-moon text-2xl"></i>
+  </button>
+  
+  <!-- Admin panel, if loged in as administrator --> 
+  {% if user.email == "admin@polll.org" %}
+    {% if admin %}
+      <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+         href="{{ url_for('poll.home') }}">
+        Home
+      </a>
+    {% else %}
+      <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+         href="{{ url_for('admin.home') }}">
+        Admin
+      </a>
+    {% endif %}
+  {% endif %}
+
+  <!-- Log Out button -->
+  <a class="bg-nord-8 dark:bg-nord-10 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
+     href="{{ url_for('auth.logout') }}">
+    Log Out
+  </a>
+</div>
+

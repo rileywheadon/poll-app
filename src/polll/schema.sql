@@ -14,8 +14,8 @@ DROP TABLE IF EXISTS tiered_response;
 
 CREATE TABLE user (
 	id INTEGER PRIMARY KEY, 
-	username VARCHAR NOT NULL, 
-	email VARCHAR UNIQUE NOT NULL, 
+	username TEXT NOT NULL, 
+	email TEXT UNIQUE NOT NULL, 
 	account_created DATETIME NOT NULL, 
 	last_online DATETIME NOT NULL, 
   last_poll_created DATETIME,
@@ -26,8 +26,8 @@ CREATE TABLE user (
 CREATE TABLE poll (
 	id INTEGER PRIMARY KEY, 
 	creator_id INTEGER NOT NULL, 
-	question VARCHAR NOT NULL, 
-	poll_type VARCHAR NOT NULL, 
+	question TEXT NOT NULL, 
+	poll_type TEXT NOT NULL, 
 	date_created DATETIME NOT NULL, 
   FOREIGN KEY (creator_id) REFERENCES user (id)
 );
@@ -36,7 +36,7 @@ CREATE TABLE poll (
 CREATE TABLE poll_answer (
 	id INTEGER PRIMARY KEY, 
 	poll_id INTEGER NOT NULL, 
-	answer VARCHAR NOT NULL, 
+	answer TEXT NOT NULL, 
   FOREIGN KEY (poll_id) REFERENCES poll (id)
 );
 
@@ -101,7 +101,7 @@ CREATE TABLE tiered_response (
 	id INTEGER PRIMARY KEY, 
 	answer_id INTEGER NOT NULL, 
 	response_id INTEGER NOT NULL, 
-	tier VARCHAR NOT NULL, 
+	tier TEXT NOT NULL, 
 	FOREIGN KEY (answer_id) REFERENCES poll_answer (id), 
 	FOREIGN KEY (response_id) REFERENCES response (id)
 );

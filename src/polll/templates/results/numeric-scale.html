@@ -1,0 +1,9 @@
+{% extends "results/result-base.html" %}
+
+{% block result_content %} 
+
+  {% for result in results %}
+    <p>{{ result.value }}: {{ result.count }}</p>
+  {% endfor %}
+
+{% endblock %}

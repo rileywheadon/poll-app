@@ -2,24 +2,19 @@
 
 {% for poll in polls %}
 
-  <!-- NOTE: After adding the admin account, users should only see the poll OR results -->
-
   <!-- Display the poll, including the corret answer display template -->
-  {% if poll.poll_type.name == "CHOOSE_ONE" %}
+  {% if poll.poll_type == "CHOOSE_ONE" %}
     {% include "polls/choose-one.html" %}
-  {% elif poll.poll_type.name == "CHOOSE_MANY" %}
+  {% elif poll.poll_type == "CHOOSE_MANY" %}
     {% include "polls/choose-many.html" %}
-  {% elif poll.poll_type.name == "NUMERIC_STAR" %}
+  {% elif poll.poll_type == "NUMERIC_STAR" %}
     {% include "polls/numeric-star.html" %}
-  {% elif poll.poll_type.name == "NUMERIC_SCALE" %}
+  {% elif poll.poll_type == "NUMERIC_SCALE" %}
     {% include "polls/numeric-scale.html" %}
-  {% elif poll.poll_type.name == "RANKED_POLL" %}
+  {% elif poll.poll_type == "RANKED_POLL" %}
     {% include "polls/ranked-poll.html" %}
-  {% elif poll.poll_type.name == "TIER_LIST" %}
+  {% elif poll.poll_type == "TIER_LIST" %}
     {% include "polls/tier-list.html" %}
   {% endif %}
-
-  <!-- Display the results, including the correct results display template -->
-  {% include "results.html" %}
 
 {% endfor %}

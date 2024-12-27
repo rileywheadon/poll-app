@@ -1,0 +1,86 @@
+{% include "admin/menu.html" %}
+
+<div class="flex flex-row p-2 mt-4 mb-2 items-center">
+  <span class="mr-2">Search By:</span>
+  <select class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg mr-4 w-32" 
+          name="search_column">
+    <option value="creator">Creator</option>
+    <option value="question">Question</option>
+  </select>
+
+  <input class="bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-4 px-2 rounded-md h-10 grow mr-4"
+         type="text"
+         name="search_value">
+
+  <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-2 rounded-md h-10 w-16"
+          hx-get="{{ url_for('admin.search') }}"
+          hx-include="[name='search_column'], [name='search_value']"
+          hx-target="#users-list"
+          hx-swap="innerHTML">
+    <i class="fa fa-search"></i>
+  </button>
+</div>
+
+<div class="flex flex-row">
+  <div class="w-1/2 p-2 items-center text-nord-0 dark:text-nord-4">
+    <span>Filter By:</span>
+    <div class="ml-2">
+      <input type="checkbox" name="choose_one" value="CHOOSE_ONE" checked>
+      <label class="ml-2" for="choose_one">Choose One</label>
+    </div>
+    <div class="ml-2">
+      <input type="checkbox" name="choose_many" value="CHOOSE_MANY" checked>
+      <label class="ml-2" for="choose_many">Choose Many</label>
+    </div>
+    <div class="ml-2">
+      <input type="checkbox" name="numeric_star" value="NUMERIC_STAR" checked>
+      <label class="ml-2" for="numeric_star">Numeric Star</label>
+    </div>
+    <div class="ml-2">
+      <input type="checkbox" name="numeric_scale" value="NUMERIC_SCALE" checked>
+      <label class="ml-2" for="numeric_scale">Numeric Scale</label>
+    </div>
+    <div class="ml-2">
+      <input type="checkbox" name="ranking" value="RANKED_POLL" checked>
+      <label class="ml-2" for="ranking">Ranking</label>
+    </div>
+    <div class="ml-2">
+      <input type="checkbox" name="tier_list" value="TIER_LIST" checked>
+      <label class="ml-2" for="tier_list">Tier List</label>
+    </div>
+  </div>
+  <div class="w-1/2 p-2 items-center text-nord-0 dark:text-nord-4">
+    <span>Sort By:</span>
+    <div class="ml-2">
+      <input type="radio" name="search_sort" value="date_created" checked>
+      <label class="ml-2" for="poll-1">Date Created</label>
+    </div>
+    <div class="ml-2">
+      <input type="radio" name="search_sort" value="responses">
+      <label class="ml-2" for="poll-1">Responses</label>
+    </div>
+    <div class="ml-2">
+      <input type="radio" name="search_sort" value="reports">
+      <label class="ml-2" for="poll-1">Reports</label>
+    </div>
+    <div class="mt-4">
+      <span class="mr-2">Direction:</span>
+      <select class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg mr-4 w-32" 
+              name="search_sort_direction">
+        <option value="descending">Descending</option>
+        <option value="ascending">Ascending</option>
+      </select>
+    </div>
+
+
+  </div>
+
+</div>
+
+
+
+
+<div id="users-list">
+
+</div>
+
