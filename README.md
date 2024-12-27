@@ -16,6 +16,8 @@
 - [Pytest](https://docs.pytest.org/en/stable/) and [Coverage](https://coverage.readthedocs.io/en/7.6.9/) for testing
 - [Authlib](https://authlib.org/), [python-dotenv](https://pypi.org/project/python-dotenv/), and [requests](https://docs.python-requests.org/en/latest/index.html) for authentication with [Auth0](https://auth0.com/)
 
+[SQLite3](https://docs.python.org/3/library/sqlite3.html) as a database. [Here](https://www.sqlitetutorial.net/) is a good introduction to this technology.
+
 [HTMX](https://htmx.org/) for additional front-end functionality (more nuanced HTTP requests/responses)
 
 [TailwindCSS](https://tailwindcss.com/) for front-end design
@@ -28,7 +30,7 @@ Before adding a new technology, ask yourself the following three questions:
 
 1. Is this new technology required to implement a feature?
 2. If so, how painful would it be to build this feature with our current stack?
-3. Does the pain of building this feature with our current stack outweight the [Technical Debt](https://en.wikipedia.org/wiki/Technical_debt) created by adding a new technology to the stack?
+3. Does the pain of building this feature with our current stack outweight the complexity created by a new technology?
 
 If the answer to all three of the questions is "yes", add the new technology to the stack.
 
@@ -36,7 +38,7 @@ If the answer to all three of the questions is "yes", add the new technology to 
 
 `/requirements.txt` contains dependencies (see [Setup Instructions](#setup-instructions)).
 
-`/tests` contains unit tests (currently incomplete).
+`/tests` should contains unit tests (TBD).
 
 `/src/instance` and `/src/migrations` store database files and can be ignored.
 
@@ -47,10 +49,12 @@ If the answer to all three of the questions is "yes", add the new technology to 
 - `/templates` contains the [Jinja2](https://jinja.palletsprojects.com/en/stable/) templates used to generate the app
 - `/static` contains static files (i.e. images, the logo, etc.)
 - `/results` contains database queries for getting poll results
-- `authentication.py` sets up user authentication with Auth0
-- `models.py` contains the database schema implemented in SQLAlchemy
+- `auth.py` sets up the user authentication blueprint with Auth0
+- `poll.py` implements the main HTTP routes used by users
+- `admin.py` implements additional HTTP routes for the administrator
+- `db.py` creates a database connection with the SQLite3 database
 - `responses.py` updates the database when the user responds to a poll
-- `routes.py` defines HTTP endpoints (where the client interacts with the server)
+- `results.py` queries the database to get results when the user views a poll
 
 ## Setup Instructions
 
@@ -68,6 +72,8 @@ If you are making changes to the HTML using TailwindCSS, you will also need to e
 ```
 ./tailwindcss -i input.css -o output.css --watch
 ```
+
+I made an effort to remove some of the unnecessary files (some of which were also a security risk) from the Github repository. Therefore, these instructions may not be 100% complete. Just let me know if you have an issue.
 
 ## Git
 
