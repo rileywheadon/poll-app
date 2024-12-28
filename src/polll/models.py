@@ -12,4 +12,11 @@ def on_cooldown(user_dict):
     return False
 
 
+# Helper functions to add "result_template" and "poll_template" to a poll dictionary
+def result_template(poll):
+    template = poll["poll_type"].lower().replace("_", "-") 
+    return f"results/{template}.html"
 
+def poll_template(poll):
+    template = poll["poll_type"].lower().replace("_", "-") 
+    return f"polls/{template}.html"
