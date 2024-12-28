@@ -46,7 +46,6 @@ def init_db_command():
     click.echo("Initialized the database.")
 
 
-
 def init_app(app):
     """
     Register database functions with the Flask app. This is called by

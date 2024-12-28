@@ -19,9 +19,9 @@ def home():
 def users():
     return render_template("users.html", tab="users") 
 
-@admin.route("/admin/users/search")
+@admin.route("/admin/users/usersearch")
 @requires_admin
-def search():
+def usersearch():
 
     # Get a database connection
     db = get_db()
@@ -32,7 +32,13 @@ def search():
     val = "%{}%".format(request.args.get("search_value"))
 
     # Query the database for all users matching the search
-    res = cur.execute("SELECT * FROM user WHERE ? LIKE ?", (col, val))
+    query = """
+    SELECT *
+    FROM user
+    WHERE ?
+    LIKE ?
+    """
+    res = cur.execute(query, (col, val))
     users = [dict(row) for row in res.fetchall()]
 
     # Update the cooldown state for each user

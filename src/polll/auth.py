@@ -54,14 +54,23 @@ def callback():
 
     # If the user doesn't exist add them to the database
     if res.fetchone() is None:
+        query = """
+        INSERT INTO user (username, email, account_created, last_online)
+            VALUES (?, ?, ?, ?)
+        """
         now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-        columns = "(username, email, account_created, last_online)"
         values = (username, email, now, now)
-        cur.execute(f"INSERT INTO user {columns} VALUES (?, ?, ?, ?)", values)
+        cur.execute(query, values)
         db.commit()
 
     # Then set session["user"] to the current user (as a dictionary)
-    res = cur.execute(f"SELECT * FROM user WHERE email=?", (email,))
+    query = """
+    SELECT *
+    FROM user
+    WHERE email=?
+    """
+    res = cur.execute(query, (email,))
+
     session["user"] = dict(res.fetchone())
     return redirect(url_for("poll.home"))
 

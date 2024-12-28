@@ -7,7 +7,7 @@ import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import on_cooldown
+from polll.models import on_cooldown, result_template, poll_template
 
 # Create a blueprint for the poll endpoints
 poll = Blueprint('poll', __name__, template_folder = 'templates')
@@ -33,16 +33,19 @@ def feed():
     db = get_db()
     cur = db.cursor()
 
-    # Query the database for all polls NOT made by the user
+    # Query the database for all polls NOT made by the user and NOT responded to
     query = """
-    SELECT *
-    FROM poll 
-    WHERE creator_id != ?
+    SELECT id
+    FROM poll
+    WHERE poll.creator_id != ?
+    EXCEPT
+    SELECT DISTINCT poll_id
+    FROM response
+    WHERE response.user_id = ?
     """
-    res = cur.execute(query, (session["user"]["id"],)).fetchall()
-
-    # Create a dictionary of polls 
-    polls = [dict(poll) for poll in res]
+    user_id = session["user"]["id"]
+    res = cur.execute(query, (user_id, user_id,))
+    ids = [response["id"] for response in res.fetchall()]
 
     # Add the answers to each poll
     query = """
@@ -50,8 +53,18 @@ def feed():
     FROM poll_answer
     WHERE poll_id = ?
     """
-    for poll in polls:
-        poll["answers"] = cur.execute(query, (poll["id"],)).fetchall()
+    polls = []
+    for id in ids:
+
+        # Get the poll
+        res = cur.execute("SELECT * FROM poll WHERE id=?", (id,))
+        poll = dict(res.fetchone())
+
+        # Get the poll answers and the template URL
+        answers = cur.execute(query, (id,)).fetchall()
+        poll["answers"] = [dict(answer) for answer in answers]
+        poll["poll_template"] = poll_template(poll)
+        polls.append(poll)
 
     # Render the template
     return render_template(
@@ -71,16 +84,33 @@ def history():
     db = get_db()
     cur = db.cursor()
 
-    # Query the database for all polls NOT made by the user
+    # Get all polls IDs from polls the user has repsonded to
+    query = """
+    SELECT DISTINCT poll_id
+    FROM response
+    WHERE response.user_id = ?
+    """
+    res = cur.execute(query, (session["user"]["id"],))
+    ids = [response["poll_id"] for response in res.fetchall()]
+
+    # Get the polls themselves
     query = """
     SELECT *
-    FROM poll 
-    WHERE creator_id != ?
+    FROM poll
+    WHERE poll.id = ?
     """
-    res = cur.execute(query, (session["user"]["id"],)).fetchall()
+    polls = []
+    for id in ids:
 
-    # Create a dictionary of polls 
-    polls = [dict(poll) for poll in res]
+        # Get the poll
+        res = cur.execute(query, (id,))
+        poll = dict(res.fetchone())
+
+        # Get the results and the result template URL
+        handler = getattr(result_handlers, poll["poll_type"].lower())
+        poll["results"] = handler(poll["id"])
+        poll["result_template"] = result_template(poll)
+        polls.append(poll)
 
     # Render the template
     return render_template(
@@ -201,14 +231,11 @@ def mypolls():
     # Create a dictionary of polls 
     polls = [dict(poll) for poll in res]
 
-    # Add the answers to each poll
-    query = """
-    SELECT *
-    FROM poll_answer
-    WHERE poll_id = ?
-    """
+    # Get the results for each poll using the appropriate handler
     for poll in polls:
-        poll["answers"] = cur.execute(query, (poll["id"],)).fetchall()
+        handler = getattr(result_handlers, poll["poll_type"].lower())
+        poll["results"] = handler(poll["id"])
+        poll["result_template"] = result_template(poll)
 
     # Render the template
     return render_template(
@@ -239,18 +266,8 @@ def response(poll_id):
     poll = dict(res.fetchone())
 
     # Submit the response to the database
-    if poll["poll_type"] == "CHOOSE_ONE":
-        response_handlers.choose_one(request, poll)
-    if poll["poll_type"] == "CHOOSE_MANY":
-        response_handlers.choose_many(request, poll)
-    if poll["poll_type"] == "NUMERIC_STAR":
-        response_handlers.numeric_star(request, poll)
-    if poll["poll_type"] == "NUMERIC_SCALE":
-        response_handlers.numeric_scale(request, poll)
-    if poll["poll_type"] == "RANKED_POLL":
-        response_handlers.ranked_poll(request, poll)
-    if poll["poll_type"] == "TIER_LIST":
-        response_handlers.tier_list(request, poll)
+    handler = getattr(response_handlers, poll["poll_type"].lower())
+    handler(request, poll)
 
     # Redirect to results to render the results
     return redirect(url_for("poll.result", poll_id = poll_id))
@@ -276,32 +293,8 @@ def result(poll_id):
     poll = dict(res.fetchone())
 
     # Get the results (dependent on the poll type) and render them
-    if poll["poll_type"] == "CHOOSE_ONE":
-        results = result_handlers.choose_one(poll_id)
-        return render_template("results/choose-one.html", poll=poll, results=results)
-
-    if poll["poll_type"] == "CHOOSE_MANY":
-        results = result_handlers.choose_many(poll_id)
-        return render_template("results/choose-many.html", poll=poll, results=results)
-
-    if poll["poll_type"] == "NUMERIC_STAR":
-        results = result_handlers.numeric_star(poll_id)
-        return render_template("results/numeric-star.html", poll=poll, results=results)
-
-    if poll["poll_type"] == "NUMERIC_SCALE":
-        results = result_handlers.numeric_scale(poll_id)
-        return render_template("results/numeric-scale.html", poll=poll, results=results)
-
-    if poll["poll_type"] == "RANKED_POLL":
-        results = result_handlers.ranked_poll(poll_id)
-        return render_template("results/ranked-poll.html", poll=poll, results=results)
-
-    if poll["poll_type"] == "TIER_LIST":
-        results = result_handlers.tier_list(poll_id)
-        return render_template("results/tier-list.html", poll=poll, results=results)
-
-    # This should never happen
-    return redirect(url_for("home"))
-
-
+    handler = getattr(result_handlers, poll["poll_type"].lower())
+    poll["results"] = handler(poll_id)
+    poll["result_template"] = result_template(poll)
+    return render_template(poll["result_template"], poll=poll)
 

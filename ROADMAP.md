@@ -21,6 +21,9 @@ These are development items that I think someone other than me (Riley) could do.
 | 10  | 6/10[^3]   | Make the ranked poll interface look nice. Improve UI.                   | Unclaimed |
 | 11  | 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.           | Unclaimed |
 | 12  | 4/10       | Rewrite the colours on the star selector in tailwindCSS (use Nord).     | Unclaimed |
+| 13  | 6/10       | Add sorting functions on the history/my polls tabs.                     | Unclaimed |
+| 14  | 5/10[^3]   | Make the user's response appear in the results tab.                     | Unclaimed |
+| 14  | 7/10[^3]   | Improve the API for getting results for tier list and ranking.          | Unclaimed |
 
 [^1]: Requires working with SQL queries in the back-end.
 
@@ -30,7 +33,6 @@ These are development items that I think someone other than me (Riley) could do.
 
 ## 1: Minimum Viable App
 
-- [ ] Fix Feed/History/My Polls
 - [ ] Administrator Dashboard
 - [ ] Reports
 - [ ] Custom Results Interface
