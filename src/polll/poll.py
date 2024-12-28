@@ -34,7 +34,7 @@ def feed():
     cur = db.cursor()
 
     # Query the database for all polls NOT made by the user and NOT responded to
-    query = """
+    response_query = """
     SELECT id
     FROM poll
     WHERE poll.creator_id != ?
@@ -44,24 +44,34 @@ def feed():
     WHERE response.user_id = ?
     """
     user_id = session["user"]["id"]
-    res = cur.execute(query, (user_id, user_id,))
+    res = cur.execute(response_query, (user_id, user_id,))
     ids = [response["id"] for response in res.fetchall()]
 
-    # Add the answers to each poll
-    query = """
+    # Query for getting the polls and the creator's username
+    poll_query = """
+    SELECT poll.*, user.username AS creator
+    FROM poll
+    INNER JOIN user ON user.id = poll.creator_id
+    WHERE poll.id = ?
+    """
+
+    # Query for adding the answers to each poll
+    answer_query = """
     SELECT *
     FROM poll_answer
     WHERE poll_id = ?
     """
     polls = []
+
+    # Iterate through the poll IDs, getting the polls and answers
     for id in ids:
 
         # Get the poll
-        res = cur.execute("SELECT * FROM poll WHERE id=?", (id,))
-        poll = dict(res.fetchone())
+        poll = dict(cur.execute(poll_query, (id,)).fetchone())
+        print(poll)
 
         # Get the poll answers and the template URL
-        answers = cur.execute(query, (id,)).fetchall()
+        answers = cur.execute(answer_query, (id,)).fetchall()
         poll["answers"] = [dict(answer) for answer in answers]
         poll["poll_template"] = poll_template(poll)
         polls.append(poll)

@@ -10,20 +10,20 @@ These are development items that I think someone other than me (Riley) could do.
 | ID  | Difficulty | Task                                                                    | Status    |
 | --- | ---------- | ----------------------------------------------------------------------- | --------- |
 | 1   | 3/10       | Ensure UI can handle unusually long questions and answers.              | Unclaimed |
-| 2   | 4/10       | Make tier list expand when line is full.                                | Unclaimed |
-| 3   | 2/10       | Replace radio/checkbox in the choose one/many interface with boxes.     | Unclaimed |
-| 4   | 3/10[^2]   | Add light-mode compatible logo.                                         | Unclaimed |
-| 5   | 3/10       | Improving the Poll UI with share link, "created by", and report button. | Unclaimed |
-| 6   | 4/10       | Ensure compatibility with different screen sizes with CSS breakpoints.  | Unclaimed |
-| 7   | 7/10[^1]   | Add a nice abstraction to `responses.py` to reduce code duplication.    | Unclaimed |
-| 8   | 7/10[^1]   | Add a nice abstraction to `results.py` to reduce code duplication.      | Unclaimed |
-| 9   | 4/10       | Add a countdown to the `/create` endpoint when a user creates a poll.   | Unclaimed |
-| 10  | 6/10[^3]   | Make the ranked poll interface look nice. Improve UI.                   | Unclaimed |
-| 11  | 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.           | Unclaimed |
-| 12  | 4/10       | Rewrite the colours on the star selector in tailwindCSS (use Nord).     | Unclaimed |
-| 13  | 6/10       | Add sorting functions on the history/my polls tabs.                     | Unclaimed |
-| 14  | 5/10[^3]   | Make the user's response appear in the results tab.                     | Unclaimed |
-| 14  | 7/10[^3]   | Improve the API for getting results for tier list and ranking.          | Unclaimed |
+| 2   | 2/10       | Replace radio/checkbox in the choose one/many interface with boxes.     | Unclaimed |
+| 3   | 3/10[^2]   | Add light-mode compatible logo.                                         | Unclaimed |
+| 4   | 3/10       | Improving the Poll UI with share link, "created by", and report button. | Finished  |
+| 5   | 4/10       | Ensure compatibility with different screen sizes with CSS breakpoints.  | Unclaimed |
+| 6   | 7/10[^1]   | Add a nice abstraction to `responses.py` to reduce code duplication.    | Unclaimed |
+| 7   | 7/10[^1]   | Add a nice abstraction to `results.py` to reduce code duplication.      | Unclaimed |
+| 8   | 4/10       | Add a countdown to the `/create` endpoint when a user creates a poll.   | Unclaimed |
+| 9   | 6/10[^3]   | Make the ranked poll interface look nice. Improve UI.                   | Unclaimed |
+| 10  | 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.           | Unclaimed |
+| 11  | 4/10       | Rewrite the colours on the star selector in tailwindCSS (use Nord).     | Unclaimed |
+| 12  | 6/10       | Add sorting functions on the history/my polls tabs.                     | Unclaimed |
+| 13  | 5/10[^1]   | Make the user's response appear in the results tab.                     | Unclaimed |
+| 14  | 7/10[^1]   | Improve the API for getting results for tier list and ranking.          | Unclaimed |
+| 15  | 6/10[^1]   | Prevent users from responding to the same poll multiple times.          | Unclaimed |
 
 [^1]: Requires working with SQL queries in the back-end.
 

@@ -15,8 +15,21 @@
     {% endblock %}
 
     <!-- Include the submit button -->
-    <div class="flex flex-row text-l">
-      <input class="ml-auto w-32 h-10 rounded-md py-1 mt-4 bg-nord-15 text-nord-0" type="submit" value="Submit">
+    <div class="flex flex-row text-l items-center mt-4">
+      <p><i>Created by {{ poll.creator }}</i></p>
+      <button class="ml-auto w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0">
+        Share
+        <i class="ml-1 fa fa-share-from-square"></i>
+      </button>
+      <button class="ml-2 w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0">
+        Report
+        <i class="ml-1 fa fa-triangle-exclamation"></i>
+      </button>
+      <button class="ml-2 w-24 h-10 rounded-md py-1 bg-nord-15 text-nord-0" 
+          type="submit">
+        Submit
+        <i class="ml-1 fa fa-paper-plane"></i>
+      </button>
     </div>
 
   </form>
