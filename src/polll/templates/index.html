@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+
 <div class="w-full h-full min-h-screen bg-nord-6 dark:bg-nord-0">
 
   <div class="w-100%">
@@ -24,10 +25,14 @@
         Explore, interact, and engage with your favourite topics through polling. 100% free. Completely secure. No ads, ever.
       </h1>
       <div class="flex items-center flex-row text-2xl">
-        <a class="bg-nord-9 text-nord-0 border-2 border-nord-3 dark:bg-nord-7 dark:border-nord-6 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" href="{{ url_for('auth.register') }}">
+        <a class="bg-nord-9 text-nord-0 border-2 border-nord-3 dark:bg-nord-7 dark:border-nord-6 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" 
+            hx-boost="false"
+            href="{{ url_for('auth.register') }}">
           Register
         </a>
-        <a class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:bg-nord-4 dark:border-nord-6 text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" href="{{ url_for('auth.login') }}">
+        <a class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:bg-nord-4 dark:border-nord-6 text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" 
+            hx-boost="false"
+            href="{{ url_for('auth.login') }}">
           Login
         </a>
       </div>

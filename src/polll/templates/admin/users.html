@@ -1,4 +1,6 @@
-{% include "admin/menu.html" %}
+{% extends "admin/admin.html" %}
+
+{% block admin_content %}
 
 <div class="flex flex-row p-2 my-4 items-center">
   <span class="mr-2">Search By:</span>
@@ -13,7 +15,7 @@
          name="search_value">
 
   <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-2 rounded-md h-10 w-16"
-          hx-get="{{ url_for('admin.search') }}"
+          hx-get="{{ url_for('admin.usersearch') }}"
           hx-include="[name='search_column'], [name='search_value']"
           hx-target="#users-list"
           hx-swap="innerHTML">
@@ -25,3 +27,4 @@
 
 </div>
 
+{% endblock %}

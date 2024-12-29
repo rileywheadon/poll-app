@@ -19,7 +19,7 @@ def login():
 
     # If user is logged in, redirect to home
     if "user" in session:
-        return redirect(url_for("poll.home"))
+        return redirect(url_for("home.feed"))
 
     # Otherwise hit the auth0 authentication endpoint
     uri = url_for("auth.callback", _external=True)
@@ -32,7 +32,7 @@ def register():
 
     # If user is logged in, redirect to home
     if "user" in session:
-        return redirect(url_for("poll.home"))
+        return redirect(url_for("home.feed"))
 
     # Otherwise hit the auth0 authentication endpoint
     uri = url_for("auth.callback", _external = True)
@@ -72,7 +72,7 @@ def callback():
     res = cur.execute(query, (email,))
 
     session["user"] = dict(res.fetchone())
-    return redirect(url_for("poll.home"))
+    return redirect(url_for("home.feed"))
 
 
 # Logout endpoint
@@ -84,7 +84,7 @@ def logout():
 
     # Hit the Auth0 return_url to finalize this change
     return_data = {
-        "returnTo": url_for("poll.index", _external=True),
+        "returnTo": url_for("home.index", _external=True),
         "client_id": env.get('AUTH0_CLIENT_ID')
     }
 
@@ -112,7 +112,7 @@ def requires_admin(f):
             return redirect(url_for('auth.login'))
 
         elif session["user"]["email"] != "admin@polll.org":
-            return redirect(url_for('home'))
+            return redirect(url_for('home.feed'))
 
         return f(*args, **kwargs)
 

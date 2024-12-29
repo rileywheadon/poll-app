@@ -44,3 +44,17 @@ function reset_poll_cooldown(user_id) {
   const cooldown = document.getElementById("user-cooldown-" + user_id);
   cooldown.innerHTML = "False";
 }
+
+function toggle_poll_information(poll_id) {
+  const info = document.getElementById("poll-info-" + poll_id)
+  const toggle = document.getElementById("poll-toggle-" + poll_id)
+  info.classList.toggle("hidden")
+
+  if (toggle.classList.contains("fa-angle-right")) {
+    toggle.classList.remove("fa-angle-right");
+    toggle.classList.add("fa-angle-down");
+  } else {
+    toggle.classList.remove("fa-angle-down");
+    toggle.classList.add("fa-angle-right");
+  }
+}

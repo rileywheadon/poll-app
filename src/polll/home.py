@@ -10,22 +10,16 @@ from polll.db import get_db
 from polll.models import on_cooldown, result_template, poll_template
 
 # Create a blueprint for the poll endpoints
-poll = Blueprint('poll', __name__, template_folder = 'templates')
+home = Blueprint('home', __name__, template_folder = 'templates')
 
 # Landing page for advertising to potential users
-@poll.route("/")
+@home.route("/")
 def index():
     return render_template("index.html")
 
 
-# Home page (empty)
-@poll.route("/home")
-def home(): 
-    return render_template("home/home.html", user = session["user"], admin = False)
-
-
 # Home page (poll feed)
-@poll.route("/home/feed")
+@home.route("/home/feed")
 @requires_auth
 def feed():
 
@@ -77,16 +71,13 @@ def feed():
         polls.append(poll)
 
     # Render the template
-    return render_template(
-        "home/feed.html", 
-        user = session["user"], 
-        polls = polls,
-        tab = 'feed'
-    )
+    session["admin"] = False
+    session["tab"] = "feed"
+    return render_template("home/feed.html", session = session)
 
 
 # Home page (response history)
-@poll.route("/home/history")
+@home.route("/home/history")
 @requires_auth
 def history():
 
@@ -123,16 +114,13 @@ def history():
         polls.append(poll)
 
     # Render the template
-    return render_template(
-        "home/history.html", 
-        user = session["user"], 
-        polls = polls,
-        tab = 'history'
-    )
+    session["admin"] = False
+    session["tab"] = "history"
+    return render_template("home/history.html", session=session, polls=polls)
 
 
 # Home page (create poll)
-@poll.route("/home/create")
+@home.route("/home/create")
 @requires_auth
 def create():
 
@@ -147,25 +135,23 @@ def create():
     WHERE email=?
     """
     user = cur.execute(query, (session["user"]["email"],)).fetchone()
+    cooldown = on_cooldown(user)
 
     # Render the HTML template
-    return render_template(
-        "home/create.html", 
-        user = session["user"], 
-        on_cooldown = on_cooldown(user),
-        tab = 'create',
-    )
+    session["admin"] = False
+    session["tab"] = "create"
+    return render_template("home/create.html", session=session, on_cooldown=cooldown)
 
 
 # Create a new poll answer entry box 
-@poll.route("/home/create/answer")
+@home.route("/home/create/answer")
 @requires_auth
 def create_answer():
     return render_template("home/create-answer.html")
 
 
 # Create a new poll
-@poll.route("/home/create/poll")
+@home.route("/home/create/poll")
 @requires_auth
 def create_poll():
 
@@ -190,11 +176,12 @@ def create_poll():
     poll = cur.execute(query, values)
 
     # Add the poll answers to the database
-    poll_id = poll.fetchone()["id"]
-    columns = "(poll_id, answer)"
-    for answer in answers:
-        values = (poll_id, answer)
-        cur.execute(f"INSERT INTO poll_answer {columns} VALUES (?, ?)", values)
+    if poll_type not in ["NUMERIC_STAR", "NUMERIC_SCALE"]:
+        poll_id = poll.fetchone()["id"]
+        columns = "(poll_id, answer)"
+        for answer in answers:
+            values = (poll_id, answer)
+            cur.execute(f"INSERT INTO poll_answer {columns} VALUES (?, ?)", values)
 
     # Update the last poll created time for the user
     id = session["user"]["id"]
@@ -218,11 +205,11 @@ def create_poll():
 
     # Commit to the database and render the create.html template
     db.commit()
-    return redirect(url_for("poll.create")) 
+    return redirect(url_for("home.create")) 
 
 
 # Home page (user's polls)
-@poll.route("/home/mypolls")
+@home.route("/home/mypolls")
 @requires_auth
 def mypolls():
 
@@ -247,17 +234,14 @@ def mypolls():
         poll["results"] = handler(poll["id"])
         poll["result_template"] = result_template(poll)
 
-    # Render the template
-    return render_template(
-        "home/mypolls.html", 
-        user = session["user"], 
-        polls = polls,
-        tab = 'mypolls'
-    )
+    # Render the HTML template
+    session["admin"] = False
+    session["tab"] = "mypolls"
+    return render_template("home/mypolls.html", session=session, polls=polls)
 
 
 # HTTP endpoint for responding to polls
-@poll.route("/home/response/<poll_id>", methods=["GET", "POST"])
+@home.route("/home/response/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def response(poll_id):
 
@@ -280,11 +264,11 @@ def response(poll_id):
     handler(request, poll)
 
     # Redirect to results to render the results
-    return redirect(url_for("poll.result", poll_id = poll_id))
+    return redirect(url_for("home.result", poll_id = poll_id))
 
 
 # HTTP endpoint for refreshing the results
-@poll.route("/home/result/<poll_id>", methods=["GET", "POST"])
+@home.route("/home/result/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def result(poll_id):
 

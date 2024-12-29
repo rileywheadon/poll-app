@@ -7,12 +7,11 @@
   <link href="../static/output.css" rel="stylesheet">
   <link href="../static/styles/star-selector.css" rel="stylesheet">
 
-  <!-- Import HTMX and Plotly -->
+  <!-- Import HTMX and FontAwesome -->
   <script src="https://unpkg.com/htmx.org@2.0.3"></script>
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+  <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
 
   <!-- Custom Scripts -->
-  <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
   <script src="{{ url_for('static', filename='scripts/drag-drop.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/dark-mode.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/ui.js') }}"></script>
@@ -21,8 +20,11 @@
 </head>
 
 <html class="overscroll-none">
-  <body>
+  <body hx-boost="true">
+
   {% block body %}
+
   {% endblock %}
+
   </body>
 </html>
