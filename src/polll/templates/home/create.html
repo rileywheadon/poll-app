@@ -1,5 +1,6 @@
-{% include "home/menu.html" %}
+{% extends "home/home.html" %}
 
+{% block home_content %}
 
 <div class="rounded-lg overflow-hidden border-2 border-nord-0 dark:bg-nord-1 dark:border-nord-4">
 
@@ -20,7 +21,7 @@
       </select>
 
       <button id="answer-add" class="rounded-lg ml-auto h-10 w-32 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
-            hx-get="{{ url_for('poll.create_answer') }}"
+            hx-get="{{ url_for('home.create_answer') }}"
             hx-swap="beforeend"
             hx-target="#answer-editor">
         Add Answer
@@ -40,7 +41,7 @@
 
     <div class="flex flex-row mb-6 px-8">
       <button class="ml-auto rounded-lg h-10 w-32 bg-nord-15 text-nord-0 p-2"
-          hx-get="{{ url_for('poll.create_poll') }}"
+          hx-get="{{ url_for('home.create_poll') }}"
           hx-target="#home-content"
           hx-swap="innerHTML"
           hx-include="[name='poll_type'], [name='poll_question'], [name='poll_answer']"
@@ -59,3 +60,5 @@
   {% endif %}
 
 </div>
+
+{% endblock %}

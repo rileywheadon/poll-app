@@ -10,7 +10,7 @@
   <div class="ml-auto text-xl px-2 mr-4">
     <p>
       Hello, 
-      <a class="underline" onclick="open_settings()">{{ user.username }}</a>
+      <a class="underline" onclick="open_settings()">{{ session.user.username }}</a>
       !
     </p>
   </div>
@@ -21,15 +21,15 @@
   </button>
   
   <!-- Admin panel, if loged in as administrator --> 
-  {% if user.email == "admin@polll.org" %}
-    {% if admin %}
+  {% if session.user.email == "admin@polll.org" %}
+    {% if session.admin %}
       <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-         href="{{ url_for('poll.home') }}">
+         href="{{ url_for('home.feed') }}">
         Home
       </a>
     {% else %}
       <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-         href="{{ url_for('admin.home') }}">
+         href="{{ url_for('admin.users') }}">
         Admin
       </a>
     {% endif %}
@@ -37,7 +37,8 @@
 
   <!-- Log Out button -->
   <a class="bg-nord-8 dark:bg-nord-10 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-     href="{{ url_for('auth.logout') }}">
+      hx-boost="false" 
+      href="{{ url_for('auth.logout') }}">
     Log Out
   </a>
 </div>

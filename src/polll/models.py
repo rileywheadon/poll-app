@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Helper function to check if a user is on cooldown from making a poll
 def on_cooldown(user_dict):
@@ -20,3 +20,9 @@ def result_template(poll):
 def poll_template(poll):
     template = poll["poll_type"].lower().replace("_", "-") 
     return f"polls/{template}.html"
+
+
+# Helper function to get days behind current time
+def get_days_behind(days):
+    time = datetime.utcnow() - timedelta(days = days)
+    return datetime.strftime(time, '%Y-%m-%d %H:%M:%S')

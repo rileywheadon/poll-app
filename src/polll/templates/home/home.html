@@ -23,9 +23,13 @@
   </div>
 
   <!-- Main Column (Polls) -->
-  <main id="home-content" role="main" class="w-full flex-grow pt-1 px-3">
+  <main role="main" class="w-full flex-grow pt-1 px-3">
     
     {% include "home/menu.html" %}
+
+    {% block home_content %}
+
+    {% endblock %}
 
   </main>
   

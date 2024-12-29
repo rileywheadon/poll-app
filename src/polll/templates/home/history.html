@@ -1,5 +1,9 @@
-{% include "home/menu.html" %}
+{% extends "home/home.html" %}
+
+{% block home_content %}
 
 {% for poll in polls %}
   {% include poll["result_template"] %} 
 {% endfor %}
+
+{% endblock %}
