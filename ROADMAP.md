@@ -19,7 +19,7 @@ These are development items that I think someone other than me (Riley) could do.
 | 4/10       | Add a countdown to the `/create` endpoint when a user creates a poll.   | Unclaimed   |
 | 6/10[^3]   | Make the ranked poll interface look nice. Improve UI.                   | Unclaimed   |
 | 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.           | Unclaimed   |
-| 4/10       | Rewrite the colours on the star selector in tailwindCSS (use Nord).     | Unclaimed   |
+| 4/10       | Change the colours on the star selector to use Nord.                    | Finished    |
 | 6/10       | Add sorting functions on the history/my polls tabs.                     | Unclaimed   |
 | 5/10[^1]   | Make the user's response appear in the results tab.                     | Unclaimed   |
 | 7/10[^1]   | Improve the API for getting results for tier list and ranking.          | Unclaimed   |

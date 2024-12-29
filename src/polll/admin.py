@@ -236,7 +236,6 @@ def stats():
         stats["responses"].append(count(response_query, day))
         stats["polls"].append(count(poll_query, day))
 
-    print(stats)
     session["admin"] = True
     session["tab"] = "stats"
     return render_template("stats.html", session=session, stats=stats)

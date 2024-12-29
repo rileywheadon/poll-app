@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -651,6 +651,10 @@ video {
   display: flex;
 }
 
+.inline-flex {
+  display: inline-flex;
+}
+
 .table {
   display: table;
 }
@@ -1052,6 +1056,10 @@ video {
 
 .accent-nord-10 {
   accent-color: #5E81AC;
+}
+
+.accent-nord-15 {
+  accent-color: #B48EAD;
 }
 
 .drop-shadow-2xl {
