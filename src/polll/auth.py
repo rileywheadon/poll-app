@@ -11,9 +11,11 @@ from polll.db import get_db
 oauth = OAuth()
 
 # Create a blueprint for the authentication endpoints
-auth = Blueprint('auth', __name__, template_folder = 'templates')
+auth = Blueprint('auth', __name__, template_folder='templates')
 
 # Login endpoint
+
+
 @auth.route('/login')
 def login():
 
@@ -23,7 +25,7 @@ def login():
 
     # Otherwise hit the auth0 authentication endpoint
     uri = url_for("auth.callback", _external=True)
-    return oauth.auth0.authorize_redirect(redirect_uri = uri)
+    return oauth.auth0.authorize_redirect(redirect_uri=uri)
 
 
 # Signup endpoint
@@ -35,8 +37,8 @@ def register():
         return redirect(url_for("home.feed"))
 
     # Otherwise hit the auth0 authentication endpoint
-    uri = url_for("auth.callback", _external = True)
-    return oauth.auth0.authorize_redirect(redirect_uri = uri, screen_hint = "signup")
+    uri = url_for("auth.callback", _external=True)
+    return oauth.auth0.authorize_redirect(redirect_uri=uri, screen_hint="signup")
 
 
 # Callback endpoint
@@ -79,7 +81,7 @@ def callback():
 @auth.route("/logout")
 def logout():
 
-    # Remove the user data from the session 
+    # Remove the user data from the session
     session.clear()
 
     # Hit the Auth0 return_url to finalize this change
@@ -88,7 +90,7 @@ def logout():
         "client_id": env.get('AUTH0_CLIENT_ID')
     }
 
-    return_query = urlencode(return_data, quote_via = quote_plus)
+    return_query = urlencode(return_data, quote_via=quote_plus)
     return redirect(f"https://{env.get('AUTH0_DOMAIN')}/v2/logout?{return_query}")
 
 
@@ -117,5 +119,3 @@ def requires_admin(f):
         return f(*args, **kwargs)
 
     return decorated
-
-

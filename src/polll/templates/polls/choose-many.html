@@ -1,12 +1,9 @@
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
-
-{% for answer in poll.answers %}
-  <input type="checkbox" class="mb-2" name="answer_id" value="{{ answer.id }}">
+  {% for answer in poll.answers %}
+    <input type="checkbox" class="mb-2" name="answer_id" value="{{ answer.id }}">
     {{ answer.answer }}
-  </input>
-  <br>
-{% endfor %}
-
+    <br>
+  {% endfor %}
 {% endblock %}

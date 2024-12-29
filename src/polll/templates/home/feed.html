@@ -1,9 +1,7 @@
 {% extends "home/home.html" %}
 
 {% block home_content %}
-
-{% for poll in polls %}
-  {% include poll["poll_template"] %}
-{% endfor %}
-
+  {% for poll in polls %}
+    {% include poll["poll_template"] %}
+  {% endfor %}
 {% endblock %}

@@ -1,5 +1,9 @@
+{% if polls %}
+
 <div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-4 border-collapse my-2">
+
 {% for poll in polls %}
+
 <div class="border-x border-b border-nord-0 dark:border-nord-4 p-4"
     id="poll-card-{{ poll.id }}">
 
@@ -66,5 +70,9 @@
   </div>
 
 </div>
+
 {% endfor %}
+
 </div>
+
+{% endif %}

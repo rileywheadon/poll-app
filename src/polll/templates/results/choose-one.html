@@ -1,9 +1,7 @@
 {% extends "results/result-base.html" %}
 
-{% block result_content %} 
-
+{% block result_content %}
   {% for result in poll.results %}
     <p>{{ result.answer }}: {{ result.count }}</p>
   {% endfor %}
-
 {% endblock %}

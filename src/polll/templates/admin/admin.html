@@ -1,39 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}
-Polll - Admin
-{% endblock %}
-
+{% block title %}Polll - Admin{% endblock %}
 {% block body %}
-
-<!-- Background -->
-<div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
-
-  {% include "navbar.html" %}
-
-  <!-- Document Body -->
-  <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
-
-  <!-- Left Sidebar -->
-  <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-
+  <!-- Background -->
+  <div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
+    {% include "navbar.html" %}
+    <!-- Document Body -->
+    <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+      <!-- Left Sidebar -->
+      <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
+      <!-- Main Column -->
+      <main id="admin-content" role="main" class="w-full flex-grow pt-1 px-3">
+        {% include "admin/menu.html" %}
+        {% block admin_content %}{% endblock %}
+      </main>
+      <!--Right Sidebar-->
+      <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
+    </div>
   </div>
-
-  <!-- Main Column -->
-  <main id="admin-content" role="main" class="w-full flex-grow pt-1 px-3">
-
-    {% include "admin/menu.html" %}
-
-    {% block admin_content %}
-
-    {% endblock %}
-
-  </main>
-  
-  <!--Right Sidebar-->
-  <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
-
-  </div>
-
-</div>
 {% endblock %}

@@ -1,30 +1,32 @@
 {% extends "admin/admin.html" %}
 
 {% block admin_content %}
-
-<div class="flex flex-row p-2 my-4 items-center">
-  <span class="mr-2">Search By:</span>
-  <select class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg mr-4 w-32" 
-          name="search_column">
-    <option value="username">Username</option>
-    <option value="email">Email</option>
-  </select>
-
-  <input class="bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-4 px-2 rounded-md h-10 grow mr-4"
-         type="text"
-         name="search_value">
-
-  <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-2 rounded-md h-10 w-16"
-          hx-get="{{ url_for('admin.usersearch') }}"
-          hx-include="[name='search_column'], [name='search_value']"
-          hx-target="#users-list"
-          hx-swap="innerHTML">
-    <i class="fa fa-search"></i>
-  </button>
-</div>
-
-<div id="users-list">
-
-</div>
-
+  <div class="flex flex-row p-2 my-4 items-center">
+    <span class="mr-2">Search By:</span>
+    <select class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg mr-4 w-32"
+            name="column"
+            autocomplete="off">
+      <option value="username"
+              {% if form.column == "username" %}selected{% endif %}>
+        Username
+      </option>
+      <option value="email" {% if form.column == "email" %}selected{% endif %}>
+        Email
+      </option>
+      <option value="id" {% if form.column == "id" %}selected{% endif %}>ID</option>
+    </select>
+    <input class="bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-4 px-2 rounded-md h-10 grow mr-4"
+           type="text"
+           name="search"
+           value="{{ form.search }}"
+           autocomplete="off">
+    <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-2 rounded-md h-10 w-16"
+            hx-get="{{ url_for("admin.users") }}"
+            hx-include="[name='search_column'], [name='search_value']"
+            hx-target="#users-list"
+            hx-swap="innerHTML">
+      <i class="fa fa-search"></i>
+    </button>
+  </div>
+  <div id="users-list">{% include "users-list.html" %}</div>
 {% endblock %}
