@@ -45,9 +45,9 @@ def create_app(test_config=None):
 
     # Register the authentication, poll, and admin blueprints
     from polll.auth import auth
-    from polll.poll import poll
+    from polll.home import home
     from polll.admin import admin
     app.register_blueprint(auth)
-    app.register_blueprint(poll)
+    app.register_blueprint(home)
     app.register_blueprint(admin)
     return app

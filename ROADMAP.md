@@ -7,20 +7,24 @@
 
 These are development items that I think someone other than me (Riley) could do. If you are going to take on one of these, please create a branch, and then submit a pull request when you are finished. Most of these tasks involve working with the UI and should involve little to no back-end development.
 
-| ID  | Difficulty | Task                                                                    | Status    |
-| --- | ---------- | ----------------------------------------------------------------------- | --------- |
-| 1   | 3/10       | Ensure UI can handle unusually long questions and answers.              | Unclaimed |
-| 2   | 4/10       | Make tier list expand when line is full.                                | Unclaimed |
-| 3   | 2/10       | Replace radio/checkbox in the choose one/many interface with boxes.     | Unclaimed |
-| 4   | 3/10[^2]   | Add light-mode compatible logo.                                         | Unclaimed |
-| 5   | 3/10       | Improving the Poll UI with share link, "created by", and report button. | Unclaimed |
-| 6   | 4/10       | Ensure compatibility with different screen sizes with CSS breakpoints.  | Unclaimed |
-| 7   | 7/10[^1]   | Add a nice abstraction to `responses.py` to reduce code duplication.    | Unclaimed |
-| 8   | 7/10[^1]   | Add a nice abstraction to `results.py` to reduce code duplication.      | Unclaimed |
-| 9   | 4/10       | Add a countdown to the `/create` endpoint when a user creates a poll.   | Unclaimed |
-| 10  | 6/10[^3]   | Make the ranked poll interface look nice. Improve UI.                   | Unclaimed |
-| 11  | 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.           | Unclaimed |
-| 12  | 4/10       | Rewrite the colours on the star selector in tailwindCSS (use Nord).     | Unclaimed |
+| Difficulty | Task                                                                    | Status    |
+| ---------- | ----------------------------------------------------------------------- | --------- |
+| 3/10       | Ensure UI can handle unusually long questions and answers.              | Unclaimed |
+| 2/10       | Replace radio/checkbox in the choose one/many interface with boxes.     | Unclaimed |
+| 3/10[^2]   | Add light-mode compatible logo.                                         | Unclaimed |
+| 3/10       | Improving the Poll UI with share link, "created by", and report button. | Finished  |
+| 4/10       | Ensure compatibility with different screen sizes with CSS breakpoints.  | Unclaimed |
+| 7/10[^1]   | Add a nice abstraction to `responses.py` to reduce code duplication.    | Unclaimed |
+| 7/10[^1]   | Add a nice abstraction to `results.py` to reduce code duplication.      | Unclaimed |
+| 4/10       | Add a countdown to the `/create` endpoint when a user creates a poll.   | Unclaimed |
+| 6/10[^3]   | Make the ranked poll interface look nice. Improve UI.                   | Unclaimed |
+| 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.           | Unclaimed |
+| 4/10       | Rewrite the colours on the star selector in tailwindCSS (use Nord).     | Unclaimed |
+| 6/10       | Add sorting functions on the history/my polls tabs.                     | Unclaimed |
+| 5/10[^1]   | Make the user's response appear in the results tab.                     | Unclaimed |
+| 7/10[^1]   | Improve the API for getting results for tier list and ranking.          | Unclaimed |
+| 6/10[^1]   | Prevent users from responding to the same poll multiple times.          | Unclaimed |
+| 6/10[^1]   | Implement empty responses (i.e. showing the answer without responding)  | Unclaimed |
 
 [^1]: Requires working with SQL queries in the back-end.
 
@@ -30,8 +34,6 @@ These are development items that I think someone other than me (Riley) could do.
 
 ## 1: Minimum Viable App
 
-- [ ] Fix Feed/History/My Polls
-- [ ] Administrator Dashboard
 - [ ] Reports
 - [ ] Custom Results Interface
   - [ ] Choose One
@@ -44,6 +46,7 @@ These are development items that I think someone other than me (Riley) could do.
   - [ ] Create a randomized URL for each poll that users can share.
   - [ ] Allow users to respond and see results anonymously from this URL.
   - [ ] After responding, the app recommends other polls and requires login.
+- [ ] Ability to set a time limit (expiry date) on polls
 - [ ] Poll Boards
 
 ## 2: Staging

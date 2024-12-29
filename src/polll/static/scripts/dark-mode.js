@@ -30,13 +30,17 @@ function toggleColourScheme() {
   updateIcon();
 }
 
-window.addEventListener("load", function() {
-  if (localStorage.theme === null) {
-    setDarkMode();
-  } else if (localStorage.theme == "dark") {
-    setDarkMode();
-  } else {
-    setLightMode();
-  }
-  updateIcon();
-})
+// Add event listeners to ensure correct theme
+['load','htmx:afterSettle'].forEach( evt => 
+  window.addEventListener(evt, function() {
+    if (localStorage.theme === null) {
+      setDarkMode();
+    } else if (localStorage.theme == "dark") {
+      setDarkMode();
+    } else {
+      setLightMode();
+    }
+    updateIcon();
+  })
+);
+

@@ -7,30 +7,37 @@
 {% block body %}
 
 <div class="w-full h-full min-h-screen bg-nord-6 dark:bg-nord-0">
-    <div class="w-100%">
-        <img class="w-36 p-6" src="../static/assets/logo-name.svg">
+
+  <div class="w-100%">
+    <img class="w-36 p-6" src="../static/assets/logo-name.svg">
+  </div>
+
+  <section class="grid gap-8 pr-12 pl-12 md:grid-cols-2 md:items-center md:text-left md:pr-24 md:pl-24 md:py-24">
+    <div class="my-auto py-2">
+      <img class="w-3/5 md:w-4/5 drop-shadow-2xl" src="../static/assets/logo-bars.svg">
     </div>
-    <section class="grid gap-8 pr-12 pl-12 md:grid-cols-2 md:items-center md:text-left md:pr-24 md:pl-24 md:py-24">
-        <div class="my-auto py-2">
-            <img class="w-3/5 md:w-4/5 drop-shadow-2xl" src="../static/assets/logo-bars.svg">
-        </div>
-        <div class="my-auto py-2">
-            <h1 class="text-4xl md:text-6xl font-display text-nord-1 dark:text-nord-5 pb-8">
-            Have a voice in your community.
-            </h1>
-            <h1 class="text-xl md:text-2xl text-nord-0 dark:text-nord-4 pb-8">
-            Explore, interact, and engage with your favourite topics through polling. 100% free. Completely secure. No ads, ever.
-            </h1>
-          <div class="text-base flex items-center flex-row text-2xl">
-            <a class="bg-nord-9 text-nord-0 border-2 border-nord-3 dark:bg-nord-7 dark:border-nord-6 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" href="{{ url_for('auth.register') }}">
-              Register
-            </a>
-            <a class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:bg-nord-4 dark:border-nord-6 text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" href="{{ url_for('auth.login') }}">
-              Login
-            </a>
-          </div>
-        </div>
-    </section>
+    <div class="my-auto py-2">
+      <h1 class="text-4xl md:text-6xl font-display text-nord-1 dark:text-nord-5 pb-8">
+        Have a voice in your community.
+      </h1>
+      <h1 class="text-xl md:text-2xl text-nord-0 dark:text-nord-4 pb-8">
+        Explore, interact, and engage with your favourite topics through polling. 100% free. Completely secure. No ads, ever.
+      </h1>
+      <div class="text-base flex items-center flex-row text-2xl">
+        <a class="bg-nord-9 text-nord-0 border-2 border-nord-3 dark:bg-nord-7 dark:border-nord-6 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" 
+            href="{{ url_for('auth.register') }}"
+            hx-boost="false">
+          Register
+        </a>
+        <a class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:bg-nord-4 dark:border-nord-6 text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center" 
+            href="{{ url_for('auth.login') }}"
+            hx-boost="false">
+          Login
+        </a>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 {% endblock %}

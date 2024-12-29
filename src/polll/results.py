@@ -5,6 +5,7 @@ from datetime import datetime
 
 from polll.db import get_db
 
+
 def choose_one(poll_id):
     print("In result_handlers.choose_one")
 

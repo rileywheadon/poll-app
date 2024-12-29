@@ -2,7 +2,7 @@
 
 {% block result_content %} 
 
-  {% for result in results %}
+  {% for result in poll.results %}
     <p>{{ result.answer }}: {{ result.count }}</p>
   {% endfor %}
 
