@@ -5,18 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c8685e65-2a0a-489e-96b6-1264bc46bd29" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/poll-app.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polll/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/polll/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polll/static/output.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/polll/static/output.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polll/static/tailwind.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/polll/static/tailwind.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/polll/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/polll/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
