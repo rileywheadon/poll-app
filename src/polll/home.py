@@ -10,7 +10,8 @@ from polll.db import get_db
 from polll.models import on_cooldown, result_template, poll_template
 
 # Create a blueprint for the poll endpoints
-home = Blueprint('home', __name__, template_folder = 'templates')
+home = Blueprint('home', __name__, template_folder='templates')
+
 
 # Landing page for advertising to potential users
 @home.route("/")
@@ -27,19 +28,28 @@ def feed():
     db = get_db()
     cur = db.cursor()
 
-    # Query the database for all polls NOT made by the user and NOT responded to
-    response_query = """
+    # Query the database for all polls that meet the following conditions:
+    #  1. NOT made by the user
+    #  2. NOT responded to by the user
+    #  3. NOT reported by the user
+    id_query = """
     SELECT id
     FROM poll
     WHERE poll.creator_id != ?
-    EXCEPT
-    SELECT DISTINCT poll_id
-    FROM response
-    WHERE response.user_id = ?
+    EXCEPT SELECT poll_id FROM (
+        SELECT DISTINCT poll_id
+        FROM response
+        WHERE response.user_id = ?
+        UNION
+        SELECT DISTINCT poll_id
+        FROM report
+        WHERE report.creator_id = ?
+    )
     """
     user_id = session["user"]["id"]
-    res = cur.execute(response_query, (user_id, user_id,))
+    res = cur.execute(id_query, (user_id, user_id, user_id))
     ids = [response["id"] for response in res.fetchall()]
+    print(ids)
 
     # Query for getting the polls and the creator's username
     poll_query = """
@@ -74,6 +84,36 @@ def feed():
     session["admin"] = False
     session["tab"] = "feed"
     return render_template("home/feed.html", session=session, polls=polls)
+
+
+# Home page (poll feed)
+@home.route("/home/report/<poll_id>", methods=["GET", "POST"])
+@requires_auth
+def report(poll_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Get the ID of the user recieving the poll
+    query = "SELECT creator_id FROM poll WHERE id=?"
+    res = cur.execute(query, (poll_id,)).fetchone()
+
+    # Get the other required values for the report
+    receiver_id = res["creator_id"]
+    creator_id = session["user"]["id"]
+    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+
+    # Execute the insertion query
+    query = """
+    INSERT INTO report (poll_id, receiver_id, creator_id, timestamp)
+    VALUES (?, ?, ?, ?)
+    """
+    cur.execute(query, (poll_id, receiver_id, creator_id, timestamp))
+    db.commit()
+
+    # Remove the poll from the User's feed
+    return ""
 
 
 # Home page (response history)
@@ -143,7 +183,7 @@ def create():
     return render_template("home/create.html", session=session, on_cooldown=cooldown)
 
 
-# Create a new poll answer entry box 
+# Create a new poll answer entry box
 @home.route("/home/create/answer")
 @requires_auth
 def create_answer():
@@ -159,7 +199,7 @@ def create_poll():
     db = get_db()
     cur = db.cursor()
 
-    # Get request data and other information 
+    # Get request data and other information
     creator_id = session["user"]["id"]
     question = request.args.get("poll_question")
     poll_type = request.args.get("poll_type")
@@ -181,7 +221,8 @@ def create_poll():
         columns = "(poll_id, answer)"
         for answer in answers:
             values = (poll_id, answer)
-            cur.execute(f"INSERT INTO poll_answer {columns} VALUES (?, ?)", values)
+            cur.execute(
+                f"INSERT INTO poll_answer {columns} VALUES (?, ?)", values)
 
     # Update the last poll created time for the user
     id = session["user"]["id"]
@@ -190,7 +231,7 @@ def create_poll():
 
     # If user is not the administrator, increment next_poll_allowed by one day
     if session["user"]["email"] != "admin@polll.org":
-        next_poll_time += timedelta(days = 1)
+        next_poll_time += timedelta(days=1)
 
     # Update the current user's information in the database
     last_poll_created = last_poll_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -205,7 +246,7 @@ def create_poll():
 
     # Commit to the database and render the create.html template
     db.commit()
-    return redirect(url_for("home.create")) 
+    return redirect(url_for("home.create"))
 
 
 # Home page (user's polls)
@@ -225,7 +266,7 @@ def mypolls():
     """
     res = cur.execute(query, (session["user"]["id"],)).fetchall()
 
-    # Create a dictionary of polls 
+    # Create a dictionary of polls
     polls = [dict(poll) for poll in res]
 
     # Get the results for each poll using the appropriate handler
@@ -264,7 +305,7 @@ def response(poll_id):
     handler(request, poll)
 
     # Redirect to results to render the results
-    return redirect(url_for("home.result", poll_id = poll_id))
+    return redirect(url_for("home.result", poll_id=poll_id))
 
 
 # HTTP endpoint for refreshing the results
@@ -291,4 +332,3 @@ def result(poll_id):
     poll["results"] = handler(poll_id)
     poll["result_template"] = result_template(poll)
     return render_template(poll["result_template"], poll=poll)
-

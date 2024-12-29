@@ -14,7 +14,7 @@ def choose_one(request, poll):
     db = get_db()
     cur = db.cursor()
 
-    # Get arguments for the database operation 
+    # Get arguments for the database operation
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -38,7 +38,7 @@ def choose_one(request, poll):
     values = (answer_id, response_id)
     cur.execute(query, values)
 
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.commit()
 
 
@@ -49,7 +49,7 @@ def choose_many(request, poll):
     db = get_db()
     cur = db.cursor()
 
-    # Get arguments for the database operation 
+    # Get arguments for the database operation
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -74,7 +74,7 @@ def choose_many(request, poll):
         values = (answer_id, response_id)
         cur.execute(query, values)
 
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.commit()
 
 
@@ -85,7 +85,7 @@ def numeric_star(request, poll):
     db = get_db()
     cur = db.cursor()
 
-    # Get arguments for the database operation 
+    # Get arguments for the database operation
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -109,7 +109,7 @@ def numeric_star(request, poll):
     values = (rating, response_id)
     cur.execute(query, values)
 
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.commit()
 
 
@@ -120,7 +120,7 @@ def numeric_scale(request, poll):
     db = get_db()
     cur = db.cursor()
 
-    # Get arguments for the database operation 
+    # Get arguments for the database operation
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -144,7 +144,7 @@ def numeric_scale(request, poll):
     values = (rating, response_id)
     cur.execute(query, values)
 
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.commit()
 
 
@@ -155,7 +155,7 @@ def ranked_poll(request, poll):
     db = get_db()
     cur = db.cursor()
 
-    # Get arguments for the database operation 
+    # Get arguments for the database operation
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -180,9 +180,8 @@ def ranked_poll(request, poll):
         values = (answer_id, response_id, rank + 1)
         cur.execute(query, values)
 
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.commit()
-
 
 
 def tier_list(request, poll):
@@ -192,7 +191,7 @@ def tier_list(request, poll):
     db = get_db()
     cur = db.cursor()
 
-    # Get arguments for the database operation 
+    # Get arguments for the database operation
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -218,6 +217,5 @@ def tier_list(request, poll):
         values = (answer_id, response_id, tier)
         cur.execute(query, values)
 
-    # Commit the changes to the database 
+    # Commit the changes to the database
     db.commit()
-

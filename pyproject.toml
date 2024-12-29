@@ -7,6 +7,11 @@ name = "Polll"
 version = "0.1.0"
 
 [tool.pytest.ini_options]
-addopts = [
-    "--import-mode=importlib",
-]
+addopts = ["--import-mode=importlib"]
+
+[tool.djlint]
+indent=2
+blank_line_before_tag="load,extends"
+blank_line_after_tag="load,extends"
+max_line_length=80
+profile="jinja"

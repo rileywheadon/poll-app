@@ -1,21 +1,19 @@
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
-
-<div class="my-2">
-  {% for answer in poll.answers %}
-    <div class="border border-nord-3 dark:border-nord-5 w-48 px-2 py-1 mt-[-1px] ml-[-1px] cursor-pointer select-none"
-         draggable="true" 
-         ondragstart="rankedDragStart(event)"
-         ondragenter="rankedDragEnter(event)" 
-         ondragover="cancelDefault(event)" 
-         ondragexit="rankedDragExit(event)" 
-         ondrop="rankedDrop(event)">
-      <input type="hidden" name="answer_id" value="{{ answer.id }}">
-      <span class="pointer-events-none">::</span>
-      <span class="pointer-events-none">{{ answer.answer }}</span>
-    </div>
-  {% endfor %}
-</div>
-
+  <div class="my-2">
+    {% for answer in poll.answers %}
+      <div class="border border-nord-3 dark:border-nord-5 w-48 px-2 py-1 mt-[-1px] ml-[-1px] cursor-pointer select-none"
+           draggable="true"
+           ondragstart="rankedDragStart(event)"
+           ondragenter="rankedDragEnter(event)"
+           ondragover="cancelDefault(event)"
+           ondragexit="rankedDragExit(event)"
+           ondrop="rankedDrop(event)">
+        <input type="hidden" name="answer_id" value="{{ answer.id }}">
+        <span class="pointer-events-none">::</span>
+        <span class="pointer-events-none">{{ answer.answer }}</span>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}

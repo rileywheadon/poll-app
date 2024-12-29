@@ -1,37 +1,44 @@
-<div class="poll-card border-2 border-nord-0 dark:border-nord-4 rounded-md mb-4 overflow-hidden">
-
+<div
+  class="poll-card border-2 border-nord-0 dark:border-nord-4 rounded-md mb-4 overflow-hidden"
+>
   <!-- Include the poll question -->
   <div class="flex flex-row py-4 px-8 bg-nord-4 dark:bg-nord-2">
     <p class="text-xl font-bold">{{ poll.question }}</p>
   </div>
-  <form class="px-8 py-4"
-      hx-post="/home/response/{{ poll.id }}" 
-      hx-target="closest .poll-card"
-      hx-trigger="submit"
-      hx-swap="outerHTML">
-
-    {% block poll_content %}
-
-    {% endblock %}
+  <form
+    class="px-8 py-4"
+    hx-post="/home/response/{{ poll.id }}"
+    hx-target="closest .poll-card"
+    hx-trigger="submit"
+    hx-swap="outerHTML"
+  >
+    {% block poll_content %} {% endblock %}
 
     <!-- Include the submit button -->
     <div class="flex flex-row text-l items-center mt-4">
       <p><i>Created by {{ poll.creator }}</i></p>
-      <button class="ml-auto w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0">
+      <button
+        class="ml-auto w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+      >
         Share
         <i class="ml-1 fa fa-share-from-square"></i>
       </button>
-      <button class="ml-2 w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0">
+      <button
+        class="ml-2 w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+        hx-post="/home/report/{{ poll.id }}"
+        hx-confirm="Are you sure you want to report this poll?"
+        hx-swap="outerHTML"
+      >
         Report
         <i class="ml-1 fa fa-triangle-exclamation"></i>
       </button>
-      <button class="ml-2 w-24 h-10 rounded-md py-1 bg-nord-15 text-nord-0" 
-          type="submit">
+      <button
+        class="ml-2 w-24 h-10 rounded-md py-1 bg-nord-15 text-nord-0"
+        type="submit"
+      >
         Submit
         <i class="ml-1 fa fa-paper-plane"></i>
       </button>
     </div>
-
   </form>
-
 </div>

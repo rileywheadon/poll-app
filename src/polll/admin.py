@@ -6,34 +6,27 @@ from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
 from polll.models import on_cooldown, get_days_behind
 
-admin = Blueprint('admin', __name__, template_folder = 'templates/admin')
+admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
 
 @admin.route("/admin/users")
 @requires_admin
 def users():
 
-
-
-    session["admin"] = True
-    session["tab"] = "users"
-    return render_template("users.html", session=session) 
-
-
-@admin.route("/admin/users/usersearch")
-@requires_admin
-def usersearch():
-
     # Get a database connection
     db = get_db()
     cur = db.cursor()
 
-    # Get the headers from the HTTP request
-    column = request.args.get("search_column")
-    value = "%{}%".format(request.args.get("search_value"))
+    # Get the headers from the HTTP request, if they exist
+    column = request.args.get("column") or "username"
+    search = request.args.get("search") or ""
+
+    # Include similar values in the query, unless we are searching by ID
+    value = "%{}%".format(search) if column != "id" else search
 
     # Check that the search column is valid to prevent SQL injection
-    if column not in ["username", "email"]: return ""
+    if column not in ["username", "email", "id"]:
+        return ""
 
     # Query the database for all users matching the search
     query = f"""
@@ -45,12 +38,20 @@ def usersearch():
     res = cur.execute(query, (value,))
     users = [dict(row) for row in res.fetchall()]
 
-    # If there are no users, just return nothing
-    if not users: return ""
-
     # Update the cooldown state for each user
-    for user in users: user["on_cooldown"] = on_cooldown(user)
-    return render_template("users-list.html", users=users)
+    for user in users:
+        user["on_cooldown"] = on_cooldown(user)
+
+    # If the request is internal, only re-render the user list
+    target = request.headers.get("HX-Target")
+    if target and target == "#users-list":
+        return render_template("users-list.html", users=users)
+
+    # Render the page with all searched users
+    session["admin"] = True
+    session["tab"] = "users"
+    form = {"column": column, "search": search}
+    return render_template("users.html", session=session, users=users, form=form)
 
 
 @admin.route("/admin/users/resetcooldown")
@@ -78,42 +79,38 @@ def resetcooldown():
     return ""
 
 
-
 @admin.route("/admin/polls")
 @requires_admin
 def polls():
-
-
-    session["admin"] = True
-    session["tab"] = "polls"
-    return render_template("polls.html", session=session) 
-
-
-@admin.route("/admin/pollsearch", methods=["GET", "POST"])
-@requires_admin
-def pollsearch():
 
     # Get a db connection
     db = get_db()
     cur = db.cursor()
 
-    # Get the request data
-    column = request.form.get("search_column")
-    value = "%{}%".format(request.form.get("search_value"))
-    sort = request.form.get("search_sort")
-    direction = request.form.get("search_sort_direction")
+    # Get the request data or a default value if not provided
+    column = request.args.get("column") or "creator"
+    search = request.args.get("search") or ""
+    sort = request.args.get("sort") or "date_created"
+    direction = request.args.get("sort_direction") or "DESC"
+
+    # Include similar values in the query, unless we are searching by ID
+    value = "%{}%".format(search) if column != "poll.id" else search
 
     # Construct a query for selecting the poll types
-    types = tuple(request.form.getlist("search_type"))
+    types = tuple(request.args.getlist("search_type") or [])
     type_query = " OR ".join([f"poll.poll_type = '{t}'" for t in types])
 
     # If no poll types selected, get all the poll types
-    if type_query == "": type_query = "True"
+    if type_query == "":
+        type_query = "True"
 
     # Check column, sort, direction are valid to avoid SQL injection
-    if column not in ["creator", "question"]: return ""
-    if sort not in ["date_created"]: return ""
-    if direction not in ["DESC", "ASC"]: return ""
+    if column not in ["creator", "question", "poll.id"]:
+        return ""
+    if sort not in ["date_created"]:
+        return ""
+    if direction not in ["DESC", "ASC"]:
+        return ""
 
     # Create the query and build the values tuple
     poll_query = f"""
@@ -136,8 +133,16 @@ def pollsearch():
         res = cur.execute(answer_query, (poll["id"],))
         poll["answers"] = [dict(answer) for answer in res.fetchall()]
 
-    print(polls)
-    return render_template("admin/polls-list.html", polls=polls)
+    # If the request is internal, only re-render the user list
+    target = request.headers.get("HX-Target")
+    if target and target == "#polls-list":
+        return render_template("polls-list.html", polls=polls)
+
+    # Otherwise, render the entire users page
+    session["admin"] = True
+    session["tab"] = "polls"
+    form = {"column": column, "search": search}
+    return render_template("polls.html", session=session, polls=polls, form=form)
 
 
 @admin.route("/admin/polldelete/<poll_id>")
@@ -172,8 +177,8 @@ def polldelete(poll_id):
     )
     """
     secondary_tables = [
-        "empty_response", 
-        "discrete_response", 
+        "empty_response",
+        "discrete_response",
         "numeric_response",
         "ranked_response",
         "tiered_response"
@@ -184,7 +189,7 @@ def polldelete(poll_id):
     cur = db.cursor()
 
     for table in secondary_tables:
-        query = secondary_response_query.format(table = table)
+        query = secondary_response_query.format(table=table)
         print(query)
         cur.execute(query, (poll_id,))
 
@@ -199,9 +204,23 @@ def polldelete(poll_id):
 @requires_admin
 def reports():
 
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Get the reports, from newest to oldest
+    query = """
+    SELECT *
+    FROM report
+    ORDER BY timestamp DESC
+    """
+    res = cur.execute(query).fetchall()
+    reports = [dict(report) for report in res]
+
+    # If there are no reports, return nothing
     session["admin"] = True
     session["tab"] = "reports"
-    return render_template("reports.html", session=session) 
+    return render_template("reports.html", session=session, reports=reports)
 
 
 @admin.route("/admin/stats")
@@ -231,7 +250,7 @@ def stats():
     """
 
     # Execute the queries on each date
-    count = lambda q, d : dict(cur.execute(q, (d,)).fetchone())["count"]
+    def count(q, d): return dict(cur.execute(q, (d,)).fetchone())["count"]
     for day in days:
         stats["responses"].append(count(response_query, day))
         stats["polls"].append(count(poll_query, day))
@@ -239,7 +258,3 @@ def stats():
     session["admin"] = True
     session["tab"] = "stats"
     return render_template("stats.html", session=session, stats=stats)
-
-
-
-

@@ -139,7 +139,7 @@ def ranked_poll(poll_id):
 
 def tier_list(poll_id):
     print("In result_handlers.tier_list")
- 
+
     # Connect to the database
     db = get_db()
     cur = db.cursor()
