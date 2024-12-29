@@ -27,6 +27,13 @@ module.exports = {
           'nord-15': '#B48EAD',
       })
     },
+    /* Custom screen breakpoints*/
+    screens: {
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1536px',
+      },
   },
   plugins: [],
 }
