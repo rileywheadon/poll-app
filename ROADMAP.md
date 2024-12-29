@@ -34,7 +34,6 @@ These are development items that I think someone other than me (Riley) could do.
 
 ## 1: Minimum Viable App
 
-- [ ] Reports
 - [ ] Custom Results Interface
   - [ ] Choose One
   - [ ] Choose Many
