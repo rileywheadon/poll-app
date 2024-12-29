@@ -2,10 +2,10 @@
 
 ## Subscriptions
 
-| Subscription           | Expiry     | Price    |
-| ---------------------- | ---------- | -------- |
-| [polll.org](polll.org) | 11/24/2025 | $10/year |
-| admin@polll.org        | 02/23/2025 | $2/month |
+| Subscription            | Expiry     | Price     |
+|-------------------------|------------|-----------|
+| [polll.org](polll.org)  | 11/24/2025 | $10/year  |
+| admin@polll.org         | 02/23/2025 | $2/month  |
 
 ## Technology Stack
 

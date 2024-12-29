@@ -4,13 +4,13 @@ from urllib.parse import quote_plus, urlencode
 from os import environ as env
 from flask import Flask, redirect, render_template, session, url_for
 
-def create_app(test_config = None):
 
+def create_app(test_config=None):
     # Create a new Flask application
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY = env.get("APP_SECRET_KEY"),
-        DATABASE = os.path.join(app.instance_path, "polll.sqlite")
+        SECRET_KEY=env.get("APP_SECRET_KEY"),
+        DATABASE=os.path.join(app.instance_path, "polll.sqlite")
     )
 
     # Load the instance config, if it exists, when not testing
@@ -21,13 +21,11 @@ def create_app(test_config = None):
     else:
         app.config.update(test_config)
 
-
     # Ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
 
     # Register the database commands
     from . import db
@@ -44,7 +42,6 @@ def create_app(test_config = None):
         client_kwargs={"scope": "openid profile email"},
         server_metadata_url=f'https://{domain}/.well-known/openid-configuration'
     )
-
 
     # Register the authentication, poll, and admin blueprints
     from polll.auth import auth
