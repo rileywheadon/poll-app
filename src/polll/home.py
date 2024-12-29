@@ -73,7 +73,7 @@ def feed():
     # Render the template
     session["admin"] = False
     session["tab"] = "feed"
-    return render_template("home/feed.html", session = session)
+    return render_template("home/feed.html", session=session, polls=polls)
 
 
 # Home page (response history)
