@@ -1,20 +1,9 @@
-{% include "home/menu.html" %}
+{% extends "home/home.html" %}
+
+{% block home_content %}
 
 {% for poll in polls %}
-
-  <!-- Display the results, including the correct results display template -->
-  {% if poll.poll_type == "CHOOSE_ONE" %}
-    {% include "results/choose-one.html" %}
-  {% elif poll.poll_type == "CHOOSE_MANY" %}
-    {% include "results/choose-many.html" %}
-  {% elif poll.poll_type == "NUMERIC_STAR" %}
-    {% include "results/numeric-star.html" %}
-  {% elif poll.poll_type == "NUMERIC_SCALE" %}
-    {% include "results/numeric-scale.html" %}
-  {% elif poll.poll_type == "RANKED_POLL" %}
-    {% include "results/ranked-poll.html" %}
-  {% elif poll.poll_type == "TIER_LIST" %}
-    {% include "results/tier-list.html" %}
-  {% endif %}
-
+  {% include poll["result_template"] %} 
 {% endfor %}
+
+{% endblock %}

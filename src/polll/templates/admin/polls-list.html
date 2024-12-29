@@ -1,0 +1,70 @@
+<div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-4 border-collapse my-2">
+{% for poll in polls %}
+<div class="border-x border-b border-nord-0 dark:border-nord-4 p-4"
+    id="poll-card-{{ poll.id }}">
+
+  <div class="flex flex-row" onclick="toggle_poll_information({{ poll.id }})">
+    <p class="text-l">
+      <span class="font-bold">{{ poll.question }}</span> 
+    </p>
+    <button class="ml-auto">
+      <i class="fa fa-angle-right" id="poll-toggle-{{ poll.id }}"></i>
+    </button>
+  </div>
+
+  <div class="hidden" id="poll-info-{{ poll.id }}">
+
+    <div class="ml-2">
+      <ul class="list-disc list-inside">
+        {% for answer in poll.answers %}
+        <li>{{ answer.answer }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <table class="border-collapse my-4">
+      <tbody>
+        <tr>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            Creator
+          </td>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            {{ poll.creator }} ({{ poll.creator_email }})
+          </td>
+        </tr>
+        <tr>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            Date Created
+          </td>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            {{ poll.date_created }}
+          </td>
+        </tr>
+        <tr>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            Poll Type
+          </td>
+          <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+            {{ poll.poll_type }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="flex flex-row">
+      <input class="hidden" name="poll_id" value="{{ poll.id }}">
+      <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-4 h-8 rounded-md"
+          hx-get="{{ url_for('admin.polldelete', poll_id = poll.id) }}"
+          hx-include="previous input"
+          hx-target="#poll-card-{{ poll.id }}"
+          hx-swap="delete"
+          hx-confirm="Are you sure you want to delete this poll?">
+        Delete Poll<i class="fa fa-trash ml-2"></i>
+      </button>
+    </div>
+
+  </div>
+
+</div>
+{% endfor %}
+</div>

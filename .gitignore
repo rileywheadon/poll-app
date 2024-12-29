@@ -1,13 +1,6 @@
 **/__pycache__/**
 **/.DS_Store
-**/tailwindcss
-**/tailwindcss-linux
 
-src/instance/**
 htmlcov/**
 .venv/**
 .coverage
-
-cert.pem
-key.pem
-.env
