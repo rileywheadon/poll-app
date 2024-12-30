@@ -594,14 +594,14 @@ video {
   margin-bottom: 1rem;
 }
 
-.my-auto {
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
 .my-6 {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.my-auto {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .mb-2 {
@@ -654,10 +654,6 @@ video {
 
 .flex {
   display: flex;
-}
-
-.inline-flex {
-  display: inline-flex;
 }
 
 .table {
@@ -1057,10 +1053,6 @@ video {
 
 .underline {
   text-decoration-line: underline;
-}
-
-.accent-nord-10 {
-  accent-color: #5E81AC;
 }
 
 .accent-nord-15 {
