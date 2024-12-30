@@ -1,0 +1,59 @@
+{% if not on_cooldown %}
+<div class="flex mb-6 bg-nord-4 dark:bg-nord-2 px-8 py-4">
+  <span class="my-auto text-nord-0 dark:text-nord-4 text-l">Poll Type:</span>
+  <select
+    class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg h-10 mx-2"
+    name="poll_type"
+    id="poll-type-selector"
+    onchange="update_poll_editor()"
+  >
+    <option value="CHOOSE_ONE">Choose One</option>
+    <option value="CHOOSE_MANY">Choose Many</option>
+    <option value="NUMERIC_STAR">Stars (0-5)</option>
+    <option value="NUMERIC_SCALE">Scale (0-100)</option>
+    <option value="RANKED_POLL">Ranking</option>
+    <option value="TIER_LIST">Tier List</option>
+  </select>
+  <button
+    id="answer-add"
+    class="rounded-lg ml-auto h-10 w-32 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+    hx-get="{{ url_for('home.create_answer') }}"
+    hx-swap="beforeend"
+    hx-target="#answer-editor"
+  >
+    Add Answer
+  </button>
+</div>
+<div class="flex flex-row px-8 mb-6">
+  <input
+    class="grow h-10 rounded-lg px-4 py-2 bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-6 hover:border-2 hover:border-nord-0 hover:dark:border-nord-4 placeholder:text-nord-3 placeholder:dark:text-nord-4"
+    placeholder="Question"
+    name="poll_question"
+  />
+</div>
+<div id="answer-editor" class="flex flex-col space-y-3 px-20 mb-6 mx-auto">
+  {% include "home/create-answer.html" %}
+</div>
+<div class="flex flex-row mb-6 px-8">
+  <button
+    class="ml-auto rounded-lg h-10 w-32 bg-nord-15 text-nord-0 p-2"
+    hx-get="{{ url_for('home.create_poll') }}"
+    hx-target="#create-card"
+    hx-swap="innerHTML"
+    hx-include="[name='poll_type'], [name='poll_question'], [name='poll_answer']"
+    hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
+  >
+    Create Poll
+  </button>
+</div>
+{% else %}
+<div class="flex flex-row text-center items-center justify-center py-16">
+  <p class="text-2xl">
+    Sorry! We only allow users to make one poll a day.
+    <br />
+    <br />
+    You'll be allowed to make another poll at {{ session.user.next_poll_allowed
+    }} UTC.
+  </p>
+</div>
+{% endif %}
