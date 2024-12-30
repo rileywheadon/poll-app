@@ -1,4 +1,4 @@
-function updateIcon() {
+function update_icon() {
   const icon = document.getElementById("colour-icon");
   if (icon !== null) {
     if (localStorage.theme == "light") {
@@ -11,36 +11,36 @@ function updateIcon() {
   }
 }
 
-function setLightMode() {
+function set_light_mode() {
   localStorage.theme = "light";
   document.body.classList.remove("dark");
 }
 
-function setDarkMode() {
+function set_dark_mode() {
   localStorage.theme = "dark";
   document.body.classList.add("dark");
 }
 
-function toggleColourScheme() {
+function toggle_colour_scheme() {
   if (localStorage.theme == "dark") {
-    setLightMode();
+    set_light_mode();
   } else {
-    setDarkMode();
+    set_dark_mode();
   }
-  updateIcon();
+  update_icon();
 }
 
 // Add event listeners to ensure correct theme
 ['load','htmx:afterSettle'].forEach( evt => 
   window.addEventListener(evt, function() {
     if (localStorage.theme === null) {
-      setDarkMode();
+      set_dark_mode();
     } else if (localStorage.theme == "dark") {
-      setDarkMode();
+      set_dark_mode();
     } else {
-      setLightMode();
+      set_light_mode();
     }
-    updateIcon();
+    update_icon();
   })
 );
 

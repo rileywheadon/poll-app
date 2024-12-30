@@ -2,22 +2,35 @@
 
 {% block title %}Polll - Home{% endblock %}
 {% block body %}
+
   <!-- Settings modal (hidden by default) -->
   {% include "settings.html" %}
+
   <!-- Background -->
-  <div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-1">
+  <div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-0">
+
     {% include "navbar.html" %}
+
     <!-- Document Body -->
-    <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+    <div class="flex sm:flex-col md:flex-row pt-4">
+
       <!-- Left Sidebar -->
-      <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
-      <!-- Main Column (Polls) -->
-      <main role="main" class="w-full flex-grow pt-1 px-3">
+      <div class="md:w-2/12 p-2">
+
         {% include "home/menu.html" %}
+
+      </div>
+
+      <!-- Main Column (Polls) -->
+      <div class="md:w-8/12 p-2">
+
         {% block home_content %}{% endblock %}
-      </main>
+
+      </div>
+
       <!--Right Sidebar-->
-      <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
+      <div class="md:w-2/12 p-2"></div>
+
     </div>
   </div>
 {% endblock %}
