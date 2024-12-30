@@ -58,3 +58,9 @@ function toggle_poll_information(poll_id) {
     toggle.classList.add("fa-angle-right");
   }
 }
+
+function translate_home_sidebar() {
+    document.getElementById("logo-sidebar").classList.toggle("-translate-x-full");
+    document.getElementById("hmbr-btn").classList.toggle("translate-x-8");
+}
+

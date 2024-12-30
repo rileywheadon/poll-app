@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-    Polll - Home
+     Home
 {% endblock %}
 
 {% block body %}
@@ -17,27 +17,19 @@
   <!-- Document Body -->
   <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
 
-  <!-- Left Sidebar -->
-  <div class="w-fixed w-full flex-shrink flex-grow-0 px-4">
-
-  </div>
-
   <!-- Main Column (Polls) -->
-  <main role="main" class="w-full flex-grow pt-1 px-3">
+    <main role="main" class="w-full flex-grow pt-1 px-3">
     
     {% include "home/menu.html" %}
+      <!-- Important breakpoints for the sidebar-->
+      <div class="p-1 sm:ml-32 md:ml-48 lg:ml-64">
+        {% block home_content %}
+      </div>
 
-    {% block home_content %}
+      {% endblock %}
 
-    {% endblock %}
-
-  </main>
-  
-  <!--Right Sidebar-->
-  <div class="w-fixed w-full flex-shrink flex-grow-0 px-2">
+    </main>
 
   </div>
-
 </div>
-
 {% endblock %}
