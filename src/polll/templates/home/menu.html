@@ -1,44 +1,49 @@
 <!-- Menu for feed/history/create/my polls -->
-<div
-  class="flex mb-4 rounded-lg border-2 border-nord-2 bg-nord-4 dark:border-nord-4 dark:bg-nord-0 overflow-hidden"
->
-  <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('home.feed') }}"
-  >
-    <span class="{% if session.tab == 'feed' %} underline {% endif %}">
-      Feed
-    </span>
-    <i class="ml-2 fa-solid fa-fire"></i>
-  </a>
+<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-32 md:w-48 lg:w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
 
-  <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('home.history') }}"
-  >
-    <span class="{% if session.tab == 'history' %} underline {% endif %}">
-      History
-    </span>
-    <i class="ml-2 fa-solid fa-book"></i>
-  </a>
+  <div class="h-full px-3 py-4 overflow-y-auto bg-nord-5 border-nord-4 dark:border-nord-4 dark:bg-nord-0">
+    <ul class="space-y-6 ml-2 md:ml-4 text-left">
+      <li>
+          <a href="/">
+              <img class="w-24 p-2 md:w-36 md:p-6" src="../static/assets/logo-name.svg">
+          </a>
+      </li>
+      <li>
+        <a class="text-nord-0 dark:text-nord-6 border-nord-2 dark:border-nord-4 w-24 h-10 font-medium"
+            href="{{ url_for('home.feed') }}">
+          <span class="{% if session.tab == 'feed' %} font-black {% endif %}">Feed</span>
+          <i class="ml-2 fa-solid fa-fire"></i>
+        </a>
+      </li>
+      <li>
+        <a class="text-nord-0 dark:text-nord-6 border-nord-2 dark:border-nord-4 w-24 h-10 font-medium"
+            href="{{ url_for('home.history') }}">
+        <span class="{% if session.tab == 'history' %} font-black {% endif %}">History</span>
+        <i class="ml-2 fa-solid fa-book"></i>
+        </a>
+      </li>
+      <li>
+        <a class="text-nord-0 dark:text-nord-6 border-nord-2 dark:border-nord-4 w-24 h-10 font-medium"
+            href="{{ url_for('home.create') }}">
+        <span class="{% if session.tab == 'create' %} font-black {% endif %}">Create</span>
+        <i class="ml-2 fa-solid fa-pen underline"></i>
+        </a>
+      </li>
+      <li>
+        <a class="text-nord-0 dark:text-nord-6 w-24 h-10 font-medium"
+            href="{{ url_for('home.mypolls') }}">
+        <span class="{% if session.tab == 'mypolls' %} font-black {% endif %}">My Polls</span>
+        <i class="ml-2 fa-solid fa-user"></i>
+        </a>
+      </li>
+      <li>
+        <a class="text-nord-0 dark:text-nord-6 w-24 h-10 font-medium"
+            href="/">
+        <span>Logout</span>
+        <i class="ml-2 fa-solid fa-left-long"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
 
-  <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('home.create') }}"
-  >
-    <span class="{% if session.tab == 'create' %} underline {% endif %}">
-      Create
-    </span>
-    <i class="ml-2 fa-solid fa-plus"></i>
-  </a>
-
-  <a
-    class="text-nord-0 dark:text-nord-6 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('home.mypolls') }}"
-  >
-    <span class="{% if session.tab == 'mypolls' %} underline {% endif %}">
-      My Polls
-    </span>
-    <i class="ml-2 fa-solid fa-user"></i>
-  </a>
-</div>
+</aside>

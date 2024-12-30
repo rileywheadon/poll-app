@@ -67,7 +67,13 @@ In order to run the app locally, you will need a [Virtual Environment](https://d
 
 To run the app, type `python3 src/app.py` into a terminal from the root directory.
 
-If you are making changes to the HTML using TailwindCSS, you will also need to enable the Tailwind watcher. To do this, open another terminal window (separate from the one that is running the app), `cd` to `src/polll/static` and type in the following command:
+If you are making changes to the HTML using TailwindCSS, you will need to install and enable the Tailwind watcher. To install Tailwind for the first time on MacOS arm64, paste the following code in a terminal window:
+```
+curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-macos-arm64
+chmod +x tailwindcss-macos-arm64
+mv tailwindcss-macos-arm64 tailwindcss
+```
+To enable the Tailwind watcher, open a separate terminal window from the one that is running the app, `cd` to `src/polll/static` and type in the following command:
 
 ```
 ./tailwindcss -i input.css -o output.css --watch
