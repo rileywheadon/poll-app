@@ -23,9 +23,10 @@ def anonymous(poll_code):
     # Recover the poll ID, query the database
     poll_id = url_to_id(poll_code)
     poll_query = """
-    SELECT *
+    SELECT poll.*, user.username AS creator
     FROM poll
-    WHERE id = ?
+    INNER JOIN user ON poll.creator_id = user.id
+    WHERE poll.id = ?
     """
     poll = dict(cur.execute(poll_query, (poll_id,)).fetchone())
 
