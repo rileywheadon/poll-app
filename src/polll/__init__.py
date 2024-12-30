@@ -43,11 +43,15 @@ def create_app(test_config=None):
         server_metadata_url=f'https://{domain}/.well-known/openid-configuration'
     )
 
-    # Register the authentication, poll, and admin blueprints
+    # Import the authenticaiton, home, admin, and anonymous poll blueprints
     from polll.auth import auth
     from polll.home import home
     from polll.admin import admin
+    from polll.poll import poll
+
+    # Register the authenticaiton, home, admin, and anonymous poll blueprints
     app.register_blueprint(auth)
     app.register_blueprint(home)
     app.register_blueprint(admin)
+    app.register_blueprint(poll)
     return app

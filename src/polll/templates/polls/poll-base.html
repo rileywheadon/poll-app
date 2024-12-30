@@ -14,11 +14,13 @@
   >
     {% block poll_content %} {% endblock %}
 
-    <!-- Include the submit button -->
+    <!-- Include the submit button, share button, and report button -->
     <div class="flex flex-row text-l items-center mt-4">
       <p><i>Created by {{ poll.creator }}</i></p>
       <button
         class="ml-auto w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+        onclick="navigator.clipboard.writeText('{{ poll.url }}')"
+        type="button"
       >
         Share
         <i class="ml-1 fa fa-share-from-square"></i>

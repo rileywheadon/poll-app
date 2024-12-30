@@ -1,8 +1,9 @@
+from flask import request
 from datetime import datetime, timedelta
+import base64
+
 
 # Helper function to check if a user is on cooldown from making a poll
-
-
 def on_cooldown(user_dict):
 
     next_poll_allowed = user_dict["next_poll_allowed"]
@@ -30,3 +31,15 @@ def poll_template(poll):
 def get_days_behind(days):
     time = datetime.utcnow() - timedelta(days=days)
     return datetime.strftime(time, '%Y-%m-%d %H:%M:%S')
+
+
+# Helper functions to encode/decode a poll ID as a URL string
+def id_to_url(n):
+    hash = ((0x0000FFFF & n) << 16) + ((0xFFFF0000 & n) >> 16)
+    code = base64.urlsafe_b64encode(str(hash).encode()).decode()
+    return f"{request.scheme}://{request.host}/poll/{code}"
+
+
+def url_to_id(code):
+    hash = int(base64.urlsafe_b64decode(code.encode()).decode())
+    return ((0x0000FFFF & hash) << 16) + ((0xFFFF0000 & hash) >> 16)
