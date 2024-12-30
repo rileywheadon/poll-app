@@ -219,10 +219,13 @@ def create_poll():
     if poll_type not in ["NUMERIC_STAR", "NUMERIC_SCALE"]:
         poll_id = poll.fetchone()["id"]
         columns = "(poll_id, answer)"
+        query = """
+        INSERT INTO poll_answer (poll_id, answer)
+        VALUES (?, ?)
+        """
         for answer in answers:
             values = (poll_id, answer)
-            cur.execute(
-                f"INSERT INTO poll_answer {columns} VALUES (?, ?)", values)
+            cur.execute(query, values)
 
     # Update the last poll created time for the user
     id = session["user"]["id"]
@@ -237,7 +240,12 @@ def create_poll():
     last_poll_created = last_poll_time.strftime('%Y-%m-%d %H:%M:%S')
     next_poll_allowed = next_poll_time.strftime('%Y-%m-%d %H:%M:%S')
     values = (last_poll_created, next_poll_allowed, creator_id)
-    query = f"UPDATE user SET last_poll_created = ?, next_poll_allowed = ? WHERE id=?"
+
+    query = """
+    UPDATE user 
+    SET last_poll_created = ?, next_poll_allowed = ? 
+    WHERE id=?
+    """
     cur.execute(query, values)
 
     # Update the current user's information in the session
@@ -246,7 +254,8 @@ def create_poll():
 
     # Commit to the database and render the create.html template
     db.commit()
-    return redirect(url_for("home.create"))
+    cooldown = on_cooldown(session["user"])
+    return render_template("home/create-card.html", session=session, on_cooldown=cooldown)
 
 
 # Home page (user's polls)
