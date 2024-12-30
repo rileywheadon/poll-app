@@ -44,7 +44,7 @@ def users():
 
     # If the request is internal, only re-render the user list
     target = request.headers.get("HX-Target")
-    if target and target == "#users-list":
+    if target and target == "users-list":
         return render_template("users-list.html", users=users)
 
     # Render the page with all searched users
@@ -135,7 +135,7 @@ def polls():
 
     # If the request is internal, only re-render the user list
     target = request.headers.get("HX-Target")
-    if target and target == "#polls-list":
+    if target and target == "polls-list":
         return render_template("polls-list.html", polls=polls)
 
     # Otherwise, render the entire users page
@@ -190,7 +190,6 @@ def polldelete(poll_id):
 
     for table in secondary_tables:
         query = secondary_response_query.format(table=table)
-        print(query)
         cur.execute(query, (poll_id,))
 
     cur.execute(response_query, (poll_id,))
