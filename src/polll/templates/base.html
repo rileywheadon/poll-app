@@ -8,7 +8,8 @@
   <link href="../static/styles/star-selector.css" rel="stylesheet">
 
   <!-- Import HTMX and FontAwesome -->
-  <script src="https://unpkg.com/htmx.org@2.0.3"></script>
+<!--<script src="https://unpkg.com/htmx.org@2.0.3"></script> troubleshooting-->
+  <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
 
   <!-- Custom Scripts -->
@@ -16,7 +17,9 @@
   <script src="{{ url_for('static', filename='scripts/dark-mode.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/ui.js') }}"></script>
 
+  <!-- Title + Tab Icon -->
   <title>{% block title %}{% endblock %}</title>
+  <link rel="icon" href="../static/assets/logo-name.svg" />
 </head>
 
 <html class="overscroll-none">

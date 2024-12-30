@@ -1,26 +1,31 @@
 <!-- Header -->
-<div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-3 dark:border-nord-4 dark:bg-nord-0">
+<div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-4 dark:border-nord-2 dark:bg-nord-0">
 
   <!-- Logo image, also redirects to home -->
   <a href="/">
-    <img class="w-36 p-6" src="../static/assets/logo-name.svg">
+    <img class="w-24 p-2 md:w-36 md:p-6" src="../static/assets/logo-name.svg">
   </a>
-  
-  <!-- Settings menu -->
-  <div class="ml-auto text-xl px-2 mr-4">
-    <p>
-      Hello, 
-      <a class="underline" onclick="open_settings()">{{ session.user.username }}</a>
-      !
-    </p>
+
+    <!-- Mobile hamburger icon - Source: https://flowbite.com/docs/components/sidebar/#logo-branding-->
+  <button onclick="translate_home_sidebar()" id="hmbr-btn" data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="transition-transform sm:translate-x-0 inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden dark:text-gray-400">
+     <span class="sr-only">Open sidebar</span>
+     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+     <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+     </svg>
+  </button>
+
+  <!-- Settings menu-->
+  <div class="ml-auto px-2 mr-2">
+    <a class="w-10 h-10 md:w-12 md:h-12" onclick="open_settings()">
+      <i id="settings-icon" class="fas fa-solid fa-gear text-2xl md:text-3xl cursor-pointer"></i>
+    </a>
   </div>
 
-  <!-- Light/dark mode toggle -->
-  <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 mr-4 flex justify-center items-center" onclick="toggleColourScheme()">
-    <i id="colour-icon" class="fas fa-moon text-2xl"></i>
+  <!-- Light/dark mode toggle (maybe remove for mobile to remove clutter?)-->
+  <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-8 h-8 md:w-10 md:h-10 mr-4 flex justify-center items-center " onclick="toggleColourScheme()">
+    <i id="colour-icon" class="fas fa-moon text-sm md:text-xl"></i>
   </button>
-  
-  <!-- Admin panel, if loged in as administrator --> 
+  <!-- Admin panel, if logged in as administrator -->
   {% if session.user.email == "admin@polll.org" %}
     {% if session.admin %}
       <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
@@ -35,11 +40,10 @@
     {% endif %}
   {% endif %}
 
-  <!-- Log Out button -->
-  <a class="bg-nord-8 dark:bg-nord-10 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" 
-      hx-boost="false" 
-      href="{{ url_for('auth.logout') }}">
-    Log Out
-  </a>
+  <!--Profile button (I don't know if an account page is a feature yet, and I don't want to touch the backend,
+  so this button doesn't do anything at the moment)-->
+  <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-8 h-8 md:w-10 md:h-10 mr-4 flex justify-center items-center">
+    <i id="profile-icon" class="fas f-solid fa-user text-sm md:text-xl"></i>
+  </button>
 </div>
 
