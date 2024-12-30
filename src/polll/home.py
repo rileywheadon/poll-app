@@ -7,7 +7,7 @@ import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import on_cooldown, result_template, poll_template
+from polll.models import on_cooldown, result_template, poll_template, id_to_url
 
 # Create a blueprint for the poll endpoints
 home = Blueprint('home', __name__, template_folder='templates')
@@ -78,6 +78,7 @@ def feed():
         answers = cur.execute(answer_query, (id,)).fetchall()
         poll["answers"] = [dict(answer) for answer in answers]
         poll["poll_template"] = poll_template(poll)
+        poll["url"] = id_to_url(poll["id"])
         polls.append(poll)
 
     # Render the template
