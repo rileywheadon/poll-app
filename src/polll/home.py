@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 import time
-from flask import Blueprint, url_for, session, redirect, render_template, request
+
+from flask import Blueprint, url_for, session, redirect
+from flask import render_template, request, make_response
 
 import polll.responses as response_handlers
 import polll.results as result_handlers
@@ -49,7 +51,6 @@ def feed():
     user_id = session["user"]["id"]
     res = cur.execute(id_query, (user_id, user_id, user_id))
     ids = [response["id"] for response in res.fetchall()]
-    print(ids)
 
     # Query for getting the polls and the creator's username
     poll_query = """
@@ -64,6 +65,7 @@ def feed():
     SELECT *
     FROM poll_answer
     WHERE poll_id = ?
+    ORDER BY RANDOM()
     """
     polls = []
 
@@ -72,7 +74,6 @@ def feed():
 
         # Get the poll
         poll = dict(cur.execute(poll_query, (id,)).fetchone())
-        print(poll)
 
         # Get the poll answers and the template URL
         answers = cur.execute(answer_query, (id,)).fetchall()
@@ -114,7 +115,10 @@ def report(poll_id):
     db.commit()
 
     # Remove the poll from the User's feed
-    return ""
+    r = make_response("")
+    notification = '{"notification": "Poll Reported!"}'
+    r.headers.set("HX-Trigger", notification)
+    return r
 
 
 # Home page (response history)
@@ -207,9 +211,6 @@ def create_poll():
     date_created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     answers = request.args.getlist("poll_answer")
 
-    # Log the request information
-    print(f"Inserting Poll: ({poll_type}, {question}, {answers})")
-
     # Add the poll to the database
     columns = "(creator_id, question, poll_type, date_created)"
     values = (creator_id, question, poll_type, date_created)
@@ -248,15 +249,22 @@ def create_poll():
     WHERE id=?
     """
     cur.execute(query, values)
+    db.commit()
 
     # Update the current user's information in the session
     session["user"]["last_poll_created"] = last_poll_created
     session["user"]["next_poll_allowed"] = next_poll_allowed
 
-    # Commit to the database and render the create.html template
-    db.commit()
+    # Render the create.html template, while triggering a notification
     cooldown = on_cooldown(session["user"])
-    return render_template("home/create-card.html", session=session, on_cooldown=cooldown)
+    r = make_response(render_template(
+        "home/create-card.html",
+        session=session,
+        on_cooldown=cooldown
+    ))
+    notification = '{"notification": "Poll Submitted!"}'
+    r.headers.set("HX-Trigger", notification)
+    return r
 
 
 # Home page (user's polls)
@@ -300,14 +308,25 @@ def response(poll_id):
     db = get_db()
     cur = db.cursor()
 
-    # Query the poll in the response header
-    query = """
+    # Check that the user has not already responded to this poll
+    response_query = """
+    SELECT *
+    FROM response
+    WHERE user_id = ? AND poll_id =?
+    """
+    res = cur.execute(response_query, (session["user"]["id"], poll_id))
+
+    # If the user already responded, just render the results
+    if res.fetchone() != None:
+        return redirect(url_for("home.result", poll_id=poll_id))
+
+    # Otherwise get the poll in the response header
+    poll_query = """
     SELECT *
     FROM poll
     WHERE id = ?
     """
-
-    res = cur.execute(query, (poll_id,))
+    res = cur.execute(poll_query, (poll_id,))
     poll = dict(res.fetchone())
 
     # Submit the response to the database
