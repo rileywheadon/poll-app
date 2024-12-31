@@ -14,11 +14,13 @@ function update_icon() {
 function set_light_mode() {
   localStorage.theme = "light";
   document.body.classList.remove("dark");
+  // Set light-mode icon
 }
 
 function set_dark_mode() {
   localStorage.theme = "dark";
   document.body.classList.add("dark");
+  // Set dark-mode icon
 }
 
 function toggle_colour_scheme() {

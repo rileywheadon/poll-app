@@ -7,30 +7,40 @@
   {% include "settings.html" %}
 
   <!-- Background -->
-  <div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-0">
+  <div class="w-screen h-screen flex flex-col bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-0">
 
     {% include "navbar.html" %}
 
     <!-- Document Body -->
-    <div class="flex sm:flex-col md:flex-row pt-4">
+    <div class="flex overflow-hidden flex-row grow lg:pt-4">
 
       <!-- Left Sidebar -->
-      <div class="md:w-2/12 p-2">
+      <div class="hidden p-2 lg:block lg:w-2/12">
 
-        {% include "home/menu.html" %}
+        {% include "home/menu-sidebar.html" %}
 
       </div>
 
       <!-- Main Column (Polls) -->
-      <div class="md:w-8/12 p-2">
+      <div class="w-full overflow-auto lg:w-8/12 p-2">
 
         {% block home_content %}{% endblock %}
 
       </div>
 
       <!--Right Sidebar-->
-      <div class="md:w-2/12 p-2"></div>
+      <div class="hidden lg:block lg:w-2/12 p-2">
+
+      </div>
 
     </div>
+
+    <!-- Footer (only appears on small screens) -->
+    <div class="flex lg:hidden">
+
+      {% include "home/menu-footer.html" %}
+
+    </div>
+
   </div>
 {% endblock %}

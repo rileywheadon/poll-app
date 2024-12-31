@@ -1,33 +1,28 @@
 <!-- Header -->
-<div class="w-100% flex items-center border-b-2 bg-nord-5 border-nord-3 dark:border-nord-4 dark:bg-nord-0">
+<div class="w-100% flex space-x-4 items-center border-b-2 bg-nord-5 border-nord-4 dark:border-nord-3 dark:bg-nord-0 p-4 lg:p-6">
 
   <!-- Logo image, also redirects to home -->
   <a href="/">
-    <img class="w-36 p-6" src="../static/assets/logo-name.svg" />
+    <img class="h-10" src="../static/assets/logo-name.svg" />
   </a>
 
   <!-- Settings menu -->
-  <button class="ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 mr-4 flex justify-center items-center" onclick="open_settings()">
-    <i id="settings-icon" class="fas fa-gear text-2xl md:text-3xl cursor-pointer"></i>
+  <button class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 flex justify-center items-center" onclick="open_settings()">
+    <i id="settings-icon" class="fas fa-gear text-2xl cursor-pointer"></i>
   </button>
 
   <!-- Light/dark mode toggle -->
-  <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 mr-4 flex justify-center items-center" onclick="toggle_colour_scheme()">
-    <i id="colour-icon" class="fas fa-moon text-2xl md:text-3xl cursor-pointer"></i>
+  <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 flex justify-center items-center" onclick="toggle_colour_scheme()">
+    <i id="colour-icon" class="fas fa-moon text-2xl cursor-pointer"></i>
   </button>
-
-  <!-- Log Out button -->
-  <a class="bg-nord-8 dark:bg-nord-10 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" hx-boost="false" href="{{ url_for('auth.logout') }}">
-    Log Out
-  </a>
 
   <!-- Admin panel, if loged in as administrator -->
   {% if session.user.email == "admin@polll.org" %} {% if session.admin %}
-  <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" href="{{ url_for('home.feed') }}">
+  <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
     Home
   </a>
   {% else %}
-  <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 mr-4 flex justify-center items-center" href="{{ url_for('admin.users') }}">
+  <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('admin.users') }}">
     Admin
   </a>
   {% endif %} {% endif %}

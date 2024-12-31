@@ -58,3 +58,21 @@ function toggle_poll_information(poll_id) {
     toggle.classList.add("fa-angle-right");
   }
 }
+
+function toggle_filter_button(col, id) {
+    const buttons = [document.getElementById("New"),
+                     document.getElementById("Hot"),
+                     document.getElementById("Top")];
+    buttons.forEach((b) => {
+        b.classList.remove("bg-nord-9");
+        b.classList.remove("dark:bg-nord-7");
+        b.classList.add("bg-nord-4");
+        b.classList.remove("font-semibold");
+        b.classList.add("font-light");
+        });
+    document.getElementById(id).classList.add("bg-nord-9");
+    document.getElementById(id).classList.add("dark:bg-nord-7");
+    document.getElementById(id).classList.remove("font-light");
+    document.getElementById(id).classList.add("font-semibold");
+    // Could put callback function here for the each button based on its id
+}
