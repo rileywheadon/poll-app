@@ -1,9 +1,37 @@
-<div class="poll-card border-2 border-nord-4 dark:border-nord-3 rounded-md mb-4 overflow-hidden">
+<div id="poll-card-{{ poll.id }}" class="poll-card border-2 border-nord-4 dark:border-nord-3 rounded-md mb-4 overflow-hidden">
+
   <!-- Include the poll question -->
-  <div class="flex flex-row py-4 px-8 bg-nord-4 dark:bg-nord-2">
-    <p class="text-xl font-bold">{{ poll.question }}</p>
+  <div class="flex flex-row items-center p-2 bg-nord-4 dark:bg-nord-2">
+    <p class="ml-4 text-xl font-bold">{{ poll.question }}</p>
+
+    <!-- If the user created this poll, allow them to edit it -->
+    {% if session.user.id == poll.creator_id %} 
+
+      <!-- Make User Anonymous -->
+      <button class="flex flex-row justify-center items-center ml-auto rounded-md h-10 w-12 text-l bg-nord-3 text-nord-6 dark:text-nord-0 dark:bg-nord-4">
+        <i class="fa fa-eye"></i>
+      </button>
+
+      <!-- Delete Poll -->
+      <input class="hidden" name="poll_id" value="{{ poll.id }}">
+      <button class="flex flex-row justify-center items-center ml-2 rounded-md h-10 w-12 text-l bg-nord-3 text-nord-6 dark:text-nord-0 dark:bg-nord-4"
+          hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
+          hx-include="previous input"
+          hx-target="#poll-card-{{ poll.id }}"
+          hx-swap="delete"
+          hx-confirm="Are you sure you want to delete this poll?">
+        <i class="fa fa-trash"></i>
+      </button>
+
+
+    {% endif %}
+
   </div>
+
   <div class="px-8 py-4">
+
     {% block result_content %}{% endblock %}
+
   </div>
+
 </div>

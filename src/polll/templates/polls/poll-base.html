@@ -19,7 +19,7 @@
       <p><i>Created by {{ poll.creator }}</i></p>
       <button
         class="ml-auto w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
-        onclick="navigator.clipboard.writeText('{{ poll.url }}')"
+        onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
         Share

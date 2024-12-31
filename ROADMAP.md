@@ -27,17 +27,18 @@ These are development items that I think someone other than me (Riley) could do.
 
 ## Pull Requests (Backend)
 
+- [ ] Allow regular users to make themselves anonymous on polls
+- [ ] Allow anonymous responses on polls
+- [ ] Create poll boards
+- [ ] Set a time limit (expiry date) on polls
+
 | Difficulty | Task                                                                   | Status    |
 | ---------- | ---------------------------------------------------------------------- | --------- |
 | 7/10       | Add a nice abstraction to `responses.py` to reduce code duplication.   | Unclaimed |
 | 7/10       | Add a nice abstraction to `results.py` to reduce code duplication.     | Unclaimed |
 | 5/10       | Make the user's response appear in the results tab.                    | Unclaimed |
 | 7/10       | Improve the API for getting results for tier list and ranking.         | Unclaimed |
-| 6/10       | Prevent users from responding to the same poll multiple times.         | Unclaimed |
 | 6/10       | Implement empty responses (i.e. showing the answer without responding) | Unclaimed |
-| 4/10       | Randomize order of options for ranked polls.                           | Unclaimed |
-| 5/10       | Allow regular users to delete their own polls.                         | Unclaimed |
-| 6/10       | Implement a notification system for poll create/submit/report.         | Unclaimed |
 
 [^2]: In addition to an SVG file containing the new logo, this pull request may also implement switching between logos depending on the `localStorage.theme` variable. This variable is updated when the user toggles light/dark mode. In the appropriate template file, add an `id` to the logo element. Then in `dark-mode.js`, update the event listener so that on page load, the correct logo gets displayed. Additionally, you will need to update the `setLightMode()` and `setDarkMode()` functions so that the logo changes when somebody clicks the light/dark mode toggle.
 
