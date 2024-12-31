@@ -3,6 +3,16 @@
 - [Master Checklist](https://docs.google.com/spreadsheets/d/1_l05MRtndCjIhHvqixORiueiIIFqz9E6iD2b9xADoRE/edit?usp=sharing) (contains non-technical items as well)
 - [Database Schema](https://drive.google.com/file/d/1miwHyiKxAsvqpu6lSzgJPm7c2lLgoC4g/view?usp=drive_link)
 
+## UI Development Branch
+
+- [ ] Design "templates/home/menu-footer.html" for small screens
+- [ ] Hide "share/report/submit" text on small screens
+- [ ] Replace radio/checkbox in the choose one/many interface with boxes[^2]
+- [ ] Add light-mode compatible logo
+- [ ] Make light-mode look better (possibly add a darker gray)
+- [ ] Make the admin UI look a little nicer (remove bright borders, etc)
+- [ ] Replace "My Polls" with the username
+
 ## Pull Requests (Frontend)
 
 These are development items that I think someone other than me (Riley) could do. If you are going to take on one of these, please create a branch, and then submit a pull request when you are finished. Most of these tasks involve working with the UI and should involve little to no back-end development.
@@ -10,8 +20,6 @@ These are development items that I think someone other than me (Riley) could do.
 | Difficulty | Task                                                                   | Status      |
 | ---------- | ---------------------------------------------------------------------- | ----------- |
 | 3/10       | Ensure UI can handle unusually long questions and answers.             | Unclaimed   |
-| 2/10       | Replace radio/checkbox in the choose one/many interface with boxes.    | Unclaimed   |
-| 3/10[^2]   | Add light-mode compatible logo.                                        | Unclaimed   |
 | 4/10       | Ensure compatibility with different screen sizes with CSS breakpoints. | In Progress |
 | 4/10       | Add a countdown to the `/create` endpoint when a user creates a poll.  | Unclaimed   |
 | 8/10[^3]   | Ensure the tier list properly handles many items. Improve UI.          | Unclaimed   |
