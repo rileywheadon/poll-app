@@ -6,22 +6,24 @@
 ## UI Development Branch
 - ### General:
   - [x] Design "templates/home/menu-footer.html" for small screens
-  - [ ] Hide "share/report/submit" text on small screens
+  - [x] Hide "share/report/submit" text on small screens and scale button sizes appropriately
+  - [x] Replace "My Polls" with the username
   - [ ] Replace radio/checkbox in the choose one/many interface with boxes[^2]
   - [ ] Add light-mode compatible logo
   - [ ] Make light-mode look better (possibly add a darker gray)
   - [ ] Make the admin UI look a little nicer (remove bright borders, etc)
-  - [ ] Replace "My Polls" with the username
 - ### Nitpicks/Suggestions:
-  - **Home**:
+  - **Feed**:
     - [ ] Adjust the size/refactor the settings/theme button on small screens (currently very clunky)
-    - [ ] Shrink the navbar and make it transparent as opposed to covering the background
+    - [ ] Shrink the navbar/poll cards and make it transparent/gradient as opposed to covering the background
     - [ ] Experiment with one fluid stream of polls on mobile as opposed to the current disconnected card implementation (akin to the mobile versions of Instagram, Facebook, Reddit)
-    - [ ] Add a confirmation message to the log out button
+    - [ ] Add a confirmation message to the logout button
+    - [ ] Give the buttons a shadow or something to make them look like they weren't just arbitrarily pasted on the screen
+    - [ ] Add date/timestamps to poll cards
   - **Create Poll**:
     - [ ] Add a keyboard shortcut to create a new answer (ENTER) and create poll (SHIFT + ENTER)
     - [ ] Create a ui element that confirms a poll's creation instead of the current "alert()" message
-    - [ ] Turn off text suggestions for input fields
+    - [x] Turn off text suggestions for input fields
     - [ ] Swap the position of the "Add Answer" and "Create Poll" button and place "Add Answer" on the left side of the form
     - [ ] Consider a font/font-weight that cleanly and intuitively differentiates the input with the prompts as right now there is little visual difference between the text field and the buttons/instructions around them
     - [ ] Remove the delete button when there is only one option for "choose one/many/ranking"
