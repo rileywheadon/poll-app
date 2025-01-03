@@ -145,60 +145,6 @@ def polls():
     return render_template("polls.html", session=session, polls=polls, form=form)
 
 
-@admin.route("/admin/polldelete/<poll_id>")
-@requires_admin
-def polldelete(poll_id):
-
-    # Delete the poll
-    poll_query = """
-    DELETE FROM poll
-    WHERE poll.id = ?
-    """
-
-    # Delete the poll answers (if they exist)
-    answer_query = """
-    DELETE FROM poll_answer
-    WHERE poll_answer.poll_id = ?
-    """
-
-    # Delete the responses (if they exist)
-    response_query = """
-    DELETE FROM response
-    WHERE response.poll_id = ?
-    """
-
-    # Delete the secondary response rows (if they exist)
-    secondary_response_query = """
-    DELETE FROM {table}
-    WHERE response_id IN (
-        SELECT {table}.response_id FROM {table}
-        INNER JOIN response ON response.id = {table}.response_id
-        WHERE response.poll_id = ?
-    )
-    """
-    secondary_tables = [
-        "empty_response",
-        "discrete_response",
-        "numeric_response",
-        "ranked_response",
-        "tiered_response"
-    ]
-
-    # Execute the queries in reverse order
-    db = get_db()
-    cur = db.cursor()
-
-    for table in secondary_tables:
-        query = secondary_response_query.format(table=table)
-        cur.execute(query, (poll_id,))
-
-    cur.execute(response_query, (poll_id,))
-    cur.execute(answer_query, (poll_id,))
-    cur.execute(poll_query, (poll_id,))
-    db.commit()
-    return ""
-
-
 @admin.route("/admin/reports")
 @requires_admin
 def reports():

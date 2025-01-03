@@ -11,10 +11,11 @@
   <script src="https://unpkg.com/htmx.org@2.0.3"></script>
   <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
 
-  <!-- Custom Scripts -->
+  <!-- Custom Scripts. Import at end so that event listeners can be set. -->
   <script src="{{ url_for('static', filename='scripts/drag-drop.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/dark-mode.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/ui.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/notification.js') }}"></script>
 
   <!-- Title + Tab Icon -->
   <title>{% block title %}{% endblock %}</title>
@@ -27,11 +28,16 @@
 
 <html class="overflow-hidden overscroll-none">
 
-  <body hx-boost="true">
+  <body hx-boost="true" onload="add_notification_listener()">
 
     {% block body %} 
 
     {% endblock %}
+
+    <!-- Notifications -->
+    <div id="notifications" class="fixed p-4 right-0 bottom-0">
+
+    </div>
 
   </body>
 
