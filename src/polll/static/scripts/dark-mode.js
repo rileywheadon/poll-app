@@ -1,12 +1,16 @@
-function update_icon() {
-  const icon = document.getElementById("colour-icon");
-  if (icon !== null) {
+function update_icons() {
+  const themeIcon = document.getElementById("theme-icon");
+  [document.getElementById("logo-icon-startup"), document.getElementById("logo-icon-home")].forEach(icon => {
+    if (icon)
+      icon.setAttribute("src", "../static/assets/logo-name-" + localStorage.theme.toString() + ".svg")
+  });
+  if (themeIcon) {
     if (localStorage.theme == "light") {
-      icon.classList.remove("fa-sun");
-      icon.classList.add("fa-moon");
+      themeIcon.classList.remove("fa-sun");
+      themeIcon.classList.add("fa-moon");
     } else {
-      icon.classList.remove("fa-moon");
-      icon.classList.add("fa-sun");
+      themeIcon.classList.remove("fa-moon");
+      themeIcon.classList.add("fa-sun");
     }
   }
 }
@@ -29,7 +33,7 @@ function toggle_colour_scheme() {
   } else {
     set_dark_mode();
   }
-  update_icon();
+  update_icons();
 }
 
 // Add event listeners to ensure correct theme
@@ -42,7 +46,7 @@ function toggle_colour_scheme() {
     } else {
       set_light_mode();
     }
-    update_icon();
+    update_icons();
   })
 );
 

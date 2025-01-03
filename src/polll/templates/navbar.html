@@ -3,7 +3,7 @@
 
   <!-- Logo image, also redirects to home -->
   <a href="/">
-    <img class="h-10" src="../static/assets/logo-name.svg" />
+    <img id="logo-icon-home" class="h-10" src="../static/assets/logo-name-dark.svg"/>
   </a>
 
   <!-- Settings menu -->
@@ -13,10 +13,10 @@
 
   <!-- Light/dark mode toggle -->
   <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 flex justify-center items-center" onclick="toggle_colour_scheme()">
-    <i id="colour-icon" class="fas fa-moon text-2xl cursor-pointer"></i>
+    <i id="theme-icon" class="fas fa-moon text-2xl cursor-pointer"></i>
   </button>
 
-  <!-- Admin panel, if loged in as administrator -->
+  <!-- Admin panel, if logged in as administrator -->
   {% if session.user.email == "admin@polll.org" %} {% if session.admin %}
   <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
     Home
