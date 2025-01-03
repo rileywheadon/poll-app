@@ -70,7 +70,7 @@ To run the app, type `python3 src/app.py` into a terminal from the root director
 If you are making changes to the HTML using TailwindCSS, you will also need to enable the Tailwind watcher. To do this, open another terminal window (separate from the one that is running the app), `cd` to `src/polll/static` and type in the following command:
 
 ```
-./tailwindcss -i input.css -o output.css --watch
+./tailwindcss-macos -i input.css -o output.css --watch
 ```
 
 I made an effort to remove some of the unnecessary files (some of which were also a security risk) from the Github repository. Therefore, these instructions may not be 100% complete. Just let me know if you have an issue.
