@@ -58,7 +58,7 @@
     <div class="flex flex-row">
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
       <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-4 h-8 rounded-md"
-          hx-get="{{ url_for('admin.polldelete', poll_id = poll.id) }}"
+          hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"

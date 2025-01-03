@@ -1,6 +1,6 @@
 module.exports = {
   darkMode: 'selector',
-  content: ["../templates/**"],
+  content: ["../templates/**", "./scripts/*.js"],
   blocklist: [
     /* Ensure Plotly's classes are not purged */
     'main-svg', 
