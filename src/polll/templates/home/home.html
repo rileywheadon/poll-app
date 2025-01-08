@@ -9,7 +9,7 @@
   {% include "settings.html" %}
 
   <!-- Background -->
-  <div class="w-screen h-screen flex flex-col bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-nord-0">
+  <div class="w-screen h-screen flex flex-col dark:text-nord-4 dark:bg-gradient-to-t dark:from-grad-start dark:to-grad-end">
 
     {% include "navbar.html" %}
 
@@ -24,7 +24,7 @@
       </div>
 
       <!-- Main Column (Polls) -->
-      <div class="w-full overflow-auto md:w-8/12 p-2">
+      <div class="w-full overflow-auto md:w-8/12 p-2 no-scrollbar">
 
         {% block home_content %}{% endblock %}
 
