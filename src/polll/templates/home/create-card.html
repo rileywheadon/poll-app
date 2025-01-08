@@ -1,6 +1,51 @@
 {% if not on_cooldown %}
+
+<div class="flex flex-row">
+  <!-- Options column with graphics + labels (temp imgs rn) -->
+  <div class="flex flex-col items-start px-4 py-4 space-y-3">
+
+    <div class="flex flex-col rounded-md items-center">
+      <button id="choose-one-btn" class="dark:bg-neutral-200 border-2 border-nord-3 rounded-lg p-2" onclick="adjust_button_icons()">
+        <img class="w-48 h-auto" src="../../static/assets/choose-one.png"/>
+      </button>
+      <p class="font-light">Choose One</p>
+    </div>
+    <div class="flex flex-col rounded-md items-center">
+      <button id="choose-many-btn" class="dark:bg-neutral-200 border-2 border-nord-2 rounded-lg p-2" onclick="adjust_button_icons()">
+        <img class="w-48 h-auto" src="../../static/assets/choose-many.png"/>
+      </button>
+      <p class="font-light">Choose Many</p>
+    </div>
+    <div class="flex flex-col rounded-md items-center">
+      <button id="scale-btn" class="dark:bg-neutral-200 border-2 border-nord-3 rounded-lg p-2" onclick="adjust_button_icons()">
+        <img class="w-48 h-auto" src="../../static/assets/scale.png"/>
+      </button>
+      <p class="font-light">Scale</p>
+    </div>
+    <div class="flex flex-col rounded-md items-center">
+      <button id="tier-list" class="dark:bg-neutral-200 border-2 border-nord-3 rounded-lg p-2" onclick="adjust_button_icons()">
+        <img class="w-48 h-auto" src="../../static/assets/tier-list.png"/>
+      </button>
+      <p class="font-light">Tier List</p>
+    </div>
+    
+  </div>
+
+  <!-- Question editor -->
+  <div class="flex grow border-2 border-nord-3 rounded-lg">
+    <div >
+      Q&A
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
 <div class="flex mb-6 bg-nord-4 dark:bg-nord-2 px-8 py-4">
-  <span class="my-auto text-nord-0 dark:text-nord-4 text-l">Poll Type:</span>
+  <span class="my-auto text-nord-0 dark:text-nord-4 text-base">Poll Type:</span>
   <select
     class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg h-10 mx-2"
     name="poll_type"
