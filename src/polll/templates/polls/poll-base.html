@@ -1,12 +1,12 @@
-<div
-  class="poll-card border-2 border-nord-4 dark:border-nord-3 rounded-md mb-4 overflow-hidden"
->
+<div class="poll-card border-b-2 border-zinc-950 overflow-hidden dark:border-nord-3 pt-2 pb-2">
   <!-- Include the poll question -->
-  <div class="flex flex-row py-4 px-8 bg-nord-4 dark:bg-nord-2">
-    <p class="text-xl font-bold">{{ poll.question }}</p>
+  <div class="flex flex-col p-2">
+    <p class="text-nord-3 font-light">@{{ poll.creator }}⋅ 23s</p>
+    <p class="rounded-md text-2xl font-light">{{ poll.question }}</p>
   </div>
+
   <form
-    class="px-8 py-4"
+    class="p-2"
     hx-post="/home/response/{{ poll.id }}"
     hx-target="closest .poll-card"
     hx-trigger="submit"
@@ -15,31 +15,28 @@
     {% block poll_content %} {% endblock %}
 
     <!-- Include the submit button, share button, and report button -->
-    <div class="flex flex-row text-l items-center mt-4">
-      <p><i>@{{ poll.creator }}</i></p>
-      <button
-        class="ml-auto w-16 xs:w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
-        onclick="navigator.clipboard.writeText('{{ poll.url }}')"
-        type="button"
-      >
-        <p class="hidden xs:visible xs:inline">Share</p>
-        <i class="ml-1 fa fa-share-from-square"></i>
+    <div class="flex flex-row text-sm justify-end items-center mt-4 font-light">
+      
+      <!-- <p class="grow"><i>@{{ poll.creator }}</i></p> -->
+      <p class="grow">Votes:
+        <i>3,1415,926</i>
+      </p>
+      <button class="w-10 rounded-md py-1 text-nord-6 dark:text-nord-0" onclick="navigator.clipboard.writeText('{{ poll.url }}')">
+        <i class="ml-1 fa fa-share-from-square text-xl text-black dark:text-white"></i>
       </button>
       <button
-        class="ml-2 w-16 xs:w-24 h-10 rounded-md py-1 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+        class="w-10 ml-2 h-10 rounded-md py-1 text-nord-6 dark:text-nord-0"
         hx-post="/home/report/{{ poll.id }}"
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="outerHTML"
       >
-        <p class="hidden xs:visible xs:inline">Report</p>
-        <i class="ml-1 fa fa-triangle-exclamation"></i>
+        <i class="ml-1 fa fa-triangle-exclamation text-xl text-black dark:text-white"></i>
       </button>
       <button
-        class="ml-2 w-16 xs:w-24 h-10 rounded-md py-1 bg-nord-15 text-nord-0"
+        class="ml-2 w-10 h-10 rounded-md py-1 text-nord-0"
         type="submit"
       >
-        <p class="hidden xs:visible xs:inline">Submit</p>
-        <i class="ml-1 fa fa-paper-plane"></i>
+        <i class="ml-1 fa fa-paper-plane text-xl text-nord-7"></i>
       </button>
     </div>
   </form>
