@@ -8,8 +8,8 @@
   - [x] Design "templates/home/menu-footer.html" for small screens
   - [x] Hide "share/report/submit" text on small screens and scale button sizes appropriately
   - [x] Replace "My Polls" with the username
+  - [x] Add light-mode compatible logo
   - [ ] Replace radio/checkbox in the choose one/many interface with boxes[^2]
-  - [ ] Add light-mode compatible logo
   - [ ] Make light-mode look better (possibly add a darker gray)
   - [ ] Make the admin UI look a little nicer (remove bright borders, etc)
 - ### Nitpicks/Suggestions:
@@ -17,6 +17,7 @@
     - [ ] Adjust the size/refactor the settings/theme button on small screens (currently very clunky)
     - [ ] Shrink the navbar/poll cards and make it transparent/gradient as opposed to covering the background
     - [ ] Experiment with one fluid stream of polls on mobile as opposed to the current disconnected card implementation (akin to the mobile versions of Instagram, Facebook, Reddit)
+    - [ ] https://flowbite.com/docs/plugins/charts for charts native to tailwind (Needs ApexChart install or cdn)
     - [ ] Add a confirmation message to the logout button
     - [ ] Give the buttons a shadow or something to make them look like they weren't just arbitrarily pasted on the screen
     - [ ] Add date/timestamps to poll cards
@@ -26,11 +27,15 @@
     - [x] Turn off text suggestions for input fields
     - [ ] Swap the position of the "Add Answer" and "Create Poll" button and place "Add Answer" on the left side of the form
     - [ ] Consider a font/font-weight that cleanly and intuitively differentiates the input with the prompts as right now there is little visual difference between the text field and the buttons/instructions around them
-    - [ ] Remove the delete button when there is only one option for "choose one/many/ranking"
-    - [ ] Explore other options for a better looking input experience e.g. change the dropdown to something other than the browser/os default (maybe a small graphic accompanying the input options?)
+    - [ ] Remove the delete button when there is only < 2 options for "choose one/many/ranking"
+    - [ ] Explore other options for a better looking input experience 
+      - Change the dropdown to something other than the browser/os default (maybe a small graphic accompanying the input options?)
+      - Explore tailwind templates (dropdowns, buttons, etc.)
+      - Display medium images (maybe a graph or a preview of what the input would look like) as options instead of a dropdown as currently the "Create" tab is quite empty
     - [ ] Ensure breakpoints are in place, or perhaps consider an alternative mobile layout
     - [ ] The "Create Poll" button should feel more meaningful when clicked. Add a small clickable pop-up that confirms a poll has been created (small animation maybe?). When clicked it jumps to the poll in the feed.
     - [ ] Make the container box for the poll creation feel less like is is just arbitrary pasted onto a canvas i.e. make it along with the other elements on the page look like one cohesive unit
+    - [ ] Allow users to drag and drop images for the tier list mode (HARD?) 
 
 ## Pull Requests (Frontend)
 
