@@ -27,6 +27,13 @@ module.exports = {
           'nord-15': '#B48EAD',
           'grad-start': '#1f1f1f',
           'grad-end': '#171717',
+          'polll-grad-1': '#D9EAD3', //polll logo gradient follows these 6 colors
+          'polll-green': '#B6D7A8', // this is the custom green to be used on icons
+          'polll-grad-3':'#A0CFB6',
+          'polll-grad-4':'#97D0BF',
+          'polll-grad-5':'#92D0D0',
+          'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
+
       })
     },
     /* Custom screen breakpoints*/

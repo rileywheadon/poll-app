@@ -28,9 +28,9 @@ General:
     - [ ] Create a ui element that confirms a poll's creation instead of the current "alert()" message
     - [x] Turn off text suggestions for input fields
     - [x] Swap the position of the "Add Answer" and "Create Poll" button and place "Add Answer" on the left side of the form
-    - [ ] Consider a font/font-weight that cleanly and intuitively differentiates the input with the prompts as right now there is little visual difference between the text field and the buttons/instructions around them
-    - [ ] Remove the delete button when there is less than 2 options for "choose one/many/ranking"
-    - [ ] Explore other options for a better looking input experience
+    - [x] Consider a font/font-weight that cleanly and intuitively differentiates the input with the prompts as right now there is little visual difference between the text field and the buttons/instructions around them
+    - [x] Remove the delete button when there is less than 2 options for "choose one/many/ranking"
+    - [x] Explore other options for a better looking input experience
       - Change the dropdown to something other than the browser/os default (maybe a small graphic accompanying the input options?)
       - Explore tailwind templates (dropdowns, buttons, etc.)
       - Display medium images (maybe a graph or a preview of what the input would look like) as options instead of a dropdown as currently the "Create" tab is quite empty
@@ -41,32 +41,23 @@ General:
 
 Known bugs:
 
-- [ ] Scroll is broken in admin
+- [x] Scroll is broken in admin (FIXED)
 - [ ] Multiple star selectors don't work
 
 ## Backend
 
-PR #1:
-
-- [x] Update `schema.sql` to accomodate the following changes
-- [x] Allow regular users to hide their username on polls they make
-- [x] Allow regular users to actiate/deactivate their polls
-- [x] Update settings
-  - Allow users to change their username
-  - Add light mode toggle to settings
-  - Add log out to settings
-- [x] Username not showing up in history
-- [x] Remove empty responses
-- [x] Show timestamp for polls
-- [x] Show the votes on the polls
-
-PR #2:
+NEXT PR:
 
 - [ ] Add sorting function on feed/history/my polls
 - [ ] Create poll boards
 - [ ] Improve the API for getting results for tier list and ranking
 - [ ] Rewrite `responses.py` and `results.py`
 - [ ] Make the user's response appear in the results tab
+- Finish interoperability
+  - [x] Create a randomized URL for each poll that users can share.
+  - [ ] Allow users to respond but require login to see results.
+  - [ ] Anonymous responses saved to the database, linked to user after registration.
+  - [ ] Allow anonymous responses on a poll-by-poll basis.
 
 # Feature Roadmap
 
@@ -79,11 +70,6 @@ PR #2:
   - [ ] Numeric Star (TBD)
   - [ ] Ranked Poll
   - [ ] Tier List
-- [ ] Interoperability Features
-  - [x] Create a randomized URL for each poll that users can share.
-  - [ ] Allow users to respond but require login to see results.
-  - [ ] Anonymous responses saved to the database, linked to user after registration.
-  - [ ] Allow anonymous responses on a poll-by-poll basis.
 
 ## 2: Staging
 

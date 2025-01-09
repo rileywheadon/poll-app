@@ -26,22 +26,23 @@ function toggle_user_information(user_id) {
   }
 }
 
-function update_poll_editor() {
-  const poll_type = document.getElementById("poll-type-selector").value;
-  const editor = document.getElementById("answer-editor");
-  const add = document.getElementById("answer-add");
-
-  if (poll_type == "NUMERIC_STAR" || poll_type == "NUMERIC_SCALE") {
-    editor.classList.add("hidden");
-    add.classList.add("hidden");
-  } else {
-    editor.classList.remove("hidden");
-    add.classList.remove("hidden");
-  }
+function update_poll_editor(pressed_id) {
+  const answers = document.getElementById("ans-types");
+  answers.classList.remove("hidden");
+  pressed_id == "scale-btn" ? answers.classList.add("hidden") : answers.classList.remove("hidden");
 }
 
+
+// Only allows removal of the answer if there are three or more answers
 function remove_poll_answer(button) {
-  button.parentNode.remove(); 
+  answer_list = document.getElementById("answer-list");
+
+  if (answer_list.childElementCount > 2) {
+    button.parentNode.remove(); 
+  } else {
+    notify("Polls require at least two answers!")
+  }
+
 }
 
 function reset_poll_cooldown(user_id) {
@@ -82,18 +83,12 @@ function toggle_filter_button(col, id) {
 }
 
 
-function toggle_lock(button) {
-
-  icon = button.firstElementChild;
-
-  if (icon.classList.contains("fa-lock")) {
-      icon.classList.remove("fa-lock");
-      icon.classList.add("fa-lock-open");
-      button.title = "Lock Poll";
+function update_answer_editor(poll_type) {
+  editor = document.getElementById("answer-editor")
+  if (poll_type == "numeric_scale") {
+    editor.classList.add("hidden");
   } else {
-      icon.classList.remove("fa-lock-open");
-      icon.classList.add("fa-lock");
-      button.title = "Unlock Poll";
+    editor.classList.remove("hidden");
   }
-   
 }
+

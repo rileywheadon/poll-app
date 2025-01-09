@@ -91,49 +91,9 @@ def feed():
     res = cur.execute(id_query, (user_id, user_id, user_id))
     ids = [response["id"] for response in res.fetchall()]
 
-    # Query for getting the polls and the creator's username
-    poll_query = """
-    SELECT poll.*, user.username AS creator
-    FROM poll
-    INNER JOIN user ON user.id = poll.creator_id
-    WHERE poll.id = ?
-    """
-
-    # Query for getting the number of responses for each poll
-    response_query = """
-    SELECT COUNT(*) AS votes
-    FROM response
-    WHERE poll_id = ?
-    """
-
-    # Query for adding the answers to each poll
-    answer_query = """
-    SELECT *
-    FROM poll_answer
-    WHERE poll_id = ?
-    ORDER BY RANDOM()
-    """
-    polls = []
-
-    # Iterate through the poll IDs, getting the polls, responses and answers
-    for id in ids:
-
-        # Get the poll
-        poll = dict(cur.execute(poll_query, (id,)).fetchone())
-
-        # Get the number of responses to the poll
-        responses = dict(cur.execute(response_query, (id,)).fetchone())
-        poll["votes"] = responses["votes"]
-
-        # Get the poll answers and the template URL
-        answers = cur.execute(answer_query, (id,)).fetchall()
-        poll["answers"] = [dict(answer) for answer in answers]
-
-        # Get the template, custom URL, and timedelta
-        poll["poll_template"] = poll_template(poll)
-        poll["url"] = id_to_url(poll["id"])
-        poll["age"] = get_poll_age(poll)
-        polls.append(poll)
+    # Iterate through the poll IDs, getting the details
+    polls = [query_poll_details(id) for id in ids]
+    print(polls)
 
     # Render the template
     session["admin"] = False
@@ -192,25 +152,8 @@ def history():
     res = cur.execute(query, (session["user"]["id"],))
     ids = [response["poll_id"] for response in res.fetchall()]
 
-    # Get the polls themselves
-    query = """
-    SELECT poll.*, user.username AS creator
-    FROM poll
-    INNER JOIN user ON user.id = poll.creator_id
-    WHERE poll.id = ?
-    """
-    polls = []
-    for id in ids:
-
-        # Get the poll
-        res = cur.execute(query, (id,))
-        poll = dict(res.fetchone())
-
-        # Get the results and the result template URL
-        handler = getattr(result_handlers, poll["poll_type"].lower())
-        poll["results"] = handler(poll["id"])
-        poll["result_template"] = result_template(poll)
-        polls.append(poll)
+    # Get the poll details using query_poll_details
+    polls = [query_poll_details(id) for id in ids]
 
     # Render the template
     session["admin"] = False
@@ -353,20 +296,15 @@ def mypolls():
 
     # Query the database for all polls made by the user
     query = """
-    SELECT *
+    SELECT id
     FROM poll 
     WHERE creator_id = ?
     """
-    res = cur.execute(query, (session["user"]["id"],)).fetchall()
+    res = cur.execute(query, (session["user"]["id"],))
+    ids = [response["id"] for response in res.fetchall()]
 
-    # Create a dictionary of polls
-    polls = [dict(poll) for poll in res]
-
-    # Get the results for each poll using the appropriate handler
-    for poll in polls:
-        handler = getattr(result_handlers, poll["poll_type"].lower())
-        poll["results"] = handler(poll["id"])
-        poll["result_template"] = result_template(poll)
+    # Iterate through the poll IDs, getting the details
+    polls = [query_poll_details(id) for id in ids]
 
     # Render the HTML template
     session["admin"] = False
