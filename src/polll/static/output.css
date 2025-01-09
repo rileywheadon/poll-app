@@ -1189,12 +1189,26 @@ video {
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
 }
 
+.text-polll-green {
+  --tw-text-opacity: 1;
+  color: rgb(182 215 168 / var(--tw-text-opacity, 1));
+}
+
+.text-polll-blue {
+  --tw-text-opacity: 1;
+  color: rgb(136 187 208 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
 
 .accent-nord-15 {
   accent-color: #B48EAD;
+}
+
+.accent-polll-green {
+  accent-color: #B6D7A8;
 }
 
 .drop-shadow-2xl {
@@ -1255,6 +1269,10 @@ video {
   color: rgb(76 86 106 / var(--tw-text-opacity, 1));
 }
 
+.hover\:h-12:hover {
+  height: 3rem;
+}
+
 .hover\:border-2:hover {
   border-width: 2px;
 }
@@ -1267,6 +1285,16 @@ video {
 .hover\:bg-nord-8:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(136 192 208 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:text-2xl:hover {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.hover\:text-polll-green:hover {
+  --tw-text-opacity: 1;
+  color: rgb(182 215 168 / var(--tw-text-opacity, 1));
 }
 
 @media (min-width: 640px) {
@@ -1462,6 +1490,11 @@ video {
 .dark\:text-nord-6:where(.dark, .dark *) {
   --tw-text-opacity: 1;
   color: rgb(236 239 244 / var(--tw-text-opacity, 1));
+}
+
+.dark\:text-polll-blue:where(.dark, .dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(136 187 208 / var(--tw-text-opacity, 1));
 }
 
 .dark\:text-white:where(.dark, .dark *) {
