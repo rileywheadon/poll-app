@@ -1,52 +1,88 @@
 {% if not on_cooldown %}
 <!-- TODO: mobile version has not been adressed (use breakpoints to change from row to col) -->
 <div class="flex flex-row">
-  <!-- Options column with graphics + labels (temp. images, actual images should each be the same size) -->
+  <!-- Options column with graphics + labels (temporary images, actual images should each be the same size) -->
   <div class="flex flex-col items-start px-4 py-4 space-y-3">
 
     <div class="flex flex-col rounded-md items-center">
-      <button id="choose-one-btn" class="dark:bg-neutral-200 border-8 border-blue-600 rounded-lg p-2 hover:cursor-default" onclick="adjust_button_icons('choose-one-btn')">
-        <img class="w-48 h-auto" src="../../static/assets/choose-one.png"/>
+      <button id="choose-one-btn" class="dark:bg-neutral-200 border-4 border-blue-600 rounded-lg p-2 hover:border-8 hover:cursor-default" onclick="adjust_button_icons('choose-one-btn')">
+        <img class="w-24" src="../../static/assets/choose-one.png"/>
       </button>
       <p class="font-light">Choose One</p>
     </div>
     <div class="flex flex-col rounded-md items-center">
-      <button id="choose-many-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:cursor-default" onclick="adjust_button_icons('choose-many-btn')">
-        <img class="w-48 h-auto" src="../../static/assets/choose-many.png"/>
+      <button id="choose-many-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:border-8 hover:cursor-default" onclick="adjust_button_icons('choose-many-btn')">
+        <img class="w-24" src="../../static/assets/choose-many.png"/>
       </button>
       <p class="font-light">Choose Many</p>
     </div>
     <div class="flex flex-col rounded-md items-center">
-      <button id="scale-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:cursor-default" onclick="adjust_button_icons('scale-btn')">
-        <img class="w-48 h-auto" src="../../static/assets/scale.png"/>
+      <button id="scale-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:border-8 hover:cursor-default" onclick="adjust_button_icons('scale-btn')">
+        <img class="w-24" src="../../static/assets/scale.png"/>
       </button>
       <p class="font-light">Scale</p>
     </div>
     <div class="flex flex-col rounded-md items-center">
-      <button id="tier-list-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:cursor-default" onclick="adjust_button_icons('tier-list-btn')">
-        <img class="w-48 h-auto" src="../../static/assets/tier-list.png"/>
+      <button id="ranking-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:border-8 hover:cursor-default" onclick="adjust_button_icons('ranking-btn')">
+        <img class="w-24" src="../../static/assets/tier-list.png"/>
+      </button>
+      <p class="font-light">Ranking</p>
+    </div>
+    <div class="flex flex-col rounded-md items-center">
+      <button id="tier-list-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:border-8 hover:cursor-default" onclick="adjust_button_icons('tier-list-btn')">
+        <img class="w-24" src="../../static/assets/tier-list.png"/>
       </button>
       <p class="font-light">Tier List</p>
     </div>
     
   </div>
 
-  <!-- Question editor (has to default to a question type and toggle)-->
+  <!-- Question editor-->
   <div class="flex flex-col grow border-2 border-nord-3 rounded-lg">
-    <div class="px-10 py-2 min-w-52 max-w-screen text-2xl"> 
+    <div class="px-10 py-2  text-2xl"> 
       <!-- TOOD: make the input box expand downwards when exceeding the wdith of the screen-->
-      <input class="text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none" 
-             placeholder="Write your poll of the day (keep prejudice to a minimum)"/>
+      <input class="text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none font-light" placeholder="Write your poll of the day (keep prejudice to a minimum)"/>
       <hr>
     </div>
     <!-- Differs based on the question type (make four different styles and hide/show based on what is selected)-->
      <!-- 
       - Choose one/many are the same thing (list of > 1 answers)
       - Scale is just the question (no answers needed)
-      - Tier list is a little more complicated
+      - Tier list/ranked is a little more complicated
      -->
     <div class="grow p-8">
-      Answer Space
+      <div id="multiple-ans" class="flex flex-col justify-center">
+        
+        <!-- Answer types (hidden when scale is selected) -->
+        <div class="unhidden">
+          <!-- Multiple Answers -->
+          <div class="flex flex-row">
+            <button id="answer-add" class="rounded-lg px-4 h-10 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0" hx-get="{{ url_for('home.create_answer') }}" hx-swap="beforeend" hx-target="#answer-editor">
+              <i class="fa fa-plus"></i>
+            </button>
+            {% include "home/create-answer.html" %}
+          </div>
+
+          <!-- Ranked -->
+          <div id="ranked-ans" class="hidden flex flex-col">
+            TODO
+          </div>  
+          <!-- Tier List -->
+          <div id="tier-list-ans" class="hidden flex flex-col">
+            TODO
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex justify-end py-10">
+          <button class="rounded-lg bg-nord-15 text-nord-0 py-2 px-4" hx-get="{{ url_for('home.create_poll') }}" hx-target="#create-card" hx-swap="innerHTML" hx-include="[name='poll_type'], [name='poll_question'], [name='poll_answer']" hx-confirm="Once you create a poll, you won't be able to change it. Continue?">
+            <p class="font-light">Publish</p>
+          </button>
+        </div>
+
+      </div>
+
+
     </div>
   </div>
 </div>
