@@ -1,8 +1,11 @@
-<div id="poll-card-{{ poll.id }}" class="poll-card border-2 border-nord-4 dark:border-nord-3 rounded-md mb-4 overflow-hidden">
+<div id="poll-card-{{ poll.id }}" class="poll-card py-2 border-b-2 dark:border-nord-3 overflow-hidden">    
 
   <!-- Include the poll question -->
-  <div class="flex flex-row items-center p-2 bg-nord-4 dark:bg-nord-2">
-    <p class="ml-4 text-xl font-bold">{{ poll.question }}</p>
+  <div class="flex flex-row items-center p-2">
+    <div class="flex flex-col p-2">
+      <p class="text-nord-3 font-light">@{{ poll.creator }}⋅ 23s</p>
+      <p class="rounded-md text-2xl font-light">{{ poll.question }}</p>
+    </div>
 
     <!-- If the user created this poll, allow them to edit it -->
     {% if session.user.id == poll.creator_id %} 
