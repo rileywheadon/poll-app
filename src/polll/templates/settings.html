@@ -1,7 +1,60 @@
 <!-- The Modal -->
-<div id="settings" class="hidden fixed justify-center items-center z-10 w-full h-full z-10 text-nord-0 dark:text-nord-4 backdrop-blur-sm">
+<div id="settings" class="hidden fixed justify-center items-center z-10 w-full h-full z-10 text-nord-0 dark:text-nord-4">
+
   <!-- Modal content -->
-  <div class="w-2/3 h-2/3 rounded-xl border-2 bg-nord-4 border-nord-2 dark:bg-nord-0 dark:border-nord-6 px-6 py-4">
-    <span onclick="close_settings()" class="text-4xl">&times;</span>
+  <div class="flex flex-col w-2/3 h-2/3 rounded-xl border-2 bg-nord-4 border-nord-2 dark:bg-nord-0 dark:border-nord-6 px-6 py-4">
+
+    <div class="flex flex-row mb-4">
+      <a href="{{ url_for('home.feed') }}" class="text-4xl cursor-pointer">&times;</a>
+    </div>
+
+    <!-- Username Editor -->
+    <div class="flex flex-row items-center mb-4">
+      <span class="mr-2">Edit Username: </span>
+      <input 
+        type="text" 
+        value="{{ session.user.username }}"
+        name="username"
+        class="rounded-md h-8 px-2 dark:bg-nord-4 dark:text-nord-0"
+      >
+    </div>
+
+    <!-- Theme Switcher -->
+    <div class="flex flex-row items-center mb-4">
+      <span class="mr-2">Toggle Theme: </span>
+
+      <button class="bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-32 h-8 flex justify-center items-center" onclick="toggle_colour_scheme()">
+        <span id="theme-text">Light</span>
+        <i id="theme-icon" class="fas fa-moon ml-2 text-xl cursor-pointer"></i>
+      </button>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="flex flex-row mt-auto">
+      
+      <!-- Log Out -->
+      <a class="flex justify-center items-center w-32 h-10 rounded-md bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+         href="{{ url_for('auth.logout') }}"
+         hx-boost="false">
+        <span>Log Out</span>
+        <i class="ml-2 fa-solid fa-arrow-left"></i>
+      </a>
+
+      <!-- Save Settings -->
+      <button class="flex justify-center items-center w-32 h-10 rounded-md ml-auto bg-nord-15 text-nord-0"
+        hx-get="{{ url_for('home.save_settings') }}"
+        hx-include="[name='username']"
+        hx-swap="none"
+      >
+        <span>Save Changes</span>
+      </button>
+
+    </div>
+
+
   </div>
+
+
+
 </div>

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-
-
 {% block title %}Polll - Home{% endblock %}
+
 {% block body %}
 
-  <!-- Settings modal (hidden by default) -->
-  {% include "settings.html" %}
+{% include "settings.html" %}
+
+<main id="main">
 
   <!-- Background -->
   <div class="w-screen h-screen flex flex-col dark:text-nord-4 dark:bg-gradient-to-t dark:from-grad-start dark:to-grad-end">
@@ -19,7 +19,7 @@
       <!-- Left Sidebar -->
       <div class="hidden p-2 md:flex md:justify-center md:w-2/12">
           <div class="flex flex-col overflow-hidden h-full">
-            {{macs.buttons()}}
+            {{ macs.buttons() }}
           </div>
       </div>
 
@@ -37,10 +37,11 @@
 
     <!-- Footer (only appears on small screens) -->
     <div class="visible md:hidden flex flex-row text-base justify-evenly items-end mb-2">
-      {{macs.buttons(history="hidden", logout="hidden")}}
+      {{ macs.buttons(history="hidden") }}
     </div>
 
   </div>
 
+</main>
 
 {% endblock %}

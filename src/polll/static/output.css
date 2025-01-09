@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -676,6 +676,10 @@ video {
   margin-top: -1px;
 }
 
+.mt-auto {
+  margin-top: auto;
+}
+
 .block {
   display: block;
 }
@@ -774,6 +778,10 @@ video {
 
 .w-48 {
   width: 12rem;
+}
+
+.w-6 {
+  width: 1.5rem;
 }
 
 .w-9 {
@@ -1169,9 +1177,9 @@ video {
   color: rgb(59 66 82 / var(--tw-text-opacity, 1));
 }
 
-.text-nord-3 {
+.text-nord-4 {
   --tw-text-opacity: 1;
-  color: rgb(76 86 106 / var(--tw-text-opacity, 1));
+  color: rgb(216 222 233 / var(--tw-text-opacity, 1));
 }
 
 .text-nord-6 {
@@ -1195,6 +1203,11 @@ video {
 
 .accent-nord-15 {
   accent-color: #B48EAD;
+}
+
+.blur-sm {
+  --tw-blur: blur(4px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
 .drop-shadow-2xl {

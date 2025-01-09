@@ -64,7 +64,7 @@ def delete(poll_id):
     if (not is_creator) and (not is_admin):
         return ""
 
-        # Delete the poll
+    # Delete the poll
     poll_query = """
     DELETE FROM poll
     WHERE poll.id = ?
@@ -112,5 +112,43 @@ def delete(poll_id):
     # Send a notification to the user
     r = make_response("")
     notification = '{"notification": "Poll Deleted!"}'
+    r.headers.set("HX-Trigger", notification)
+    return r
+
+
+@poll.route("/poll/toggle/<poll_id>/<active>")
+def toggle(poll_id, active):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check that the user is allowed to interact with the poll
+    res = cur.execute("SELECT * FROM poll WHERE id=?", (poll_id,))
+    poll = dict(res.fetchone())
+    is_creator = session["user"]["id"] == poll["creator_id"]
+    is_admin = session["user"]["email"] == "admin@polll.org"
+
+    # If user is not poll creator or admin, return without deleting the poll
+    if (not is_creator) and (not is_admin):
+        return ""
+
+    # Update the state of is_active depending on active
+    query = """
+    UPDATE poll
+    SET is_active = ?
+    WHERE id = ?
+    """
+    next_active = 0 if int(active) == 1 else 1
+    cur.execute(query, (next_active, poll_id))
+    db.commit()
+
+    # Update the poll object
+    poll["is_active"] = next_active
+
+    # Add a notification and send the response
+    message = '"Poll Closed!"' if next_active == 0 else '"Poll Opened!"'
+    notification = f'{{"notification": {message}}}'
+    r = make_response(render_template("results/poll-lock.html", poll=poll))
     r.headers.set("HX-Trigger", notification)
     return r
