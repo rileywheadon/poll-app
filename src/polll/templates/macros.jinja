@@ -1,39 +1,40 @@
 {% macro buttons(feed="visible", history="visible", create="visible", myPolls="visible", logout="visible") %}
-<a class="{{feed}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
-  <span class="{% if session.tab == 'feed' %} text-polll-green {% endif %}">
-      Feed
-      <i class="ml-2 fa-solid fa-fire"></i>
-    </span>
-  </a>
 
-  <a class="{{history}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center" href="{{ url_for('home.history') }}">
+<a class="{{feed}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-12" href="{{ url_for('home.feed') }}">
+    <span class="{% if session.tab == 'feed' %} text-polll-green {% endif %}">
+        Feed
+        <i class="ml-2 fa-solid fa-fire"></i>
+    </span>
+</a>
+
+<a class="{{history}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-12" href="{{ url_for('home.history') }}">
     <span class="{% if session.tab == 'history' %} text-polll-green {% endif %}">
-      History
-      <i class="ml-2 fa-solid fa-book"></i>
+        History
+        <i class="ml-2 fa-solid fa-book"></i>
     </span>
-  </a>
+</a>
 
-  <a class="{{create}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center" href="{{ url_for('home.create') }}">
+<a class="{{create}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-12" href="{{ url_for('home.create') }}">
     <span class="{% if session.tab == 'create' %} text-polll-green {% endif %}">
-      Create
-      <i class="ml-2 fa-solid fa-pen underline"></i>
+        Create
+        <i class="ml-2 fa-solid fa-pen underline"></i>
     </span>
-  </a>
+</a>
 
-  <a class="{{myPolls}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center" href="{{ url_for('home.mypolls') }}">
+<a class="{{myPolls}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-12" href="{{ url_for('home.mypolls') }}">
     <span class="{% if session.tab == 'mypolls' %} text-polll-green {% endif %}">
-      {{session.user.username}}
-      <i class="ml-2 fa-solid fa-user"></i>
+        {{session.user.username}}
+        <i class="ml-2 fa-solid fa-user"></i>
     </span>
-  </a>
+</a>
 
-  <a class="{{logout}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center"
-      href="{{ url_for('auth.logout') }}"
-      hx-boost="false">
+<a class="{{logout}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-12"
+    href="{{ url_for('auth.logout') }}"
+    hx-boost="false">
     <span>
-      Log Out
-      <i class="ml-2 fa-solid fa-arrow-left"></i>
+        Log Out
+        <i class="ml-2 fa-solid fa-arrow-left"></i>
     </span>
-  </a>
+</a>
 {% endmacro%}
 
