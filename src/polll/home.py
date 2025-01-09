@@ -9,7 +9,7 @@ import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import on_cooldown, result_template, poll_template, id_to_url
+from polll.models import *
 
 # Create a blueprint for the poll endpoints
 home = Blueprint('home', __name__, template_folder='templates')
@@ -19,6 +19,44 @@ home = Blueprint('home', __name__, template_folder='templates')
 @home.route("/")
 def index():
     return render_template("index.html")
+
+
+# Route for updating settings (just username at the moment)
+@home.route("/home/settings")
+@requires_auth
+def save_settings():
+
+    # Open database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check if the username the user wants is in the database
+    username = request.args.get("username")
+    res = cur.execute("SELECT * FROM user WHERE username=?", (username,))
+    unique = res.fetchone() is None
+
+    # If the username is not different from the current username, return
+    if session["user"]["username"] == username:
+        return ""
+
+    # If the new username is unique, assign it to the user
+    notification = ""
+    if unique:
+        notification = '{"notification": "Name Changed!"}'
+        session["user"]["username"] = username
+        id = session["user"]["id"]
+        cur.execute("UPDATE user SET username=? WHERE id=?", (username, id))
+        db.commit()
+
+    # Otherwise notify the user that an error occured
+    else:
+        notification = '{"notification": "Name Taken!"}'
+
+    # Send a notification to the user and return
+    session.modified = True
+    r = make_response("")
+    r.headers.set("HX-Trigger", notification)
+    return r
 
 
 # Home page (poll feed)
@@ -34,10 +72,11 @@ def feed():
     #  1. NOT made by the user
     #  2. NOT responded to by the user
     #  3. NOT reported by the user
+    #  4. ARE active (i.e. is_active = 1)
     id_query = """
     SELECT id
     FROM poll
-    WHERE poll.creator_id != ?
+    WHERE creator_id != ? AND is_active = 1
     EXCEPT SELECT poll_id FROM (
         SELECT DISTINCT poll_id
         FROM response
@@ -60,6 +99,13 @@ def feed():
     WHERE poll.id = ?
     """
 
+    # Query for getting the number of responses for each poll
+    response_query = """
+    SELECT COUNT(*) AS votes
+    FROM response
+    WHERE poll_id = ?
+    """
+
     # Query for adding the answers to each poll
     answer_query = """
     SELECT *
@@ -69,17 +115,24 @@ def feed():
     """
     polls = []
 
-    # Iterate through the poll IDs, getting the polls and answers
+    # Iterate through the poll IDs, getting the polls, responses and answers
     for id in ids:
 
         # Get the poll
         poll = dict(cur.execute(poll_query, (id,)).fetchone())
 
+        # Get the number of responses to the poll
+        responses = dict(cur.execute(response_query, (id,)).fetchone())
+        poll["votes"] = responses["votes"]
+
         # Get the poll answers and the template URL
         answers = cur.execute(answer_query, (id,)).fetchall()
         poll["answers"] = [dict(answer) for answer in answers]
+
+        # Get the template, custom URL, and timedelta
         poll["poll_template"] = poll_template(poll)
         poll["url"] = id_to_url(poll["id"])
+        poll["age"] = get_poll_age(poll)
         polls.append(poll)
 
     # Render the template
@@ -141,8 +194,9 @@ def history():
 
     # Get the polls themselves
     query = """
-    SELECT *
+    SELECT poll.*, user.username AS creator
     FROM poll
+    INNER JOIN user ON user.id = poll.creator_id
     WHERE poll.id = ?
     """
     polls = []
@@ -209,22 +263,43 @@ def create_poll():
     question = request.args.get("poll_question")
     poll_type = request.args.get("poll_type")
     date_created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    is_anonymous = 1 if request.args.get("poll_anonymous") else 0
+    is_active = 1  # Polls are active by default
     answers = request.args.getlist("poll_answer")
 
     # Add the poll to the database
-    columns = "(creator_id, question, poll_type, date_created)"
-    values = (creator_id, question, poll_type, date_created)
-    query = f"INSERT INTO poll {columns} VALUES (?, ?, ?, ?) RETURNING id"
+    query = """
+    INSERT INTO poll (
+        creator_id, 
+        question, 
+        poll_type, 
+        date_created, 
+        is_anonymous, 
+        is_active
+    ) 
+    VALUES (?, ?, ?, ?, ?, ?) RETURNING id
+    """
+    values = (
+        creator_id,
+        question,
+        poll_type,
+        date_created,
+        is_anonymous,
+        is_active
+    )
     poll = cur.execute(query, values)
 
-    # Add the poll answers to the database
+    # Add the poll answers to the database unless they are numeric
     if poll_type not in ["NUMERIC_STAR", "NUMERIC_SCALE"]:
+
         poll_id = poll.fetchone()["id"]
         columns = "(poll_id, answer)"
+
         query = """
         INSERT INTO poll_answer (poll_id, answer)
         VALUES (?, ?)
         """
+
         for answer in answers:
             values = (poll_id, answer)
             cur.execute(query, values)

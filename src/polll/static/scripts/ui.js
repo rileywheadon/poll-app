@@ -1,11 +1,15 @@
 function open_settings() {
   const modal = document.getElementById("settings");
+  const main = document.getElementById("main");
   modal.style.display = "flex";
+  main.classList.add("blur-sm");
 }
 
 function close_settings() {
   const modal = document.getElementById("settings");
+  const main = document.getElementById("main");
   modal.style.display = "none";
+  main.classList.remove("blur-sm");
 }
 
 function toggle_user_information(user_id) {
@@ -75,4 +79,21 @@ function toggle_filter_button(col, id) {
     document.getElementById(id).classList.remove("font-light");
     document.getElementById(id).classList.add("font-semibold");
     // Could put callback function here for the each button based on its id
+}
+
+
+function toggle_lock(button) {
+
+  icon = button.firstElementChild;
+
+  if (icon.classList.contains("fa-lock")) {
+      icon.classList.remove("fa-lock");
+      icon.classList.add("fa-lock-open");
+      button.title = "Lock Poll";
+  } else {
+      icon.classList.remove("fa-lock-open");
+      icon.classList.add("fa-lock");
+      button.title = "Unlock Poll";
+  }
+   
 }

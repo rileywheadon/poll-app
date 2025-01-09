@@ -3,10 +3,11 @@
 
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS poll;
+DROP TABLE IF EXISTS poll_board;
+DROP TABLE IF EXISTS board;
 DROP TABLE IF EXISTS poll_answer;
 DROP TABLE IF EXISTS report;
 DROP TABLE IF EXISTS response;
-DROP TABLE IF EXISTS empty_response;
 DROP TABLE IF EXISTS discrete_response;
 DROP TABLE IF EXISTS numeric_response;
 DROP TABLE IF EXISTS ranked_response;
@@ -29,7 +30,24 @@ CREATE TABLE poll (
 	question TEXT NOT NULL, 
 	poll_type TEXT NOT NULL, 
 	date_created DATETIME NOT NULL, 
+  is_anonymous BOOLEAN NOT NULL CHECK (is_anonymous IN (0, 1)), 
+  is_active BOOLEAN NOT NULL CHECK (is_active IN (0, 1)), 
   FOREIGN KEY (creator_id) REFERENCES user (id)
+);
+
+
+-- Defines the many-to-many relationship between polls and boards
+CREATE TABLE poll_board (
+  poll_id INTEGER NOT NULL,
+  board_id INTEGER NOT NULL,
+  FOREIGN KEY (poll_id) REFERENCES poll (id),
+  FOREIGN KEY (board_id) REFERENCES board (id)
+);
+
+
+CREATE TABLE board (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL
 );
 
 
@@ -60,13 +78,6 @@ CREATE TABLE response (
 	timestamp DATETIME NOT NULL, 
 	FOREIGN KEY (user_id) REFERENCES user (id), 
 	FOREIGN KEY (poll_id) REFERENCES poll (id)
-);
-
-
-CREATE TABLE empty_response (
-	id INTEGER PRIMARY KEY, 
-	response_id INTEGER NOT NULL, 
-	FOREIGN KEY (response_id) REFERENCES response (id)
 );
 
 

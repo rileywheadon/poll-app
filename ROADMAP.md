@@ -5,6 +5,7 @@
 General:
 
 ## UI Development Branch
+
 - ### General:
   - [x] Design "templates/home/menu-footer.html" for small screens
   - [x] Hide "share/report/submit" text on small screens and scale button sizes appropriately
@@ -26,17 +27,17 @@ General:
     - [ ] Add a keyboard shortcut to create a new answer (ENTER) and create poll (SHIFT + ENTER)
     - [ ] Create a ui element that confirms a poll's creation instead of the current "alert()" message
     - [x] Turn off text suggestions for input fields
-    - [ ] Swap the position of the "Add Answer" and "Create Poll" button and place "Add Answer" on the left side of the form
+    - [x] Swap the position of the "Add Answer" and "Create Poll" button and place "Add Answer" on the left side of the form
     - [ ] Consider a font/font-weight that cleanly and intuitively differentiates the input with the prompts as right now there is little visual difference between the text field and the buttons/instructions around them
-    - [ ] Remove the delete button when there is only < 2 options for "choose one/many/ranking"
-    - [ ] Explore other options for a better looking input experience 
+    - [ ] Remove the delete button when there is less than 2 options for "choose one/many/ranking"
+    - [ ] Explore other options for a better looking input experience
       - Change the dropdown to something other than the browser/os default (maybe a small graphic accompanying the input options?)
       - Explore tailwind templates (dropdowns, buttons, etc.)
       - Display medium images (maybe a graph or a preview of what the input would look like) as options instead of a dropdown as currently the "Create" tab is quite empty
     - [ ] Ensure breakpoints are in place, or perhaps consider an alternative mobile layout
     - [ ] The "Create Poll" button should feel more meaningful when clicked. Add a small clickable pop-up that confirms a poll has been created (small animation maybe?). When clicked it jumps to the poll in the feed.
     - [ ] Make the container box for the poll creation feel less like is is just arbitrary pasted onto a canvas i.e. make it along with the other elements on the page look like one cohesive unit
-    - [ ] Allow users to drag and drop images for the tier list mode (HARD?) 
+    - [ ] Allow users to drag and drop images for the tier list mode (HARD?)
 
 Known bugs:
 
@@ -47,15 +48,22 @@ Known bugs:
 
 PR #1:
 
-- [ ] Update `schema.sql` to accomodate the following changes
-- [ ] Allow regular users to hide their username on polls they make
-- [ ] Allow regular users to actiate/deactivate their polls
-- [ ] Add sorting function on feed/history/my polls
-- [ ] Remove empty responses
-- [ ] Create poll boards
+- [x] Update `schema.sql` to accomodate the following changes
+- [x] Allow regular users to hide their username on polls they make
+- [x] Allow regular users to actiate/deactivate their polls
+- [x] Update settings
+  - Allow users to change their username
+  - Add light mode toggle to settings
+  - Add log out to settings
+- [x] Username not showing up in history
+- [x] Remove empty responses
+- [x] Show timestamp for polls
+- [x] Show the votes on the polls
 
 PR #2:
 
+- [ ] Add sorting function on feed/history/my polls
+- [ ] Create poll boards
 - [ ] Improve the API for getting results for tier list and ranking
 - [ ] Rewrite `responses.py` and `results.py`
 - [ ] Make the user's response appear in the results tab
@@ -76,8 +84,6 @@ PR #2:
   - [ ] Allow users to respond but require login to see results.
   - [ ] Anonymous responses saved to the database, linked to user after registration.
   - [ ] Allow anonymous responses on a poll-by-poll basis.
-- [ ] Ability to set a time limit (expiry date) on polls
-- [ ] Poll Boards
 
 ## 2: Staging
 

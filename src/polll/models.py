@@ -9,11 +9,30 @@ def on_cooldown(user_dict):
     next_poll_allowed = user_dict["next_poll_allowed"]
 
     if next_poll_allowed:
+
         next_poll_time = datetime.strptime(
-            next_poll_allowed, '%Y-%m-%d %H:%M:%S')
+            next_poll_allowed,
+            '%Y-%m-%d %H:%M:%S'
+        )
+
         return datetime.utcnow() < next_poll_time
 
     return False
+
+
+# Get the age of a poll (i.e. 2h or 4d)
+def get_poll_age(poll):
+    timestamp = datetime.strptime(poll["date_created"], '%Y-%m-%d %H:%M:%S')
+    age = datetime.utcnow() - timestamp
+
+    if age.days > 0:
+        return f"{age.days}d"
+    elif age.seconds // 3600 > 0:
+        return f"{age.seconds // 3600}h"
+    elif age.seconds // 60 > 0:
+        return f"{age.seconds // 60}m"
+    else:
+        return f"{age.seconds}s"
 
 
 # Helper functions to add "result_template" and "poll_template" to a poll dictionary

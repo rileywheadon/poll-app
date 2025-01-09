@@ -1,18 +1,30 @@
 function update_icons() {
+
   const themeIcon = document.getElementById("theme-icon");
-  [document.getElementById("logo-icon-startup"), document.getElementById("logo-icon-home")].forEach(icon => {
-    if (icon)
-      icon.setAttribute("src", "../static/assets/logo-name-" + localStorage.theme.toString() + ".svg")
+  const themeText = document.getElementById("theme-text");
+  
+  [
+    document.getElementById("logo-icon-startup"), 
+    document.getElementById("logo-icon-home")
+  ].forEach(icon => {
+    if (icon) {
+      path = "../static/assets/logo-name-" + localStorage.theme.toString() + ".svg"
+      icon.setAttribute("src", path)
+    }
   });
+
   if (themeIcon) {
     if (localStorage.theme == "light") {
       themeIcon.classList.remove("fa-sun");
       themeIcon.classList.add("fa-moon");
+      themeText.innerHTML = "Dark";
     } else {
       themeIcon.classList.remove("fa-moon");
       themeIcon.classList.add("fa-sun");
+      themeText.innerHTML = "Light";
     }
   }
+
 }
 
 function set_light_mode() {

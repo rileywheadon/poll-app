@@ -16,8 +16,6 @@ function copy_link(url) {
 // Helper function for generating a notification
 function notify(message) {
 
-  console.log("In notify()");
-
   // Get the notification wrapper
   wrapper = document.getElementById("notifications");
 

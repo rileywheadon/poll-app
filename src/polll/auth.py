@@ -20,7 +20,7 @@ auth = Blueprint('auth', __name__, template_folder='templates')
 def login():
 
     # If user is logged in, redirect to home
-    if "user" in session:
+    if "user" in session and session["user"]["id"] != None:
         return redirect(url_for("home.feed"))
 
     # Otherwise hit the auth0 authentication endpoint
@@ -33,7 +33,7 @@ def login():
 def register():
 
     # If user is logged in, redirect to home
-    if "user" in session:
+    if "user" in session and session["user"]["id"] != None:
         return redirect(url_for("home.feed"))
 
     # Otherwise hit the auth0 authentication endpoint
@@ -98,7 +98,7 @@ def logout():
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "user" not in session:
+        if not session["user"]["id"]:
             return redirect(url_for('auth.login'))
 
         return f(*args, **kwargs)
@@ -110,7 +110,8 @@ def requires_auth(f):
 def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if "user" not in session:
+
+        if not session["user"]["id"]:
             return redirect(url_for('auth.login'))
 
         elif session["user"]["email"] != "admin@polll.org":

@@ -1,4 +1,4 @@
-{% macro buttons(feed="visible", history="visible", create="visible", myPolls="visible", logout="visible") %}
+{% macro buttons(feed="visible", history="visible", create="visible", myPolls="visible") %}
 <a class="{{feed}} text-nord-0 dark:text-nord-6 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
   <span class="{% if session.tab == 'feed' %} font-black {% endif %}">
       Feed
@@ -26,14 +26,5 @@
     </span>
     <i class="ml-2 fa-solid fa-user"></i>
   </a>
-
-  <a class="{{logout}} text-nord-0 dark:text-nord-6 h-10 flex justify-center items-center"
-      href="{{ url_for('auth.logout') }}"
-      hx-boost="false">
-    <span>
-      Log Out
-    </span>
-    <i class="ml-2 fa-solid fa-arrow-left"></i>
-  </a>
-{% endmacro%}
+{% endmacro %}
 

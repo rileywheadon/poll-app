@@ -1,7 +1,11 @@
 <div class="poll-card border-b-2 border-zinc-950 overflow-hidden dark:border-nord-3 pt-2 pb-2">
   <!-- Include the poll question -->
   <div class="flex flex-col p-2">
-    <p class="text-nord-3 font-light">@{{ poll.creator }}⋅ 23s</p>
+    {% if poll.is_anonymous == 1 %}
+      <p class="text-nord-4 font-light">anonymous ⋅ {{ poll.age }}</p>
+    {% else %}
+      <p class="text-nord-4 font-light">@{{ poll.creator }} ⋅ {{ poll.age }}</p>
+    {% endif %}
     <p class="rounded-md text-2xl font-light">{{ poll.question }}</p>
   </div>
 
@@ -19,7 +23,7 @@
       
       <!-- <p class="grow"><i>@{{ poll.creator }}</i></p> -->
       <p class="grow">Votes:
-        <i>3,1415,926</i>
+        <i>{{ poll.votes }}</i>
       </p>
       <button class="w-10 rounded-md py-1 text-nord-6 dark:text-nord-0" onclick="navigator.clipboard.writeText('{{ poll.url }}')">
         <i class="ml-1 fa fa-share-from-square text-xl text-black dark:text-white"></i>
