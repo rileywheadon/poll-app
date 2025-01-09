@@ -1627,6 +1627,14 @@ video {
   outline-offset: 2px;
 }
 
+.hover\:outline:hover {
+  outline-style: solid;
+}
+
+.hover\:outline-nord-15:hover {
+  outline-color: #B48EAD;
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
