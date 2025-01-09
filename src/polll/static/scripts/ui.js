@@ -22,19 +22,12 @@ function toggle_user_information(user_id) {
   }
 }
 
-function update_poll_editor() {
-  const poll_type = document.getElementById("poll-type-selector").value;
-  const editor = document.getElementById("answer-editor");
-  const add = document.getElementById("answer-add");
-
-  if (poll_type == "NUMERIC_STAR" || poll_type == "NUMERIC_SCALE") {
-    editor.classList.add("hidden");
-    add.classList.add("hidden");
-  } else {
-    editor.classList.remove("hidden");
-    add.classList.remove("hidden");
-  }
+function update_poll_editor(pressed_id) {
+  const answers = document.getElementById("ans-types");
+  answers.classList.remove("hidden");
+  pressed_id == "scale-btn" ? answers.classList.add("hidden") : answers.classList.remove("hidden");
 }
+
 
 function remove_poll_answer(button) {
   button.parentNode.remove(); 
@@ -75,4 +68,35 @@ function toggle_filter_button(col, id) {
     document.getElementById(id).classList.remove("font-light");
     document.getElementById(id).classList.add("font-semibold");
     // Could put callback function here for the each button based on its id
+}
+
+// TODO: call update_poll_editor based on id (might be better to re-write it )
+function adjust_button_icons(pressed_id) {
+  const buttons = [document.getElementById("choose-one-btn"),
+                   document.getElementById("choose-many-btn"),
+                   document.getElementById("scale-btn"),
+                   document.getElementById("ranking-btn"),
+                   document.getElementById("tier-list-btn")];
+  buttons.forEach((b) => {
+    b.classList.remove("border-4");
+    b.classList.remove("border-emerald-800");
+
+    b.classList.remove("border-8");
+    b.classList.remove("border-blue-600");
+
+    if (b.id == pressed_id) {
+      b.classList.add("border-4");
+      b.classList.add("border-blue-600");
+      update_poll_editor(pressed_id)
+    } else {
+      b.classList.add("border-4");
+      b.classList.add("border-emerald-800");
+    }
+  });
+
+}
+
+// TODO: figure out how to condition on the number of questions
+function show_remove_button() {
+  true ? document.getElementById("remove-ans-btn").classList.remove("hidden") : document.getElementById("remove-ans-btn").classList.add("hidden");
 }
