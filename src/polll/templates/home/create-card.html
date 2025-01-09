@@ -52,15 +52,17 @@
      -->
     <div class="grow p-8">
       <div id="multiple-ans" class="flex flex-col justify-center">
-        
+
         <!-- Answer types (hidden when scale is selected) -->
-        <div class="unhidden">
+        <div id="ans-types" class="unhidden">
           <!-- Multiple Answers -->
           <div class="flex flex-row">
-            <button id="answer-add" class="rounded-lg px-4 h-10 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0" hx-get="{{ url_for('home.create_answer') }}" hx-swap="beforeend" hx-target="#answer-editor">
+            <button id="answer-add" class="h-10" hx-get="{{ url_for('home.create_answer') }}" hx-swap="beforeend" hx-target="#answer-editor">
               <i class="fa fa-plus"></i>
             </button>
-            {% include "home/create-answer.html" %}
+            <div id="answer-editor" class="grow">
+              {% include "home/create-answer.html" %}
+            </div>
           </div>
 
           <!-- Ranked -->
@@ -85,61 +87,6 @@
 
     </div>
   </div>
-</div>
-
-
-
-
-
-
-<div class="flex mb-6 bg-nord-4 dark:bg-nord-2 px-8 py-4">
-  <span class="my-auto text-nord-0 dark:text-nord-4 text-base">Poll Type:</span>
-  <select
-    class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg h-10 mx-2"
-    name="poll_type"
-    id="poll-type-selector"
-    autocomplete="off"
-    onchange="update_poll_editor()"
-  >
-    <option value="CHOOSE_ONE">Choose One</option>
-    <option value="CHOOSE_MANY">Choose Many</option>
-    <option value="NUMERIC_STAR">Stars (0-5)</option>
-    <option value="NUMERIC_SCALE">Scale (0-100)</option>
-    <option value="RANKED_POLL">Ranking</option>
-    <option value="TIER_LIST">Tier List</option>
-  </select>
-  <button
-    id="answer-add"
-    class="rounded-lg ml-auto h-10 w-32 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
-    hx-get="{{ url_for('home.create_answer') }}"
-    hx-swap="beforeend"
-    hx-target="#answer-editor"
-  >
-    Add Answer
-  </button>
-</div>
-<div class="flex flex-row px-8 mb-6">
-  <input
-    class="grow h-10 rounded-lg px-4 py-2 bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-6 hover:border-2 hover:border-nord-0 hover:dark:border-nord-4 placeholder:text-nord-3 placeholder:dark:text-nord-4"
-    placeholder="Question"
-    name="poll_question"
-    autocomplete="off"
-  />
-</div>
-<div id="answer-editor" class="flex flex-col space-y-3 px-20 mb-6 mx-auto">
-  {% include "home/create-answer.html" %}
-</div>
-<div class="flex flex-row mb-6 px-8">
-  <button
-    class="ml-auto rounded-lg h-10 w-32 bg-nord-15 text-nord-0 p-2"
-    hx-get="{{ url_for('home.create_poll') }}"
-    hx-target="#create-card"
-    hx-swap="innerHTML"
-    hx-include="[name='poll_type'], [name='poll_question'], [name='poll_answer']"
-    hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
-  >
-    Create Poll
-  </button>
 </div>
 {% else %}
 <div class="flex flex-row text-center items-center justify-center py-16">

@@ -22,19 +22,12 @@ function toggle_user_information(user_id) {
   }
 }
 
-function update_poll_editor() {
-  const poll_type = document.getElementById("poll-type-selector").value;
-  const editor = document.getElementById("answer-editor");
-  const add = document.getElementById("answer-add");
-
-  if (poll_type == "NUMERIC_STAR" || poll_type == "NUMERIC_SCALE") {
-    editor.classList.add("hidden");
-    add.classList.add("hidden");
-  } else {
-    editor.classList.remove("hidden");
-    add.classList.remove("hidden");
-  }
+function update_poll_editor(pressed_id) {
+  const answers = document.getElementById("ans-types");
+  answers.classList.remove("hidden");
+  pressed_id == "scale-btn" ? answers.classList.add("hidden") : answers.classList.remove("hidden");
 }
+
 
 function remove_poll_answer(button) {
   button.parentNode.remove(); 
@@ -94,7 +87,7 @@ function adjust_button_icons(pressed_id) {
     if (b.id == pressed_id) {
       b.classList.add("border-4");
       b.classList.add("border-blue-600");
-      //update_poll_editor(); or smth
+      update_poll_editor(pressed_id)
     } else {
       b.classList.add("border-4");
       b.classList.add("border-emerald-800");
