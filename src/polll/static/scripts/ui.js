@@ -76,3 +76,26 @@ function toggle_filter_button(col, id) {
     document.getElementById(id).classList.add("font-semibold");
     // Could put callback function here for the each button based on its id
 }
+
+function adjust_button_icons(pressed_id) {
+  const buttons = [document.getElementById("choose-one-btn"),
+                   document.getElementById("choose-many-btn"),
+                   document.getElementById("scale-btn"),
+                   document.getElementById("tier-list-btn")];
+  buttons.forEach((b) => {
+    b.classList.remove("border-4");
+    b.classList.remove("border-emerald-800");
+
+    b.classList.remove("border-8");
+    b.classList.remove("border-blue-600");
+
+    if (b.id == pressed_id) {
+      b.classList.add("border-8");
+      b.classList.add("border-blue-600");
+    } else {
+      b.classList.add("border-4");
+      b.classList.add("border-emerald-800");
+    }
+  });
+
+}
