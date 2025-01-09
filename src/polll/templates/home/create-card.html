@@ -1,71 +1,152 @@
 {% if not on_cooldown %}
 
-<div class="flex mb-6 bg-nord-4 dark:bg-nord-2 px-8 py-4">
+<!-- TODO: Build mobile version (use breakpoints to change from row to col) -->
+<!-- TODO: Add stars -->
 
-  <!-- SELECT POLL TYPE -->
-  <span class="my-auto text-nord-0 dark:text-nord-4 text-l">Poll Type:</span>
-  <select
-    class="poll-create bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg h-10 mx-2"
-    name="poll_type"
-    id="poll-type-selector"
-    autocomplete="off"
-    onchange="update_poll_editor()"
-  >
-    <option value="CHOOSE_ONE">Choose One</option>
-    <option value="CHOOSE_MANY">Choose Many</option>
-    <option value="NUMERIC_STAR">Stars (0-5)</option>
-    <option value="NUMERIC_SCALE">Scale (0-100)</option>
-    <option value="RANKED_POLL">Ranking</option>
-    <option value="TIER_LIST">Tier List</option>
-  </select>
+<div class="flex flex-row">
 
-  <!-- CREATE POLL -->
-  <button
-    class="ml-auto rounded-lg h-10 w-32 bg-nord-15 text-nord-0 p-2"
-    hx-get="{{ url_for('home.create_poll') }}"
-    hx-target="#create-card"
-    hx-swap="innerHTML"
-    hx-include=".poll-create"
-    hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
-  >
-    Create Poll
-  </button>
+  <!-- Options column with graphics + labels -->
+  <!-- NOTE: temporary images, actual images should each be the same size -->
+  <div class="flex flex-col px-4 py-4">
 
-</div>
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Choose One">
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="CHOOSE_ONE"
+        onclick="update_answer_editor('choose_one')"
+        checked
+      >
+      <img class="w-24" src="../../static/assets/choose-one.png"/>
+    </label>
 
-<div class="flex flex-row px-8 mb-6">
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Choose Many">
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="CHOOSE_MANY"
+        onclick="update_answer_editor('choose_many')"
+      >
+      <img class="w-24" src="../../static/assets/choose-many.png"/>
+    </label>
 
-  <!-- QUESTION EDITOR -->
-  <input
-    class="poll-create grow h-10 rounded-lg px-4 py-2 bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-6 hover:border-2 hover:border-nord-0 hover:dark:border-nord-4 placeholder:text-nord-3 placeholder:dark:text-nord-4"
-    placeholder="Question"
-    name="poll_question"
-    autocomplete="off"
-  />
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Scale">
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="NUMERIC_SCALE"
+        onclick="update_answer_editor('numeric_scale')"
+      >
+      <img class="w-24" src="../../static/assets/scale.png"/>
+    </label>
 
-</div>
 
-<!-- ANSWER EDITOR -->
-<div id="answer-editor" class="flex flex-col space-y-3 px-20 mb-6 mx-auto">
-  {% include "home/create-answer.html" %}
-</div>
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Ranking">
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="RANKED_POLL"
+        onclick="update_answer_editor('ranked_poll')"
+      >
+      <img class="w-24" src="../../static/assets/tier-list.png"/>
+    </label>
 
-<div class="flex flex-row mb-6 px-8 items-center">
 
-  <!-- ADD ANSWER -->
-  <button
-    id="answer-add"
-    class="rounded-lg h-10 w-32 bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
-    hx-get="{{ url_for('home.create_answer') }}"
-    hx-swap="beforeend"
-    hx-target="#answer-editor"
-  >
-    Add Answer
-  </button>
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Tier List">
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="TIER_LIST"
+        onclick="update_answer_editor('tier_list')"
+      >
+      <img class="w-24" src="../../static/assets/tier-list.png"/>
+    </label>
 
-  <!-- HIDE USERNAME -->
-  <span class="ml-auto mr-2">Hide my Username:</span>
-  <input class="poll-create w-6 h-6" name="poll_anonymous" type="checkbox">
+  </div>
+
+  <!-- Question editor-->
+  <!-- TODO: make the input box expand downwards when exceeding the width of the screen-->
+  <div class="flex flex-col grow border-2 border-nord-3 rounded-lg">
+
+    <div class="px-10 pt-8  text-2xl"> 
+      <input class="poll-create text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
+        name="poll_question"
+        placeholder="Write your poll of the day..."
+      />
+      <hr>
+    </div>
+
+    <!-- 
+    ANSWER INPUTS 
+      - Choose one/many are the same thing (list of > 1 answers)
+      - Scale is just the question (no answers needed)
+      - Tier list/ranked is a little more complicated
+    -->
+
+    <div class="grow p-8">
+      <div id="multiple-ans" class="flex flex-col justify-center">
+
+        <!-- Answer types (hidden when scale is selected) -->
+        <div id="ans-types" class="unhidden">
+
+          <!-- Multiple Answers -->
+          <div id="answer-editor" class="flex flex-row">
+            <button id="answer-add" 
+              class="h-10" 
+              hx-get="{{ url_for('home.create_answer') }}" 
+              hx-swap="beforeend" 
+              hx-target="#answer-list"
+            >
+              <i class="fa fa-plus"></i>
+            </button>
+
+            <div id="answer-list" class="flex flex-col grow">
+              {% include "home/create-answer.html" %}
+              {% include "home/create-answer.html" %}
+            </div>
+
+          </div>
+
+          <!-- Ranked -->
+          <div id="ranked-answer-editor" class="hidden flex flex-col">
+            TODO
+          </div>  
+
+          <!-- Tier List -->
+          <div id="tier-list-answer-editor" class="hidden flex flex-col">
+            TODO
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex flex-row items-center mt-auto px-10 pb-6">
+
+      <!-- HIDE USERNAME -->
+      <span class="mr-2">Hide my Username:</span>
+      <input class="poll-create w-6 h-6" name="poll_anonymous" type="checkbox">
+    
+      <!-- SUBMIT BUTTON -->
+      <button class="rounded-lg bg-nord-15 text-black py-2 px-4 ml-auto" 
+        hx-get="{{ url_for('home.create_poll') }}" 
+        hx-target="#create-card" 
+        hx-swap="innerHTML" 
+        hx-include=".poll-create"             
+        hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
+      >
+        <p class="font-light">Publish</p>
+      </button>
+    </div>
+
+  </div>
 
 </div>
 

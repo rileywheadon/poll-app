@@ -1,5 +1,5 @@
 <!-- Header -->
-<div class="w-100% flex space-x-4 items-center border-b-2 bg-nord-5 border-nord-4 dark:border-nord-3 dark:bg-neutral-900 p-4 lg:p-6">
+<div class="w-100% flex space-x-4 items-center border-b-2 border-nord-4 dark:border-nord-3 dark:bg-neutral-900 p-4 lg:p-6">
 
   <!-- Logo image, also redirects to home -->
   <a href="/">
@@ -7,14 +7,16 @@
   </a>
 
   <!-- Settings menu -->
-  <button class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 flex justify-center items-center" onclick="open_settings()">
-    <i id="settings-icon" class="fas fa-gear text-2xl cursor-pointer"></i>
-  </button>
+  {% if not session.admin %}
+    <button class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 flex justify-center items-center" onclick="open_settings()">
+      <i id="settings-icon" class="fas fa-gear text-2xl cursor-pointer"></i>
+    </button>
+  {% endif %}
 
   <!-- Admin panel, if logged in as administrator -->
   {% if session.user.email == "admin@polll.org" %} 
     {% if session.admin %}
-      <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
+      <a class="!ml-auto bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
         Home
       </a>
     {% else %}

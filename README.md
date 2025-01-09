@@ -64,6 +64,7 @@ In order to run the app locally, you will need a [Virtual Environment](https://d
 - Run `python3 -m venv venv`. This will create a new virtual environment called `venv` within the root directory of the project.
 - Run `source venv/bin/activate` to enter the virtual environment.
 - Use `pip install -r requirements.txt` to install the packages listed in `requirements.txt` in the virtual environment.
+- If having id issues /logout on the url
 
 To run the app, type `python3 src/app.py` into a terminal from the root directory.
 

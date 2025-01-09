@@ -1,4 +1,4 @@
-<div class="poll-card border-b-2 border-zinc-950 overflow-hidden dark:border-nord-3 pt-2 pb-2">
+<div class="poll-card border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-2">
   <!-- Include the poll question -->
   <div class="flex flex-col p-2">
     {% if poll.is_anonymous == 1 %}
@@ -21,12 +21,15 @@
     <!-- Include the submit button, share button, and report button -->
     <div class="flex flex-row text-sm justify-end items-center mt-4 font-light">
       
-      <!-- <p class="grow"><i>@{{ poll.creator }}</i></p> -->
       <p class="grow">Votes:
         <i>{{ poll.votes }}</i>
       </p>
-      <button class="w-10 rounded-md py-1 text-nord-6 dark:text-nord-0" onclick="navigator.clipboard.writeText('{{ poll.url }}')">
-        <i class="ml-1 fa fa-share-from-square text-xl text-black dark:text-white"></i>
+
+      <button 
+        class="w-10 rounded-md py-1 text-nord-6 dark:text-nord-0" 
+        onclick="navigator.clipboard.writeText('{{ poll.url }}')"
+      >
+        <i class="ml-1 fa fa-share-from-square text-xl text-black dark:text-white hover:text-2xl"></i>
       </button>
       <button
         class="w-10 ml-2 h-10 rounded-md py-1 text-nord-6 dark:text-nord-0"
@@ -34,13 +37,13 @@
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="outerHTML"
       >
-        <i class="ml-1 fa fa-triangle-exclamation text-xl text-black dark:text-white"></i>
+        <i class="ml-1 fa fa-triangle-exclamation text-xl text-black dark:text-white hover:text-2xl"></i>
       </button>
       <button
         class="ml-2 w-10 h-10 rounded-md py-1 text-nord-0"
         type="submit"
       >
-        <i class="ml-1 fa fa-paper-plane text-xl text-nord-7"></i>
+        <i class="ml-1 fa fa-paper-plane text-xl text-polll-blue hover:text-polll-green hover:text-2xl"></i>
       </button>
     </div>
   </form>
