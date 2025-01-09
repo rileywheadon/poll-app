@@ -624,6 +624,16 @@ video {
   margin-bottom: auto;
 }
 
+.my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 .\!ml-auto {
   margin-left: auto !important;
 }
@@ -757,6 +767,18 @@ video {
   height: auto;
 }
 
+.h-px {
+  height: 1px;
+}
+
+.h-1\/2 {
+  height: 50%;
+}
+
+.h-64 {
+  height: 16rem;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -853,6 +875,41 @@ video {
 
 .w-auto {
   width: auto;
+}
+
+.w-4\/5 {
+  width: 80%;
+}
+
+.w-11\/12 {
+  width: 91.666667%;
+}
+
+.min-w-52 {
+  min-width: 13rem;
+}
+
+.min-w-max {
+  min-width: -moz-max-content;
+  min-width: max-content;
+}
+
+.min-w-full {
+  min-width: 100%;
+}
+
+.max-w-52 {
+  max-width: 13rem;
+}
+
+.max-w-fit {
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.max-w-max {
+  max-width: -moz-max-content;
+  max-width: max-content;
 }
 
 .flex-shrink {
@@ -1023,6 +1080,14 @@ video {
   border-width: 2px;
 }
 
+.border-8 {
+  border-width: 8px;
+}
+
+.border-4 {
+  border-width: 4px;
+}
+
 .border-x {
   border-left-width: 1px;
   border-right-width: 1px;
@@ -1084,6 +1149,66 @@ video {
   border-color: rgb(163 163 163 / var(--tw-border-opacity, 1));
 }
 
+.border-nord-1 {
+  --tw-border-opacity: 1;
+  border-color: rgb(59 66 82 / var(--tw-border-opacity, 1));
+}
+
+.border-nord-7 {
+  --tw-border-opacity: 1;
+  border-color: rgb(143 188 187 / var(--tw-border-opacity, 1));
+}
+
+.border-nord-8 {
+  --tw-border-opacity: 1;
+  border-color: rgb(136 192 208 / var(--tw-border-opacity, 1));
+}
+
+.border-nord-10 {
+  --tw-border-opacity: 1;
+  border-color: rgb(94 129 172 / var(--tw-border-opacity, 1));
+}
+
+.border-blue-900 {
+  --tw-border-opacity: 1;
+  border-color: rgb(30 58 138 / var(--tw-border-opacity, 1));
+}
+
+.border-blue-700 {
+  --tw-border-opacity: 1;
+  border-color: rgb(29 78 216 / var(--tw-border-opacity, 1));
+}
+
+.border-blue-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(37 99 235 / var(--tw-border-opacity, 1));
+}
+
+.border-blue-500 {
+  --tw-border-opacity: 1;
+  border-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
+}
+
+.border-emerald-800 {
+  --tw-border-opacity: 1;
+  border-color: rgb(6 95 70 / var(--tw-border-opacity, 1));
+}
+
+.border-emerald-950 {
+  --tw-border-opacity: 1;
+  border-color: rgb(2 44 34 / var(--tw-border-opacity, 1));
+}
+
+.border-emerald-900 {
+  --tw-border-opacity: 1;
+  border-color: rgb(6 78 59 / var(--tw-border-opacity, 1));
+}
+
+.border-emerald-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(5 150 105 / var(--tw-border-opacity, 1));
+}
+
 .bg-nord-15 {
   --tw-bg-opacity: 1;
   background-color: rgb(180 142 173 / var(--tw-bg-opacity, 1));
@@ -1123,6 +1248,10 @@ video {
   background-color: rgb(229 229 229 / var(--tw-bg-opacity, 1));
 }
 
+.bg-transparent {
+  background-color: transparent;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -1137,6 +1266,10 @@ video {
 
 .p-10 {
   padding: 2.5rem;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .px-2 {
@@ -1187,6 +1320,16 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.px-10 {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
 }
 
 .pb-2 {
@@ -1243,6 +1386,14 @@ video {
 
 .pl-6 {
   padding-left: 1.5rem;
+}
+
+.pr-10 {
+  padding-right: 2.5rem;
+}
+
+.pl-10 {
+  padding-left: 2.5rem;
 }
 
 .text-center {
@@ -1339,6 +1490,11 @@ video {
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
 }
 
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -1405,6 +1561,14 @@ video {
   color: rgb(76 86 106 / var(--tw-text-opacity, 1));
 }
 
+.hover\:cursor-pointer:hover {
+  cursor: pointer;
+}
+
+.hover\:cursor-default:hover {
+  cursor: default;
+}
+
 .hover\:border-2:hover {
   border-width: 2px;
 }
@@ -1417,6 +1581,11 @@ video {
 .hover\:bg-nord-8:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(136 192 208 / var(--tw-bg-opacity, 1));
+}
+
+.focus\:outline-none:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
 }
 
 @media (min-width: 640px) {
