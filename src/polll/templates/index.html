@@ -6,7 +6,7 @@
 
 {% block body %}
 
-<div class="w-full h-full min-h-screen bg-nord-6 dark:bg-nord-0">
+<div class="w-full h-full min-h-screen bg-nord-6 d dark:bg-gradient-to-t dark:from-grad-start dark:to-grad-end">
 
   <div class="w-100%">
     <img id="logo-icon-startup" class="w-36 p-6" src="../static/assets/logo-name-dark.svg">
@@ -26,10 +26,10 @@
         Explore, interact, and engage with your favourite topics through polling. 100% free. Completely secure. No ads, ever.
       </h1>
       <div class="flex items-center flex-row">
-        <a class="bg-nord-9 text-xl text-nord-0 border-2 border-nord-3 dark:bg-nord-7 dark:border-nord-6 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center"
+        <a class="bg-nord-4 text-xl text-nord-0 border-2 border-nord-3 dark:bg-polll-green dark:border-nord-4 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center"
            href="{{ url_for("auth.register") }}"
            hx-boost="false">Register</a>
-        <a class="bg-nord-4 text-xl text-nord-0 border-2 border-nord-3 dark:bg-nord-4 dark:border-nord-6 text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center"
+        <a class="bg-nord-4 text-xl text-nord-0 border-2 border-nord-3 dark:bg-polll-blue dark:border-nord-4 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center"
            href="{{ url_for("auth.login") }}"
            hx-boost="false">Login</a>
       </div>
