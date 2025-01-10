@@ -1,4 +1,5 @@
 <div class="poll-card border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-2">
+
   <!-- Include the poll question -->
   <div class="flex flex-col p-2">
     {% if poll.is_anonymous == 1 %}
@@ -16,6 +17,7 @@
     hx-trigger="submit"
     hx-swap="outerHTML"
   >
+
     {% block poll_content %} {% endblock %}
 
     <!-- Include the submit button, share button, and report button -->
@@ -25,26 +27,35 @@
         <i>{{ poll.votes }}</i>
       </p>
 
+      <!-- Share Button -->
       <button 
         class="w-10 rounded-md py-1 text-nord-6 dark:text-nord-0" 
-        onclick="navigator.clipboard.writeText('{{ poll.url }}')"
+        onclick="copy_link('{{ poll.url }}')"
+        type="button"
       >
         <i class="ml-1 fa fa-share-from-square text-xl text-black dark:text-white hover:text-2xl"></i>
       </button>
+
+      <!-- Report Button -->
       <button
         class="w-10 ml-2 h-10 rounded-md py-1 text-nord-6 dark:text-nord-0"
         hx-post="/home/report/{{ poll.id }}"
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="outerHTML"
+        type="button"
       >
         <i class="ml-1 fa fa-triangle-exclamation text-xl text-black dark:text-white hover:text-2xl"></i>
       </button>
+
+      <!-- Submit Button -->
       <button
-        class="ml-2 w-10 h-10 rounded-md py-1 text-nord-0"
+        class="ml-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
         type="submit"
       >
-        <i class="ml-1 fa fa-paper-plane text-xl text-polll-blue hover:text-polll-green hover:text-2xl"></i>
+        <span class="font-medium text-nord-4 mr-1">Submit</span>
+        <i class="ml-1 fa fa-paper-plane text-xl text-nord-4"></i>
       </button>
+
     </div>
   </form>
 </div>

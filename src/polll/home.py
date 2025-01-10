@@ -335,12 +335,12 @@ def response(poll_id):
 
     # Otherwise get the poll in the response header
     poll_query = """
-    SELECT *
+    SELECT id
     FROM poll
-    WHERE id = ?
+    WHERE id=?
     """
     res = cur.execute(poll_query, (poll_id,))
-    poll = dict(res.fetchone())
+    poll = query_poll_details(poll_id)
 
     # Submit the response to the database
     handler = getattr(response_handlers, poll["poll_type"].lower())
@@ -354,23 +354,5 @@ def response(poll_id):
 @home.route("/home/result/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def result(poll_id):
-
-    # Open the database connection
-    db = get_db()
-    cur = db.cursor()
-
-    # Query the poll in the response header
-    query = """
-    SELECT *
-    FROM poll
-    WHERE id = ?
-    """
-
-    res = cur.execute(query, (poll_id,))
-    poll = dict(res.fetchone())
-
-    # Get the results (dependent on the poll type) and render them
-    handler = getattr(result_handlers, poll["poll_type"].lower())
-    poll["results"] = handler(poll_id)
-    poll["result_template"] = result_template(poll)
+    poll = query_poll_details(poll_id)
     return render_template(poll["result_template"], poll=poll)
