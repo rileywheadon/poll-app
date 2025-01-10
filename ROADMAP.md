@@ -41,7 +41,6 @@ General:
 
 Known bugs:
 
-- [x] Scroll is broken in admin (FIXED)
 - [ ] Multiple star selectors don't work
 
 ## Backend
@@ -53,6 +52,7 @@ NEXT PR:
 - [ ] Improve the API for getting results for tier list and ranking
 - [ ] Rewrite `responses.py` and `results.py`
 - [ ] Make the user's response appear in the results tab
+- [ ] Custom scales (endpoints, axes?)
 - Finish interoperability
   - [x] Create a randomized URL for each poll that users can share.
   - [ ] Allow users to respond but require login to see results.
