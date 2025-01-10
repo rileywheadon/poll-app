@@ -2,8 +2,24 @@
 
 {% block poll_content %}
   {% for answer in poll.answers %}
-    <input type="radio" class="mb-2" name="answer_id" value="{{ answer.id }}">
-    {{ answer.answer }}
+    <!-- <input type="radio" class="mb-2" name="answer_id" value="{{ answer.id }}"> -->
+    <h2 style="padding: 5px 1px;"></h2>
+    <button value="{{answer.id}}" class="size-3/5 dark:bg-polll-blue border-1 border-polll-blue rounded-lg p-2 hover:border-4 hover:bg-polll-green hover:border-polll-green hover:cursor-default" onclick="adjust_button_icons('choose-many-btn')">
+        {{ answer.answer }}
+    </button>
     <br>
+    
   {% endfor %}
 {% endblock %}
+
+<!-- 
+<a class="bg-nord-4 text-xl text-nord-0 border-2 border-nord-3 dark:bg-polll-blue dark:border-nord-4 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center"
+    href="{{ url_for("auth.login") }}"
+    hx-boost="false">Login</a>
+-->
+
+<!-- 
+<button id="choose-many-btn" class="dark:bg-neutral-200 border-4 border-emerald-800 rounded-lg p-2 hover:border-8 hover:cursor-default" onclick="adjust_button_icons('choose-many-btn')">
+    <img class="w-24" src="../../static/assets/choose-many.png"/>
+</button>
+ -->
