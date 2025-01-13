@@ -1,6 +1,10 @@
 {% extends "results/result-base.html" %}
 
 {% block result_content %}
+  <div>
+    <script>graphInit({{ poll.results|safe }}, {{ smooth_hist(poll.results, 0.5)|safe }});</script>
+    <canvas id="scale-graph"></canvas>
+  </div>
   {% for result in poll.results %}
     <p>{{ result.value }}: {{ result.count }}</p>
   {% endfor %}
