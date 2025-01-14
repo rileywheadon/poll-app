@@ -1,6 +1,8 @@
 {% extends "results/result-base.html" %}
 
 {% block result_content %}
+
+
 <script>graphInit("rank", {{ poll.id }}, {{ poll.results|safe }});</script>
 <canvas id="poll-graph-{{ poll.id }}"></canvas>
   {% for result in poll.results %}
