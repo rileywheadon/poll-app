@@ -3,6 +3,7 @@
 // - When hovering with the mouse over a line graph, hide the 
 //   actual y value as it doesn't correspond to the true number of votes
 //   due to the normalization from the Gaussian kde
+// - If tier/rank is using Apex Charts it makes sense use it here too
 
 
 
@@ -25,6 +26,9 @@ function graphInit(type, poll_id, rs=null, rs_kde=null) {
                     break;
                 case "rank":
                     make_rank_graph(poll_id, rs);
+                    break;
+                case "tier":
+                    make_tier_graph(poll_id, rs);
                     break;
             }
         })
@@ -135,9 +139,20 @@ function make_scale_graph(poll_id, rs, rs_kde) {
     )
 }
 
-function make_rank_graph(poll_id, rs) {}
+
+// Apex Charts stacked 100%, stacked with two bars for each entry:
+// one for the user's vote and one for the average vote for that rank 
+// (inlcude labels on the side for each vote with colour coding)
+// https://apexcharts.com/javascript-chart-demos/bar-charts/stacked-100/
+function make_rank_graph(poll_id, rs) {
 
 
+
+}
+
+// Use Apex Charts' stacked bar charts
+// https://apexcharts.com/javascript-chart-demos/bar-charts/stacked/
+function make_tier_graph(poll_id, rs) {}
 
 // Helpers for formatting the data into something that can be graphed
 function parse_results(rs) {
