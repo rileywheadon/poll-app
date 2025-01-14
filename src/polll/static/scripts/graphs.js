@@ -3,9 +3,6 @@
 // - When hovering with the mouse over a line graph, hide the 
 //   actual y value as it doesn't correspond to the true number of votes
 //   due to the normalization from the Gaussian kde
-// - Make sepereate functions for all different graph types
-// - look into plotly.js for graphing as there hasn't been much designing yet
-
 
 
 
@@ -34,10 +31,71 @@ function graphInit(type, poll_id, rs=null, rs_kde=null) {
     })
 }
 
+function make_choose_one_graph(poll_id, rs) {
+    new Chart(document.getElementById(`poll-graph-${poll_id}`), {
+        type: "bar",
+        data: {
+            labels: rs.map((e) => e["answer"]),
+                datasets: [{
+                    label: "y-axis",
+                    fill: true,
+                    borderColor: "#ffffff",
+                    data: rs.map((e) => e["count"]),
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                title: {
+                    display: true,
+                    text: "Title",
+                    fontSize: 24,
+                    fontColor: "#ffffff"
+                },
+                legend: {display: false},
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
 
-function make_choose_one_graph(poll_id, rs) {}
 
-function make_choose_many_graph(poll_id, rs) {}
+    })
+}
+
+function make_choose_many_graph(poll_id, rs) {
+
+    new Chart(document.getElementById(`poll-graph-${poll_id}`), {
+        type: "pie",
+        data: {
+            labels: rs.map((e) => e["answer"]),
+                datasets: [{
+                    label: "y-axis",
+                    fill: true,
+                    borderColor: "#ffffff",
+                    data: rs.map((e) => e["count"]),
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                title: {
+                    display: true,
+                    text: "Title",
+                    fontSize: 24,
+                    fontColor: "#ffffff"
+                },
+                legend: {display: false},
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+
+
+    })    
+
+}
 
 
 function make_scale_graph(poll_id, rs, rs_kde) {
@@ -93,7 +151,3 @@ function parse_kde_results(rs_kde) {
     for (let i = 0; i < rs_kde[0].length; i++) pts.push({x: rs_kde[0][i], y: rs_kde[1][i]});
     return pts;
 }
-
-
-
-
