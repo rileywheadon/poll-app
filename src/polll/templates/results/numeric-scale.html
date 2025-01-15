@@ -3,7 +3,8 @@
 {% block result_content %}
   <!-- bandwidth has to be a function of total votes or something -->
   <script>graphInit("scale", {{ poll.id }}, {{ poll.results|safe }}, {{ smooth_hist(poll.results, 0.2)|safe }});</script>
-  <canvas id="poll-graph-{{ poll.id }}"></canvas>
+  <!-- <canvas id="poll-graph-{{ poll.id }}"></canvas> -->
+  <div id="poll-graph-{{ poll.id }}"></div>
   {% for result in poll.results %}
     <p>{{ result.value }}: {{ result.count }}</p>
   {% endfor %}
