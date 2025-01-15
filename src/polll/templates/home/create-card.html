@@ -1,4 +1,4 @@
-{% if not on_cooldown %}
+{% if not session.on_cooldown %}
 
 <!-- TODO: Build mobile version (use breakpoints to change from row to col) -->
 <!-- TODO: Add stars -->
@@ -127,8 +127,31 @@
       </div>
     </div>
 
+    <!-- Boards -->
+    <div class="flex flex-row items-center mt-auto px-10 pb-2">
+
+      <!-- SELECT BOARD -->
+      <span class="mr-2">Select Boards:</span>
+
+      {% for board in boards %}
+
+        <label class="rounded-2xl px-3 mr-2 h-8 border-4 border-nord-4 hover:dark:bg-nord-0 has-[:checked]:border-nord-10 {% if board.name == 'All' %}border-nord-10{% endif %}">
+          {{ board.name }}
+          <input 
+            class="poll-create hidden" 
+            name="poll_board"
+            value="{{ board.id }}" 
+            type="checkbox"
+            {% if board.name == 'All' %}checked{% endif %}
+          >
+        </label>
+
+      {% endfor %}
+
+    </div>
+
     <!-- Footer -->
-    <div class="flex flex-row items-center mt-auto px-10 pb-6">
+    <div class="flex flex-row items-center px-10 pb-6">
 
       <!-- HIDE USERNAME -->
       <span class="mr-2">Hide my Username:</span>

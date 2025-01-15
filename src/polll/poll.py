@@ -10,7 +10,7 @@ import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import url_to_id, poll_template
+from polll.models import url_to_id, poll_template, query_poll_details
 
 # Create a blueprint for answering anonymous polls
 poll = Blueprint('poll', __name__, template_folder='templates')
@@ -25,26 +25,8 @@ def anonymous(poll_code):
 
     # Recover the poll ID, query the database
     poll_id = url_to_id(poll_code)
-    poll_query = """
-    SELECT poll.*, user.username AS creator
-    FROM poll
-    INNER JOIN user ON poll.creator_id = user.id
-    WHERE poll.id = ?
-    """
-    poll = dict(cur.execute(poll_query, (poll_id,)).fetchone())
-
-    # Add any poll answers to the poll
-    answer_query = """
-    SELECT *
-    FROM poll_answer
-    WHERE poll_id = ?
-    """
-    res = cur.execute(answer_query, (poll_id,)).fetchall()
-    poll["answers"] = [dict(answer) for answer in res]
-
-    # Render the poll in a new tab
-    poll["poll_template"] = poll_template(poll)
-    return render_template("anonymous.html", poll=poll)
+    poll = query_poll_details(poll_id)
+    return render_template("anonymous/poll.html", poll=poll)
 
 
 @poll.route("/poll/delete/<poll_id>")
@@ -68,6 +50,12 @@ def delete(poll_id):
     poll_query = """
     DELETE FROM poll
     WHERE poll.id = ?
+    """
+
+    # Delete the poll/board equivalencies
+    poll_board_query = """
+    DELETE FROM poll_board
+    WHERE poll_id = ?
     """
 
     # Delete the poll answers (if they exist)
@@ -106,6 +94,7 @@ def delete(poll_id):
 
     cur.execute(response_query, (poll_id,))
     cur.execute(answer_query, (poll_id,))
+    cur.execute(poll_board_query, (poll_id,))
     cur.execute(poll_query, (poll_id,))
     db.commit()
 

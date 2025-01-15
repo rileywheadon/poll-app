@@ -24,15 +24,31 @@
       </div>
 
       <!-- Main Column (Polls) -->
-      <div class="w-full overflow-auto md:w-8/12 p-2 no-scrollbar">
+      <div id="home-content" class="w-full overflow-auto md:w-8/12 p-2 no-scrollbar">
 
         {% block home_content %}{% endblock %}
 
       </div>
 
       <!--Right Sidebar-->
-      <div class="hidden md:flex md:justify-center md:w-2/12 p-2">
-        SUB BOARDS
+      <div class="hidden md:flex md:flex-col md:items-center md:w-2/12 px-6">
+
+        {% if session.tab == "feed" %}
+
+        <p class="mb-2">Boards</p>
+
+          {% for board in boards %}
+      
+            <a class="flex flex-row items-center justify-center rounded-md w-full h-8 border-2 dark:border-nord-3 mb-2 {% if session.board == board.name %}underline{% endif %}"
+              href="{{ url_for('home.feed', board = board.name, order = session.feed) }}"
+            >
+              {{ board.name }}
+            </a>
+
+          {% endfor %}
+
+        {% endif %}
+        
       </div>
 
     </div>

@@ -33,7 +33,7 @@
   </a>
 
   <a
-    class="text-nord-0 dark:text-nord-6 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
+    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
     href="{{ url_for('admin.stats') }}"
   >
     <span class="{% if session.tab == 'stats' %} underline {% endif %}"
@@ -41,4 +41,15 @@
     >
     <i class="ml-2 fa-solid fa-chart-simple"></i>
   </a>
+
+  <a
+    class="text-nord-0 dark:text-nord-6 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
+    href="{{ url_for('admin.boards') }}"
+  >
+    <span class="{% if session.tab == 'boards' %} underline {% endif %}"
+      >Boards</span
+    >
+    <i class="ml-2 fa-solid fa-clipboard"></i>
+  </a>
+
 </div>

@@ -1,0 +1,30 @@
+{% extends "admin/admin.html" %}
+
+{% block admin_content %}
+
+  <div class="flex flex-row p-2 my-4 items-center">
+    <span class="mr-2">Create Board:</span>
+    <input class="board-search bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-4 px-2 rounded-md h-10 grow mr-4"
+      type="text"
+      name="name"
+      value=""
+      autocomplete="off"
+    >
+    <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-2 rounded-md h-10 w-16"
+      hx-get="{{ url_for('admin.create_board') }}"
+      hx-include=".board-search"
+      hx-target="#boards-list"
+      hx-swap="innerHTML"
+      hx-on::after-request="this.previousElementSibling.value = '';"
+    >
+      <i class="fa fa-plus"></i>
+    </button>
+  </div>
+
+  <div id="boards-list">
+
+    {% include "boards-list.html" %}
+
+  </div>
+
+{% endblock %}

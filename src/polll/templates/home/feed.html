@@ -1,16 +1,24 @@
 {% extends "home/home.html" %}
 
-{%macro filter_btn(col, colDark, text, bf="font-light") %}
-  <button id="{{text}}" onclick="toggle_filter_button('{{col}}', '{{text}}')" class="bg-{{col}} text-nord-0 border-2 border-nord-3 dark:bg-{{colDark}} dark:border-nord-2 text-nord-0 rounded-lg w-9 sm:w-10 md:w-11 lg:w-12 h-6 md:h-7 lg:h-8 m-1 flex justify-center items-center {{bf}}">{{text}}</button>
+{%macro filter_btn(name) %}
+
+  <a 
+    id="{{ name }}" 
+    href="{{ url_for('home.feed', board = session.board, order = name) }}"
+    class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:border-nord-2 text-nord-0 rounded-lg w-9 sm:w-10 md:w-11 lg:w-12 h-6 md:h-7 lg:h-8 m-1 flex justify-center items-center font-light {% if session.feed == name %}bg-nord-9 dark:bg-nord-7 font-semibold{% endif %}"
+  >
+    {{ name.capitalize() }}
+  </a>
+
 {%endmacro%}
 
 {% block home_content %}
 
   <div class="w-full">
     <div class="flex flex-row text-xs md:text-sm">
-      {{filter_btn('nord-4', 'nord-7', 'Hot', 'font-semibold')}}
-      {{filter_btn('nord-4', 'nord-4', 'Top')}}
-      {{filter_btn('nord-4', 'nord-4', 'New')}}
+      {{ filter_btn("hot") }}
+      {{ filter_btn("top") }}
+      {{ filter_btn("new") }}
     </div>
   </div>
 

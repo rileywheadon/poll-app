@@ -13,9 +13,8 @@ oauth = OAuth()
 # Create a blueprint for the authentication endpoints
 auth = Blueprint('auth', __name__, template_folder='templates')
 
+
 # Login endpoint
-
-
 @auth.route('/login')
 def login():
 
@@ -72,8 +71,17 @@ def callback():
     WHERE email=?
     """
     res = cur.execute(query, (email,))
-
     session["user"] = dict(res.fetchone())
+
+    # Iterate through the list of responses and add them to the database
+    if session.get("responses"):
+        from polll.models import validate_response
+        for response in session["responses"]:
+            validate_response(response["form"], response["poll"])
+
+    # Reset the responses dictionary and redirect the user to their feed
+    session["responses"] = []
+    session.modified = True
     return redirect(url_for("home.feed"))
 
 

@@ -1,14 +1,13 @@
 # NOTE: These functions handle submitting responses to the database
 
-from flask import redirect, url_for, session, request
+from flask import redirect, url_for, session
 from datetime import datetime
 
 from polll.db import get_db
 import polll.results as result_handlers
 
 
-def choose_one(request, poll):
-    print("In response_handlers.choose_one")
+def choose_one(form, poll):
 
     # Get database connection
     db = get_db()
@@ -18,7 +17,7 @@ def choose_one(request, poll):
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    answer_id = request.form.get("answer_id")
+    answer_id = form.get("answer_id")[0]
 
     # Insert a new response into the database
     query = """
@@ -42,8 +41,7 @@ def choose_one(request, poll):
     db.commit()
 
 
-def choose_many(request, poll):
-    print("In response_handlers.choose_many")
+def choose_many(form, poll):
 
     # Get database connection
     db = get_db()
@@ -53,7 +51,7 @@ def choose_many(request, poll):
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    answer_ids = request.form.getlist("answer_id")
+    answer_ids = form.get("answer_id")
 
     # Insert a new response into the database
     query = """
@@ -78,8 +76,7 @@ def choose_many(request, poll):
     db.commit()
 
 
-def numeric_star(request, poll):
-    print("In response_handlers.numeric_star")
+def numeric_star(form, poll):
 
     # Get database connection
     db = get_db()
@@ -89,7 +86,7 @@ def numeric_star(request, poll):
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    rating = request.form.get("star_rating")
+    rating = form.get("star_rating")[0]
 
     # Insert a new response into the database
     query = """
@@ -113,8 +110,7 @@ def numeric_star(request, poll):
     db.commit()
 
 
-def numeric_scale(request, poll):
-    print("In response_handlers.numeric_scale")
+def numeric_scale(form, poll):
 
     # Get database connection
     db = get_db()
@@ -124,7 +120,7 @@ def numeric_scale(request, poll):
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    rating = request.form.get("slider_rating")
+    rating = form.get("slider_rating")[0]
 
     # Insert a new response into the database
     query = """
@@ -148,8 +144,7 @@ def numeric_scale(request, poll):
     db.commit()
 
 
-def ranked_poll(request, poll):
-    print("In response_handlers.ranked_poll")
+def ranked_poll(form, poll):
 
     # Get database connection
     db = get_db()
@@ -159,7 +154,7 @@ def ranked_poll(request, poll):
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    answer_ids = request.form.getlist("answer_id")
+    answer_ids = form.get("answer_id")
 
     # Insert a new response into the database
     query = """
@@ -184,8 +179,7 @@ def ranked_poll(request, poll):
     db.commit()
 
 
-def tier_list(request, poll):
-    print("In response_handlers.tier_list")
+def tier_list(form, poll):
 
     # Get database connection
     db = get_db()
@@ -195,8 +189,8 @@ def tier_list(request, poll):
     user_id = session["user"]["id"]
     poll_id = poll["id"]
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    answer_ids = request.form.getlist("answer_id")
-    answer_tiers = request.form.getlist("answer_tier")
+    answer_ids = form.get("answer_id")
+    answer_tiers = form.get("answer_tier")
 
     # Insert a new response into the database
     query = """

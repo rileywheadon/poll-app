@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session
+from flask import Blueprint, render_template, redirect, url_for
+from flask import request, session, make_response
 from datetime import datetime, timedelta
 import requests
 
@@ -133,6 +134,10 @@ def polls():
         res = cur.execute(answer_query, (poll["id"],))
         poll["answers"] = [dict(answer) for answer in res.fetchall()]
 
+    # Get the list of poll boards
+    query = "SELECT * FROM board"
+    boards = [dict(b) for b in cur.execute(query).fetchall()]
+
     # If the request is internal, only re-render the user list
     target = request.headers.get("HX-Target")
     if target and target == "polls-list":
@@ -142,7 +147,13 @@ def polls():
     session["admin"] = True
     session["tab"] = "polls"
     form = {"column": column, "search": search}
-    return render_template("polls.html", session=session, polls=polls, form=form)
+    return render_template(
+        "polls.html",
+        session=session,
+        polls=polls,
+        boards=boards,
+        form=form
+    )
 
 
 @admin.route("/admin/reports")
@@ -203,3 +214,83 @@ def stats():
     session["admin"] = True
     session["tab"] = "stats"
     return render_template("stats.html", session=session, stats=stats)
+
+
+@admin.route("/admin/boards")
+@requires_admin
+def boards():
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Get the list of boards
+    query = "SELECT * FROM board"
+    boards = [dict(b) for b in cur.execute(query).fetchall()]
+
+    # Render the template
+    session["admin"] = True
+    session["tab"] = "boards"
+    return render_template("boards.html", session=session, boards=boards)
+
+
+@admin.route("/admin/boards/create")
+@requires_admin
+def create_board():
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check that the board name is unique
+    name = request.args.get("name")
+    query = "SELECT * FROM board WHERE name=?"
+
+    # If the name is not unique, do nothing and notify the user
+    if cur.execute(query, (name,)).fetchone() is not None:
+        r = make_response("")
+        notification = '{"notification": "Board already exists!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", "none")
+        return r
+
+    # Add the board to the database
+    query = "INSERT INTO board (name) VALUES (?)"
+    cur.execute(query, (name,))
+    db.commit()
+
+    # Get the list of boards
+    query = "SELECT * FROM board"
+    boards = [dict(b) for b in cur.execute(query).fetchall()]
+
+    # Render the boards list again
+    r = make_response(render_template("boards-list.html", boards=boards))
+    notification = '{"notification": "Board created!"}'
+    r.headers.set("HX-Trigger", notification)
+    return r
+
+
+@admin.route("/admin/boards/delete/<board_id>")
+@requires_admin
+def delete_board(board_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Remove the board and all connected polls from the database
+    board_query = "DELETE FROM board WHERE id=?"
+    poll_board_query = "DELETE FROM poll_board WHERE board_id=?"
+    cur.execute(board_query, (board_id,))
+    cur.execute(poll_board_query, (board_id,))
+    db.commit()
+
+    # Get the list of boards
+    query = "SELECT * FROM board"
+    boards = [dict(b) for b in cur.execute(query).fetchall()]
+
+    # Render the boards list again
+    r = make_response(render_template("boards-list.html", boards=boards))
+    notification = '{"notification": "Board deleted!"}'
+    r.headers.set("HX-Trigger", notification)
+    return r
