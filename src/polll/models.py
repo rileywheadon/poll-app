@@ -81,7 +81,7 @@ def popularity(poll):
 #  - The custom poll URL
 
 # NOTE: Does not get the results of the poll (see results.py)
-def query_poll_details(id):
+def query_poll_details(id, user=None):
 
     # Query for getting the poll data along with the creator's username
     poll_query = """
@@ -123,7 +123,7 @@ def query_poll_details(id):
 
     # Get the results using the appropriate result handler
     handler = getattr(result_handlers, poll["poll_type"].lower())
-    poll["results"] = handler(poll["id"])
+    poll["results"], poll["response"] = handler(poll["id"], user)
     poll["result_template"] = result_template(poll)
 
     # Get the template, custom URL, and timedelta

@@ -1,160 +1,229 @@
-# NOTE: These functions handle getting poll results from the database
-
 from flask import redirect, url_for, render_template, session
 from datetime import datetime
 
 from polll.db import get_db
 
 
-def choose_one(poll_id):
+DISCRETE_RESULTS = """
+SELECT
+    poll_answer.id AS answer_id,
+    poll_answer.answer AS answer,
+    COUNT(discrete_response.id) AS count
+FROM poll_answer
+    LEFT JOIN discrete_response ON discrete_response.answer_id = poll_answer.id
+WHERE poll_answer.poll_id = ?
+GROUP BY poll_answer.id
+"""
+
+DISCRETE_RESPONSE = """
+SELECT
+    poll_answer.id AS answer_id,
+    poll_answer.answer AS answer
+FROM poll_answer
+    INNER JOIN response ON response.poll_id = poll_answer.poll_id
+    INNER JOIN discrete_response ON discrete_response.answer_id = poll_answer.id
+WHERE poll_answer.poll_id = ? AND response.user_id = ?
+"""
+
+
+def choose_one(poll_id, user=None):
 
     # Connect to the database
     db = get_db()
     cur = db.cursor()
 
     # Query the database to get the poll answer counts
-    query = """
-    SELECT 
-        poll_answer.id AS answer_id,
-        poll_answer.answer AS answer,
-        COUNT(discrete_response.id) AS count
-    FROM poll
-        INNER JOIN poll_answer ON poll_answer.poll_id = poll.id
-        LEFT JOIN discrete_response ON discrete_response.answer_id = poll_answer.id 
-    WHERE poll.id = ?
-    GROUP BY poll_answer.id
-    """
-    res = cur.execute(query, (poll_id,)).fetchall()
-    results = [dict(result) for result in res]
+    res = cur.execute(DISCRETE_RESULTS, (poll_id,))
+    results = [dict(result) for result in res.fetchall()]
+
+    # Include the user's response if necessary
+    response = None
+    if user:
+        query = """
+        """
+        res = cur.execute(DISCRETE_RESPONSE, (poll_id, user["id"]))
+        response = dict(res.fetchone())
 
     # Return the results
-    return results
+    return (results, response)
 
 
-def choose_many(poll_id):
+def choose_many(poll_id, user=None):
 
     # Connect to the database
     db = get_db()
     cur = db.cursor()
 
     # Query the database to get the poll answer counts
-    query = """
-    SELECT 
-        poll_answer.id AS answer_id,
-        poll_answer.answer AS answer,
-        COUNT(discrete_response.id) AS count
-    FROM poll
-        INNER JOIN poll_answer ON poll_answer.poll_id = poll.id
-        LEFT JOIN discrete_response ON discrete_response.answer_id = poll_answer.id 
-    WHERE poll.id = ?
-    GROUP BY poll_answer.id
-    """
-    res = cur.execute(query, (poll_id,)).fetchall()
-    results = [dict(result) for result in res]
+    res = cur.execute(DISCRETE_RESULTS, (poll_id,))
+    results = [dict(result) for result in res.fetchall()]
+
+    # Include the user's response if necessary
+    response = None
+    if user:
+        res = cur.execute(DISCRETE_RESPONSE, (poll_id, user["id"]))
+        response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    return results
+    return (results, response)
 
 
-def numeric_star(poll_id):
+NUMERIC_RESULT = """
+SELECT
+    numeric_response.value AS value,
+    COUNT(numeric_response.id) AS count
+FROM response
+    INNER JOIN numeric_response ON numeric_response.response_id = response.id
+WHERE response.poll_id = ?
+GROUP BY numeric_response.value
+"""
+
+NUMERIC_RESPONSE = """
+SELECT
+    numeric_response.value AS value
+FROM response
+    INNER JOIN numeric_response ON numeric_response.response_id = response.id
+WHERE response.poll_id = ? AND response.user_id = ?
+"""
+
+
+def numeric_star(poll_id, user=None):
 
     # Connect to the database
     db = get_db()
     cur = db.cursor()
 
     # Query the database to get the answer counts
-    query = """
-    SELECT 
-        numeric_response.value AS value,
-        COUNT(numeric_response.id) AS count
-    FROM poll
-        INNER JOIN response ON response.poll_id = poll.id
-        INNER JOIN numeric_response ON numeric_response.response_id = response.id 
-    WHERE poll.id = ?
-    GROUP BY numeric_response.value
-    """
-    res = cur.execute(query, (poll_id,)).fetchall()
-    results = [dict(result) for result in res]
+    res = cur.execute(NUMERIC_RESULT, (poll_id,))
+    results = [dict(result) for result in res.fetchall()]
+
+    # Include the user's response if necessary
+    response = None
+    if user:
+        res = cur.execute(NUMERIC_RESPONSE, (poll_id, user["id"]))
+        response = dict(res.fetchone())
 
     # Return the results
-    return results
+    return (results, response)
 
 
-def numeric_scale(poll_id):
+def numeric_scale(poll_id, user=None):
 
     # Connect to the database
     db = get_db()
     cur = db.cursor()
 
     # Query the database to get the answer counts
-    query = """
-    SELECT 
-        numeric_response.value AS value,
-        COUNT(numeric_response.id) AS count
-    FROM poll
-        INNER JOIN response ON response.poll_id = poll.id
-        INNER JOIN numeric_response ON numeric_response.response_id = response.id 
-    WHERE poll.id = ?
-    GROUP BY numeric_response.value
-    """
-    res = cur.execute(query, (poll_id,)).fetchall()
-    results = [dict(result) for result in res]
+    res = cur.execute(NUMERIC_RESULT, (poll_id,))
+    results = [dict(result) for result in res.fetchall()]
+
+    # Include the user's response if necessary
+    response = None
+    if user:
+        res = cur.execute(NUMERIC_RESPONSE, (poll_id, user["id"]))
+        response = dict(res.fetchone())
 
     # Return the results
-    return results
+    return (results, response)
 
 
-def ranked_poll(poll_id):
+RANKED_RESULT = """
+SELECT
+    poll_answer.id AS answer_id,
+    poll_answer.answer AS answer,
+    SUM(ranked_response.rank) AS score
+FROM poll_answer
+    INNER JOIN response ON response.poll_id = poll_answer.poll_id
+    LEFT JOIN ranked_response ON ranked_response.answer_id = poll_answer.id
+WHERE poll_answer.poll_id = ?
+GROUP BY poll_answer.id
+ORDER BY score ASC
+"""
+
+RANKED_RESPONSE = """
+SELECT
+    poll_answer.id AS answer_id,
+    poll_answer.answer AS answer,
+    ranked_response.rank AS rank
+FROM poll_answer
+    INNER JOIN response ON response.poll_id = poll_answer.poll_id
+    LEFT JOIN ranked_response ON ranked_response.answer_id = poll_answer.id
+WHERE poll_answer.poll_id = ? AND response.user_id = ?
+GROUP BY poll_answer.id
+ORDER BY rank ASC
+"""
+
+
+def ranked_poll(poll_id, user=None):
 
     # Connect to the database
     db = get_db()
     cur = db.cursor()
 
     # Query the database to get the answer counts
-    query = """
-    SELECT 
-        poll_answer.id AS answer_id,
-        poll_answer.answer AS answer,
-        ranked_response.rank AS rank,
-        COUNT(ranked_response.id) AS count
-    FROM poll
-        INNER JOIN poll_answer ON poll_answer.poll_id = poll.id
-        LEFT JOIN ranked_response ON ranked_response.answer_id = poll_answer.id 
-    WHERE poll.id = ?
-    GROUP BY 
-        ranked_response.rank,
-        poll_answer.id
-    """
-    res = cur.execute(query, (poll_id,)).fetchall()
+    res = cur.execute(RANKED_RESULT, (poll_id,)).fetchall()
     results = [dict(result) for result in res]
 
+    # Get the user's response (if necessary)
+    response = None
+    if user:
+        res = cur.execute(RANKED_RESPONSE, (poll_id, user["id"]))
+        response = [dict(result) for result in res.fetchall()]
+
     # Return the results
-    return results
+    return (results, response)
 
 
-def tier_list(poll_id):
+TIERS = ["S", "A", "B", "C", "D", "F"]
+
+TIER_RESULT_A = """
+SELECT *
+FROM poll_answer
+WHERE poll_id = ?
+"""
+
+TIER_RESULT_B = """
+SELECT COUNT(tiered_response.id) as count
+FROM tiered_response
+WHERE tiered_response.answer_id = ? AND tiered_response.tier = ?
+"""
+
+TIER_RESPONSE = """
+SELECT
+    poll_answer.id AS answer_id,
+    poll_answer.answer AS answer,
+    tiered_response.tier AS tier
+FROM poll_answer
+    INNER JOIN response ON response.poll_id = poll_answer.poll_id
+    LEFT JOIN tiered_response ON tiered_response.answer_id = poll_answer.id
+WHERE poll_answer.poll_id = ? AND response.user_id = ?
+GROUP BY poll_answer.id
+"""
+
+
+def tier_list(poll_id, user=None):
 
     # Connect to the database
     db = get_db()
     cur = db.cursor()
 
-    # Query the database to get the answer counts
-    query = """
-    SELECT 
-        poll_answer.id AS answer_id,
-        poll_answer.answer AS answer,
-        tiered_response.tier AS tier,
-        COUNT(tiered_response.id) AS count
-    FROM poll
-        INNER JOIN poll_answer ON poll_answer.poll_id = poll.id
-        LEFT JOIN tiered_response ON tiered_response.answer_id = poll_answer.id 
-    WHERE poll.id = ?
-    GROUP BY 
-        tiered_response.tier,
-        poll_answer.id
-    """
-    res = cur.execute(query, (poll_id,)).fetchall()
+    # Query the database to get the list of answers to this tier list
+    res = cur.execute(TIER_RESULT_A, (poll_id,)).fetchall()
     results = [dict(result) for result in res]
 
+    # Get count data for each answer
+    for answer in results:
+
+        # Set the counts for each (tier, answer) pair
+        for tier in TIERS:
+            res = cur.execute(TIER_RESULT_B, (answer["id"], tier)).fetchone()
+            answer[tier] = res["count"] if res else 0
+
+    # Get the user's response (if necessary)
+    response = None
+    if user:
+        res = cur.execute(TIER_RESPONSE, (poll_id, user["id"]))
+        response = [dict(result) for result in res.fetchall()]
+
     # Return the results
-    return results
+    return (results, response)

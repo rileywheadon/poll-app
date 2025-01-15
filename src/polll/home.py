@@ -15,13 +15,6 @@ from polll.models import *
 home = Blueprint('home', __name__, template_folder='templates')
 
 
-# https://127.0.0.1:3000/poll/MTMxMDcy
-# https://127.0.0.1:3000/poll/MjYyMTQ0
-# https://127.0.0.1:3000/poll/MzkzMjE2
-# https://127.0.0.1:3000/poll/NTI0Mjg4
-# https://127.0.0.1:3000/poll/NjU1MzYw
-
-
 # Landing page for advertising to potential users
 @home.route("/")
 def index():
@@ -187,7 +180,7 @@ def history():
     ids = [response["poll_id"] for response in res.fetchall()]
 
     # Get the poll details using query_poll_details
-    polls = [query_poll_details(id) for id in ids]
+    polls = [query_poll_details(id, session["user"]) for id in ids]
 
     # Render the template
     session["admin"] = False

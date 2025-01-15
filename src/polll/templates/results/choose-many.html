@@ -4,4 +4,14 @@
   {% for result in poll.results %}
     <p>{{ result.answer }}: {{ result.count }}</p>
   {% endfor %}
+
+  {% if poll.response %}
+    <p class="mt-2">
+      You responded: 
+      {% for r in poll.response %}
+        {{ r.answer }}
+      {% endfor %}
+    </p>
+  {% endif %}
+
 {% endblock %}
