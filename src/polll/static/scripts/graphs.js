@@ -1,40 +1,29 @@
-// FIX: 
-// - clicking the history tab creates a new graph with identical data below
-//   the current one and is removed on a page refresh
-
-
-
-
-
-
-
-
 // landing funciton for every graph type so that the data in the 
 // Jinja template can be used in a js file as well as so there is
 //  only one event listener in this file
 // (Jinja isn't supported in exteneral .js files as far as I'm aware)
 function graphInit(type, poll_id, rs = null, rs_kde = null) {
-    var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, graph, func;
+    // Don't ask me how or why this works but it does
+    var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
     var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
-    // Create a new graph element
     ["load", "htmx:afterSettle"].forEach((e) => {
         window.addEventListener(e, () => {
             switch (type.toLowerCase()) {
                 case "choose one":
                     i = 0;
-                    func = make_choose_one_graph(rs);
+                    func = choose_one_options(rs);
                     break;
                 case "choose many":
                     i = 1;
-                    func = make_choose_many_graph(rs);
+                    func = choose_many_options(rs);
                     break;
                 case "scale":
                     i = 2;
-                    func = make_scale_graph(rs, rs_kde);
+                    func = scale_graph_options(rs, rs_kde);
                     break;
                 case "tier":
                      i = 3;
-                     func = make_tier_graph(rs);
+                     func = tier_graph_options(rs);
                     break;
             }
             graphs[i] instanceof ApexCharts ? graphs[i].destroy() : graphs[i] = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), func);
@@ -48,7 +37,7 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
 // TOOD: add a 'theme' parameter to the parent function
 //  and let it determine the colour scheme
 
-function make_choose_one_graph(rs) {
+function choose_one_options(rs) {
 
     return {
         xaxis: {
@@ -81,11 +70,9 @@ function make_choose_one_graph(rs) {
         },
     };
 
-    // new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options).render();
-
 }
 
-function make_choose_many_graph(rs) {
+function choose_many_options(rs) {
 
     return {
         series: rs.map((e) => e["count"]),
@@ -113,7 +100,7 @@ function make_choose_many_graph(rs) {
 // TODO: 
 // - Compute average response
 // - Add vertical line at user and average response
-function make_scale_graph(rs, rs_kde) {
+function scale_graph_options(rs, rs_kde) {
     // not in use at the moment but gonna keep until certain on kde implementation
     vals = parse_results(rs);
     // kde
@@ -165,7 +152,7 @@ function make_scale_graph(rs, rs_kde) {
 
 }
 
-function make_tier_graph(rs) {
+function tier_graph_options(rs) {
 
     // TODO: 
     // - Use classic tier list colour scheme 
