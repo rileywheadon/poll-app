@@ -2,9 +2,5 @@
 
 {% block result_content %}
 <script>graphInit("choose many", {{ poll.id }}, {{ poll.results|safe }});</script>
-<!-- <canvas id="poll-graph-{{ poll.id }}"></canvas> -->
 <div id="poll-graph-{{ poll.id }}"></div>
-  {% for result in poll.results %}
-    <p>{{ result.answer }}: {{ result.count }}</p>
-  {% endfor %}
 {% endblock %}

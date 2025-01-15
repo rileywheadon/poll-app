@@ -3,7 +3,4 @@
 {% block result_content %}
 <script>graphInit("tier", {{ poll.id }}, {{ poll.results|safe }});</script>
 <div id="poll-graph-{{ poll.id }}"></div>
-  {% for result in poll.results %}
-    <p>{{ result.answer }} IN TIER {{ result.tier }}: {{ result.count }}</p>
-  {% endfor %}
 {% endblock %}

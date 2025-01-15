@@ -3,7 +3,4 @@
 {% block result_content %}
 <script>graphInit("choose one", {{ poll.id | safe }}, {{ poll.results|safe }});</script>
 <div id="poll-graph-{{ poll.id }}"></div>
-  {% for result in poll.results %}
-    <p>{{ result.answer }}: {{ result.count }}</p>
-  {% endfor %}
 {% endblock %}
