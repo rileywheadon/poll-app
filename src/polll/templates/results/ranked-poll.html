@@ -1,10 +1,9 @@
 {% extends "results/result-base.html" %}
 
 {% block result_content %}
-
-
 <script>graphInit("rank", {{ poll.id }}, {{ poll.results|safe }});</script>
-<canvas id="poll-graph-{{ poll.id }}"></canvas>
+<!-- <canvas id="poll-graph-{{ poll.id }}"></canvas> -->
+<div id="poll-graph-{{ poll.id }}"></div>
   {% for result in poll.results %}
     <p>{{ result.answer }} RANKED {{ result.rank }}: {{ result.count }}</p>
   {% endfor %}

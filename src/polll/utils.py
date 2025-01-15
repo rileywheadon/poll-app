@@ -16,7 +16,7 @@ def smooth_hist(data, bandwidth):
     x_vals = np.linspace(0, 100, 101)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
-    # kde shits itself if there is only one data point for some reason
+    # kde shits itself if there's only one data point for some reason
     if len(data) == 1:
         adj_data.append(adj_data[0] + 1)
         bandwidth=10

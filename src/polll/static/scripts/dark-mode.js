@@ -1,3 +1,4 @@
+// TODO: update graphs + everything else built specifically for dark mode
 function update_icons() {
 
   const themeIcon = document.getElementById("theme-icon");
