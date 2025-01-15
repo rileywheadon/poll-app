@@ -1,5 +1,8 @@
 import numpy as np
 from scipy.stats import gaussian_kde
+import time
+from datetime import datetime
+from dateutil import tz
 
 '''
 INPUT:
@@ -21,3 +24,13 @@ def smooth_hist(data, bandwidth):
         adj_data.append(adj_data[0] + 1)
         bandwidth=10
     return [x_vals.tolist(), gaussian_kde(adj_data, bw_method=bandwidth)(x_vals).tolist()]
+
+
+
+# YYYY-MM-DD HH:MM:SS
+def format_time(timeStr):
+    locale = str(datetime.strptime(timeStr, "%Y-%m-%d %H:%M:%S").replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal()))
+    locale = locale[:locale.rindex("-")]
+    dates = list(map(int, locale[:timeStr.index(" ")].split("-")))
+    times = list(map(int, locale[1 + timeStr.index(" "):].split(":")))
+    return datetime(dates[0], dates[1], dates[2], times[0], times[1], times[2]).strftime("%a %d, %I:%M %p") + " " + str(datetime.now().astimezone().tzinfo)

@@ -158,8 +158,7 @@
     Sorry! We only allow users to make one poll a day.
     <br />
     <br />
-    You'll be allowed to make another poll at {{ session.user.next_poll_allowed
-    }} UTC.
+    You'll be allowed to make another poll {{ format_time(session.user.next_poll_allowed)}}
   </p>
 </div>
 

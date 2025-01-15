@@ -33,6 +33,7 @@ def create_app(test_config=None):
     # file as parameters to update() but I wasn't able to 
     # figure it out
     app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
+    app.jinja_env.globals.update(format_time=utils.format_time)
 
     # Register the database commands
     from . import db
