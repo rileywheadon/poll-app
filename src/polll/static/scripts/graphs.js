@@ -3,7 +3,7 @@
 //  only one event listener in this file
 // (Jinja isn't supported in exteneral .js files as far as I'm aware)
 function graphInit(type, poll_id, rs = null, rs_kde = null) {
-    // Don't ask me how or why this works but it does
+    // Don't ask me how or why this works but it does (gotta be the dumbest shit I've ever wrote)
     var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
     var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
     ["load", "htmx:afterSettle"].forEach((e) => {
