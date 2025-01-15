@@ -1,10 +1,42 @@
 {% extends "results/result-base.html" %}
 
 {% block result_content %}
-<script>graphInit("rank", {{ poll.id }}, {{ poll.results|safe }});</script>
-<!-- <canvas id="poll-graph-{{ poll.id }}"></canvas> -->
-<div id="poll-graph-{{ poll.id }}"></div>
+
+
+<!-- Basically done but there's a really annoying alignment issues with "1."
+ that needs to be fixed -->
+<div class="flex flex-col space-y-8">
+
+  <div class="flex flex-row justify-evenly">
+    <p class="text-xl font-light">You</p>
+    <p class="text-xl font-light">Average Response</p>
+  </div>
   {% for result in poll.results %}
-    <p>{{ result.answer }} RANKED {{ result.rank }}: {{ result.count }}</p>
+  <!-- row length 2 containing the user's result on the left 
+   and the average response on the right for a given rank -->
+    <div class="flex flex-row space-x-10 justify-left">
+
+      <!-- User box -->
+      <div class="flex flex-row space-x-10">
+        <div class="">
+          <p class="text-2xl font-light text-polll-blue">{{ 1 + poll.results.index(result) }}.</p>
+        </div>
+        <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+          <p class="text-white text-base font-light hover:cursor-default">{{ result }}</p>
+        </div>
+      </div>
+
+       <!-- Average Box -->
+      <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+        <p class="text-white hover:cursor-default">sak shfkja hfjkhf jkhsdfkj hasdkjf akjsdf ajksdhf ajksdf jkasdhf jkadshkjff</p>
+      </div>
+
+    </div>
   {% endfor %}
+
+</div>
+
+  <!-- {% for result in poll.results %}
+    <p>{{ result.answer }} RANKED {{ result.rank }}: {{ result.count }}</p>
+  {% endfor %} -->
 {% endblock %}
