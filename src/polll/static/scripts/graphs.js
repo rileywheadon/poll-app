@@ -1,7 +1,3 @@
-// landing funciton for every graph type so that the data in the 
-// Jinja template can be used in a js file as well as so there is
-//  only one event listener in this file
-// (Jinja isn't supported in exteneral .js files as far as I'm aware)
 function graphInit(type, poll_id, rs = null, rs_kde = null) {
     // Don't ask me how or why this works but it does (gotta be the dumbest shit I've ever wrote)
     var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
@@ -39,9 +35,12 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
 
 function choose_one_options(rs) {
 
+    // make bar charts a percent via making each element a fraction of the total number of votes
+
     return {
         xaxis: {
             categories: rs.map((e) => e["answer"]),
+            show: false,
         },
         series: [{
             data: rs.map((e) => e["count"])
@@ -63,7 +62,10 @@ function choose_one_options(rs) {
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            formatter: function (val, opt) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+              },
         },
         theme: {
             mode: "dark",
@@ -163,11 +165,11 @@ function tier_graph_options(rs) {
         { answer: "Item 3", S: 2, A: 8, B: 6, C: 6, D: 0, F: 0 },
         { answer: "Item 4", S: 4, A: 4, B: 4, C: 3, D: 5, F: 0 },
         { answer: "Item 5", S: 1, A: 0, B: 1, C: 0, D: 5, F: 15 },
-        { answer: "Item 6", S: 10, A: 0, B: 1, C: 1, D: 0, F: 10 },
-        { answer: "Item 7", S: 0, A: 1, B: 10, C: 10, D: 1, F: 0 },
-        { answer: "Item 8", S: 21, A: 1, B: 0, C: 0, D: 0, F: 0 },
-        { answer: "Item 9", S: 6, A: 11, B: 7, C: 0, D: 0, F: 0 },
-        { answer: "Item 10", S: 5, A: 10, B: 7, C: 0, D: 0, F: 0 },
+        // { answer: "Item 6", S: 10, A: 0, B: 1, C: 1, D: 0, F: 10 },
+        // { answer: "Item 7", S: 0, A: 1, B: 10, C: 10, D: 1, F: 0 },
+        // { answer: "Item 8", S: 21, A: 1, B: 0, C: 0, D: 0, F: 0 },
+        // { answer: "Item 9", S: 6, A: 11, B: 7, C: 0, D: 0, F: 0 },
+        // { answer: "Item 10", S: 5, A: 10, B: 7, C: 0, D: 0, F: 0 },
     ]
     // Remove this and "temp_data" when "rs" is giving valid results
     rs = temp_data
@@ -182,7 +184,7 @@ function tier_graph_options(rs) {
             type: 'bar',
             height: 500,
             stacked: true,
-            // stackType: '100%', // Fills the width of the screen with a the stack of bars (I kinda fw this off)
+            stackType: '100%', // Fills the width of the screen with a the stack of bars (I kinda fw this off)
             background: "null",
             toolbar: {
                 show: false
