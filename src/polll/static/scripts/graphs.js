@@ -119,15 +119,14 @@ function make_choose_many_graph(poll_id, rs) {
 
 }
 
-
+// TODO: 
+// - Compute average response
+// - Add vertical line at user and average response
 function make_scale_graph(poll_id, rs, rs_kde) {
     // not in use at the moment but gonna keep until certain on kde implementation
-    // might 
     vals = parse_results(rs);
-
     // kde
     pts = parse_kde_results(rs_kde);
-
 
     var options = {
         xaxis: {
@@ -178,16 +177,13 @@ function make_scale_graph(poll_id, rs, rs_kde) {
 
 }
 
-
-// Apex Charts stacked 100%, stacked with two bars for each entry:
-// one for the user's vote and one for the average vote for that rank 
-// (inlcude labels on the side for each vote with colour coding)
-// https://apexcharts.com/javascript-chart-demos/bar-charts/stacked-100/
-
 // might also be a pure html thing
 function make_rank_graph(poll_id, rs) {
 
-    console.log(rs);
+    // ORDERED
+    // rs = [
+    // {"answer": value} <-- ignore 
+    //]
 
     // make a sepearte series for each option
     var options = {
@@ -238,8 +234,8 @@ function make_rank_graph(poll_id, rs) {
         offsetX: 40
       },
       theme: {
-        mode: "dark"
-      },
+          mode: "dark"
+    },
     };
 
       var chart = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options);
@@ -249,7 +245,25 @@ function make_rank_graph(poll_id, rs) {
 
 // Use Apex Charts' stacked bar charts
 // https://apexcharts.com/javascript-chart-demos/bar-charts/stacked/
-function make_tier_graph(poll_id, rs) {}
+function make_tier_graph(poll_id, rs) {
+
+    temp_data = {
+        "Item 1": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 2": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 3": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 4": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 5": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 6": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 7": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 8": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 9": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 10": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 11": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+        "Item 12": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
+    }
+
+
+}
 
 // Helpers for formatting the data into something that can be graphed
 function parse_results(rs) {
