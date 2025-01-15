@@ -39,9 +39,6 @@ function graphInit(type, poll_id, rs=null, rs_kde=null) {
                 case "scale":
                     make_scale_graph(poll_id, rs, rs_kde);
                     break;
-                case "rank":
-                    make_rank_graph(poll_id, rs);
-                    break;
                 case "tier":
                     make_tier_graph(poll_id, rs);
                     break;
@@ -87,13 +84,12 @@ function make_choose_one_graph(poll_id, rs) {
       },
       };
 
-      var chart = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options);
-      chart.render();
+    new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options).render();
 
 }
 
 function make_choose_many_graph(poll_id, rs) {
-    
+
     var options = {
         series: rs.map((e) => e["count"]),
         labels: rs.map((e) => e["answer"]),
@@ -114,8 +110,7 @@ function make_choose_many_graph(poll_id, rs) {
           }
         
     }
-    var chart = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options);
-    chart.render();
+    new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options).render();
 
 }
 
@@ -172,34 +167,50 @@ function make_scale_graph(poll_id, rs, rs_kde) {
         }
       };
 
-      var chart = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options);
-      chart.render();
+    new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options).render();
 
 }
 
-// might also be a pure html thing
-function make_rank_graph(poll_id, rs) {
+// https://apexcharts.com/javascript-chart-demos/bar-charts/stacked/
+function make_tier_graph(poll_id, rs) {
 
-    // ORDERED
-    // rs = [
-    // {"answer": value} <-- ignore 
-    //]
+    // Use classic tier list colour scheme
 
-    // make a sepearte series for each option
+    temp_data = [
+        {answer: "Item 1", S: 10, A: 8, B: 4, C: 0, D: 0, F: 0},
+        {answer: "Item 2", S: 0, A: 0, B: 0, C: 4, D: 10, F: 8},
+        {answer: "Item 3", S: 2, A: 8, B: 6, C: 6, D: 0, F: 0},
+        {answer: "Item 4", S: 4, A: 4, B: 4, C: 3, D: 5, F: 0},
+        {answer: "Item 5", S: 1, A: 0, B: 1, C: 0, D: 5, F: 15},
+        {answer: "Item 6", S: 10, A: 0, B: 1, C: 1, D: 0, F: 10},
+        {answer: "Item 7", S: 0, A: 1, B: 10, C: 10, D: 1, F: 0},
+        {answer: "Item 8", S: 21, A: 1, B: 0, C: 0, D: 0, F: 0},
+        {answer: "Item 9", S: 6, A: 11, B: 7, C: 0, D: 0, F: 0},
+        {answer: "Item 10", S: 5, A: 10, B: 7, C: 0, D: 0, F: 0},
+    ]
+
+
+    var answers = []
+
+    for (let i = 0; i < temp_data.length; i++) {
+        answers.push({
+            name: temp_data[i]["answer"],
+            data: [temp_data[i]["S"], temp_data[i]["A"], temp_data[i]["B"], temp_data[i]["C"], temp_data[i]["D"], temp_data[i]["F"]]
+        })
+    }
+
     var options = {
-        series: [{
-        name: 'Marine Sprite',
-        data: [1, 1, 1, 1, 1, 1]
-      }, {
-        name: 'Striking Calf',
-        data: [1, 1, 1, 1, 1, 1]
-      }],
+        series: answers,
         chart: {
         type: 'bar',
-        height: 350,
+        height: 500,
         stacked: true,
         stackType: '100%',
-        background: "null" 
+        background: "null",
+        toolbar: {
+            show: false
+        }
+
       },
       plotOptions: {
         bar: {
@@ -211,20 +222,15 @@ function make_rank_graph(poll_id, rs) {
         colors: ['#fff']
       },
       title: {
-        text: '100% Stacked Bar'
+        text: 'Tier List Results'
       },
       xaxis: {
-        categories: [2008, 2009, 2010, 2011, 2012, 2013, 2014],
-        labels: {
-            formatter: (value) => {
-              return value;
-            }
-          },
+        categories: ["S Tier", "A Tier", "B Tier", "C Tier", "D Tier", "F Tier", ],
       },
       tooltip: {
         y: {
           formatter: function (val) {
-            return val + "K"
+            return val;
           }
         }
       },
@@ -234,34 +240,11 @@ function make_rank_graph(poll_id, rs) {
         offsetX: 40
       },
       theme: {
-          mode: "dark"
-    },
-    };
+        mode: "dark"
+      }
+      };
 
-      var chart = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options);
-      chart.render();
-
-}
-
-// Use Apex Charts' stacked bar charts
-// https://apexcharts.com/javascript-chart-demos/bar-charts/stacked/
-function make_tier_graph(poll_id, rs) {
-
-    temp_data = {
-        "Item 1": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 2": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 3": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 4": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 5": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 6": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 7": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 8": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 9": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 10": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 11": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-        "Item 12": {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0},
-    }
-
+    new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), options).render();
 
 }
 
