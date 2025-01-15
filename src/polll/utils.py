@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.stats import gaussian_kde
-import time
 from datetime import datetime
 from dateutil import tz
 
@@ -27,7 +26,7 @@ def smooth_hist(data, bandwidth):
 
 
 
-# YYYY-MM-DD HH:MM:SS
+# Formats the given timestamp to be more readable as well as converts it to the user's local timezone
 def format_time(timeStr):
     locale = str(datetime.strptime(timeStr, "%Y-%m-%d %H:%M:%S").replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal()))
     locale = locale[:locale.rindex("-")]

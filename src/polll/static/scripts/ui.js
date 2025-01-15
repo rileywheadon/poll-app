@@ -93,3 +93,6 @@ function update_answer_editor(poll_type) {
   }
 }
 
+function update_radio_buttons() {
+  
+}
