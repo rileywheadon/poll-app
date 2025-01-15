@@ -1,7 +1,27 @@
 {% extends "results/result-base.html" %}
 
 {% block result_content %}
+
   {% for result in poll.results %}
-    <p>{{ result.answer }} IN TIER {{ result.tier }}: {{ result.count }}</p>
+    <p>
+    ANSWER: {{ result.answer }} - 
+    S: {{result.S}}
+    A: {{result.A}}
+    B: {{result.B}}
+    C: {{result.C}}
+    D: {{result.D}}
+    F: {{result.F}}
+    </p>
   {% endfor %}
+
+  {% if poll.response %}
+    <p class="mt-2">
+      You responded: 
+      {% for r in poll.response %}
+      ({{ r.answer }}: {{r.tier}})
+      {% endfor %}
+    </p>
+
+  {% endif %}
+
 {% endblock %}

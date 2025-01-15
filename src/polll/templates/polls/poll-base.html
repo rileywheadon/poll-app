@@ -39,7 +39,7 @@
       <!-- Report Button -->
       <button
         class="w-10 ml-2 h-10 rounded-md py-1 text-nord-6 dark:text-nord-0"
-        hx-post="/home/report/{{ poll.id }}"
+        hx-post="{{ url_for('home.report', poll_id = poll.id) }}"
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="outerHTML"
         type="button"

@@ -1,8 +1,4 @@
-# Development Checklists
-
-## UI
-
-General:
+# Development Checklist
 
 ## UI Development Branch
 
@@ -39,55 +35,11 @@ General:
     - [ ] Make the container box for the poll creation feel less like is is just arbitrary pasted onto a canvas i.e. make it along with the other elements on the page look like one cohesive unit
     - [ ] Allow users to drag and drop images for the tier list mode (HARD?)
 
-## Backend
+## Other Changes
 
-NEXT PR:
-
-- [x] Add sorting function on feed/history/my polls
-- [x] Create poll boards
-- [x] Better form validation on 'Create'
-- [x] Finish interoperability
-
----
-
-- [ ] Improve the API for getting results for tier list and ranking
-- [ ] Rewrite `responses.py` and `results.py`
-- [ ] Make the user's response appear in the results tab
-
-Data structure for poll:
-
-- Regular fields (see `schema.sql`)
-- `creator`: Username of the creator of the poll
-- `votes`: Number of votes
-- `answers`: List of answer/result objects (TODO)
-- `repsonse`: Response object (TODO)
-- `age`: Age string in days/hours/minutes/seconds
-
-These should be computed in place:
-
-- `url`: Anonymous response URL
-- `poll_template`: Template for rendering the poll (by type)
-- `result_template`: Template for rendering the result (by type)
-
-Answer Objects (and results):
-
-- Choose One: Number of resonses to each answer
-- Choose Many: Number of resonses to each answer
-- Numeric Star: Number of responses to each number (0-100)
-- Ranked: Ordered list of answers (by average rank)
-- Tier List: List of dictionaries `[item : {tier : count}]`
-
-Response Objects:
-
-- Choose One: A single answer object
-- Choose Many: A list of answer objects
-- Numeric Star: A single number (0-100)
-- Ranked: Ordered list of answers (given from the users)
-- Tier List: List of answers objects with the tier added
-
----
-
-- [ ] No email verification (strange)
+- [ ] Email verification is not working
+- [ ] Filter by board (in admin ) not set up
+- [ ] Linked poll UI should be different when logged in
 
 # Feature Roadmap
 

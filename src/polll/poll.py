@@ -10,7 +10,7 @@ import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import url_to_id, poll_template, query_poll_details
+from polll.models import url_to_id,  query_poll_details
 
 # Create a blueprint for answering anonymous polls
 poll = Blueprint('poll', __name__, template_folder='templates')
