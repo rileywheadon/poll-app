@@ -12,7 +12,7 @@
 
   <form
     class="p-2"
-    hx-post="/home/response/{{ poll.id }}"
+    hx-post="{{ url_for('home.response', poll_id = poll.id) }}"
     hx-target="closest .poll-card"
     hx-trigger="submit"
     hx-swap="outerHTML"

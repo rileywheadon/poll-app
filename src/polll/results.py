@@ -7,7 +7,6 @@ from polll.db import get_db
 
 
 def choose_one(poll_id):
-    print("In result_handlers.choose_one")
 
     # Connect to the database
     db = get_db()
@@ -33,7 +32,6 @@ def choose_one(poll_id):
 
 
 def choose_many(poll_id):
-    print("In result_handlers.choose_many")
 
     # Connect to the database
     db = get_db()
@@ -59,7 +57,6 @@ def choose_many(poll_id):
 
 
 def numeric_star(poll_id):
-    print("In result_handlers.numeric_star")
 
     # Connect to the database
     db = get_db()
@@ -84,7 +81,6 @@ def numeric_star(poll_id):
 
 
 def numeric_scale(poll_id):
-    print("In result_handlers.numeric_scale")
 
     # Connect to the database
     db = get_db()
@@ -109,7 +105,6 @@ def numeric_scale(poll_id):
 
 
 def ranked_poll(poll_id):
-    print("In result_handlers.ranked_poll")
 
     # Connect to the database
     db = get_db()
@@ -138,7 +133,6 @@ def ranked_poll(poll_id):
 
 
 def tier_list(poll_id):
-    print("In result_handlers.tier_list")
 
     # Connect to the database
     db = get_db()

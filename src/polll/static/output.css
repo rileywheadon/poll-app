@@ -635,12 +635,20 @@ video {
   margin-left: 0.5rem;
 }
 
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .ml-\[-1px\] {
   margin-left: -1px;
 }
 
 .ml-auto {
   margin-left: auto;
+}
+
+.mr-1 {
+  margin-right: 0.25rem;
 }
 
 .mr-2 {
@@ -665,14 +673,6 @@ video {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.mr-1 {
-  margin-right: 0.25rem;
-}
-
-.ml-4 {
-  margin-left: 1rem;
 }
 
 .block {
@@ -735,6 +735,10 @@ video {
   width: 50%;
 }
 
+.w-1\/3 {
+  width: 33.333333%;
+}
+
 .w-10 {
   width: 2.5rem;
 }
@@ -759,6 +763,10 @@ video {
   width: 6rem;
 }
 
+.w-28 {
+  width: 7rem;
+}
+
 .w-3\/5 {
   width: 60%;
 }
@@ -769,6 +777,10 @@ video {
 
 .w-36 {
   width: 9rem;
+}
+
+.w-40 {
+  width: 10rem;
 }
 
 .w-48 {
@@ -798,10 +810,6 @@ video {
 
 .w-screen {
   width: 100vw;
-}
-
-.w-28 {
-  width: 7rem;
 }
 
 .flex-shrink {
@@ -898,6 +906,12 @@ video {
   margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
 .overflow-auto {
   overflow: auto;
 }
@@ -908,6 +922,10 @@ video {
 
 .overscroll-none {
   overscroll-behavior: none;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
 }
 
 .rounded-lg {
@@ -958,6 +976,11 @@ video {
 .border-nord-0 {
   --tw-border-opacity: 1;
   border-color: rgb(46 52 64 / var(--tw-border-opacity, 1));
+}
+
+.border-nord-10 {
+  --tw-border-opacity: 1;
+  border-color: rgb(94 129 172 / var(--tw-border-opacity, 1));
 }
 
 .border-nord-15 {
@@ -1187,6 +1210,10 @@ video {
   font-weight: 600;
 }
 
+.capitalize {
+  text-transform: capitalize;
+}
+
 .text-black {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity, 1));
@@ -1217,11 +1244,6 @@ video {
   color: rgb(236 239 244 / var(--tw-text-opacity, 1));
 }
 
-.text-polll-blue {
-  --tw-text-opacity: 1;
-  color: rgb(136 187 208 / var(--tw-text-opacity, 1));
-}
-
 .text-polll-green {
   --tw-text-opacity: 1;
   color: rgb(182 215 168 / var(--tw-text-opacity, 1));
@@ -1230,6 +1252,11 @@ video {
 .text-zinc-400 {
   --tw-text-opacity: 1;
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
+}
+
+.text-nord-7 {
+  --tw-text-opacity: 1;
+  color: rgb(143 188 187 / var(--tw-text-opacity, 1));
 }
 
 .underline {
@@ -1301,14 +1328,6 @@ video {
   margin: 0px;
 }
 
-.hover\:h-12:hover {
-  height: 3rem;
-}
-
-.hover\:h-10:hover {
-  height: 2.5rem;
-}
-
 .hover\:border-2:hover {
   border-width: 2px;
 }
@@ -1330,16 +1349,6 @@ video {
 .hover\:text-2xl:hover {
   font-size: 1.5rem;
   line-height: 2rem;
-}
-
-.hover\:text-xl:hover {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-
-.hover\:text-polll-green:hover {
-  --tw-text-opacity: 1;
-  color: rgb(182 215 168 / var(--tw-text-opacity, 1));
 }
 
 .focus\:outline-none:focus {
@@ -1397,6 +1406,10 @@ video {
 
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:flex-col {
+    flex-direction: column;
   }
 
   .md\:items-center {
@@ -1498,6 +1511,11 @@ video {
   background-color: rgb(59 66 82 / var(--tw-bg-opacity, 1));
 }
 
+.dark\:bg-nord-11:where(.dark, .dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(191 97 106 / var(--tw-bg-opacity, 1));
+}
+
 .dark\:bg-nord-2:where(.dark, .dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(67 76 94 / var(--tw-bg-opacity, 1));
@@ -1557,6 +1575,11 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
+.dark\:text-nord-7:where(.dark, .dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(143 188 187 / var(--tw-text-opacity, 1));
+}
+
 .placeholder\:dark\:text-nord-4:where(.dark, .dark *)::-moz-placeholder {
   --tw-text-opacity: 1;
   color: rgb(216 222 233 / var(--tw-text-opacity, 1));
@@ -1572,12 +1595,17 @@ video {
   border-color: rgb(216 222 233 / var(--tw-border-opacity, 1));
 }
 
-.hover\:dark\:bg-nord-10:where(.dark, .dark *):hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(94 129 172 / var(--tw-bg-opacity, 1));
-}
-
 .dark\:hover\:bg-nord-0:hover:where(.dark, .dark *) {
   --tw-bg-opacity: 1;
   background-color: rgb(46 52 64 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:dark\:bg-nord-0:where(.dark, .dark *):hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(46 52 64 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:dark\:bg-nord-10:where(.dark, .dark *):hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(94 129 172 / var(--tw-bg-opacity, 1));
 }

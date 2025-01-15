@@ -39,7 +39,7 @@
     <div class="flex flex-row">
 
       <!-- POLL TYPE FILTER -->
-      <div class="w-1/2 p-2 items-center text-nord-0 dark:text-nord-4">
+      <div class="w-1/3 p-2 items-center text-nord-0 dark:text-nord-4">
         <span>Filter By:</span>
 
         <div class="ml-2">
@@ -92,8 +92,25 @@
         </div>
       </div>
 
+      <!-- POLL BOARD FILTER -->
+      <div class="w-1/3 p-2 items-center text-nord-0 dark:text-nord-4">
+        <span>Select Boards:</span>
+
+        {% for board in boards %}
+          <div class="ml-2">
+            <input class="poll-search"
+                   type="checkbox"
+                   name="board"
+                   value="{{ board.id }}"
+                   checked />
+            <label class="ml-2">{{ board.name }}</label>
+          </div>
+        {% endfor %}
+
+      </div>
+
       <!-- SORTING OPTIONS -->
-      <div class="w-1/2 p-2 items-center text-nord-0 dark:text-nord-4">
+      <div class="w-1/3 p-2 items-center text-nord-0 dark:text-nord-4">
         <span>Sort By:</span>
         <div class="ml-2">
           <input class="poll-search"

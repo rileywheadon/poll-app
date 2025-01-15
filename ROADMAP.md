@@ -39,51 +39,71 @@ General:
     - [ ] Make the container box for the poll creation feel less like is is just arbitrary pasted onto a canvas i.e. make it along with the other elements on the page look like one cohesive unit
     - [ ] Allow users to drag and drop images for the tier list mode (HARD?)
 
-Known bugs:
-
-- [ ] Multiple star selectors don't work
-
 ## Backend
 
 NEXT PR:
 
-- [ ] Add sorting function on feed/history/my polls
-- [ ] Create poll boards
+- [x] Add sorting function on feed/history/my polls
+- [x] Create poll boards
+- [x] Better form validation on 'Create'
+- [x] Finish interoperability
+
+---
+
 - [ ] Improve the API for getting results for tier list and ranking
 - [ ] Rewrite `responses.py` and `results.py`
 - [ ] Make the user's response appear in the results tab
-- [ ] Custom scales (endpoints, axes?)
-- Finish interoperability
-  - [x] Create a randomized URL for each poll that users can share.
-  - [ ] Allow users to respond but require login to see results.
-  - [ ] Anonymous responses saved to the database, linked to user after registration.
-  - [ ] Allow anonymous responses on a poll-by-poll basis.
+
+Data structure for poll:
+
+- Regular fields (see `schema.sql`)
+- `creator`: Username of the creator of the poll
+- `votes`: Number of votes
+- `answers`: List of answer/result objects (TODO)
+- `repsonse`: Response object (TODO)
+- `age`: Age string in days/hours/minutes/seconds
+
+These should be computed in place:
+
+- `url`: Anonymous response URL
+- `poll_template`: Template for rendering the poll (by type)
+- `result_template`: Template for rendering the result (by type)
+
+Answer Objects (and results):
+
+- Choose One: Number of resonses to each answer
+- Choose Many: Number of resonses to each answer
+- Numeric Star: Number of responses to each number (0-100)
+- Ranked: Ordered list of answers (by average rank)
+- Tier List: List of dictionaries `[item : {tier : count}]`
+
+Response Objects:
+
+- Choose One: A single answer object
+- Choose Many: A list of answer objects
+- Numeric Star: A single number (0-100)
+- Ranked: Ordered list of answers (given from the users)
+- Tier List: List of answers objects with the tier added
+
+---
+
+- [ ] No email verification (strange)
 
 # Feature Roadmap
 
-## 1: Minimum Viable App
-
-- [ ] Custom Results Interface (show total # of votes)
-  - [ ] Choose One (uniform colour + different colour on select)
-  - [ ] Choose Many (same as choose one)
-  - [ ] Numeric Scale
-  - [ ] Numeric Star (TBD)
-  - [ ] Ranked Poll
-  - [ ] Tier List
-
-## 2: Staging
+## 1: Staging
 
 - [ ] Push the app to Railway. Allow trusted people to test.
 - [ ] Write unit tests.
 - [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
 
-## 3: Launch
+## 2: Launch
 
 - [ ] Deploy to Google Cloud Services
 - [ ] Create a dashboard to manage application health and uptime
 - [ ] Set up automatic alerts when errors occur on production
 
-## 4: Minimum Viable product
+## 3: Minimum Viable product
 
 - [AI-Powered Poll Tagging](https://docs.google.com/document/d/1knJN9BY2EJ27TZhUlEIYxNZZmU6g-eYaLxmL75ShN_U/edit?usp=drive_link)
 - Poll Dashboard

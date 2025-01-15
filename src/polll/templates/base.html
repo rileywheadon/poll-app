@@ -4,8 +4,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Custom Styles -->
-  <link href="../static/output.css" rel="stylesheet" />
-  <link href="../static/styles/star-selector.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet" />
+
+  <!-- NOTE: Not necessary unless we bring back the star selector. -->
+  <!-- <link href="../static/styles/star-selector.css" rel="stylesheet" /> -->
 
   <!-- Import HTMX and FontAwesome -->
   <script src="https://unpkg.com/htmx.org@2.0.3"></script>

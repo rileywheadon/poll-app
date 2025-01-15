@@ -1,7 +1,8 @@
-from flask import request
+from flask import request, session
 from datetime import datetime, timedelta
 from polll.db import get_db
 import polll.results as result_handlers
+import polll.responses as response_handlers
 import base64
 
 
@@ -66,11 +67,19 @@ def url_to_id(code):
     return ((0x0000FFFF & hash) << 16) + ((0xFFFF0000 & hash) >> 16)
 
 
+# Helper function to get how "trendy" a poll is, in responses/second
+def popularity(poll):
+    timestamp = datetime.strptime(poll["date_created"], '%Y-%m-%d %H:%M:%S')
+    age = (datetime.utcnow() - timestamp).total_seconds()
+    return poll["votes"] / age
+
+
 # Given a poll ID, gets all useful information including:
 #  - Poll age using get_poll_age
 #  - Number of votes on the poll
 #  - All poll answers (just the text)
 #  - The custom poll URL
+
 # NOTE: Does not get the results of the poll (see results.py)
 def query_poll_details(id):
 
@@ -124,3 +133,36 @@ def query_poll_details(id):
 
     # Return the populated poll dictionary
     return poll
+
+
+# If the user has not already responded, add the response to the database
+def validate_response(form, poll_id):
+
+    # Open the database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check that the user has not already responded to this poll
+    response_query = """
+    SELECT *
+    FROM response
+    WHERE user_id = ? AND poll_id =?
+    """
+    res = cur.execute(response_query, (session["user"]["id"], poll_id))
+
+    # If the user already responded, return
+    if res.fetchone() != None:
+        return
+
+    # Otherwise get the poll in the response header
+    poll_query = """
+    SELECT id
+    FROM poll
+    WHERE id=?
+    """
+    res = cur.execute(poll_query, (poll_id,))
+    poll = query_poll_details(poll_id)
+
+    # Submit the response to the database
+    handler = getattr(response_handlers, poll["poll_type"].lower())
+    handler(form, poll)
