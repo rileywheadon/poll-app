@@ -19,7 +19,7 @@ General:
   - [x] Make "choose many" look like the radio buttons
   - [x] Make some of the text unselectable
   - [x] Make the border hovering on images in the create tab look nicer (very clunky)
-  - [ ] Add average and user answer as a vertical bar for the scale graph
+  - [x] Add average and user answer as a vertical bar for the scale graph
   - [ ] Shrink navbar
   - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
 
