@@ -9,10 +9,9 @@ General:
 - ### Important:
   - [ ] Improve the look of all graphs
   - [ ] Address mobile/small screen sizes
-  - [ ] Add/Improve light mode
+  - [ ] Add/improve light mode
   - [ ] Configure light/dark mode for all new elements in dark-mode.js
   - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem)
-  - [ ] Add sortable.js to ranked polls/tier list (maybe not?)
 - ### Small/Secondary:
   - [x] Replace padding on left sidebar with something else to seperate items as it's messing with the footer on mobile screens
   - [x] Choose a cleaner time format for the daily poll reminder
@@ -21,6 +20,7 @@ General:
   - [x] Make some of the text unselectable
   - [x] Make the border hovering on images in the create tab look nicer (very clunky)
   - [ ] Add average and user answer as a vertical bar for the scale graph
+  - [ ] Shrink navbar
   - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
 
 ## Backend
