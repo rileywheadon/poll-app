@@ -14,10 +14,10 @@ General:
   - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem)
   - [ ] Add sortable.js to ranked polls
 - ### Small/Secondary:
-  - [ ] Replace padding on left sidebar with something else to seperate items as it's messing with the footer on mobile screens
-  - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
+  - [x] Replace padding on left sidebar with something else to seperate items as it's messing with the footer on mobile screens
   - [x] Choose a cleaner time format for the daily poll reminder
-  - [ ] Fix radio buttons for choose one
+  - [x] Fix radio buttons for choose one
+  - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
 
 ## Backend
 
