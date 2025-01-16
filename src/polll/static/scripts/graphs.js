@@ -108,6 +108,17 @@ function scale_graph_options(rs, rs_kde) {
     // kde
     pts = parse_kde_results(rs_kde);
 
+    // var average_rs = 72;
+    var average_rs = get_scale_average(rs_kde[1]);
+
+    //console.log(average_rs);
+
+
+
+    var user_rs = 55; // still need from database
+
+    console.log(get_scale_average(rs_kde[1]));
+
     return {
         xaxis: {
             type: 'numeric',
@@ -116,7 +127,7 @@ function scale_graph_options(rs, rs_kde) {
         yaxis: {
             labels: {
                 formatter: function (val) {
-                    return "";
+                    return val;
                 }
             },
         },
@@ -149,9 +160,65 @@ function scale_graph_options(rs, rs_kde) {
         },
         theme: {
             mode: "dark"
-        }
-    };
+        },
+        // TODO: add point where this annotation hits the graph and label it as such
+        annotations: {
+            xaxis: [{
+                    x: average_rs[0],
+                    strokeDashArray: 0,
+                    label: {
+                        show: false,   
+                    }
+                }, {
+                    x: user_rs,
+                    strokeDashArray: 0,
+                    label: {
+                        show: false,   
+                    }
+                }],
+                points: 
+                [
+                  {
+                    x: average_rs[0],
+                    y: average_rs[1],
+                    marker: {
+                        size: 8,
+                        fillColor: "#ffffff",
+                        strokeColor: "#000000",
+                        radius: 2,
+                        cssClass: 'apexcharts-custom-class'
+                      },
+                      label: {
+                        style: {
+                          color: "#ffffff",
+                          background: "null",
+                        },
+                        text: "Average Response",
+                      }
+                  },
+                  {
+                    x: user_rs,
+                    y: rs_kde[1][user_rs],
+                    marker: {
+                        size: 8,
+                        fillColor: "#ffffff",
+                        strokeColor: "#000000",
+                        radius: 2,
+                        cssClass: 'apexcharts-custom-class'
+                      },
+                      label: {
+                        style: {
+                          color: "#ffffff",
+                          background: "null",
+                        },
+                        text: "You",
+                      }
+                  },
 
+                ]
+        },
+    };
+    
 }
 
 function tier_graph_options(rs) {
@@ -233,4 +300,10 @@ function parse_kde_results(rs_kde) {
     let pts = [];
     for (let j = 0; j < rs_kde[0].length; j++) pts.push({ x: rs_kde[0][j], y: rs_kde[1][j] });
     return pts;
+}
+
+function get_scale_average(rs) {
+    var y = rs.reduce((prev, curr) => prev + curr, 0) / rs.length;
+    return [rs.indexOf(rs.reduce((prev, curr) => {
+         return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
 }
