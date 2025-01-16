@@ -3,7 +3,6 @@
 {% block poll_content %}
   {% for answer in poll.answers %}
 
-
   <!-- Put this in macros.jinja if keeping the same design for "choose one" and "choose many" -->
   <div class="space-y-6">
     <input type="radio" id="{{ answer.id }}" name="answer_id" value="{{ answer.id }}" class="hidden peer">
