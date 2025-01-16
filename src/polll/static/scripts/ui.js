@@ -92,7 +92,3 @@ function update_answer_editor(poll_type) {
     editor.classList.remove("hidden");
   }
 }
-
-function update_radio_buttons() {
-  
-}

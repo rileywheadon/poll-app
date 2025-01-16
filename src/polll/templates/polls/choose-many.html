@@ -2,8 +2,17 @@
 
 {% block poll_content %}
   {% for answer in poll.answers %}
-    <input type="checkbox" class="mb-2" name="answer_id" value="{{ answer.id }}">
-    {{ answer.answer }}
-    <br>
+
+    <div class="space-y-10">
+      <input type="checkbox" class="mb-2 hidden peer" name="answer_id" value="{{ answer.id }}" id="{{ answer.id }}">
+      <label for="{{ answer.id }}" 
+      class="flex items-center justify-between p-5 rounded-lg cursor-default 
+             border-2 border-gray-700 bg-gray-800 text-gray-400
+             hover:text-gray-300 hover:bg-gray-700
+             peer-checked:border-polll-green peer-checked:text-gray-300">
+        <p class="font-light select-none">{{ answer.answer }}</p>
+      </label>
+    </div>
+
   {% endfor %}
 {% endblock %}
