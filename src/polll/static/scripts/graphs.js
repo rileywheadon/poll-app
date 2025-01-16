@@ -29,21 +29,20 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
 
 }
 
-
-// TOOD: add a 'theme' parameter to the parent function
-//  and let it determine the colour scheme
-
 function choose_one_options(rs) {
 
-    // make bar charts a percent via making each element a fraction of the total number of votes
-
+    var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
     return {
         xaxis: {
             categories: rs.map((e) => e["answer"]),
-            show: false,
+            labels: {
+                formatter: function (val) {
+                    return val + "%"; // will look better with more data
+                }
+            },
         },
         series: [{
-            data: rs.map((e) => e["count"])
+            data: rs.map((e) => e["count"] / total_answers * 100)
         }],
         chart: {
             type: 'bar',
@@ -64,7 +63,7 @@ function choose_one_options(rs) {
         dataLabels: {
             enabled: true,
             formatter: function (val, opt) {
-                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val + "%";
               },
         },
         theme: {
@@ -94,30 +93,18 @@ function choose_many_options(rs) {
                 return val + "%"
             },
         }
-
     }
 
 }
 
-// TODO: 
-// - Compute average response
-// - Add vertical line at user and average response
 function scale_graph_options(rs, rs_kde) {
     // not in use at the moment but gonna keep until certain on kde implementation
     vals = parse_results(rs);
     // kde
     pts = parse_kde_results(rs_kde);
 
-    // var average_rs = 72;
     var average_rs = get_scale_average(rs_kde[1]);
-
-    //console.log(average_rs);
-
-
-
-    var user_rs = 55; // still need from database
-
-    console.log(get_scale_average(rs_kde[1]));
+    var user_rs = 10; // still need actual value from database
 
     return {
         xaxis: {
@@ -127,7 +114,7 @@ function scale_graph_options(rs, rs_kde) {
         yaxis: {
             labels: {
                 formatter: function (val) {
-                    return val;
+                    return "";
                 }
             },
         },
@@ -150,7 +137,8 @@ function scale_graph_options(rs, rs_kde) {
             enabled: false
         },
         stroke: {
-            curve: 'monotoneCubic'
+            curve: 'monotoneCubic',
+            width: 5
         },
         tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
@@ -161,17 +149,18 @@ function scale_graph_options(rs, rs_kde) {
         theme: {
             mode: "dark"
         },
-        // TODO: add point where this annotation hits the graph and label it as such
         annotations: {
             xaxis: [{
                     x: average_rs[0],
                     strokeDashArray: 0,
+                    borderColor: "#88bbd0",
                     label: {
                         show: false,   
                     }
                 }, {
                     x: user_rs,
                     strokeDashArray: 0,
+                    borderColor: "#B6D7A8",
                     label: {
                         show: false,   
                     }
@@ -211,7 +200,7 @@ function scale_graph_options(rs, rs_kde) {
                           color: "#ffffff",
                           background: "null",
                         },
-                        text: "You",
+                        text: "You (based)",
                       }
                   },
 
@@ -251,7 +240,7 @@ function tier_graph_options(rs) {
             type: 'bar',
             height: 500,
             stacked: true,
-            stackType: '100%', // Fills the width of the screen with a the stack of bars (I kinda fw this off)
+            stackType: '100%',
             background: "null",
             toolbar: {
                 show: false
@@ -303,7 +292,7 @@ function parse_kde_results(rs_kde) {
 }
 
 function get_scale_average(rs) {
-    var y = rs.reduce((prev, curr) => prev + curr, 0) / rs.length;
+    var y = rs.reduce((acc, i) => acc + i, 0) / rs.length;
     return [rs.indexOf(rs.reduce((prev, curr) => {
          return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
 }
