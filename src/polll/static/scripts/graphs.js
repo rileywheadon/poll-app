@@ -1,3 +1,32 @@
+// I know I know
+cols = {
+    /* Tailwind-like Nord color names */
+    'nord-0': '#2E3440',
+    'nord-1': '#3B4252',
+    'nord-2': '#434C5E',
+    'nord-3': '#4C566A',
+    'nord-4': '#D8DEE9',
+    'nord-5': '#E5E9F0',
+    'nord-6': '#ECEFF4',
+    'nord-7': '#8FBCBB',
+    'nord-8': '#88C0D0',
+    'nord-9': '#81A1C1',
+    'nord-10': '#5E81AC',
+    'nord-11': '#BF616A',
+    'nord-12': '#D08770',
+    'nord-13': '#EBCB8B',
+    'nord-14': '#A3BE8C',
+    'nord-15': '#B48EAD',
+    'grad-start': '#1f1f1f',
+    'grad-end': '#171717',
+    'polll-grad-1': '#D9EAD3', //polll logo gradient follows these 6 colors
+    'polll-green': '#B6D7A8', // this is the custom green to be used on icons
+    'polll-grad-3':'#A0CFB6',
+    'polll-grad-4':'#97D0BF',
+    'polll-grad-5':'#92D0D0',
+    'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
+}
+
 function graphInit(type, poll_id, rs = null, rs_kde = null) {
     // Don't ask me how or why this works but it does (gotta be the dumbest shit I've ever wrote)
     var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
@@ -33,18 +62,36 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
 
 function choose_one_options(rs) {
 
+
+    temp_data = [
+        ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"], 
+        [40, 25, 60, 10, 15]
+    ]
+
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
     return {
+        grid: {
+            show: false,
+        },
         xaxis: {
-            categories: rs.map((e) => e["answer"]),
+            // categories: rs.map((e) => e["answer"]),
+            categories: temp_data[0],
             labels: {
                 formatter: function (val) {
-                    return val + "%"; // will look better with more data
+                    return val + "%";
+                }
+            },
+        },
+        yaxis: {
+            labels: {
+                formatter: function (val) {
+                    return val;
                 }
             },
         },
         series: [{
-            data: rs.map((e) => e["count"] / total_answers * 100)
+            // data: rs.map((e) => e["count"] / total_answers * 100)
+            data: temp_data[1].map((e) => Math.round(e / temp_data[1].reduce((acc, i) => acc + i, 0) * 100))
         }],
         chart: {
             type: 'bar',
@@ -70,6 +117,7 @@ function choose_one_options(rs) {
         },
         theme: {
             mode: "dark",
+            palette: 'palette2',
         },
     };
 
@@ -87,7 +135,7 @@ function choose_many_options(rs) {
             height: 500
         },
         theme: {
-            mode: "dark"
+            mode: "dark",
         },
         dataLabels: {
             enabled: true,
@@ -110,6 +158,9 @@ function scale_graph_options(rs, rs_kde) {
 
 
     return {
+        grid: {
+            show: false,
+        },
         xaxis: {
             type: 'numeric',
             categories: [...Array(rs_kde[0].length).keys()]
@@ -157,13 +208,15 @@ function scale_graph_options(rs, rs_kde) {
                     x: average_rs[0],
                     strokeDashArray: 0,
                     borderColor: "#88bbd0",
+                    borderWidth: 3,
                     label: {
-                        show: false,   
+                        show: false,
                     }
                 }, {
                     x: user_rs,
                     strokeDashArray: 0,
                     borderColor: "#B6D7A8",
+                    borderWidth: 3,
                     label: {
                         show: false,   
                     }
@@ -203,7 +256,7 @@ function scale_graph_options(rs, rs_kde) {
                           color: "#ffffff",
                           background: "null",
                         },
-                        text: "You (based)",
+                        text: "You",
                       }
                   },
 
@@ -216,6 +269,17 @@ function scale_graph_options(rs, rs_kde) {
 function tier_graph_options(rs) {
 
     return {
+        grid: {
+            show: false,
+        },
+        xaxis: {
+            categories: ["S Tier", "A Tier", "B Tier", "C Tier", "D Tier", "F Tier"],
+            labels: {
+                formatter: function (val) {
+                    return val + "%";
+                }
+            },
+        },
         series: rs.map(answer => ({
             name: answer["answer"],
             data: [answer["S"], answer["A"], answer["B"], answer["C"], answer["D"], answer["F"]]
@@ -241,13 +305,10 @@ function tier_graph_options(rs) {
             width: 1,
             colors: ['#fff']
         },
-        xaxis: {
-            categories: ["S Tier", "A Tier", "B Tier", "C Tier", "D Tier", "F Tier"],
-        },
         tooltip: {
             y: {
                 formatter: function (val) {
-                    return val;
+                    return val + "%";
                 }
             }
         },
@@ -256,8 +317,11 @@ function tier_graph_options(rs) {
             horizontalAlign: 'left',
             offsetX: 40
         },
+        // Not working atm - outputting polll gradient
+        //colors: get_col_gradient("#D9EAD3", "#88bbd0", rs.length),
         theme: {
-            mode: "dark"
+            mode: "dark",
+            palette: "palette10"
         }
     };
 
@@ -276,8 +340,16 @@ function parse_kde_results(rs_kde) {
     return pts;
 }
 
+// This "works" but is really dumb and is techincally flawed
 function get_scale_average(rs) {
     var y = rs.reduce((acc, i) => acc + i, 0) / rs.length;
     return [rs.indexOf(rs.reduce((prev, curr) => {
          return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
+}
+
+// A list of colours representing a gradient from "from_col" to "to_col" of length "num_col"
+function get_col_gradient(from_col, to_col, num_col) {
+    // TODO: implement
+    // return ['#F44336', '#E91E63', '#9C27B0'];
+    return [cols["polll-grad-1"], cols["polll-green"], cols["polll-grad-3"], cols["polll-grad-4"], cols["polll-grad-5"], cols["polll-blue"]] // I don't like this
 }
