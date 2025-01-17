@@ -3,7 +3,7 @@
   <!-- Include the poll question -->
   <div class="flex flex-row items-center p-2">
 
-    <div class="flex flex-col p-2">
+    <div class="flex flex-col p-2 select-none">
       {% if poll.is_anonymous == 1 %}
         <p class="text-nord-4 font-light">anonymous ⋅ {{ poll.age }}</p>
       {% else %}
@@ -50,7 +50,7 @@
 
   </div>
 
-  <div class="flex flex-row text-sm px-4 items-center my-4 font-light">
+  <div class="flex flex-row text-sm px-4 items-center my-4 font-light select-none">
     <p>
       Votes: <i>{{ poll.votes }}</i>
     </p>

@@ -21,7 +21,7 @@
 
 <!-- Basically done but there's a really annoying alignment issues with "1."
  that needs to be fixed -->
-<div class="flex flex-col space-y-8">
+<div class="flex flex-col space-y-8 select-none">
 
   <div class="flex flex-row justify-evenly">
     <p class="text-xl font-light">You</p>
@@ -46,17 +46,21 @@
         </div>
 
         <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+
           <p class="text-white text-base font-light hover:cursor-default">
             ...
           </p>
+
         </div>
       </div>
 
        <!-- Average Box -->
       <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+
         <p class="text-white hover:cursor-default">
           {{ result.answer }}
         </p>
+
       </div>
 
     </div>
