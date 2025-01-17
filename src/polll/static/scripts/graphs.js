@@ -28,7 +28,6 @@ cols = {
 }
 
 function graphInit(type, poll_id, rs = null, rs_kde = null) {
-    // Don't ask me how or why this works but it does (gotta be the dumbest shit I've ever wrote)
     var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
     var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
     ["load", "htmx:afterSettle"].forEach((e) => {
@@ -50,11 +49,9 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
                      i = 3;
                      func = tier_graph_options(rs);
                     break;
-            }
-
+            }            
             graphs[i] instanceof ApexCharts ? graphs[i].destroy() : graphs[i] = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), func);
             graphs[i].render();
-
         })
     })
 
@@ -84,7 +81,6 @@ function choose_one_options(rs) {
         },
         series: [{
             data: rs.map((e) => e["count"] / total_answers * 100)
-            // data: temp_data[1].map((e) => Math.round(e / temp_data[1].reduce((acc, i) => acc + i, 0) * 100))
         }],
         chart: {
             type: 'bar',
@@ -142,15 +138,14 @@ function choose_many_options(rs) {
 
 function scale_graph_options(rs, rs_kde) {
     // not in use at the moment but gonna keep until certain on kde implementation
-    vals = parse_results(rs);
+    var vals = parse_results(rs);
     // kde
-    pts = parse_kde_results(rs_kde);
+    var pts = parse_kde_results(rs_kde);
 
     var average_rs = get_scale_average(rs_kde[1]);
     var user_rs = 10; // still need actual value from database
 
-
-    return {
+    return  {
         grid: {
             show: false,
         },
@@ -256,7 +251,7 @@ function scale_graph_options(rs, rs_kde) {
                 ]
         },
     };
-    
+
 }
 
 function tier_graph_options(rs) {
@@ -321,6 +316,7 @@ function tier_graph_options(rs) {
 }
 
 // Helpers for formatting the data into something that can be graphed
+
 function parse_results(rs) {
     var vals = Array(101).fill(0);
     for (let i = 0; i < rs.length; i++) vals[rs[i]["value"]] = rs[i]["count"];
@@ -329,7 +325,17 @@ function parse_results(rs) {
 
 function parse_kde_results(rs_kde) {
     let pts = [];
-    for (let j = 0; j < rs_kde[0].length; j++) pts.push({ x: rs_kde[0][j], y: rs_kde[1][j] });
+    for (let j = 0; j < rs_kde[0].length; j++) pts.push({ x: rs_kde[0][j], y: rs_kde[1][j] <= Math.pow(10, -6) ? Math.pow(10, -6) : rs_kde[1][j]});
+    return pts;
+}
+
+function format_sci_notation(vals) {
+    var pts = [];
+    vals.forEach((e) => {
+        var s = e.toString();
+        if (s.includes("e-")) s = "0." + new Array(Number(s.substring(s.indexOf("e-") + 2))).join("0") + s.substring(0, s.indexOf("e")).replace(".", "");
+        pts.push(s);
+    });
     return pts;
 }
 

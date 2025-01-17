@@ -17,25 +17,22 @@ OUTPUT: List of two parallel lists representing (x, y) points
 
 
 def smooth_hist(data, bandwidth):
-    x_vals = np.linspace(0, 100, 101)
+    # Third parameter helps with local smoothing but anything above
+    # 100 casues a noticable performance drop
+    x_vals = np.linspace(0, 100, 250)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
 
     if len(data) == 0:
         return [x_vals.tolist(), [0] * 101]
-
-    # KDE shits itself if there's only one data point for some reason
     if len(data) == 1:
         adj_data.append(adj_data[0] + 1)
         bandwidth = 10
 
-    output = [
+    return [
         x_vals.tolist(),
         gaussian_kde(adj_data, bw_method=bandwidth)(x_vals).tolist()
     ]
-
-    print(output)
-    return output
 
 
 # Formats the given timestamp to be more readable as well as converts it to the user's local timezone
