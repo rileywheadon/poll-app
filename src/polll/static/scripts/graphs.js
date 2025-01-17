@@ -1,0 +1,283 @@
+function graphInit(type, poll_id, rs = null, rs_kde = null) {
+    // Don't ask me how or why this works but it does (gotta be the dumbest shit I've ever wrote)
+    var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
+    var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
+    ["load", "htmx:afterSettle"].forEach((e) => {
+        window.addEventListener(e, () => {
+            switch (type.toLowerCase()) {
+                case "choose one":
+                    i = 0;
+                    func = choose_one_options(rs);
+                    break;
+                case "choose many":
+                    i = 1;
+                    func = choose_many_options(rs);
+                    break;
+                case "scale":
+                    i = 2;
+                    func = scale_graph_options(rs, rs_kde);
+                    break;
+                case "tier":
+                     i = 3;
+                     func = tier_graph_options(rs);
+                    break;
+            }
+
+            graphs[i] instanceof ApexCharts ? graphs[i].destroy() : graphs[i] = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), func);
+            graphs[i].render();
+
+        })
+    })
+
+}
+
+function choose_one_options(rs) {
+
+    var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
+    return {
+        xaxis: {
+            categories: rs.map((e) => e["answer"]),
+            labels: {
+                formatter: function (val) {
+                    return val + "%"; // will look better with more data
+                }
+            },
+        },
+        series: [{
+            data: rs.map((e) => e["count"] / total_answers * 100)
+        }],
+        chart: {
+            type: 'bar',
+            height: 200,
+            width: 500,
+            background: 'null',
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 4,
+                borderRadiusApplication: 'end',
+                horizontal: true,
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opt) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val + "%";
+              },
+        },
+        theme: {
+            mode: "dark",
+        },
+    };
+
+}
+
+function choose_many_options(rs) {
+
+    return {
+        series: rs.map((e) => e["count"]),
+        labels: rs.map((e) => e["answer"]),
+        chart: {
+            type: "pie",
+            background: "null",
+            width: 500,
+            height: 500
+        },
+        theme: {
+            mode: "dark"
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val) {
+                return val + "%"
+            },
+        }
+    }
+
+}
+
+function scale_graph_options(rs, rs_kde) {
+    // not in use at the moment but gonna keep until certain on kde implementation
+    vals = parse_results(rs);
+    // kde
+    pts = parse_kde_results(rs_kde);
+
+    var average_rs = get_scale_average(rs_kde[1]);
+    var user_rs = 10; // still need actual value from database
+
+
+    return {
+        xaxis: {
+            type: 'numeric',
+            categories: [...Array(rs_kde[0].length).keys()]
+        },
+        yaxis: {
+            labels: {
+                formatter: function (val) {
+                    return "";
+                }
+            },
+        },
+        series: [{
+            name: 'Scale Results',
+            data: pts
+        }],
+        chart: {
+            height: 350,
+            type: 'area',
+            background: "null",
+            toolbar: {
+                show: false
+            },
+            zoom: {
+                enabled: false,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'monotoneCubic',
+            width: 5
+        },
+        tooltip: {
+            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                return '<div class="arrow_box">' + '</div>'
+            }
+
+        },
+        theme: {
+            mode: "dark"
+        },
+        annotations: {
+            xaxis: [{
+                    x: average_rs[0],
+                    strokeDashArray: 0,
+                    borderColor: "#88bbd0",
+                    label: {
+                        show: false,   
+                    }
+                }, {
+                    x: user_rs,
+                    strokeDashArray: 0,
+                    borderColor: "#B6D7A8",
+                    label: {
+                        show: false,   
+                    }
+                }],
+                points: 
+                [
+                  {
+                    x: average_rs[0],
+                    y: average_rs[1],
+                    marker: {
+                        size: 8,
+                        fillColor: "#ffffff",
+                        strokeColor: "#000000",
+                        radius: 2,
+                        cssClass: 'apexcharts-custom-class'
+                      },
+                      label: {
+                        style: {
+                          color: "#ffffff",
+                          background: "null",
+                        },
+                        text: "Average Response",
+                      }
+                  },
+                  {
+                    x: user_rs,
+                    y: rs_kde[1][user_rs],
+                    marker: {
+                        size: 8,
+                        fillColor: "#ffffff",
+                        strokeColor: "#000000",
+                        radius: 2,
+                        cssClass: 'apexcharts-custom-class'
+                      },
+                      label: {
+                        style: {
+                          color: "#ffffff",
+                          background: "null",
+                        },
+                        text: "You (based)",
+                      }
+                  },
+
+                ]
+        },
+    };
+    
+}
+
+function tier_graph_options(rs) {
+
+    return {
+        series: rs.map(answer => ({
+            name: answer["answer"],
+            data: [answer["S"], answer["A"], answer["B"], answer["C"], answer["D"], answer["F"]]
+        }
+        )),
+        chart: {
+            type: 'bar',
+            height: 500,
+            stacked: true,
+            stackType: '100%',
+            background: "null",
+            toolbar: {
+                show: false
+            }
+
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            },
+        },
+        stroke: {
+            width: 1,
+            colors: ['#fff']
+        },
+        xaxis: {
+            categories: ["S Tier", "A Tier", "B Tier", "C Tier", "D Tier", "F Tier"],
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val;
+                }
+            }
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'left',
+            offsetX: 40
+        },
+        theme: {
+            mode: "dark"
+        }
+    };
+
+}
+
+// Helpers for formatting the data into something that can be graphed
+function parse_results(rs) {
+    var vals = Array(101).fill(0);
+    for (let i = 0; i < rs.length; i++) vals[rs[i]["value"]] = rs[i]["count"];
+    return vals;
+}
+
+function parse_kde_results(rs_kde) {
+    let pts = [];
+    for (let j = 0; j < rs_kde[0].length; j++) pts.push({ x: rs_kde[0][j], y: rs_kde[1][j] });
+    return pts;
+}
+
+function get_scale_average(rs) {
+    var y = rs.reduce((acc, i) => acc + i, 0) / rs.length;
+    return [rs.indexOf(rs.reduce((prev, curr) => {
+         return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
+}

@@ -1,9 +1,11 @@
 {% extends "polls/poll-base.html" %}
 
+
+<!-- Consider Sortable.js for this: https://preline.co/docs/drag-and-drop.html (this entire site is sick) -->
 {% block poll_content %}
   <div class="my-2">
     {% for answer in poll.answers %}
-      <div class="border border-nord-3 dark:border-nord-5 w-48 px-2 py-1 mt-[-1px] ml-[-1px] cursor-pointer select-none"
+      <div class="border-4 border-nord-3 rounded-lg dark:text-gray-300 dark:border-polll-green w-48 p-2 mt-[-4px] ml-[-4px] cursor-grab focus:cursor-grabbing select-none"
            draggable="true"
            ondragstart="rankedDragStart(event)"
            ondragenter="rankedDragEnter(event)"
@@ -11,7 +13,7 @@
            ondragexit="rankedDragExit(event)"
            ondrop="rankedDrop(event)">
         <input type="hidden" name="answer_id" value="{{ answer.id }}">
-        <span class="pointer-events-none">::</span>
+        
         <span class="pointer-events-none">{{ answer.answer }}</span>
       </div>
     {% endfor %}

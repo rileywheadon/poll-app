@@ -3,13 +3,13 @@
 <!-- TODO: Build mobile version (use breakpoints to change from row to col) -->
 <!-- TODO: Add stars -->
 
-<div class="flex flex-row">
+<div class="flex flex-row select-none">
 
   <!-- Options column with graphics + labels -->
-  <!-- NOTE: temporary images, actual images should each be the same size -->
+   <!-- Padding for different border size: hover:m-0 hover:border-8 -->
   <div class="flex flex-col px-4 py-4">
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Choose One">
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -21,7 +21,7 @@
       <img class="w-24" src="../../static/assets/choose-one.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Choose Many">
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -32,7 +32,7 @@
       <img class="w-24" src="../../static/assets/choose-many.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Scale">
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -44,7 +44,7 @@
     </label>
 
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Ranking">
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -56,7 +56,7 @@
     </label>
 
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-nord-7 m-1 hover:m-0 hover:border-8 has-[:checked]:border-nord-10" title="Tier List">
+    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -69,35 +69,26 @@
 
   </div>
 
-  <!-- Question editor-->
-  <!-- TODO: make the input box expand downwards when exceeding the width of the screen-->
   <div class="flex flex-col grow border-2 border-nord-3 rounded-lg">
 
     <div class="px-10 pt-8  text-2xl"> 
       <input class="poll-create text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
+        autocomplete="off"
         name="poll_question"
         placeholder="Write your poll of the day..."
       />
       <hr>
     </div>
 
-    <!-- 
-    ANSWER INPUTS 
-      - Choose one/many are the same thing (list of > 1 answers)
-      - Scale is just the question (no answers needed)
-      - Tier list/ranked is a little more complicated
-    -->
-
     <div class="grow p-8">
       <div id="multiple-ans" class="flex flex-col justify-center">
 
-        <!-- Answer types (hidden when scale is selected) -->
         <div id="ans-types" class="unhidden">
 
           <!-- Multiple Answers -->
           <div id="answer-editor" class="flex flex-row">
             <button id="answer-add" 
-              class="h-10" 
+              class="h-10 cursor-default" 
               hx-get="{{ url_for('home.create_answer') }}" 
               hx-swap="beforeend" 
               hx-target="#answer-list"
@@ -154,8 +145,8 @@
     <div class="flex flex-row items-center px-10 pb-6">
 
       <!-- HIDE USERNAME -->
-      <span class="mr-2">Hide my Username:</span>
-      <input class="poll-create w-6 h-6" name="poll_anonymous" type="checkbox">
+      <span class="mr-2 font-light">Anonymous:</span>
+      <input class="poll-create w-5 h-5" name="poll_anonymous" type="checkbox">
     
       <!-- SUBMIT BUTTON -->
       <button class="rounded-lg bg-nord-15 text-black py-2 px-4 ml-auto" 
@@ -175,13 +166,12 @@
 
 {% else %}
 
-<div class="flex flex-row text-center items-center justify-center py-16">
+<div class="flex flex-row text-center items-center justify-center py-16 select-none">
   <p class="text-2xl">
     Sorry! We only allow users to make one poll a day.
     <br />
     <br />
-    You'll be allowed to make another poll at {{ session.user.next_poll_allowed
-    }} UTC.
+    You'll be allowed to make another poll {{ format_time(session.user.next_poll_allowed)}}
   </p>
 </div>
 

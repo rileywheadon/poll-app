@@ -1,6 +1,7 @@
 {% extends "results/result-base.html" %}
 
 {% block result_content %}
+
   {% for result in poll.results %}
     <p>{{ result.answer }}: {{ result.count }}</p>
   {% endfor %}
@@ -13,5 +14,11 @@
       {% endfor %}
     </p>
   {% endif %}
+
+  <script>
+    graphInit("choose many", {{ poll.id }}, {{ poll.results|safe }});
+  </script>
+
+  <div id="poll-graph-{{ poll.id }}"></div>
 
 {% endblock %}
