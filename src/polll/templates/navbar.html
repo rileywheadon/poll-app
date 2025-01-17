@@ -1,19 +1,19 @@
 <!-- Header -->
-<div class="w-100% flex space-x-4 items-center border-b-2 border-nord-4 dark:border-nord-3 dark:bg-neutral-900 p-4 lg:p-6">
+<div class="w-100% flex space-x-4 items-center border-b-2 border-nord-4 dark:border-nord-3 dark:bg-neutral-900 p-4">
 
   <!-- Logo image, also redirects to home -->
   <a href="/">
     <img 
       id="logo-icon-home" 
-      class="h-10"
+      class="h-9"
       src="{{ url_for('static', filename='assets/logo-name-dark.svg') }}"
     />
   </a>
 
   <!-- Settings menu -->
   {% if not session.admin %}
-    <button class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-10 h-10 flex justify-center items-center" onclick="open_settings()">
-      <i id="settings-icon" class="fas fa-gear text-2xl cursor-pointer"></i>
+    <button class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-9 h-9 flex justify-center items-center" onclick="open_settings()">
+      <i id="settings-icon" class="fas fa-gear text-xl cursor-pointer"></i>
     </button>
   {% endif %}
 

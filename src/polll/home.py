@@ -400,4 +400,4 @@ def response(poll_id):
 @requires_auth
 def result(poll_id):
     poll = query_poll_details(poll_id)
-    return render_template(poll["result_template"], poll=poll)
+    return render_template(poll["result_template"], poll=poll, zip=zip)

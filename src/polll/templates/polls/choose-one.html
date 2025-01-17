@@ -2,8 +2,18 @@
 
 {% block poll_content %}
   {% for answer in poll.answers %}
-    <input type="radio" class="mb-2" name="answer_id" value="{{ answer.id }}">
-    {{ answer.answer }}
-    <br>
+
+  <!-- Put this in macros.jinja if keeping the same design for "choose one" and "choose many" -->
+  <div class="space-y-6">
+    <input type="radio" id="{{ answer.id }}" name="answer_id" value="{{ answer.id }}" class="hidden peer">
+    <label for="{{ answer.id }}" 
+    class="flex w-1/2 p-4 rounded-lg cursor-default 
+           border-2 border-gray-700 bg-gray-800 text-gray-400
+           hover:text-gray-300 hover:bg-gray-700
+           peer-checked:border-polll-green peer-checked:text-gray-300">
+      <p class="font-light select-none">{{ answer.answer }}</p>
+    </label>
+  </div>
+    
   {% endfor %}
 {% endblock %}

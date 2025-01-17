@@ -6,20 +6,25 @@
   <!-- Custom Styles -->
   <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet" />
 
-  <!-- NOTE: Not necessary unless we bring back the star selector. -->
+  <!-- NOTE: Keep this commented out unless we bring back the star selector. -->
   <!-- <link href="../static/styles/star-selector.css" rel="stylesheet" /> -->
 
-  <!-- Import HTMX and FontAwesome -->
+  <!-- Import ApexCharts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@4.3.0/dist/apexcharts.min.css">
+
+  <!-- Import HTMX, FontAwesome -->
   <script src="https://unpkg.com/htmx.org@2.0.3"></script>
   <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@4.3.0/dist/apexcharts.min.js"></script>
 
   <!-- Custom Scripts. Import at end so that event listeners can be set. -->
   <script src="{{ url_for('static', filename='scripts/drag-drop.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/dark-mode.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/ui.js') }}"></script>
   <script src="{{ url_for('static', filename='scripts/notification.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/graphs.js') }}"></script>
 
-  <!-- Title + Tab Icon -->
+  <!-- Title + Favicon -->
   <title>{% block title %}{% endblock %}</title>
   <link rel="icon" href="../static/assets/logo-bars.svg">
 

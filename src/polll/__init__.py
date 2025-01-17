@@ -4,6 +4,8 @@ from urllib.parse import quote_plus, urlencode
 from os import environ as env
 from flask import Flask, redirect, render_template, session, url_for
 
+import polll.utils
+
 
 def create_app(test_config=None):
     # Create a new Flask application
@@ -26,6 +28,13 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+
+    # Add global utility functions to use in javascript
+    # There might be a way to include all functions in a .py
+    # file as parameters to update() but I wasn't able to
+    # figure it out
+    app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
+    app.jinja_env.globals.update(format_time=utils.format_time)
 
     # Register the database commands
     from . import db
