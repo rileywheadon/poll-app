@@ -10,16 +10,17 @@
   {% if poll.response %}
     <p class="mt-2">You responded: {{ poll.response.value }}</p>
   {% endif %}
+  <div id="poll-graph-{{ poll.id }}"></div>
 
   <script>
+    // Suprisingly good bandwidth here
     graphInit(
       "scale", 
-      {{ poll.id }},
+      {{ poll.id|safe }},
       {{ poll.results|safe }},
-      {{ smooth_hist(poll.results, 0.2)|safe }}
+      {{ smooth_hist(poll.results, 0.25)|safe }}
     );
   </script>
 
-  <div id="poll-graph-{{ poll.id }}"></div>
 
 {% endblock %}

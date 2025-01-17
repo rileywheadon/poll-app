@@ -14,8 +14,12 @@
 
 ### Important
 
-- [ ] Improve the look of all graphs
+- [ ] Ensure graphs function:
+  - Test the scale graph for different inputs (> 2 of the same votes; likely a javascript issue)
+  - Standardize the bandwidth parameter
+- [ ] Style the graphs and implement breakpoints
 - [ ] Update all result templates to show your response (if it exists)
+- [ ] Fix average algorithm
 
 ### Small/Secondary
 
@@ -24,6 +28,7 @@
 - [ ] Round percentages on choose one/choose many
 - [ ] Make sure that KDE works with 0/1 responses
 - [ ] Additional issue with the KDE at 4 responses (or on duplicate responses?)
+- [ ] Add a message/graphic to an empty feed
 
 # Roadmap
 
