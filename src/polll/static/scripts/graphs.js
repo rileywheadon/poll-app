@@ -62,20 +62,13 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
 
 function choose_one_options(rs) {
 
-
-    temp_data = [
-        ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"], 
-        [40, 25, 60, 10, 15]
-    ]
-
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
     return {
         grid: {
             show: false,
         },
         xaxis: {
-            // categories: rs.map((e) => e["answer"]),
-            categories: temp_data[0],
+            categories: rs.map((e) => e["answer"]),
             labels: {
                 formatter: function (val) {
                     return val + "%";
@@ -90,8 +83,8 @@ function choose_one_options(rs) {
             },
         },
         series: [{
-            // data: rs.map((e) => e["count"] / total_answers * 100)
-            data: temp_data[1].map((e) => Math.round(e / temp_data[1].reduce((acc, i) => acc + i, 0) * 100))
+            data: rs.map((e) => e["count"] / total_answers * 100)
+            // data: temp_data[1].map((e) => Math.round(e / temp_data[1].reduce((acc, i) => acc + i, 0) * 100))
         }],
         chart: {
             type: 'bar',
@@ -318,10 +311,10 @@ function tier_graph_options(rs) {
             offsetX: 40
         },
         // Not working atm - outputting polll gradient
-        //colors: get_col_gradient("#D9EAD3", "#88bbd0", rs.length),
+        colors: get_col_gradient("#D9EAD3", "#88bbd0", rs.length),
         theme: {
             mode: "dark",
-            palette: "palette10"
+            // palette: "palette10"
         }
     };
 
