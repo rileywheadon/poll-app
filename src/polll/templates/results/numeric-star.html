@@ -7,10 +7,10 @@
   {% endfor %}
 
   {% if poll.response %}
-    <p class="mt-2">You responded: {{ poll.response.value }}</p>
+    <p class="mt-2">You responded: {{ poll.response}}</p>
+    <p>Info: {{ poll.response.form }}</p>
   {% endif %}
 
-  <!-- NOTE: Might need to change the kde parameter -->
   <script>
     graphInit(
       "scale",
