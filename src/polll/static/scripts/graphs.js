@@ -71,9 +71,10 @@ function choose_one_options(user_rs, rs) {
             categories: rs.map((e) => e["answer"]),
             labels: {
                 formatter: function (val) {
-                    return val + "%";
+                    return Math.round(val);
                 }
             },
+            max: 100,
         },
         yaxis: {
             labels: {
@@ -83,6 +84,7 @@ function choose_one_options(user_rs, rs) {
             },
         },
         series: [{
+            name: "",
             data: rs.map((e) => e["count"] / total_answers * 100)
         }],
         chart: {
@@ -107,19 +109,34 @@ function choose_one_options(user_rs, rs) {
                 return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val + "%";
               },
         },
+        colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+            return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? "#7E36AF" : "#D9534F";
+          }],
         theme: {
             mode: "dark",
-            palette: 'palette2',
         },
+        tooltip: {
+            enabled: true,
+            y: {
+                formatter: (val) => {
+                    return Math.round(val * total_answers / 100);
+                }
+            }
+        }
     };
 
 }
 
 function choose_many_options(user_rs, rs) {
 
-    user_rs ? console.log(user_rs) : user_rs = "";
+    user_rs ? user_rs = user_rs.map((e) => e["answer"]) : user_rs = "";
 
-    
+    // console.log(user_rs);
+    // console.log(rs.map((e) => e["answer"]));
+    // user_rs.forEach((e) => {
+    //     console.log(rs.map((e) => e["answer"]).indexOf(e));
+    // })
+    // console.log("\n\n");
 
     return {
         series: rs.map((e) => e["count"]),
@@ -128,7 +145,7 @@ function choose_many_options(user_rs, rs) {
             type: "pie",
             background: "null",
             width: 500,
-            height: 500
+            height: 500,
         },
         theme: {
             mode: "dark",
@@ -136,9 +153,19 @@ function choose_many_options(user_rs, rs) {
         dataLabels: {
             enabled: true,
             formatter: function (val) {
-                return val + "%"
+                return Math.round(val) + "%"
             },
-        }
+        },
+        colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return "#7E36AF";
+            return "#D9534F";
+          }],
+          fill: {
+            colors: [function({ value, seriesIndex, w }) {
+                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return "#7E36AF";
+                return "#D9534F";
+              }],
+          },
     }
 
 }
@@ -343,7 +370,6 @@ function format_sci_notation(vals) {
     });
     return pts;
 }
-
 
 function get_scale_average(rs, nums) {
     var counts = rs.map((e) => e["count"]);
