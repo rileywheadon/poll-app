@@ -14,21 +14,26 @@
 
 ### Important
 
-- Ensure graphs function:
+- Ensure graphs function correctly:
   - [x] Test the scale graph for different inputs (> 2 of the same votes; likely a javascript issue)
   - [x] Standardize the bandwidth parameter (0.25 works pretty well)
-  - [ ] Add user response to graphs and ensure it works both when the user is the author and a voter
-- [x] Fix average algorithm
-- [ ] Style the graphs and implement breakpoints
+  - [x] Fix the average algorithm
+  - [x] Add user response to graphs and ensure it works both when the user is the author and a voter
+  - [ ] Address the race condition of when a user votes and their response is not plotted because the page
+        loads before the database has had time to update
+- Style the graphs and implement breakpoints
+  - [ ] Make each graph as aesthetically/interactively pleasing as possible
+  - [ ] Annotate 'choose one' and 'choose many' with the user's response
+  - [ ] Brainstorm tier lists annotation
+  - [ ] Add breakpoints and ensure there is a pleasing mobile experience
 
 ### Small/Secondary
 
 - [ ] Make sure poll results display properly with no responses
 - [ ] Restyle hot/top/new buttons
 - [ ] Round percentages on choose one/choose many
-- [ ] Make sure that KDE works with 0/1 responses
-- [ ] Additional issue with the KDE at 4 responses (or on duplicate responses?)
 - [ ] Add a message/graphic to an empty feed
+- [ ] Find a way to differentiate between choose one and choose many
 
 # Roadmap
 
