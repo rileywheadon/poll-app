@@ -27,7 +27,7 @@ cols = {
     'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
 }
 
-function graphInit(type, poll_id, rs = null, rs_kde = null) {
+function graphInit(type, poll_id, user_rs=null, rs = null, rs_kde = null) {
     var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
     var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
     ["load", "htmx:afterSettle"].forEach((e) => {
@@ -35,19 +35,19 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
             switch (type.toLowerCase()) {
                 case "choose one":
                     i = 0;
-                    func = choose_one_options(rs);
+                    func = choose_one_options(user_rs, rs);
                     break;
                 case "choose many":
                     i = 1;
-                    func = choose_many_options(rs);
+                    func = choose_many_options(user_rs, rs);
                     break;
                 case "scale":
                     i = 2;
-                    func = scale_graph_options(rs, rs_kde);
+                    func = scale_graph_options(user_rs, rs, rs_kde);
                     break;
                 case "tier":
                      i = 3;
-                     func = tier_graph_options(rs);
+                     func = tier_graph_options(user_rs, rs);
                     break;
             }            
             graphs[i] instanceof ApexCharts ? graphs[i].destroy() : graphs[i] = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), func);
@@ -57,7 +57,7 @@ function graphInit(type, poll_id, rs = null, rs_kde = null) {
 
 }
 
-function choose_one_options(rs) {
+function choose_one_options(user_rs, rs) {
 
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
     return {
@@ -112,7 +112,7 @@ function choose_one_options(rs) {
 
 }
 
-function choose_many_options(rs) {
+function choose_many_options(user_rs, rs) {
 
     return {
         series: rs.map((e) => e["count"]),
@@ -136,15 +136,10 @@ function choose_many_options(rs) {
 
 }
 
-function scale_graph_options(rs, rs_kde) {
-    // not in use at the moment but gonna keep until certain on kde implementation
-    var vals = parse_results(rs);
-    // kde
+function scale_graph_options(user_rs, rs, rs_kde) {
     var pts = parse_kde_results(rs_kde);
-
-    var average_rs = get_scale_average(rs);
-    var user_rs = 10; // still need actual value from database
-
+    var average_rs = get_scale_average(rs, rs_kde[1].length);
+    if (!user_rs) user_rs = -1;
     return  {
         grid: {
             show: false,
@@ -254,7 +249,7 @@ function scale_graph_options(rs, rs_kde) {
 
 }
 
-function tier_graph_options(rs) {
+function tier_graph_options(user_rs, rs) {
 
     return {
         grid: {
@@ -340,14 +335,10 @@ function format_sci_notation(vals) {
 }
 
 
-// var y = rs.reduce((acc, i) => acc + i, 0) / rs.length;
-// return [rs.indexOf(rs.reduce((prev, curr) => {
-//      return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
-function get_scale_average(rs) {
-    var vals = rs.map((e) => e["value"]);
+function get_scale_average(rs, nums) {
     var counts = rs.map((e) => e["count"]);
     var x = rs.map((e) => e["value"]).reduce((acc, curr, i) => acc + (curr * counts[i]), 0) / counts.reduce((acc, curr) => acc + curr);
-    return vals.reduce((prev, curr) => {
+    return [...Array(nums).keys()].reduce((prev, curr) => {
      return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
 }
 

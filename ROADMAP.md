@@ -14,12 +14,12 @@
 
 ### Important
 
-- [x] Ensure graphs function:
-  - Test the scale graph for different inputs (> 2 of the same votes; likely a javascript issue)
-  - Standardize the bandwidth parameter
-- [ ] Fix average algorithm
+- Ensure graphs function:
+  - [x] Test the scale graph for different inputs (> 2 of the same votes; likely a javascript issue)
+  - [x] Standardize the bandwidth parameter (0.25 works pretty well)
+  - [ ] Add user response to graphs and ensure it works both when the user is the author and a voter
+- [x] Fix average algorithm
 - [ ] Style the graphs and implement breakpoints
-- [ ] Update all result templates to show your response (if it exists)
 
 ### Small/Secondary
 

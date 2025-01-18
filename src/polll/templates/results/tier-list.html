@@ -25,7 +25,12 @@
   {% endif %}
 
   <script>
-    graphInit("tier", {{ poll.id }}, {{ poll.results|safe }});
+    graphInit(
+      "tier",
+      {{ poll.id|safe }}, 
+      5,
+      {{ poll.results|safe }}
+    );
   </script>
 
   <div id="poll-graph-{{ poll.id }}"></div>
