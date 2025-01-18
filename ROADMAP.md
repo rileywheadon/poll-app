@@ -19,21 +19,23 @@
   - [x] Standardize the bandwidth parameter (0.25 works pretty well)
   - [x] Fix the average algorithm
   - [x] Add user response to graphs and ensure it works both when the user is the author and a voter
-  - [ ] Address the race condition of when a user votes and their response is not plotted because the page
+  - [x] Address the race condition of when a user votes and their response is not plotted because the page
         loads before the database has had time to update
 - Style the graphs and implement breakpoints
   - [ ] Make each graph as aesthetically/interactively pleasing as possible
   - [ ] Annotate 'choose one' and 'choose many' with the user's response
-  - [ ] Brainstorm tier lists annotation
+  - [ ] Implement tier list side by side results
   - [ ] Add breakpoints and ensure there is a pleasing mobile experience
+  - [ ] 
 
 ### Small/Secondary
 
 - [ ] Make sure poll results display properly with no responses
 - [ ] Restyle hot/top/new buttons
-- [ ] Round percentages on choose one/choose many
+- [x] Round percentages on choose one/choose many
 - [ ] Add a message/graphic to an empty feed
-- [ ] Find a way to differentiate between choose one and choose many
+- [ ] Visually differentiate choose one and choose many input fields
+- [ ] Restyle right sidebar
 
 # Roadmap
 

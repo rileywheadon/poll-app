@@ -20,7 +20,7 @@ def smooth_hist(data, bandwidth):
     # Third parameter (must be above 101) helps with local 
     # smoothing but anything above 150 casues a noticable
     # drop in performance
-    x_vals = np.linspace(0, 100, 200)
+    x_vals = np.linspace(0, 100, 101)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
 
