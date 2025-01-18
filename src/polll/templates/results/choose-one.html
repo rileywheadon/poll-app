@@ -8,11 +8,10 @@
 
   {% if poll.response %}
     <p class="mt-2">You responded: {{ poll.response.answer }}</p>
+    <script>graphInit("choose one",{{ poll.id|safe }}, {{ poll.response.answer|safe }}, {{ poll.results|safe }});</script>
+    {% else %}
+    <script>graphInit("choose one", {{ poll.id|safe }}, null, {{ poll.results|safe }});</script>
   {% endif %}
-
-  <script>
-    graphInit("choose one", {{ poll.id | safe }}, {{ poll.results|safe }});
-  </script>
 
   <div id="poll-graph-{{ poll.id }}"></div>
 
