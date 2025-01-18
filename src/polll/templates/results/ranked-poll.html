@@ -37,9 +37,9 @@
     <div class="flex flex-row space-x-10 justify-left">
 
       <!-- User box -->
-      <div class="flex flex-row space-x-10">
+      <div class="flex flex-row space-x-10 {% if not poll.response %} hidden {% endif %}">
 
-        <div class="">
+        <div>
           <p class="text-2xl font-light text-polll-blue">
             {{ 1 + poll.results.index(result) }}
           </p>

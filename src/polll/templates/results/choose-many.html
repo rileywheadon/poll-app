@@ -2,9 +2,9 @@
 
 {% block result_content %}
 
-  {% for result in poll.results %}
+  <!-- {% for result in poll.results %}
     <p>{{ result.answer }}: {{ result.count }}</p>
-  {% endfor %}
+  {% endfor %} -->
 
   {% if poll.response %}
     <p class="mt-2">
@@ -13,11 +13,10 @@
         {{ r.answer }}
       {% endfor %}
     </p>
+    <script>graphInit("choose many", {{ poll.id|safe }}, {{ poll.response|safe }}, {{ poll.results|safe }});</script>
+    {% else %} 
+    <script>graphInit("choose many", {{ poll.id|safe }}, null, {{ poll.results|safe }});</script>
   {% endif %}
-
-  <script>
-    graphInit("choose many", {{ poll.id }}, {{ poll.results|safe }});
-  </script>
 
   <div id="poll-graph-{{ poll.id }}"></div>
 

@@ -4,6 +4,26 @@ from datetime import datetime
 from polll.db import get_db
 
 
+# Helper function to get the user's last response ID.
+# If the user or response doesn't exist, return None
+RESPONSE_QUERY = """
+SELECT timestamp, id
+FROM response
+WHERE response.poll_id = ? AND response.user_id = ?
+ORDER BY timestamp DESC
+"""
+
+
+def get_response(poll_id, user):
+    if not user:
+        return None
+
+    db = get_db()
+    cur = db.cursor()
+    res = cur.execute(RESPONSE_QUERY, (poll_id, user["id"])).fetchone()
+    return res["id"] if res else None
+
+
 DISCRETE_RESULTS = """
 SELECT
     poll_answer.id AS answer_id,
@@ -19,14 +39,13 @@ DISCRETE_RESPONSE = """
 SELECT
     poll_answer.id AS answer_id,
     poll_answer.answer AS answer
-FROM poll_answer
-    INNER JOIN response ON response.poll_id = poll_answer.poll_id
-    INNER JOIN discrete_response ON discrete_response.answer_id = poll_answer.id
-WHERE poll_answer.poll_id = ? AND response.user_id = ?
+FROM discrete_response
+    INNER JOIN poll_answer ON poll_answer.id = discrete_response.answer_id
+WHERE discrete_response.response_id = ?
 """
 
 
-def choose_one(poll_id, user=None):
+def choose_one(poll_id, user):
 
     # Connect to the database
     db = get_db()
@@ -36,19 +55,20 @@ def choose_one(poll_id, user=None):
     res = cur.execute(DISCRETE_RESULTS, (poll_id,))
     results = [dict(result) for result in res.fetchall()]
 
-    # Include the user's response if necessary
-    response = None
-    if user:
-        query = """
-        """
-        res = cur.execute(DISCRETE_RESPONSE, (poll_id, user["id"]))
+    # Get the user's last response, if possible
+    response = {}
+    response_id = get_response(poll_id, user)
+    if response_id:
+        res = cur.execute(DISCRETE_RESPONSE, (response_id,))
         response = dict(res.fetchone())
 
     # Return the results
+    print("RESULTS:", results)
+    print("RESPONSE:", response)
     return (results, response)
 
 
-def choose_many(poll_id, user=None):
+def choose_many(poll_id, user):
 
     # Connect to the database
     db = get_db()
@@ -58,13 +78,16 @@ def choose_many(poll_id, user=None):
     res = cur.execute(DISCRETE_RESULTS, (poll_id,))
     results = [dict(result) for result in res.fetchall()]
 
-    # Include the user's response if necessary
-    response = None
-    if user:
-        res = cur.execute(DISCRETE_RESPONSE, (poll_id, user["id"]))
+    # Get the user's last response, if possible
+    response = {}
+    response_id = get_response(poll_id, user)
+    if response_id:
+        res = cur.execute(DISCRETE_RESPONSE, (response_id,))
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
+    print("RESULTS:", results)
+    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -79,15 +102,14 @@ GROUP BY numeric_response.value
 """
 
 NUMERIC_RESPONSE = """
-SELECT
-    numeric_response.value AS value
+SELECT numeric_response.value AS value
 FROM response
     INNER JOIN numeric_response ON numeric_response.response_id = response.id
-WHERE response.poll_id = ? AND response.user_id = ?
+WHERE response.id + ?
 """
 
 
-def numeric_star(poll_id, user=None):
+def numeric_star(poll_id, user):
 
     # Connect to the database
     db = get_db()
@@ -97,17 +119,20 @@ def numeric_star(poll_id, user=None):
     res = cur.execute(NUMERIC_RESULT, (poll_id,))
     results = [dict(result) for result in res.fetchall()]
 
-    # Include the user's response if necessary
-    response = None
-    if user:
-        res = cur.execute(NUMERIC_RESPONSE, (poll_id, user["id"]))
+    # Get the user's last response, if possible
+    response = {}
+    response_id = get_response(poll_id, user)
+    if response_id:
+        res = cur.execute(NUMERIC_RESPONSE, (response_id,))
         response = dict(res.fetchone())
 
     # Return the results
+    print("RESULTS:", results)
+    print("RESPONSE:", response)
     return (results, response)
 
 
-def numeric_scale(poll_id, user=None):
+def numeric_scale(poll_id, user):
 
     # Connect to the database
     db = get_db()
@@ -117,13 +142,16 @@ def numeric_scale(poll_id, user=None):
     res = cur.execute(NUMERIC_RESULT, (poll_id,))
     results = [dict(result) for result in res.fetchall()]
 
-    # Include the user's response if necessary
-    response = None
-    if user:
-        res = cur.execute(NUMERIC_RESPONSE, (poll_id, user["id"]))
+    # Get the user's last response, if possible
+    response = {}
+    response_id = get_response(poll_id, user)
+    if response_id:
+        res = cur.execute(NUMERIC_RESPONSE, (response_id,))
         response = dict(res.fetchone())
 
     # Return the results
+    print("RESULTS:", results)
+    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -132,10 +160,13 @@ SELECT
     poll_answer.id AS answer_id,
     poll_answer.answer AS answer,
     SUM(ranked_response.rank) AS score
-FROM poll_answer
-    INNER JOIN response ON response.poll_id = poll_answer.poll_id
-    LEFT JOIN ranked_response ON ranked_response.answer_id = poll_answer.id
-WHERE poll_answer.poll_id = ?
+FROM ranked_response
+    INNER JOIN poll_answer ON poll_answer.id = ranked_response.answer_id
+WHERE ranked_response.response_id IN (
+    SELECT id
+    FROM response
+    WHERE response.poll_id = ?
+)
 GROUP BY poll_answer.id
 ORDER BY score ASC
 """
@@ -145,16 +176,14 @@ SELECT
     poll_answer.id AS answer_id,
     poll_answer.answer AS answer,
     ranked_response.rank AS rank
-FROM poll_answer
-    INNER JOIN response ON response.poll_id = poll_answer.poll_id
-    LEFT JOIN ranked_response ON ranked_response.answer_id = poll_answer.id
-WHERE poll_answer.poll_id = ? AND response.user_id = ?
-GROUP BY poll_answer.id
+FROM ranked_response
+    INNER JOIN poll_answer ON poll_answer.id = ranked_response.answer_id
+WHERE ranked_response.response_id = ?
 ORDER BY rank ASC
 """
 
 
-def ranked_poll(poll_id, user=None):
+def ranked_poll(poll_id, user):
 
     # Connect to the database
     db = get_db()
@@ -165,12 +194,15 @@ def ranked_poll(poll_id, user=None):
     results = [dict(result) for result in res]
 
     # Get the user's response (if necessary)
-    response = None
-    if user:
-        res = cur.execute(RANKED_RESPONSE, (poll_id, user["id"]))
+    response = {}
+    response_id = get_response(poll_id, user)
+    if response_id:
+        res = cur.execute(RANKED_RESPONSE, (response_id,))
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
+    print("RESULTS:", results)
+    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -193,15 +225,13 @@ SELECT
     poll_answer.id AS answer_id,
     poll_answer.answer AS answer,
     tiered_response.tier AS tier
-FROM poll_answer
-    INNER JOIN response ON response.poll_id = poll_answer.poll_id
-    LEFT JOIN tiered_response ON tiered_response.answer_id = poll_answer.id
-WHERE poll_answer.poll_id = ? AND response.user_id = ?
-GROUP BY poll_answer.id
+FROM tiered_response
+    LEFT JOIN poll_answer ON poll_answer.id = tiered_response.answer_id
+WHERE tiered_response.response_id = ?
 """
 
 
-def tier_list(poll_id, user=None):
+def tier_list(poll_id, user):
 
     # Connect to the database
     db = get_db()
@@ -220,10 +250,13 @@ def tier_list(poll_id, user=None):
             answer[tier] = res["count"] if res else 0
 
     # Get the user's response (if necessary)
-    response = None
-    if user:
-        res = cur.execute(TIER_RESPONSE, (poll_id, user["id"]))
+    response = {}
+    response_id = get_response(poll_id, user)
+    if response_id:
+        res = cur.execute(TIER_RESPONSE, (response_id,))
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
+    print("RESULTS:", results)
+    print("RESPONSE:", response)
     return (results, response)

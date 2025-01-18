@@ -180,7 +180,7 @@ def history():
     ids = [response["poll_id"] for response in res.fetchall()]
 
     # Get the poll details using query_poll_details
-    polls = [query_poll_details(id, session["user"]) for id in ids]
+    polls = [query_poll_details(id) for id in ids]
 
     # Render the template
     session["admin"] = False
