@@ -142,7 +142,7 @@ function scale_graph_options(rs, rs_kde) {
     // kde
     var pts = parse_kde_results(rs_kde);
 
-    var average_rs = get_scale_average(rs_kde[1]);
+    var average_rs = get_scale_average(rs);
     var user_rs = 10; // still need actual value from database
 
     return  {
@@ -193,7 +193,7 @@ function scale_graph_options(rs, rs_kde) {
         },
         annotations: {
             xaxis: [{
-                    x: average_rs[0],
+                    x: average_rs,
                     strokeDashArray: 0,
                     borderColor: "#88bbd0",
                     borderWidth: 3,
@@ -212,8 +212,8 @@ function scale_graph_options(rs, rs_kde) {
                 points: 
                 [
                   {
-                    x: average_rs[0],
-                    y: average_rs[1],
+                    x: average_rs,
+                    y: rs_kde[1][Math.round(average_rs / 100 * rs_kde[1].length)],
                     marker: {
                         size: 8,
                         fillColor: "#ffffff",
@@ -231,7 +231,7 @@ function scale_graph_options(rs, rs_kde) {
                   },
                   {
                     x: user_rs,
-                    y: rs_kde[1][user_rs],
+                    y: rs_kde[1][Math.round(user_rs / 100 * rs_kde[1].length)],
                     marker: {
                         size: 8,
                         fillColor: "#ffffff",
@@ -339,11 +339,16 @@ function format_sci_notation(vals) {
     return pts;
 }
 
-// This "works" but is really dumb and is techincally flawed
+
+// var y = rs.reduce((acc, i) => acc + i, 0) / rs.length;
+// return [rs.indexOf(rs.reduce((prev, curr) => {
+//      return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
 function get_scale_average(rs) {
-    var y = rs.reduce((acc, i) => acc + i, 0) / rs.length;
-    return [rs.indexOf(rs.reduce((prev, curr) => {
-         return (Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev)})), y]
+    var vals = rs.map((e) => e["value"]);
+    var counts = rs.map((e) => e["count"]);
+    var x = rs.map((e) => e["value"]).reduce((acc, curr, i) => acc + (curr * counts[i]), 0) / counts.reduce((acc, curr) => acc + curr);
+    return vals.reduce((prev, curr) => {
+     return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
 }
 
 // A list of colours representing a gradient from "from_col" to "to_col" of length "num_col"
