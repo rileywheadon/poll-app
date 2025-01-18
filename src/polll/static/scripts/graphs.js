@@ -59,7 +59,10 @@ function graphInit(type, poll_id, user_rs=null, rs = null, rs_kde = null) {
 
 function choose_one_options(user_rs, rs) {
 
+    user_rs ? user_rs = user_rs["answer"] : user_rs = "";
+    
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
+
     return {
         grid: {
             show: false,
@@ -114,6 +117,10 @@ function choose_one_options(user_rs, rs) {
 
 function choose_many_options(user_rs, rs) {
 
+    user_rs ? console.log(user_rs) : user_rs = "";
+
+    
+
     return {
         series: rs.map((e) => e["count"]),
         labels: rs.map((e) => e["answer"]),
@@ -137,9 +144,12 @@ function choose_many_options(user_rs, rs) {
 }
 
 function scale_graph_options(user_rs, rs, rs_kde) {
+
+    user_rs ? user_rs = user_rs["value"] : user_rs = -1;
+
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
-    if (!user_rs) user_rs = -1;
+
     return  {
         grid: {
             show: false,
