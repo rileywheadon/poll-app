@@ -23,10 +23,10 @@
         loads before the database has had time to update
 - Style the graphs and implement breakpoints
   - [ ] Make each graph as aesthetically/interactively pleasing as possible
-  - [ ] Annotate 'choose one' and 'choose many' with the user's response
+  - [x] Annotate 'choose one' and 'choose many' with the user's response
   - [ ] Implement tier list side by side results
   - [ ] Add breakpoints and ensure there is a pleasing mobile experience
-  - [ ] 
+  - [x] Add user responses from the database to ranked if the user did not write the poll
 
 ### Small/Secondary
 
