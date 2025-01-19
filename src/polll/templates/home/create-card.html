@@ -9,7 +9,7 @@
    <!-- Padding for different border size: hover:m-0 hover:border-8 -->
   <div class="flex flex-col px-4 py-4">
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -18,10 +18,10 @@
         onclick="update_answer_editor('choose_one')"
         checked
       >
-      <img class="w-24" src="../../static/assets/choose-one.png"/>
+      <img class="w-28" src="../../static/assets/choose-one.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -29,10 +29,10 @@
         value="CHOOSE_MANY"
         onclick="update_answer_editor('choose_many')"
       >
-      <img class="w-24" src="../../static/assets/choose-many.png"/>
+      <img class="w-28" src="../../static/assets/choose-many.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -40,11 +40,11 @@
         value="NUMERIC_SCALE"
         onclick="update_answer_editor('numeric_scale')"
       >
-      <img class="w-24" src="../../static/assets/scale.png"/>
+      <img class="w-28" src="../../static/assets/scale.png"/>
     </label>
 
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -52,11 +52,11 @@
         value="RANKED_POLL"
         onclick="update_answer_editor('ranked_poll')"
       >
-      <img class="w-24" src="../../static/assets/tier-list.png"/>
+      <img class="w-28" src="../../static/assets/ranking.png"/>
     </label>
 
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -64,7 +64,7 @@
         value="TIER_LIST"
         onclick="update_answer_editor('tier_list')"
       >
-      <img class="w-24" src="../../static/assets/tier-list.png"/>
+      <img class="w-28" src="../../static/assets/tier-list.png"/>
     </label>
 
   </div>
