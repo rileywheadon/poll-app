@@ -23,17 +23,13 @@
         loads before the database has had time to update
 - Style the graphs and implement breakpoints
   - [ ] Make each graph as aesthetically/interactively pleasing as possible
-  - [x] Annotate 'choose one' and 'choose many' with the user's response
   - [ ] Implement tier list side by side results
   - [ ] Add breakpoints and ensure there is a pleasing mobile experience
-  - [x] Add user responses from the database to ranked if the user did not write the poll
 
 ### Small/Secondary
 
-- [x] Make sure poll results display properly with no responses
-- [ ] Restyle hot/top/new buttons
-- [x] Round percentages on choose one/choose many
 - [ ] Add a message/graphic to an empty feed
+- [ ] Restyle hot/top/new buttons
 - [ ] Visually differentiate choose one and choose many input fields
 - [ ] Restyle right sidebar
 - [ ] Remove datalabel on the bar graph if the option has no votes
