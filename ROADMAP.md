@@ -30,12 +30,14 @@
 
 ### Small/Secondary
 
-- [ ] Make sure poll results display properly with no responses
+- [x] Make sure poll results display properly with no responses
 - [ ] Restyle hot/top/new buttons
 - [x] Round percentages on choose one/choose many
 - [ ] Add a message/graphic to an empty feed
 - [ ] Visually differentiate choose one and choose many input fields
 - [ ] Restyle right sidebar
+- [ ] Remove datalabel on the bar graph if the option has no votes
+- [ ] Change create confirmation message from the current js alert to something better
 
 # Roadmap
 

@@ -15,19 +15,25 @@
   {% endfor %} -->
 
 
-  <!-- TODO: implement -->
-  {% if poll.response %}
-    <p class="mt-2">
-      You responded: 
-      {% for r in poll.response %}
-      ({{ r.answer }}: {{r.tier}})
-    </p>
-    {% endfor %}
-    <script>graphInit("tier", {{ poll.id|safe }}, 5, {{ poll.results|safe }});</script>
-    {% else %}
-    <script>graphInit("tier", {{ poll.id|safe }}, 5, {{ poll.results|safe }});</script>
-  {% endif %}
+  {% if poll.votes == 0 %}
 
-  <div id="poll-graph-{{ poll.id }}"></div>
+    <p>No Votes Yet</p>
+    
+  {% else %}
+
+    {% if poll.response %}
+      <p class="mt-2">
+        You responded: 
+        {% for r in poll.response %}
+        ({{ r.answer }}: {{r.tier}})
+      </p>
+      {% endfor %}
+      <script>graphInit("tier", {{ poll.id|safe }}, 5, {{ poll.results|safe }});</script>
+      {% else %}
+      <script>graphInit("tier", {{ poll.id|safe }}, 5, {{ poll.results|safe }});</script>
+    {% endif %}
+    <div id="poll-graph-{{ poll.id }}"></div>
+
+  {% endif %}
 
 {% endblock %}
