@@ -23,37 +23,35 @@ cols = {
     'polll-green': '#B6D7A8', // this is the custom green to be used on icons
     'polll-grad-3':'#A0CFB6',
     'polll-grad-4':'#97D0BF',
+
     'polll-grad-5':'#92D0D0',
     'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
 }
 
-function graphInit(type, poll_id, user_rs=null, rs = null, rs_kde = null) {
-    var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
-    var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
-    ["load", "htmx:afterSettle"].forEach((e) => {
-        window.addEventListener(e, () => {
-            switch (type.toLowerCase()) {
-                case "choose one":
-                    i = 0;
-                    func = choose_one_options(user_rs, rs);
-                    break;
-                case "choose many":
-                    i = 1;
-                    func = choose_many_options(user_rs, rs);
-                    break;
-                case "scale":
-                    i = 2;
-                    func = scale_graph_options(user_rs, rs, rs_kde);
-                    break;
-                case "tier":
-                     i = 3;
-                     func = tier_graph_options(user_rs, rs);
-                    break;
-            }            
-            graphs[i] instanceof ApexCharts ? graphs[i].destroy() : graphs[i] = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), func);
-            graphs[i].render();
-        })
-    })
+
+function graphInitRewritten(poll) {
+
+  var options;
+  graph = document.getElementById(`poll-graph-${poll["id"]}`);
+  graph.innerHTML = "";
+
+  switch (poll["poll_type"]) {
+    case "CHOOSE_ONE": 
+      options = choose_one_options(poll["response"], poll["results"]);
+      break;
+    case "CHOOSE_MANY":
+      options = choose_many_options(poll["response"], poll["results"]);
+      break;
+    case "NUMERIC_SCALE":
+      options = scale_graph_options(poll["response"], poll["results"], poll["kde"]);
+      break;
+    case "TIER_LIST":
+      options = tier_graph_options(poll["response"], poll["results"]);
+      break;
+  }
+
+  var chart = new ApexCharts(graph, options);
+  chart.render();
 
 }
 
@@ -117,10 +115,7 @@ function choose_one_options(user_rs, rs) {
 
 function choose_many_options(user_rs, rs) {
 
-    user_rs ? console.log(user_rs) : user_rs = "";
-
-    
-
+    // user_rs ? console.log(user_rs) : user_rs = "";
     return {
         series: rs.map((e) => e["count"]),
         labels: rs.map((e) => e["answer"]),
@@ -146,7 +141,6 @@ function choose_many_options(user_rs, rs) {
 function scale_graph_options(user_rs, rs, rs_kde) {
 
     user_rs ? user_rs = user_rs["value"] : user_rs = -1;
-
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
 

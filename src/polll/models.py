@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from polll.db import get_db
 import polll.results as result_handlers
 import polll.responses as response_handlers
+from polll.utils import smooth_hist
 import base64
 
 
@@ -127,6 +128,10 @@ def query_poll_details(id):
     poll["results"], poll["response"] = handler(poll["id"], user)
     poll["result_template"] = result_template(poll)
 
+    # If the poll is numeric, get its histogram
+    if poll["poll_type"] in ["NUMERIC_STAR", "NUMERIC_SCALE"]:
+        poll["kde"] = smooth_hist(poll["results"], 0.25)
+
     # Get the template, custom URL, and timedelta
     poll["poll_template"] = poll_template(poll)
     poll["url"] = id_to_url(poll["id"])
@@ -151,19 +156,15 @@ def validate_response(form, poll_id):
     """
     res = cur.execute(response_query, (session["user"]["id"], poll_id))
 
-    # If the user already responded, return
-    if res.fetchone() != None and session["user"]["email"] != "admin@polll.org":
-        return
-
-    # Otherwise get the poll in the response header
-    poll_query = """
-    SELECT id
-    FROM poll
-    WHERE id=?
-    """
-    res = cur.execute(poll_query, (poll_id,))
+    # Get information about the poll using query_poll-details
     poll = query_poll_details(poll_id)
 
-    # Submit the response to the database
+    # If the user created the poll or already responded, return
+    is_creator = session["user"]["id"] == poll["creator_id"]
+    is_admin = session["user"]["email"] == "admin@polll.org"
+    if (res.fetchone() != None or is_creator) and not is_admin:
+        return "Invalid Response"
+
+    # Assuming all the checks pass, submit the response to the database
     handler = getattr(response_handlers, poll["poll_type"].lower())
     handler(form, poll)

@@ -2,10 +2,8 @@
 
 {% block result_content %}
 
-  {% for result in poll.results %}
-    <p>{{ result.value }}: {{ result.count }}</p>
-  {% endfor %}
+  <div id="poll-graph-{{ poll.id }}"></div>
 
-  <canvas id="poll-graph-{{ poll.id }}"></canvas>
+  <script>graphInitRewritten({{ poll|safe }});</script>
 
 {% endblock %}

@@ -17,25 +17,26 @@
   
       <!-- Share Button -->
       <button 
-        class="flex flex-row justify-center items-center ml-auto rounded-md h-10 w-12 text-l bg-nord-3 text-nord-6 dark:text-nord-0 dark:bg-nord-4" 
+        class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1"
+        title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square"></i>
+        <i class="ml-1 fa fa-share-from-square text-black dark:text-nord-4 hover:text-2xl"></i>
       </button>
-
 
       {% include "results/poll-lock.html" %}
 
       <!-- Delete Poll -->
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="flex flex-row justify-center items-center ml-2 rounded-md h-10 w-12 text-l bg-nord-3 text-nord-6 dark:text-nord-0 dark:bg-nord-4"
+      <button class="ml-2 text-xl w-10 h-10 rounded-md py-1"
+          title="Delete"
           hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
           hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash"></i>
+        <i class="fa fa-trash text-black dark:text-nord-4 hover:text-2xl"></i>
       </button>
 
     {% endif %}
@@ -44,16 +45,34 @@
 
   <div class="px-8 py-4">
 
-    {% block result_content %}
+    {% block result_content %} 
 
     {% endblock %}
 
   </div>
 
-  <div class="flex flex-row text-sm px-4 items-center my-4 font-light select-none">
-    <p>
+  <div class="flex flex-row text-sm px-2 items-center my-4 select-none">
+    <p class="ml-2 font-light">
       Votes: <i>{{ poll.votes }}</i>
     </p>
+    <button 
+      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+      hx-get="{{ url_for('home.result', poll_id=poll.id, show_graph=True) }}"
+      hx-target="closest .poll-card"
+      hx-swap="outerHTML"
+    >
+      <span class="text-black dark:text-nord-4">Comments</span>
+      <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
+    </button>
+     <button 
+      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+      hx-get="{{ url_for('home.result', poll_id=poll.id, show_graph=True) }}"
+      hx-target="closest .poll-card"
+      hx-swap="outerHTML"
+    >
+      <span class="text-black dark:text-nord-4">Results</span>
+      <i class="fa fa-chart-simple ml-2 text-black dark:text-nord-4 text-xl"></i>
+    </button>
   </div>
 
 </div>

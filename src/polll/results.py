@@ -2,6 +2,7 @@ from flask import redirect, url_for, render_template, session
 from datetime import datetime
 
 from polll.db import get_db
+from polll.utils import smooth_hist
 
 
 # Helper function to get the user's last response ID.
@@ -105,7 +106,7 @@ NUMERIC_RESPONSE = """
 SELECT numeric_response.value AS value
 FROM response
     INNER JOIN numeric_response ON numeric_response.response_id = response.id
-WHERE response.id + ?
+WHERE response.id = ?
 """
 
 
@@ -152,6 +153,8 @@ def numeric_scale(poll_id, user):
     # Return the results
     print("RESULTS:", results)
     print("RESPONSE:", response)
+
+    # Set the histogram
     return (results, response)
 
 

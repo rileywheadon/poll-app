@@ -16,6 +16,15 @@
     <!-- Main Column (Polls) -->
     <main role="main" class="w-full flex-grow pt-1 px-3">
 
+      {% if session["user"] %}
+        <div class="border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-4 select-none">
+          <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
+            <i class="fa fa-arrow-left"></i>
+            <span class="font-light">Return Home</span>
+          </a>
+        </div>
+      {% endif %}
+
       {% include poll["poll_template"] %}
 
     </main>
