@@ -1113,6 +1113,18 @@ video {
   padding: 2rem;
 }
 
+.p-10 {
+  padding: 2.5rem;
+}
+
+.p-0 {
+  padding: 0px;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
 .px-10 {
   padding-left: 2.5rem;
   padding-right: 2.5rem;
@@ -1210,14 +1222,6 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pr-1 {
-  padding-right: 0.25rem;
-}
-
-.pr-2 {
-  padding-right: 0.5rem;
 }
 
 .text-center {
@@ -1587,6 +1591,10 @@ video {
   .lg\:w-12 {
     width: 3rem;
   }
+}
+
+.dark\:border-4:where(.dark, .dark *) {
+  border-width: 4px;
 }
 
 .dark\:border-nord-2:where(.dark, .dark *) {
