@@ -12,17 +12,43 @@
   <!-- Import ApexCharts -->
   <link href="https://cdn.jsdelivr.net/npm/apexcharts@4.3.0/dist/apexcharts.min.css" rel="stylesheet">
 
-  <!-- Import HTMX, FontAwesome, and ApexCharts -->
-  <script src="https://unpkg.com/htmx.org@2.0.3"></script>
-  <script src="https://kit.fontawesome.com/b9ed5d7fd5.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/apexcharts@4.3.0/dist/apexcharts.min.js"></script>
+  <!-- Import dark mode first to minimize white flashes. -->
+  <script 
+    type="text/javascript"
+    src="{{ url_for('static', filename='scripts/dark-mode.js') }}">
+  </script>
 
-  <!-- Custom Scripts. Import at end so that event listeners can be set. -->
-  <script src="{{ url_for('static', filename='scripts/drag-drop.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/dark-mode.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/ui.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/notification.js') }}"></script>
-  <script src="{{ url_for('static', filename='scripts/graphs.js') }}"></script>
+  <!-- Import HTMX, FontAwesome, and ApexCharts -->
+  <script 
+    type="text/javascript" 
+    src="https://unpkg.com/htmx.org@2.0.3">
+  </script>
+  <script 
+    type="text/javascript" 
+    src="https://kit.fontawesome.com/b9ed5d7fd5.js">
+  </script>
+  <script 
+    type="text/javascript" 
+    src="https://cdn.jsdelivr.net/npm/apexcharts@4.3.0/dist/apexcharts.min.js">
+  </script>
+
+  <!-- Custom Scripts. -->
+  <script 
+    type="text/javascript"
+    src="{{ url_for('static', filename='scripts/drag-drop.js') }}">
+  </script>
+    <script 
+    type="text/javascript" 
+    src="{{ url_for('static', filename='scripts/ui.js') }}">
+  </script>
+  <script
+    type="text/javascript"
+    src="{{ url_for('static', filename='scripts/notification.js') }}">
+  </script>
+  <script 
+    type="text/javascript" 
+    src="{{ url_for('static', filename='scripts/graphs.js') }}">
+  </script>
 
   <!-- Title + Favicon -->
   <title>{% block title %}{% endblock %}</title>

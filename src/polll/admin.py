@@ -5,7 +5,7 @@ import requests
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import on_cooldown, get_days_behind
+from polll.models import on_cooldown, get_days_behind, query_poll_details
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
@@ -94,45 +94,46 @@ def polls():
     sort = request.args.get("sort") or "date_created"
     direction = request.args.get("sort_direction") or "DESC"
 
+    # Check column, sort, direction are valid to avoid SQL injection
+    column_valid = column in ["creator", "question", "poll.id"]
+    sort_valid = sort in ["date_created"]
+    direction_valid = direction in ["DESC", "ASC"]
+    if not (column_valid and sort_valid and direction_valid):
+        return ""
+
     # Include similar values in the query, unless we are searching by ID
     value = "%{}%".format(search) if column != "poll.id" else search
 
     # Construct a query for selecting the poll types
-    types = tuple(request.args.getlist("search_type") or [])
-    type_query = " OR ".join([f"poll.poll_type = '{t}'" for t in types])
-
-    # If no poll types selected, get all the poll types
+    types = request.args.getlist("search_type") or []
+    type_query = " OR ".join([f"poll.poll_type='{t}'" for t in types])
     if type_query == "":
         type_query = "True"
 
-    # Check column, sort, direction are valid to avoid SQL injection
-    if column not in ["creator", "question", "poll.id"]:
-        return ""
-    if sort not in ["date_created"]:
-        return ""
-    if direction not in ["DESC", "ASC"]:
-        return ""
+    # Construct a query for selecting the poll boards
+    boards = request.args.getlist("board") or []
+    board_query = " OR ".join([f"board_id={b}" for b in boards])
+    if board_query == "":
+        board_query = "True"
 
     # Create the query and build the values tuple
     poll_query = f"""
-    SELECT poll.*, user.username AS creator, user.email AS creator_email
+    SELECT
+        poll.*, 
+        user.username AS creator,
+        user.email AS creator_email
     FROM poll
-    INNER JOIN user ON user.id = poll.creator_id
-    WHERE ({column} LIKE ?) AND ({type_query})
+        INNER JOIN user ON user.id = poll.creator_id
+    WHERE ({column} LIKE ?) AND ({type_query}) AND poll.id IN (
+        SELECT DISTINCT poll_id
+        FROM poll_board
+        WHERE ({board_query})
+    )
     ORDER BY {sort} {direction}
     """
     res = cur.execute(poll_query, (value,))
-    polls = [dict(poll) for poll in res.fetchall()]
-
-    # Add the answers to the poll, if they exist
-    answer_query = """
-    SELECT * 
-    FROM poll_answer
-    WHERE poll_answer.poll_id = ?
-    """
-    for poll in polls:
-        res = cur.execute(answer_query, (poll["id"],))
-        poll["answers"] = [dict(answer) for answer in res.fetchall()]
+    ids = [poll["id"] for poll in res.fetchall()]
+    polls = [query_poll_details(id) for id in ids]
 
     # Get the list of poll boards
     query = "SELECT * FROM board"

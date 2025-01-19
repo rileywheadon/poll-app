@@ -391,13 +391,27 @@ def response(poll_id):
         return render_template("anonymous/submit.html")
 
     # Validate the response, then render the results
-    validate_response(request.form.to_dict(flat=False), poll_id)
-    return redirect(url_for("home.result", poll_id=poll_id))
+    error = validate_response(request.form.to_dict(flat=False), poll_id)
+    print(error)
+
+    # If the response was invalid, notify the user
+    if error == "Invalid Response":
+        r = make_response("")
+        notification = '{"notification": "You can''t respond to this poll!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", "none")
+        return r
+
+    return redirect(url_for("home.result", poll_id=poll_id, show_graph=True))
 
 
-# HTTP endpoint for refreshing the results
-@home.route("/result/<poll_id>", methods=["GET", "POST"])
+# HTTP endpoint for getting the results card
+@home.route("/result/<poll_id>/<show_graph>")
 @requires_auth
-def result(poll_id):
+def result(poll_id, show_graph):
     poll = query_poll_details(poll_id)
-    return render_template(poll["result_template"], poll=poll, zip=zip)
+
+    if show_graph:
+        return render_template(poll["result_template"], poll=poll)
+
+    return render_template("results/result-base.html", poll=poll)

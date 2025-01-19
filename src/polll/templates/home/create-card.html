@@ -128,13 +128,27 @@
 
         <label class="rounded-2xl px-3 mr-2 h-8 border-4 border-nord-4 hover:dark:bg-nord-0 has-[:checked]:border-nord-10 {% if board.name == 'All' %}border-nord-10{% endif %}">
           {{ board.name }}
-          <input 
-            class="poll-create hidden" 
-            name="poll_board"
-            value="{{ board.id }}" 
-            type="checkbox"
-            {% if board.name == 'All' %}checked{% endif %}
-          >
+
+          <!-- Very unfourtunate hack to prevent all from being unselected -->
+          {% if board.name == 'All' %}
+            <input class="poll-create hidden"
+              name="poll_board"
+              value="{{ board.id }}" 
+            >
+            <input
+              class="hidden"
+              type="checkbox"
+              checked disabled
+            >
+          {% else %}
+            <input 
+              class="poll-create hidden" 
+              name="poll_board"
+              value="{{ board.id }}" 
+              type="checkbox"
+            >
+          {% endif %}
+
         </label>
 
       {% endfor %}

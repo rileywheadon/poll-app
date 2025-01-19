@@ -1,13 +1,13 @@
 <!-- Toggle Lock -->
-<button class="flex flex-row justify-center items-center rounded-md ml-2 h-10 w-12 text-l bg-nord-3 text-nord-6 dark:text-nord-0 dark:bg-nord-4" 
+<button class="ml-2 text-xl w-10 h-10 rounded-md py-1"
   title="{% if poll.is_active == 0 %}Open Poll{% else %}Close Poll{% endif %}"
   hx-get="{{ url_for('poll.toggle', poll_id = poll.id, active = poll.is_active) }}"
   hx-swap="outerHTML"
 >
   {% if poll.is_active == 0 %}
-    <i class="fa fa-lock"></i>
+    <i class="fa fa-lock text-black dark:text-nord-4 hover:text-2xl"></i>
   {% else %}
-    <i class="fa fa-lock-open"></i>
+    <i class="fa fa-lock-open text-black dark:text-nord-4 hover:text-2xl"></i>
   {% endif %}
 </button>
 
