@@ -32,8 +32,13 @@ module.exports = {
           'polll-grad-3':'#A0CFB6',
           'polll-grad-4':'#97D0BF',
           'polll-grad-5':'#92D0D0',
-          'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
-
+          'polll-blue':'#88bbd0', // this is the custom blue to be used on icons
+          'tier-S': '#ef8683',
+          'tier-A': '#f5c288',
+          'tier-B': '#fae08d',
+          'tier-C': '#ffff91',
+          'tier-D': '#ccfd8f',
+          'tier-F': '#a0fc8e'
       })
     },
     /* Custom screen breakpoints*/
