@@ -28,12 +28,12 @@
 
 ### Small/Secondary
 
-- [ ] Add a message/graphic to an empty feed
 - [ ] Restyle hot/top/new buttons
 - [ ] Visually differentiate choose one and choose many input fields
 - [ ] Restyle right sidebar
 - [ ] Remove datalabel on the bar graph if the option has no votes
 - [ ] Change create confirmation message from the current js alert to something better
+- [ ] Be editing the text field automatically when having just added a new option in the 'create' tab
 
 # Roadmap
 
