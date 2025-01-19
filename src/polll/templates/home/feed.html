@@ -2,42 +2,75 @@
 
 {%macro filter_btn(name) %}
 
-  <a 
-    id="{{ name }}" 
-    href="{{ url_for('home.feed', board = session.board, order = name) }}"
-    class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:border-nord-2 text-nord-0 rounded-lg w-9 sm:w-10 md:w-11 lg:w-12 h-6 md:h-7 lg:h-8 m-1 flex justify-center items-center font-light {% if session.feed==name %}bg-nord-9 dark:bg-nord-7 font-semibold{% endif %}"
-  >
+    <a 
+      id="{{ name }}" 
+      href="{{ url_for('home.feed', board = session.board, order = name) }}"
+      class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:border-nord-2 text-nord-0 rounded-lg w-9 sm:w-10 md:w-11 lg:w-12 h-6 md:h-7 lg:h-8 m-1 flex justify-center items-center font-light {% if session.feed==name %}bg-nord-9 dark:bg-nord-7 font-semibold{% endif %}"
+    >
     {{ name.capitalize() }}
-  </a>
+    </a>
 
 {%endmacro%}
 
 {% block home_content %}
 
-  <div class="w-full">
+  <!-- Filter dropdown -->
+  <div class="relative select-none">
+
+    <button id="filter-dropdown-btn" class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-xs px-2 py-1" onclick="toggle_filter_dropdown()">
+      Top <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+    <!-- TOOD: click anywhere and dropdown disappears -->
+    
+      <div id="filter-dropdown" class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2">
+        <ul class="py-2 text-xs text-nord-6">
+          <li>
+            <a id="hot" href="#">
+              <button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('Hot')">Hot</button>
+            </a>
+          </li>
+          <li>
+            <button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('Top')">Top
+              <a id="top" href="#"></a>
+            </button>
+          </li>
+          <li>
+            <button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('New')">New
+              <a id="new" href="#"></a>
+            </button>
+          </li>
+        </ul>
+      </div>
+    
+
+  </div>
+
+
+  <!-- <div class="w-full">
     <div class="flex flex-row text-xs md:text-sm">
       {{ filter_btn("hot") }}
       {{ filter_btn("top") }}
       {{ filter_btn("new") }}
     </div>
-  </div>
+  </div> -->
 
-  {% if not polls %}
-
-  <div class="flex flex-row text-center items-center justify-center py-16 select-none">
-    <p class="text-xl font-light">
-      You've answered every poll!!!
-      <br />
-      <br />
-      login later for more...
-    </p>
-  </div>
-
-  {% else %}
+  {% if polls %}
 
     {% for poll in polls %}
       {% include poll["poll_template"] %}
-    {% endfor %}
+    {% endfor %}  
+
+  {% else %}
+
+    <div class="flex flex-row text-center items-center justify-center py-16 select-none">
+      <p class="text-xl font-light">
+        You've answered every poll!!!
+        <br />
+        <br />
+        login later for more...
+      </p>
+    </div>
 
   {% endif %}
 
