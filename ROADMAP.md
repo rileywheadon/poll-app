@@ -2,19 +2,9 @@
 
 ## Riley
 
-- [x] Make it impossible to unselect the 'All' board
-- [x] Filter by board (in admin) not set up
-- [x] Manually load poll results on click (except immediately after response)
-- [x] Linked poll UI should be different when logged in
-- [x] Fix bug where users cannot respond to their own poll through the link
-- [x] Small UI improvements to buttons in history/mypolls
-
+- [ ] Fuck it lets build comments
 - [ ] Implement captcha on form submit
 - [ ] Load up to 20 polls at a time before having to click "load more"
-- [ ] Fuck it lets build comments
-
----
-
 - [ ] Add/improve light mode
 - [ ] Address mobile/small screen sizes
 - [ ] Configure light/dark mode for all new elements in dark-mode.js
