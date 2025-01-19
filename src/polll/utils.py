@@ -44,4 +44,3 @@ def format_time(timeStr):
     dates = list(map(int, locale[:timeStr.index(" ")].split("-")))
     times = list(map(int, locale[1 + timeStr.index(" "):].split(":")))
     return datetime(dates[0], dates[1], dates[2], times[0], times[1], times[2]).strftime("%a %d, %I:%M %p") + " " + str(datetime.now().astimezone().tzinfo)
-
