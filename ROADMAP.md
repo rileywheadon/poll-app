@@ -29,7 +29,7 @@
 ### Small/Secondary
 
 - [ ] Restyle hot/top/new buttons
-- [ ] Visually differentiate choose one and choose many input fields
+- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 - [ ] Restyle right sidebar
 - [ ] Remove datalabel on the bar graph if the option has no votes
 - [ ] Change create confirmation message from the current js alert to something better
