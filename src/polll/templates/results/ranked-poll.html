@@ -2,10 +2,10 @@
 
 {% block result_content %}
 
-
+<!-- 
 {% for result in poll.results %}
   <p>{{ result.answer }} (SCORE: {{ result.score }})</p>
-{% endfor %}
+{% endfor %} -->
 
 {% if poll.response %}
 
@@ -18,9 +18,6 @@
 
 {% endif %}
 
-
-<!-- Basically done but there's a really annoying alignment issues with "1."
- that needs to be fixed -->
 <div class="flex flex-col space-y-8 select-none">
 
   <div class="flex flex-row justify-evenly">
@@ -28,16 +25,12 @@
     <p class="text-xl font-light">Average Response</p>
   </div>
 
-  <!-- row length 2 containing the user's result on the left 
-   and the average response on the right for a given rank -->
-
   {% for result in poll.results %}
-    
 
     <div class="flex flex-row space-x-10 justify-left">
 
       <!-- User box -->
-      <div class="flex flex-row space-x-10 {% if not poll.response %} hidden {% endif %}">
+      <div class="flex flex-row space-x-10">
 
         <div>
           <p class="text-2xl font-light text-polll-blue">
@@ -45,10 +38,10 @@
           </p>
         </div>
 
-        <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+        <div class="{% if not poll.response %} hidden {% endif %} border-4 border-polll-blue p-2 hover:border-polll-green">
 
           <p class="text-white text-base font-light hover:cursor-default">
-            ...
+            {{ poll.response[loop.index0]["answer"] }}
           </p>
 
         </div>
