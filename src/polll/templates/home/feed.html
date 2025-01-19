@@ -18,42 +18,34 @@
   <div class="relative select-none">
 
     <button id="filter-dropdown-btn" class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-xs px-2 py-1" onclick="toggle_filter_dropdown()">
-      Top <i class="px-1 fa fa-caret-down"></i>
+      Filter<i class="px-1 fa fa-caret-down"></i>
     </button>
     
     <!-- TOOD: click anywhere and dropdown disappears -->
-    
       <div id="filter-dropdown" class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2">
         <ul class="py-2 text-xs text-nord-6">
           <li>
-            <a id="hot" href="#">
-              <button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('Hot')">Hot</button>
-            </a>
+            <a><button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('hot', '?board={{ session.board|safe }}&order=hot')">Hot</button></a>
           </li>
           <li>
-            <button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('Top')">Top
-              <a id="top" href="#"></a>
-            </button>
+            <a><button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('top', '?board={{ session.board|safe }}&order=top')">Top</button></a>
           </li>
           <li>
-            <button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('New')">New
-              <a id="new" href="#"></a>
-            </button>
+            <a><button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('new', '?board={{ session.board|safe }}&order=new')">New</button></a>
           </li>
         </ul>
       </div>
-    
 
   </div>
 
 
-  <!-- <div class="w-full">
+  <div class="w-full">
     <div class="flex flex-row text-xs md:text-sm">
       {{ filter_btn("hot") }}
       {{ filter_btn("top") }}
       {{ filter_btn("new") }}
     </div>
-  </div> -->
+  </div>
 
   {% if polls %}
 
