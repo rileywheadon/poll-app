@@ -13,27 +13,20 @@
 ## Matt
 
 ### Important
-
-- Ensure graphs function correctly:
-  - [x] Test the scale graph for different inputs (> 2 of the same votes; likely a javascript issue)
-  - [x] Standardize the bandwidth parameter (0.25 works pretty well)
-  - [x] Fix the average algorithm
-  - [x] Add user response to graphs and ensure it works both when the user is the author and a voter
-  - [x] Address the race condition of when a user votes and their response is not plotted because the page
-        loads before the database has had time to update
-- Style the graphs and implement breakpoints
-  - [ ] Make each graph as aesthetically/interactively pleasing as possible
-  - [ ] Implement tier list side by side results
-  - [ ] Add breakpoints and ensure there is a pleasing mobile experience
+- [ ] Implement tier list side by side results
+- [ ] Make each graph as aesthetically/interactively pleasing as possible
+- [ ] Add breakpoints and ensure there is a pleasing mobile experience
 
 ### Small/Secondary
 
-- [ ] Restyle hot/top/new buttons
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 - [ ] Restyle right sidebar
 - [ ] Remove datalabel on the bar graph if the option has no votes
 - [ ] Change create confirmation message from the current js alert to something better
 - [ ] Be editing the text field automatically when having just added a new option in the 'create' tab
+- [ ] Fix filter labeling on page refresh and make the dropdown dissapear when clicking anywhere
+- [ ] Grey pie chart options on the side with no votes
+- [ ] Remove report and sharing popping out feature
 
 # Roadmap
 

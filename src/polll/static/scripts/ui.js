@@ -75,22 +75,5 @@ function update_answer_editor(poll_type) {
 }
 
 function toggle_filter_dropdown() {
-    document.getElementById("filter-dropdown").classList.toggle("hidden");
-}
-
-function change_filter_label(type, url) {
-
-  let p = new Promise(function(myResolve, myReject) {
-    window.location = url;
-    }).then(() => {      
-      var dropdown_btn = document.getElementById("filter-dropdown-btn");
-
-      dropdown_btn.innerHTML = "";
-      dropdown_btn.insertAdjacentHTML("afterbegin", `${type} <i class="px-1 fa fa-caret-down"></i>`)
-      document.getElementById("filter-dropdown").classList.remove("hidden");
-      document.getElementById("filter-dropdown").classList.add("hidden");
-    })
-
-  
-
+  document.getElementById("filter-dropdown").classList.toggle("hidden");
 }
