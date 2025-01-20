@@ -14,19 +14,19 @@
 
 ### Important
 - [ ] Implement tier list side by side results
+- [ ] Restyle right sidebar
 - [ ] Make each graph as aesthetically/interactively pleasing as possible
 - [ ] Add breakpoints and ensure there is a pleasing mobile experience
+- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
 
-- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
-- [ ] Restyle right sidebar
-- [ ] Remove datalabel on the bar graph if the option has no votes
-- [ ] Change create confirmation message from the current js alert to something better
-- [ ] Be editing the text field automatically when having just added a new option in the 'create' tab
-- [ ] Fix filter labeling on page refresh and make the dropdown dissapear when clicking anywhere
-- [ ] Grey pie chart options on the side with no votes
-- [ ] Remove report and sharing popping out feature
+- [x] Fix filter labeling on page refresh
+- [x] Grey pie chart options on the side with no votes
+- [x] Restrict report and sharing buttons from popping out
+- [x] Remove datalabel on the bar graph if the option has no votes
+- [x] Be editing the text field automatically when having just added a new option in the 'create' tab
+- [ ] Change create/report confirmation message from the current js alert
 
 # Roadmap
 

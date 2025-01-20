@@ -71,7 +71,7 @@ function choose_one_options(user_rs, rs) {
             categories: rs.map((e) => e["answer"]),
             labels: {
                 formatter: function (val) {
-                    return Math.round(val);
+                    return val;
                 }
             },
             max: 100,
@@ -79,7 +79,7 @@ function choose_one_options(user_rs, rs) {
         yaxis: {
             labels: {
                 formatter: function (val) {
-                    return val;
+                    return "";
                 }
             },
         },
@@ -106,7 +106,7 @@ function choose_one_options(user_rs, rs) {
         dataLabels: {
             enabled: true,
             formatter: function (val, opt) {
-                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val + "%";
+                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + Math.round(val) + "%";
               },
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
@@ -131,13 +131,6 @@ function choose_many_options(user_rs, rs) {
 
     user_rs ? user_rs = user_rs.map((e) => e["answer"]) : user_rs = "";
 
-    // console.log(user_rs);
-    // console.log(rs.map((e) => e["answer"]));
-    // user_rs.forEach((e) => {
-    //     console.log(rs.map((e) => e["answer"]).indexOf(e));
-    // })
-    // console.log("\n\n");
-
     return {
         series: rs.map((e) => e["count"]),
         labels: rs.map((e) => e["answer"]),
@@ -157,6 +150,7 @@ function choose_many_options(user_rs, rs) {
             },
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+            if (value == 0) return "#808080";
             for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return "#7E36AF";
             return "#D9534F";
           }],
