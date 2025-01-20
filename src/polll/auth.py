@@ -106,8 +106,8 @@ def logout():
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if not session["user"]["id"]:
-            return redirect(url_for('auth.login'))
+        if not session["user"]:
+            return redirect(url_for('home.index'))
 
         return f(*args, **kwargs)
 
@@ -119,8 +119,8 @@ def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        if not session["user"]["id"]:
-            return redirect(url_for('auth.login'))
+        if not session["user"]:
+            return redirect(url_for('home.index'))
 
         elif session["user"]["email"] != "admin@polll.org":
             return redirect(url_for('home.feed'))

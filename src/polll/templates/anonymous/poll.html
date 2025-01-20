@@ -4,35 +4,41 @@
 
 {% block body %}
 
-<!-- Background -->
-<div class="w-full h-full min-h-screen bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-neutral-900">
+<main id="main">
 
-  <!-- Document Body -->
-  <div class="w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+  <!-- Background -->
+  <div class="w-screen h-screen flex flex-col bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-neutral-900">
 
-    <!-- Left Sidebar -->
-    <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
+    <!-- Document Body -->
+    <div class="overflow-hidden grow w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
 
-    <!-- Main Column (Polls) -->
-    <main role="main" class="w-full flex-grow pt-1 px-3">
+      <!-- Left Sidebar -->
+      <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
 
-      {% if session["user"] %}
-        <div class="border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-4 select-none">
-          <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
-            <i class="fa fa-arrow-left"></i>
-            <span class="font-light">Return Home</span>
-          </a>
-        </div>
-      {% endif %}
+      <!-- Main Column (Polls) -->
+      <div class="overflow-auto no-scrollbar w-full flex-grow pt-1 px-3">
 
-      {% include poll["poll_template"] %}
+        {% if session["user"] %}
+          <div class="border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-4 select-none">
+            <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
+              <i class="fa fa-arrow-left"></i>
+              <span class="font-light">Return Home</span>
+            </a>
+          </div>
+        {% endif %}
 
-    </main>
+        {% include poll["poll_template"] %}
 
-    <!--Right Sidebar-->
-    <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
+      </div>
+
+
+      <!--Right Sidebar-->
+      <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
+
+    </div>
 
   </div>
-</div>
+
+</main>
 
 {% endblock %}

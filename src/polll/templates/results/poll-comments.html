@@ -1,0 +1,28 @@
+<div id="comments-list">
+
+  <div class="flex flex-row">
+    <input class="grow text-l p-2 bg-transparent border-b border-nord-3 dark:text-white focus:outline-none font-light" 
+      autocomplete="off"
+      name="comment"
+      placeholder="Add a comment..."
+    />
+    <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+      hx-include="previous input"
+      hx-post="{{ url_for('poll.comment', poll_id = poll.id) }}"
+      hx-target="#comments-list"
+      hx-swap="outerHTML"
+    >
+      <span class="text-sm text-light">Send</span>
+      <i class="fa fa-paper-plane ml-1 text-black dark:text-nord-4"></i>
+    </button>
+  </div>
+
+  <div class="px-4 pt-4">
+
+    {% for comment in poll.comments %}
+      {% include "results/comment.html" %}
+    {% endfor %}
+
+  </div>
+
+</div>

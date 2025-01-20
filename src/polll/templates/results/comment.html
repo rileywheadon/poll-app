@@ -1,0 +1,109 @@
+<div class="poll-comment my-4" id="comment-{{ comment.id }}">
+
+  <!-- COMMENT HEADER -->
+  <div>
+    <span class="font-bold">@{{ comment.author}}</span> 
+    {{ comment.age }}
+  </div>
+
+  <!-- COMMENT CONTENT -->
+  <div class="ml-2">{{ comment.comment }}</div>
+
+  <!-- COMMENT TOOLBAR -->
+  <div>
+
+    <!-- LIKES/DISLIKES -->
+    <button
+      hx-post="{{ url_for('poll.like', comment_id = comment.id) }}"
+      hx-target="closest .poll-comment"
+      hx-swap="outerHTML"
+    >
+      {% if comment.user_likes == "True" %}
+        <i class="fa fa-thumbs-up text-nord-14">
+      {% else %}
+        <i class="fa fa-thumbs-up"></i>
+      {% endif %}
+      </i>
+    </button>
+    <span class="mr-2">{{ comment.likes }}</span>
+    <button
+      hx-post="{{ url_for('poll.dislike', comment_id = comment.id) }}"
+      hx-target="closest .poll-comment"
+      hx-swap="outerHTML"
+    >
+      {% if comment.user_dislikes == "True" %}
+        <i class="fa fa-thumbs-down text-nord-11"></i>
+      {% else %}
+        <i class="fa fa-thumbs-down"></i>
+      {% endif %}
+    </button>
+    <span class="mr-2">{{ comment.dislikes }}</span>
+
+    <!-- REPLY BUTTON -->
+    {% if comment.parent_id == 0 %}
+      <button 
+        class="text-nord-7"
+        onclick="show_reply_input({{ comment.id }})"
+      >
+        Reply
+      </button>
+    {% endif %}
+
+  </div>
+
+  <!-- REPLY INPUT -->
+  <div id="reply-input-{{ comment.id }}" class="flex flex-row ml-4 hidden">
+
+    <input class="grow text-l p-2 bg-transparent border-b border-nord-3 dark:text-white focus:outline-none font-light" 
+      autocomplete="off"
+      name="reply"
+      placeholder="Add a reply..."
+    />
+    <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+      onclick="hide_reply_input({{ comment.id }})"
+    >
+      <span class="text-sm text-light">Cancel</span>
+      <i class="fa fa-xmark ml-1 text-black dark:text-nord-4"></i>
+    </button>
+
+    <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+      hx-include="previous input"
+      hx-post="{{ url_for('poll.reply', comment_id = comment.id) }}"
+      hx-target="#comment-{{ comment.id }}"
+      hx-swap="outerHTML"
+    >
+      <span class="text-sm text-light">Reply</span>
+      <i class="fa fa-paper-plane ml-1 text-black dark:text-nord-4"></i>
+    </button>
+
+  </div>
+
+  <!-- REPLY LIST -->
+  {% if comment.replies %}
+
+    <div class="ml-4 mt-1">
+      <button class="text-nord-7" onclick="toggle_replies({{ comment.id }})">
+        <span>
+          {{ comment.replies_count }} 
+          {% if comment.replies_count == 1 %}Reply{% else %}Replies{% endif %}
+        </span>
+        <i id="reply-icon-{{ comment.id }}" class="fa fa-angle-right"></i>
+      </button>
+
+      <div id="reply-list-{{ comment.id }}" class="hidden">
+
+        {% for reply in comment.replies %}
+
+          {% include "results/reply.html" %}
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+  {% endif %}
+
+</div>
+
+

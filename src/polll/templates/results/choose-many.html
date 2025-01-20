@@ -1,9 +1,0 @@
-{% extends "results/result-base.html" %}
-
-{% block result_content %}
-
-  <div id="poll-graph-{{ poll.id }}"></div>
-
-  <script defer>graphInitRewritten({{ poll|safe }});</script>
-
-{% endblock %}

@@ -73,3 +73,40 @@ function update_answer_editor(poll_type) {
     editor.classList.remove("hidden");
   }
 }
+
+function toggle_comments() {
+  comments = document.getElementById("poll-comments");
+  toggle = document.getElementById("comments-toggle");
+
+  comments.classList.toggle("hidden");
+  if (comments.classList.contains("hidden")) {
+    toggle.innerHTML = "Show Comments";
+  } else {
+    toggle.innerHTML = "Hide Comments";
+  }
+}
+
+function show_reply_input(comment_id) {
+  reply_input = document.getElementById("reply-input-" + comment_id);
+  reply_input.classList.remove("hidden");
+}
+
+function hide_reply_input(comment_id) {
+  reply_input = document.getElementById("reply-input-" + comment_id);
+  reply_input.classList.add("hidden");
+}
+
+function toggle_replies(comment_id) {
+  reply_list = document.getElementById("reply-list-" + comment_id);
+  reply_icon = document.getElementById("reply-icon-" + comment_id);
+
+  reply_list.classList.toggle("hidden");
+  if (reply_list.classList.contains("hidden")) {
+    reply_icon.classList.remove("fa-angle-down");
+    reply_icon.classList.add("fa-angle-right");
+  } else {
+    reply_icon.classList.remove("fa-angle-right");
+    reply_icon.classList.add("fa-angle-down");
+  }
+
+}

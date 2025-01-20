@@ -25,8 +25,8 @@ def on_cooldown(user_dict):
 
 
 # Get the age of a poll (i.e. 2h or 4d)
-def get_poll_age(poll):
-    timestamp = datetime.strptime(poll["date_created"], '%Y-%m-%d %H:%M:%S')
+def format_timestamp(string):
+    timestamp = datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
     age = datetime.utcnow() - timestamp
 
     if age.days > 0:
@@ -41,7 +41,10 @@ def get_poll_age(poll):
 
 # Helper functions to add "result_template" and "poll_template" to a poll dictionary
 def result_template(poll):
-    template = poll["poll_type"].lower().replace("_", "-")
+    template = "poll-graph"
+    if poll["poll_type"] == "RANKED_POLL":
+        template = "ranked-poll"
+
     return f"results/{template}.html"
 
 
@@ -84,6 +87,10 @@ def popularity(poll):
 # NOTE: Does not get the results of the poll (see results.py)
 def query_poll_details(id):
 
+    # Open a database connection
+    db = get_db()
+    cur = db.cursor()
+
     # Query for getting the poll data along with the creator's username
     poll_query = """
     SELECT poll.*, user.username AS creator
@@ -107,9 +114,12 @@ def query_poll_details(id):
     ORDER BY RANDOM()
     """
 
-    # Open a database connection
-    db = get_db()
-    cur = db.cursor()
+    # Query for getting the top level comments
+    comment_query = """
+    SELECT comment.id 
+    FROM comment 
+    WHERE poll_id = ? AND parent_id = 0
+    """
 
     # Get the poll
     poll = dict(cur.execute(poll_query, (id,)).fetchone())
@@ -135,10 +145,78 @@ def query_poll_details(id):
     # Get the template, custom URL, and timedelta
     poll["poll_template"] = poll_template(poll)
     poll["url"] = id_to_url(poll["id"])
-    poll["age"] = get_poll_age(poll)
+    poll["age"] = format_timestamp(poll["date_created"])
+
+    # Get the comment data
+    res = cur.execute(comment_query, (id,)).fetchall()
+    poll["comments"] = [query_comment_details(c["id"]) for c in res]
 
     # Return the populated poll dictionary
     return poll
+
+
+# Function for getting additional information about a comment/reply
+def query_comment_details(comment_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+    user_id = session["user"]["id"]
+
+    # Query for getting information about the comment
+    comment_query = """
+    SELECT comment.*, user.username AS author
+    FROM comment INNER JOIN user ON user.id = comment.user_id
+    WHERE comment.id = ?
+    """
+
+    # Query for getting number of likes and dislikes
+    def count_likes(table): return f"""
+    SELECT COUNT(*) as {table}s
+    FROM {table}
+    WHERE comment_id = ?
+    """
+
+    # Query for determining whether the user likes/dislikes
+    def user_likes(table): return f"""
+    SELECT * 
+    FROM {table}
+    WHERE comment_id = ? AND user_id = ?
+    """
+
+    # Get the comment itself
+    res = cur.execute(comment_query, (comment_id,)).fetchone()
+    comment = dict(res)
+
+    # Format the comment timestamp
+    comment["age"] = format_timestamp(comment["timestamp"])
+
+    # Get the number of likes and dislikes
+    res = cur.execute(count_likes("like"), (comment_id,))
+    comment["likes"] = res.fetchone()["likes"]
+
+    res = cur.execute(count_likes("dislike"), (comment_id,))
+    comment["dislikes"] = res.fetchone()["dislikes"]
+
+    # Get whether the user likes or dislikes the comment
+    res = cur.execute(user_likes("like"), (comment_id, user_id))
+    comment["user_likes"] = "True" if res.fetchone() else "False"
+
+    res = cur.execute(user_likes("dislike"), (comment_id, user_id))
+    comment["user_dislikes"] = "True" if res.fetchone() else "False"
+
+    # If the comment is top level, get its replies
+    if not comment["parent_id"]:
+
+        # Query for getting the number of replies and their content
+        replies_query = "SELECT id FROM comment WHERE comment.parent_id = ?"
+
+        # Get the replies
+        res = cur.execute(replies_query, (comment_id,)).fetchall()
+        comment["replies"] = [query_comment_details(r["id"]) for r in res]
+        comment["replies_count"] = len(comment["replies"])
+
+    return comment
 
 
 # If the user has not already responded, add the response to the database
@@ -156,7 +234,7 @@ def validate_response(form, poll_id):
     """
     res = cur.execute(response_query, (session["user"]["id"], poll_id))
 
-    # Get information about the poll using query_poll-details
+    # Get information about the poll using query_poll_details
     poll = query_poll_details(poll_id)
 
     # If the user created the poll or already responded, return
