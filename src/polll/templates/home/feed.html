@@ -1,6 +1,6 @@
 {% extends "home/home.html" %}
 
-{%macro filter_btn(name) %}
+<!-- {%macro filter_btn(name) %}
 
     <a 
       id="{{ name }}" 
@@ -9,29 +9,27 @@
     >
     {{ name.capitalize() }}
     </a>
-
-{%endmacro%}
+    
+{%endmacro%} -->
 
 {% block home_content %}
-
   <!-- Filter dropdown -->
   <div class="relative select-none">
 
     <button id="filter-dropdown-btn" class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-xs px-2 py-1" onclick="toggle_filter_dropdown()">
-      Filter<i class="px-1 fa fa-caret-down"></i>
+      {{ session.feed.capitalize() }} <i class="px-1 fa fa-caret-down"></i>
     </button>
     
-    <!-- TOOD: click anywhere and dropdown disappears -->
       <div id="filter-dropdown" class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2">
         <ul class="py-2 text-xs text-nord-6">
           <li>
-            <a><button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('hot', '?board={{ session.board|safe }}&order=hot')">Hot</button></a>
+            <a href="?board={{ session.board|safe }}&order=hot"><button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button></a>
           </li>
           <li>
-            <a><button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('top', '?board={{ session.board|safe }}&order=top')">Top</button></a>
+            <a href="?board={{ session.board|safe }}&order=top"><button class="px-4 py-1 hover:bg-nord-3 w-full">Top</button></a>
           </li>
           <li>
-            <a><button class="px-4 py-1 hover:bg-nord-3 w-full" onclick="change_filter_label('new', '?board={{ session.board|safe }}&order=new')">New</button></a>
+            <a href="?board={{ session.board|safe }}&order=new"><button class="px-4 py-1 hover:bg-nord-3 w-full">New</button></a>
           </li>
         </ul>
       </div>
@@ -39,13 +37,13 @@
   </div>
 
 
-  <div class="w-full">
+  <!-- <div class="w-full">
     <div class="flex flex-row text-xs md:text-sm">
       {{ filter_btn("hot") }}
       {{ filter_btn("top") }}
       {{ filter_btn("new") }}
     </div>
-  </div>
+  </div> -->
 
   {% if polls %}
 
