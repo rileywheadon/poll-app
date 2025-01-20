@@ -45,23 +45,21 @@
 
   <div class="px-8 py-4">
 
-    {% block result_content %} 
+    {% block poll_graph %} 
 
     {% endblock %}
 
   </div>
 
-  <div class="flex flex-row text-sm px-2 items-center my-4 select-none">
-    <p class="ml-2 font-light">
+  <div class="flex flex-row text-sm px-4 items-center my-4 select-none">
+    <p class="font-light">
       Votes: <i>{{ poll.votes }}</i>
     </p>
     <button 
       class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
-      hx-get="{{ url_for('home.result', poll_id=poll.id, show_graph=True) }}"
-      hx-target="closest .poll-card"
-      hx-swap="outerHTML"
+      onclick="toggle_comments()"
     >
-      <span class="text-black dark:text-nord-4">Comments</span>
+      <span class="text-black dark:text-nord-4" id="comments-toggle">Show Comments</span>
       <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
     </button>
      <button 
@@ -73,6 +71,12 @@
       <span class="text-black dark:text-nord-4">Results</span>
       <i class="fa fa-chart-simple ml-2 text-black dark:text-nord-4 text-xl"></i>
     </button>
+  </div>
+
+  <div class="px-4 py-4 hidden" id="poll-comments">
+
+    {% include "results/poll-comments.html" %}
+
   </div>
 
 </div>

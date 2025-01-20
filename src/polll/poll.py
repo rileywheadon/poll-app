@@ -10,7 +10,7 @@ import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import url_to_id,  query_poll_details
+from polll.models import url_to_id, query_poll_details, query_comment_details
 
 # Create a blueprint for answering anonymous polls
 poll = Blueprint('poll', __name__, template_folder='templates')
@@ -26,7 +26,7 @@ def anonymous(poll_code):
     # Recover the poll ID, query the database
     poll_id = url_to_id(poll_code)
     poll = query_poll_details(poll_id)
-    return render_template("anonymous/poll.html", poll=poll)
+    return render_template("anonymous/poll.html", poll=poll, session=session)
 
 
 @poll.route("/poll/delete/<poll_id>")
@@ -87,7 +87,29 @@ def delete(poll_id):
         "tiered_response"
     ]
 
+    # Delete all comments and likes
+    comment_query = """
+    DELETE FROM comment
+    WHERE poll_id = ?
+    """
+
+    # Delete all likes/dislikes on all comments
+    secondary_comment_query = """
+    DELETE FROM {table}
+    WHERE id IN (
+        SELECT id
+        FROM comment
+        WHERE comment.poll_id = ?
+    )
+    """
+
     # Execute the queries in reverse order
+    query = secondary_comment_query.format(table="like")
+    cur.execute(query, (poll_id,))
+    query = secondary_comment_query.format(table="dislike")
+    cur.execute(query, (poll_id,))
+    cur.execute(comment_query, (poll_id,))
+
     for table in secondary_tables:
         query = secondary_response_query.format(table=table)
         cur.execute(query, (poll_id,))
@@ -141,3 +163,134 @@ def toggle(poll_id, active):
     r = make_response(render_template("results/poll-lock.html", poll=poll))
     r.headers.set("HX-Trigger", notification)
     return r
+
+
+@poll.route("/poll/comment/<poll_id>", methods=["GET", "POST"])
+def comment(poll_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # If the comment is empty, send an error
+    comment = request.form.get("comment")
+    if not comment:
+        notification = '{"notification": "Comment cannot be empty!"}'
+        r = make_response("")
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", "none")
+        return r
+
+    # Insert the new comment into the database
+    query = """
+    INSERT INTO comment (parent_id, poll_id, user_id, comment, timestamp) 
+    VALUES (0, ?, ?, ?, ?)
+    """
+    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    cur.execute(query, (poll_id, session["user"]["id"], comment, timestamp))
+    db.commit()
+
+    # Redirect to the comments endpoint to render the comments
+    poll = query_poll_details(poll_id)
+    return render_template("results/poll-comments.html", poll=poll)
+
+
+@poll.route("/poll/like/<comment_id>", methods=["GET", "POST"])
+def like(comment_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check if the user has already liked or disliked this comment
+    like_query = "SELECT * FROM like WHERE comment_id=? AND user_id=?"
+    dislike_query = "SELECT * FROM dislike WHERE comment_id=? AND user_id=?"
+    user_id = session["user"]["id"]
+    like = cur.execute(like_query, (comment_id, user_id)).fetchone()
+    dislike = cur.execute(dislike_query, (comment_id, user_id)).fetchone()
+
+    # If the user has already liked the comment, remove the like
+    if (not dislike) and like:
+        query = "DELETE FROM like WHERE user_id=? AND comment_id=?"
+        cur.execute(query, (session["user"]["id"], comment_id))
+
+    # If the user has not liked or disliked the comment, add a like
+    if (not dislike) and (not like):
+        query = "INSERT INTO like (user_id, comment_id, timestamp) VALUES (?, ?, ?)"
+        timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        cur.execute(query, (session["user"]["id"], comment_id, timestamp))
+
+    # Get information about the comment and re-render its template
+    db.commit()
+    comment = query_comment_details(comment_id)
+
+    # If the commment is a reply, render the reply template
+    if comment["parent_id"] != 0:
+        return render_template("results/reply.html", reply=comment)
+
+    # Otherwise render the comment template
+    return render_template("results/comment.html", comment=comment)
+
+
+@poll.route("/poll/dislike/<comment_id>", methods=["GET", "POST"])
+def dislike(comment_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check if the user has already liked or disliked this comment
+    like_query = "SELECT * FROM like WHERE comment_id=? AND user_id=?"
+    dislike_query = "SELECT * FROM dislike WHERE comment_id=? AND user_id=?"
+    user_id = session["user"]["id"]
+    like = cur.execute(like_query, (comment_id, user_id)).fetchone()
+    dislike = cur.execute(dislike_query, (comment_id, user_id)).fetchone()
+
+    # If the user has already liked the comment, remove the like
+    if (not like) and dislike:
+        query = "DELETE FROM dislike WHERE user_id=? AND comment_id=?"
+        cur.execute(query, (session["user"]["id"], comment_id))
+
+    # If the user has not liked or disliked the comment, add a like
+    if (not like) and (not dislike):
+        query = "INSERT INTO dislike (user_id, comment_id, timestamp) VALUES (?, ?, ?)"
+        timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        cur.execute(query, (session["user"]["id"], comment_id, timestamp))
+
+    # Get information about the comment and re-render its template
+    db.commit()
+    comment = query_comment_details(comment_id)
+
+    # If the commment is a reply, render the reply template
+    if comment["parent_id"] != 0:
+        return render_template("results/reply.html", reply=comment)
+
+    # Otherwise render the comment template
+    return render_template("results/comment.html", comment=comment)
+
+
+@poll.route("/poll/reply/<comment_id>", methods=["GET", "POST"])
+def reply(comment_id):
+
+    # Get a database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Get the poll_id from the database
+    query = "SELECT poll_id FROM comment WHERE id=?"
+    poll_id = cur.execute(query, (comment_id,)).fetchone()["poll_id"]
+
+    # Insert the reply into the database
+    query = """
+    INSERT INTO comment (poll_id, user_id, parent_id, comment, timestamp)
+    VALUES (?, ?, ?, ?, ?)
+    """
+    user_id = session["user"]["id"]
+    reply = request.form.get("reply")
+    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    cur.execute(query, (poll_id, user_id, comment_id, reply, timestamp))
+
+    # Update the comment's information and render it again
+    db.commit()
+    comment = query_comment_details(comment_id)
+    return render_template("results/comment.html", comment=comment)

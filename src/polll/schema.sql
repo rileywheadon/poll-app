@@ -12,6 +12,9 @@ DROP TABLE IF EXISTS discrete_response;
 DROP TABLE IF EXISTS numeric_response;
 DROP TABLE IF EXISTS ranked_response;
 DROP TABLE IF EXISTS tiered_response;
+DROP TABLE IF EXISTS comment;
+DROP TABLE IF EXISTS like;
+DROP TABLE IF EXISTS dislike;
 
 CREATE TABLE user (
 	id INTEGER PRIMARY KEY, 
@@ -115,4 +118,34 @@ CREATE TABLE tiered_response (
 	tier TEXT NOT NULL, 
 	FOREIGN KEY (answer_id) REFERENCES poll_answer (id), 
 	FOREIGN KEY (response_id) REFERENCES response (id)
+);
+
+CREATE TABLE comment (
+  id INTEGER PRIMARY KEY,
+  poll_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  parent_id INTEGER NOT NULl,
+  comment TEXT NOT NULL,
+	timestamp DATETIME NOT NULL, 
+  FOREIGN KEY (poll_id) REFERENCES poll (id),
+  FOREIGN KEY (user_id) REFERENCES user (id),
+  FOREIGN KEY (parent_id) REFERENCES comment (id)
+);
+
+CREATE TABLE like (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  comment_id INTEGER NOT NULL,
+	timestamp DATETIME NOT NULL, 
+  FOREIGN KEY (user_id) REFERENCES user (id),
+  FOREIGN KEY (comment_id) REFERENCES comment (id)
+);
+
+CREATE TABLE dislike (
+  id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  comment_id INTEGER NOT NULL,
+	timestamp DATETIME NOT NULL, 
+  FOREIGN KEY (user_id) REFERENCES user (id),
+  FOREIGN KEY (comment_id) REFERENCES comment (id)
 );

@@ -410,6 +410,7 @@ def response(poll_id):
 @requires_auth
 def result(poll_id, show_graph):
     poll = query_poll_details(poll_id)
+    print(poll)
 
     if show_graph:
         return render_template(poll["result_template"], poll=poll)

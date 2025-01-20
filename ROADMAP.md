@@ -2,24 +2,13 @@
 
 ## Riley
 
-- [ ] Fuck it lets build comments
-- [ ] Implement captcha on form submit
-- [ ] Load up to 20 polls at a time before having to click "load more"
-- [ ] Add/improve light mode
-- [ ] Address mobile/small screen sizes
-- [ ] Configure light/dark mode for all new elements in dark-mode.js
+- [ ] Add ability to mute user (prevent from posting/commenting), ban user
+- [ ] Light mode compatibility
 
 ## Matt
 
 ### Important
 
-- Ensure graphs function correctly:
-  - [x] Test the scale graph for different inputs (> 2 of the same votes; likely a javascript issue)
-  - [x] Standardize the bandwidth parameter (0.25 works pretty well)
-  - [x] Fix the average algorithm
-  - [x] Add user response to graphs and ensure it works both when the user is the author and a voter
-  - [ ] Address the race condition of when a user votes and their response is not plotted because the page
-        loads before the database has had time to update
 - Style the graphs and implement breakpoints
   - [ ] Make each graph as aesthetically/interactively pleasing as possible
   - [ ] Annotate 'choose one' and 'choose many' with the user's response
@@ -36,6 +25,8 @@
 
 # Roadmap
 
+- [ ] Implement captcha on form submit
+- [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
 - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
 
