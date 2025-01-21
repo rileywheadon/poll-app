@@ -196,7 +196,7 @@ def ranked_poll(poll_id, user):
     return (results, response)
 
 
-TIERS = [("S", 1), ("A", 2), ("B", 3), ("C", 4), ("D", 5), ("F", 6)]
+TIERS = ["S", "A", "B", "C", "D", "F"]
 
 TIER_RESULT_A = """
 SELECT *
@@ -237,12 +237,13 @@ def tier_list(poll_id, user):
         # Set the counts for each (tier, answer) pair
         score = 0
         responses = 0
-        for tier, points in TIERS:
+        for i, tier in enumerate(TIERS):
             res = cur.execute(TIER_RESULT_B, (answer["id"], tier)).fetchone()
-            score += res["count"] * points
+            score += res["count"] * (i + 1)
             responses += res["count"]
 
         answer["score"] = int(round(score / responses)) if responses else 0
+        answer["tier"] = TIERS[answer["score"] - 1]
 
     # Get the user's response (if necessary)
     response = {}
@@ -252,6 +253,4 @@ def tier_list(poll_id, user):
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
