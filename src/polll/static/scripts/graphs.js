@@ -28,12 +28,44 @@ cols = {
     'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
 }
 
+// Global charts object use to handle creating/destroying charts
+var charts = {} 
+
+// Results Toggling Function
+function graphToggle(poll) {
+
+  toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
+
+  // NOTE: Behaviour for ranked poll / tier list
+  if (poll["poll_type"] == "RANKED_POLL" || poll["poll_type"] == "TIER_LIST") {
+
+    result = document.getElementById(`poll-result-${poll["id"]}`);
+    if (toggle.innerHTML == "Hide Results") {
+      result.classList.add("hidden");
+      toggle.innerHTML = "Show Results";
+    } else {
+      result.classList.remove("hidden");
+      toggle.innerHTML = "Hide Results";
+    }
+  }
+
+  // NOTE: Behaviour for all other poll types
+  else {
+    if (poll["id"] in charts) {
+      charts[poll["id"]].destroy()
+      delete charts[poll["id"]]
+      toggle.innerHTML = "Show Results";
+    } else {
+      graphInitRewritten(poll) 
+      toggle.innerHTML = "Hide Results";
+    }
+  }
+}
 
 function graphInitRewritten(poll) {
 
   var options;
   graph = document.getElementById(`poll-graph-${poll["id"]}`);
-  graph.innerHTML = "";
 
   switch (poll["poll_type"]) {
     case "CHOOSE_ONE": 
@@ -50,8 +82,11 @@ function graphInitRewritten(poll) {
       break;
   }
 
-  var chart = new ApexCharts(graph, options);
+  chart = new ApexCharts(graph, options);
+  charts[poll["id"]] = chart;
   chart.render();
+
+  console.log(charts)
 
 }
 

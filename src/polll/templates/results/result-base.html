@@ -1,4 +1,7 @@
-<div id="poll-card-{{ poll.id }}" class="poll-card py-2 border-b-2 dark:border-nord-3 overflow-hidden">    
+<div 
+  id="poll-card-{{ poll.id }}"
+  class="poll-card py-2 border-b-2 dark:border-nord-3 overflow-hidden"
+>    
 
   <!-- Include the poll question -->
   <div class="flex flex-row items-center p-2">
@@ -43,11 +46,15 @@
 
   </div>
 
-  <div class="px-8 py-4">
+  <!-- Poll Graph -->
+  <div id="poll-graph-{{ poll.id }}" class="px-8 py-4">
 
-    {% block poll_graph %} 
-
-    {% endblock %}
+    <!-- Separate Interfaces for Ranked Poll / Tier List -->
+    {% if poll.poll_type == "RANKED_POLL" %}
+      {% include "results/ranked-poll.html" %}
+    {% elif poll.poll_type == "TIER_LIST" %}
+      TBD 
+    {% endif %}
 
   </div>
 
@@ -55,28 +62,37 @@
     <p class="font-light">
       Votes: <i>{{ poll.votes }}</i>
     </p>
+
+    <!-- Toggle Comments -->
     <button 
       class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
-      onclick="toggle_comments()"
+      onclick="toggle_comments({{ poll.id }})"
     >
-      <span class="text-black dark:text-nord-4" id="comments-toggle">Show Comments</span>
+      <span 
+        class="text-black dark:text-nord-4" 
+        id="comments-toggle-{{ poll.id }}"
+      >
+        Show Comments
+      </span>
       <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
     </button>
-     <button 
+
+    <!-- Toggle Results -->
+    <button 
       class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
-      hx-get="{{ url_for('home.result', poll_id=poll.id, show_graph=True) }}"
-      hx-target="closest .poll-card"
-      hx-swap="outerHTML"
+      onclick="graphToggle({{ poll }})"
     >
-      <span class="text-black dark:text-nord-4">Results</span>
+      <span
+        id="graph-toggle-{{ poll.id }}"
+        class="text-black dark:text-nord-4"
+      >
+        Show Results
+      </span>
       <i class="fa fa-chart-simple ml-2 text-black dark:text-nord-4 text-xl"></i>
     </button>
-  </div>
-
-  <div class="px-4 py-4 hidden" id="poll-comments">
-
-    {% include "results/poll-comments.html" %}
 
   </div>
+
+  {% include "results/poll-comments.html" %}
 
 </div>
