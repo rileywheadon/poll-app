@@ -1,12 +1,9 @@
 {% if not session.on_cooldown %}
 
-<!-- TODO: Build mobile version (use breakpoints to change from row to col) -->
-<!-- TODO: Add stars -->
-
 <div class="flex flex-row select-none">
 
   <!-- Options column with graphics + labels -->
-  <div class="flex flex-col px-4 py-4">
+  <div class="flex flex-col justify-center items-center w-1/6 px-4 py-4">
 
     <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
@@ -17,7 +14,7 @@
         onclick="update_answer_editor('choose_one')"
         checked
       >
-      <img class="w-28" src="../../static/assets/choose-one.png"/>
+      <img class="" src="../../static/assets/choose-one.png"/>
     </label>
 
     <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
@@ -28,7 +25,7 @@
         value="CHOOSE_MANY"
         onclick="update_answer_editor('choose_many')"
       >
-      <img class="w-28" src="../../static/assets/choose-many.png"/>
+      <img class="" src="../../static/assets/choose-many.png"/>
     </label>
 
     <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
@@ -39,7 +36,7 @@
         value="NUMERIC_SCALE"
         onclick="update_answer_editor('numeric_scale')"
       >
-      <img class="w-28" src="../../static/assets/scale.png"/>
+      <img class="" src="../../static/assets/scale.png"/>
     </label>
 
 
@@ -51,7 +48,7 @@
         value="RANKED_POLL"
         onclick="update_answer_editor('ranked_poll')"
       >
-      <img class="w-28" src="../../static/assets/ranking.png"/>
+      <img class="" src="../../static/assets/ranking.png"/>
     </label>
 
 
@@ -63,12 +60,13 @@
         value="TIER_LIST"
         onclick="update_answer_editor('tier_list')"
       >
-      <img class="w-28" src="../../static/assets/tier-list.png"/>
+      <img class="" src="../../static/assets/tier-list.png"/>
     </label>
 
   </div>
 
-  <div class="flex flex-col grow border-2 border-nord-3 rounded-lg">
+  <!-- Create Input -->
+  <div class="flex flex-col h-fit grow border-2 border-nord-3 rounded-lg">
 
     <div class="px-10 pt-8  text-2xl"> 
       <input class="poll-create text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
