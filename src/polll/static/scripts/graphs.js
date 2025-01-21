@@ -27,8 +27,8 @@ cols = {
 }
 
 function graphInit(type, poll_id, user_rs=null, rs = null, rs_kde = null) {
-    var choose_one_graph, choose_many_graph, scale_graph, tier_graph, i, func;
-    var graphs = [choose_one_graph, choose_many_graph, scale_graph, tier_graph];
+    var choose_one_graph, choose_many_graph, scale_graph, i, func;
+    var graphs = [choose_one_graph, choose_many_graph, scale_graph];
     ["load", "htmx:afterSettle"].forEach((e) => {
         window.addEventListener(e, () => {
             switch (type.toLowerCase()) {
@@ -43,10 +43,6 @@ function graphInit(type, poll_id, user_rs=null, rs = null, rs_kde = null) {
                 case "scale":
                     i = 2;
                     func = scale_graph_options(user_rs, rs, rs_kde);
-                    break;
-                case "tier":
-                     i = 3;
-                     func = tier_graph_options(user_rs, rs);
                     break;
             }            
             graphs[i] instanceof ApexCharts ? graphs[i].destroy() : graphs[i] = new ApexCharts(document.getElementById(`poll-graph-${poll_id}`), func);
@@ -279,68 +275,7 @@ function scale_graph_options(user_rs, rs, rs_kde) {
 
 }
 
-function tier_graph_options(user_rs, rs) {
-
-    return {
-        grid: {
-            show: false,
-        },
-        xaxis: {
-            categories: ["S Tier", "A Tier", "B Tier", "C Tier", "D Tier", "F Tier"],
-            labels: {
-                formatter: function (val) {
-                    return val + "%";
-                }
-            },
-        },
-        series: rs.map(answer => ({
-            name: answer["answer"],
-            data: [answer["S"], answer["A"], answer["B"], answer["C"], answer["D"], answer["F"]]
-        }
-        )),
-        chart: {
-            type: 'bar',
-            height: 500,
-            stacked: true,
-            stackType: '100%',
-            background: "null",
-            toolbar: {
-                show: false
-            }
-
-        },
-        plotOptions: {
-            bar: {
-                horizontal: true,
-            },
-        },
-        stroke: {
-            width: 1,
-            colors: ['#fff']
-        },
-        tooltip: {
-            y: {
-                formatter: function (val) {
-                    return val + "%";
-                }
-            }
-        },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'left',
-            offsetX: 40
-        },
-        // Not working atm - outputing polll gradient
-        colors: get_col_gradient("#D9EAD3", "#88bbd0", rs.length),
-        theme: {
-            mode: "dark",
-        }
-    };
-
-}
-
 // Helpers for formatting the data into something that can be graphed
-
 function parse_results(rs) {
     var vals = Array(101).fill(0);
     for (let i = 0; i < rs.length; i++) vals[rs[i]["value"]] = rs[i]["count"];
@@ -350,16 +285,6 @@ function parse_results(rs) {
 function parse_kde_results(rs_kde) {
     let pts = [];
     for (let j = 0; j < rs_kde[0].length; j++) pts.push({ x: rs_kde[0][j], y: rs_kde[1][j] <= Math.pow(10, -6) ? Math.pow(10, -6) : rs_kde[1][j]});
-    return pts;
-}
-
-function format_sci_notation(vals) {
-    var pts = [];
-    vals.forEach((e) => {
-        var s = e.toString();
-        if (s.includes("e-")) s = "0." + new Array(Number(s.substring(s.indexOf("e-") + 2))).join("0") + s.substring(0, s.indexOf("e")).replace(".", "");
-        pts.push(s);
-    });
     return pts;
 }
 
