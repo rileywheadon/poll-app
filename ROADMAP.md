@@ -13,16 +13,14 @@
 ## Matt
 
 ### Important
-- [ ] Implement tier list side by side results
-- [ ] Fixed ranked results alignment
-- [ ] Restyle right sidebar
-- [ ] Make each graph as aesthetically/interactively pleasing as possible
+- [x] Restyle left/right sidebar
+- [ ] Fix ranked alignment issue
+- [ ] Perfect graph visuals
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
 - [ ] Adjust 'create' image sizes to fit the screen
-- [ ] Change 'create'/'report' confirmation messages from the curent js alert
-- [ ] Fix the left sidebar's alignment
+- [ ] Change 'create'/'report' confirmation messages to a modal
 - [ ] Implement colour graident function with appropriate colours
 
 # Roadmap
