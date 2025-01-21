@@ -119,6 +119,7 @@ def query_poll_details(id):
     SELECT comment.id 
     FROM comment 
     WHERE poll_id = ? AND parent_id = 0
+    ORDER BY timestamp DESC
     """
 
     # Get the poll

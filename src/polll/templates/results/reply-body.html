@@ -1,0 +1,19 @@
+<div class="poll-comment">
+
+  <!-- COMMENT HEADER -->
+  <div>
+    <span class="font-bold">@{{ reply.author }}</span> 
+    {{ reply.age }}
+  </div>
+
+  <!-- COMMENT CONTENT -->
+  <div class="ml-2">{{ reply.comment }}</div>
+
+  <!-- LIKES/DISLIKES -->
+  <div>
+
+    {% include "results/reply-like.html" %}
+
+  </div>
+
+</div>

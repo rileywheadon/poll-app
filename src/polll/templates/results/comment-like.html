@@ -1,0 +1,32 @@
+<div id="comment-like-{{ comment.id }}">
+
+  <!-- LIKE BUTTON -->
+  <button
+    hx-post="{{ url_for('poll.like', comment_id = comment.id) }}"
+    hx-target="#comment-like-{{ comment.id }}"
+    hx-swap="outerHTML"
+  >
+    {% if comment.user_likes == "True" %}
+      <i class="fa fa-thumbs-up text-nord-14">
+    {% else %}
+      <i class="fa fa-thumbs-up"></i>
+    {% endif %}
+    </i>
+  </button>
+  <span class="mr-2">{{ comment.likes }}</span>
+
+  <!-- DISLIKE BUTTON -->
+  <button
+    hx-post="{{ url_for('poll.dislike', comment_id = comment.id) }}"
+    hx-target="#comment-like-{{ comment.id }}"
+    hx-swap="outerHTML"
+  >
+    {% if comment.user_dislikes == "True" %}
+      <i class="fa fa-thumbs-down text-nord-11"></i>
+    {% else %}
+      <i class="fa fa-thumbs-down"></i>
+    {% endif %}
+  </button>
+  <span class="mr-2">{{ comment.dislikes }}</span>
+
+</div>
