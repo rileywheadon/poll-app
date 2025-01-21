@@ -1,15 +1,11 @@
 {% if not session.on_cooldown %}
 
-<!-- TODO: Build mobile version (use breakpoints to change from row to col) -->
-<!-- TODO: Add stars -->
-
 <div class="flex flex-row select-none">
 
   <!-- Options column with graphics + labels -->
-   <!-- Padding for different border size: hover:m-0 hover:border-8 -->
-  <div class="flex flex-col px-4 py-4">
+  <div class="flex flex-col justify-center items-center w-1/6 px-4">
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="p-2 w-fit rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -18,10 +14,10 @@
         onclick="update_answer_editor('choose_one')"
         checked
       >
-      <img class="w-24" src="../../static/assets/choose-one.png"/>
+      <img class="" src="../../static/assets/choose-one.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -29,10 +25,10 @@
         value="CHOOSE_MANY"
         onclick="update_answer_editor('choose_many')"
       >
-      <img class="w-24" src="../../static/assets/choose-many.png"/>
+      <img class="" src="../../static/assets/choose-many.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -40,11 +36,11 @@
         value="NUMERIC_SCALE"
         onclick="update_answer_editor('numeric_scale')"
       >
-      <img class="w-24" src="../../static/assets/scale.png"/>
+      <img class="" src="../../static/assets/scale.png"/>
     </label>
 
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -52,11 +48,11 @@
         value="RANKED_POLL"
         onclick="update_answer_editor('ranked_poll')"
       >
-      <img class="w-24" src="../../static/assets/tier-list.png"/>
+      <img class="" src="../../static/assets/ranking.png"/>
     </label>
 
 
-    <label class="p-2 rounded-md dark:bg-nord-4 border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -64,15 +60,20 @@
         value="TIER_LIST"
         onclick="update_answer_editor('tier_list')"
       >
-      <img class="w-24" src="../../static/assets/tier-list.png"/>
+      <img class="" src="../../static/assets/tier-list.png"/>
     </label>
 
   </div>
 
-  <div class="flex flex-col grow border-2 border-nord-3 rounded-lg">
+  <!-- Create Input -->
+  <div class="flex flex-col h-fit grow border-2 border-nord-3 rounded-lg">
 
-    <div class="px-10 pt-8  text-2xl"> 
-      <input class="poll-create text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
+    <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
+      Choose One
+    </div>
+
+    <div class="px-10 pt-8 text-2xl"> 
+      <input class="poll-create bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
         autocomplete="off"
         name="poll_question"
         placeholder="Write your poll of the day..."
@@ -101,16 +102,6 @@
               {% include "home/create-answer.html" %}
             </div>
 
-          </div>
-
-          <!-- Ranked -->
-          <div id="ranked-answer-editor" class="hidden flex flex-col">
-            TODO
-          </div>  
-
-          <!-- Tier List -->
-          <div id="tier-list-answer-editor" class="hidden flex flex-col">
-            TODO
           </div>
 
         </div>
@@ -181,7 +172,7 @@
 {% else %}
 
 <div class="flex flex-row text-center items-center justify-center py-16 select-none">
-  <p class="text-2xl">
+  <p class="text-2xl font-light">
     Sorry! We only allow users to make one poll a day.
     <br />
     <br />

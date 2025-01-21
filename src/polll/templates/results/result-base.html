@@ -53,7 +53,7 @@
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
     {% elif poll.poll_type == "TIER_LIST" %}
-      TBD 
+      {% include "results/tier-list.html" %}
     {% endif %}
 
   </div>

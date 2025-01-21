@@ -35,9 +35,7 @@ function update_poll_editor(pressed_id) {
 
 // Only allows removal of the answer if there are three or more answers
 function remove_poll_answer(button) {
-  console.log(button);
   answer_list = document.getElementById("answer-list");
-
   if (answer_list.childElementCount > 2) {
     button.parentNode.remove(); 
   } else {
@@ -66,24 +64,18 @@ function toggle_poll_information(poll_id) {
 }
 
 function update_answer_editor(poll_type) {
-  editor = document.getElementById("answer-editor")
+
+  editor = document.getElementById("answer-editor");
+
+  document.getElementById("question-lbl").innerHTML = poll_type.split("_").map((s) => s[0].toUpperCase() + s.substring(1)).toString().replace(",", " ");
+
   if (poll_type == "numeric_scale") {
     editor.classList.add("hidden");
+    document.getElementById("question-lbl").innerHTML = "Scale";
   } else {
     editor.classList.remove("hidden");
   }
-}
 
-function toggle_graph(poll_id) {
-  graph = document.getElementById("poll-graph-" + poll_id);
-  toggle = document.getElementById("graph-toggle-" + poll_id);
-
-  graph.classList.toggle("hidden");
-  if (graph.classList.contains("hidden")) {
-    toggle.innerHTML = "Show Results";
-  } else {
-    toggle.innerHTML = "Hide Results";
-  }
 }
 
 function toggle_comments(poll_id) {
@@ -113,6 +105,7 @@ function toggle_replies(comment_id) {
   reply_icon = document.getElementById("reply-icon-" + comment_id);
 
   reply_list.classList.toggle("hidden");
+
   if (reply_list.classList.contains("hidden")) {
     reply_icon.classList.remove("fa-angle-down");
     reply_icon.classList.add("fa-angle-right");
@@ -120,5 +113,8 @@ function toggle_replies(comment_id) {
     reply_icon.classList.remove("fa-angle-right");
     reply_icon.classList.add("fa-angle-down");
   }
+}
 
+function toggle_filter_dropdown() {
+  document.getElementById("filter-dropdown").classList.toggle("hidden");
 }

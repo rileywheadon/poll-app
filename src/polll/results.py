@@ -64,8 +64,6 @@ def choose_one(poll_id, user):
         response = dict(res.fetchone())
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -87,8 +85,6 @@ def choose_many(poll_id, user):
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -128,8 +124,6 @@ def numeric_star(poll_id, user):
         response = dict(res.fetchone())
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -151,10 +145,6 @@ def numeric_scale(poll_id, user):
         response = dict(res.fetchone())
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
-
-    # Set the histogram
     return (results, response)
 
 
@@ -204,8 +194,6 @@ def ranked_poll(poll_id, user):
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -248,9 +236,15 @@ def tier_list(poll_id, user):
     for answer in results:
 
         # Set the counts for each (tier, answer) pair
-        for tier in TIERS:
+        score = 0
+        responses = 0
+        for i, tier in enumerate(TIERS):
             res = cur.execute(TIER_RESULT_B, (answer["id"], tier)).fetchone()
-            answer[tier] = res["count"] if res else 0
+            score += res["count"] * (i + 1)
+            responses += res["count"]
+
+        answer["score"] = int(round(score / responses)) if responses else 0
+        answer["tier"] = TIERS[answer["score"] - 1]
 
     # Get the user's response (if necessary)
     response = {}
@@ -260,6 +254,4 @@ def tier_list(poll_id, user):
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
