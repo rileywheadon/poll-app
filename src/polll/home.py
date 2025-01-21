@@ -18,9 +18,6 @@ home = Blueprint('home', __name__, template_folder='templates')
 # Landing page for advertising to potential users
 @home.route("/")
 def index():
-    if session.get("responses"):
-        print(session["responses"])
-
     return render_template("index.html")
 
 
@@ -392,7 +389,6 @@ def response(poll_id):
 
     # Validate the response, then render the results
     error = validate_response(request.form.to_dict(flat=False), poll_id)
-    print(error)
 
     # If the response was invalid, notify the user
     if error == "Invalid Response":
@@ -402,17 +398,12 @@ def response(poll_id):
         r.headers.set("HX-Reswap", "none")
         return r
 
-    return redirect(url_for("home.result", poll_id=poll_id, show_graph=True))
+    return redirect(url_for("home.result", poll_id=poll_id))
 
 
 # HTTP endpoint for getting the results card
-@home.route("/result/<poll_id>/<show_graph>")
+@home.route("/result/<poll_id>")
 @requires_auth
-def result(poll_id, show_graph):
+def result(poll_id):
     poll = query_poll_details(poll_id)
-    print(poll)
-
-    if show_graph:
-        return render_template(poll["result_template"], poll=poll)
-
     return render_template("results/result-base.html", poll=poll)

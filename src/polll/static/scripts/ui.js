@@ -74,9 +74,21 @@ function update_answer_editor(poll_type) {
   }
 }
 
-function toggle_comments() {
-  comments = document.getElementById("poll-comments");
-  toggle = document.getElementById("comments-toggle");
+function toggle_graph(poll_id) {
+  graph = document.getElementById("poll-graph-" + poll_id);
+  toggle = document.getElementById("graph-toggle-" + poll_id);
+
+  graph.classList.toggle("hidden");
+  if (graph.classList.contains("hidden")) {
+    toggle.innerHTML = "Show Results";
+  } else {
+    toggle.innerHTML = "Hide Results";
+  }
+}
+
+function toggle_comments(poll_id) {
+  comments = document.getElementById("poll-comments-" + poll_id);
+  toggle = document.getElementById("comments-toggle-" + poll_id);
 
   comments.classList.toggle("hidden");
   if (comments.classList.contains("hidden")) {

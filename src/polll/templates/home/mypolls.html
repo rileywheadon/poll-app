@@ -1,9 +1,9 @@
 {% extends "home/home.html" %}
 
 {% block home_content %}
+
   {% for poll in polls %}
-
     {% include "results/result-base.html" %}
-
   {% endfor %}
+
 {% endblock %}

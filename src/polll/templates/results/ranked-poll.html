@@ -1,72 +1,53 @@
-{% extends "results/result-base.html" %}
+<div id="poll-result-{{ poll.id }}" class="hidden">
 
-{% block result_content %}
+  <!-- Basically done but there's a really annoying alignment issues with "1."
+   that needs to be fixed -->
+  <div class="flex flex-col space-y-8 select-none">
 
-{% for result in poll.results %}
-  <p>{{ result.answer }} (SCORE: {{ result.score }})</p>
-{% endfor %}
-
-{% if poll.response %}
-
-  <p class="mt-2">
-    You responded: 
-    {% for r in poll.response %}
-    {{ r.answer }}
-    {% endfor %}
-  </p>
-
-{% endif %}
-
-
-<!-- Basically done but there's a really annoying alignment issues with "1."
- that needs to be fixed -->
-<div class="flex flex-col space-y-8 select-none">
-
-  <div class="flex flex-row justify-evenly">
-    <p class="text-xl font-light">You</p>
-    <p class="text-xl font-light">Average Response</p>
-  </div>
-
-  <!-- row length 2 containing the user's result on the left 
-   and the average response on the right for a given rank -->
-
-  {% for result in poll.results %}
-    
-
-    <div class="flex flex-row space-x-10 justify-left">
-
-      <!-- User box -->
-      <div class="flex flex-row space-x-10 {% if not poll.response %} hidden {% endif %}">
-
-        <div>
-          <p class="text-2xl font-light text-polll-blue">
-            {{ 1 + poll.results.index(result) }}
-          </p>
-        </div>
-
-        <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
-
-          <p class="text-white text-base font-light hover:cursor-default">
-            ...
-          </p>
-
-        </div>
-      </div>
-
-       <!-- Average Box -->
-      <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
-
-        <p class="text-white hover:cursor-default">
-          {{ result.answer }}
-        </p>
-
-      </div>
-
+    <div class="flex flex-row justify-evenly">
+      <p class="text-xl font-light">You</p>
+      <p class="text-xl font-light">Average Response</p>
     </div>
 
-  {% endfor %}
+    <!-- row length 2 containing the user's result on the left 
+     and the average response on the right for a given rank -->
+
+    {% for result in poll.results %}
+      
+
+      <div class="flex flex-row space-x-10 justify-left">
+
+        <!-- User box -->
+        <div class="flex flex-row space-x-10 {% if not poll.response %} hidden {% endif %}">
+
+          <div>
+            <p class="text-2xl font-light text-polll-blue">
+              {{ 1 + poll.results.index(result) }}
+            </p>
+          </div>
+
+          <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+
+            <p class="text-white text-base font-light hover:cursor-default">
+              ...
+            </p>
+
+          </div>
+        </div>
+
+         <!-- Average Box -->
+        <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+
+          <p class="text-white hover:cursor-default">
+            {{ result.answer }}
+          </p>
+
+        </div>
+
+      </div>
+
+    {% endfor %}
+
+  </div>
 
 </div>
-
-
-{% endblock %}
