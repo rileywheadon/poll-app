@@ -12,32 +12,7 @@
   <!-- COMMENT TOOLBAR -->
   <div>
 
-    <!-- LIKES/DISLIKES -->
-    <button
-      hx-post="{{ url_for('poll.like', comment_id = comment.id) }}"
-      hx-target="closest .poll-comment"
-      hx-swap="outerHTML"
-    >
-      {% if comment.user_likes == "True" %}
-        <i class="fa fa-thumbs-up text-nord-14">
-      {% else %}
-        <i class="fa fa-thumbs-up"></i>
-      {% endif %}
-      </i>
-    </button>
-    <span class="mr-2">{{ comment.likes }}</span>
-    <button
-      hx-post="{{ url_for('poll.dislike', comment_id = comment.id) }}"
-      hx-target="closest .poll-comment"
-      hx-swap="outerHTML"
-    >
-      {% if comment.user_dislikes == "True" %}
-        <i class="fa fa-thumbs-down text-nord-11"></i>
-      {% else %}
-        <i class="fa fa-thumbs-down"></i>
-      {% endif %}
-    </button>
-    <span class="mr-2">{{ comment.dislikes }}</span>
+    {% include "results/comment-like.html" %}
 
     <!-- REPLY BUTTON -->
     {% if comment.parent_id == 0 %}
@@ -82,7 +57,10 @@
   {% if comment.replies %}
 
     <div class="ml-4 mt-1">
-      <button class="text-nord-7" onclick="toggle_replies({{ comment.id }})">
+      <button 
+        class="text-nord-7" 
+        onclick="toggle_replies({{ comment.id }})"
+      >
         <span>
           {{ comment.replies_count }} 
           {% if comment.replies_count == 1 %}Reply{% else %}Replies{% endif %}
@@ -94,7 +72,7 @@
 
         {% for reply in comment.replies %}
 
-          {% include "results/reply.html" %}
+          {% include "results/reply-body.html" %}
 
         {% endfor %}
 

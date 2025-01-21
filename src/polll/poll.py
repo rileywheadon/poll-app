@@ -182,17 +182,19 @@ def comment(poll_id):
         return r
 
     # Insert the new comment into the database
+    # NOTE: Set parent_id = 0 because Javscript doesn't play nice with null values
     query = """
     INSERT INTO comment (parent_id, poll_id, user_id, comment, timestamp) 
-    VALUES (0, ?, ?, ?, ?)
+    VALUES (0, ?, ?, ?, ?) RETURNING id
     """
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    cur.execute(query, (poll_id, session["user"]["id"], comment, timestamp))
+    user_id = session["user"]["id"]
+    res = cur.execute(query, (poll_id, user_id, comment, timestamp)).fetchone()
     db.commit()
 
     # Redirect to the comments endpoint to render the comments
-    poll = query_poll_details(poll_id)
-    return render_template("results/poll-comments.html", poll=poll)
+    comment = query_comment_details(res["id"])
+    return render_template("results/comment-body.html", comment=comment)
 
 
 @poll.route("/poll/like/<comment_id>", methods=["GET", "POST"])
@@ -226,10 +228,10 @@ def like(comment_id):
 
     # If the commment is a reply, render the reply template
     if comment["parent_id"] != 0:
-        return render_template("results/reply.html", reply=comment)
+        return render_template("results/reply-like.html", reply=comment)
 
     # Otherwise render the comment template
-    return render_template("results/comment.html", comment=comment)
+    return render_template("results/comment-like.html", comment=comment)
 
 
 @poll.route("/poll/dislike/<comment_id>", methods=["GET", "POST"])
@@ -263,10 +265,10 @@ def dislike(comment_id):
 
     # If the commment is a reply, render the reply template
     if comment["parent_id"] != 0:
-        return render_template("results/reply.html", reply=comment)
+        return render_template("results/reply-like.html", reply=comment)
 
     # Otherwise render the comment template
-    return render_template("results/comment.html", comment=comment)
+    return render_template("results/comment-like.html", comment=comment)
 
 
 @poll.route("/poll/reply/<comment_id>", methods=["GET", "POST"])
@@ -293,4 +295,4 @@ def reply(comment_id):
     # Update the comment's information and render it again
     db.commit()
     comment = query_comment_details(comment_id)
-    return render_template("results/comment.html", comment=comment)
+    return render_template("results/comment-body.html", comment=comment)

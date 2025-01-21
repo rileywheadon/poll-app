@@ -663,6 +663,10 @@ video {
   margin-right: 1rem;
 }
 
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -681,10 +685,6 @@ video {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
 }
 
 .block {
@@ -1295,6 +1295,11 @@ video {
   color: rgb(191 97 106 / var(--tw-text-opacity, 1));
 }
 
+.text-nord-14 {
+  --tw-text-opacity: 1;
+  color: rgb(163 190 140 / var(--tw-text-opacity, 1));
+}
+
 .text-nord-4 {
   --tw-text-opacity: 1;
   color: rgb(216 222 233 / var(--tw-text-opacity, 1));
@@ -1328,16 +1333,6 @@ video {
 .text-zinc-400 {
   --tw-text-opacity: 1;
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
-}
-
-.text-nord-14 {
-  --tw-text-opacity: 1;
-  color: rgb(163 190 140 / var(--tw-text-opacity, 1));
-}
-
-.text-nord-10 {
-  --tw-text-opacity: 1;
-  color: rgb(94 129 172 / var(--tw-text-opacity, 1));
 }
 
 .underline {
@@ -1729,6 +1724,11 @@ video {
   background-color: rgb(46 52 64 / var(--tw-bg-opacity, 1));
 }
 
+.dark\:hover\:bg-nord-3:hover:where(.dark, .dark *) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(76 86 106 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:dark\:bg-nord-0:where(.dark, .dark *):hover {
   --tw-bg-opacity: 1;
   background-color: rgb(46 52 64 / var(--tw-bg-opacity, 1));
@@ -1737,9 +1737,4 @@ video {
 .hover\:dark\:bg-nord-10:where(.dark, .dark *):hover {
   --tw-bg-opacity: 1;
   background-color: rgb(94 129 172 / var(--tw-bg-opacity, 1));
-}
-
-.dark\:hover\:bg-nord-3:hover:where(.dark, .dark *) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(76 86 106 / var(--tw-bg-opacity, 1));
 }
