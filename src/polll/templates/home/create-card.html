@@ -3,9 +3,9 @@
 <div class="flex flex-row select-none">
 
   <!-- Options column with graphics + labels -->
-  <div class="flex flex-col justify-center items-center w-1/6 px-4 py-4">
+  <div class="flex flex-col justify-center items-center w-1/6 px-4">
 
-    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="p-2 w-fit rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -68,8 +68,12 @@
   <!-- Create Input -->
   <div class="flex flex-col h-fit grow border-2 border-nord-3 rounded-lg">
 
-    <div class="px-10 pt-8  text-2xl"> 
-      <input class="poll-create text-2xl bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
+    <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
+      Choose One
+    </div>
+
+    <div class="px-10 pt-8 text-2xl"> 
+      <input class="poll-create bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
         autocomplete="off"
         name="poll_question"
         placeholder="Write your poll of the day..."

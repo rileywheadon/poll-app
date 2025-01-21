@@ -9,8 +9,12 @@
     
   {% else %}
   
+  <div class="flex flex-row justify-around font-light text-2xl">
+    <p class="{% if not poll.response %} hidden {% endif %}">You</p>
+    <p>Average</p>
+  </div>
+  
   <div class="flex flex-row space-x-10 select-none">
-
     <!-- User response -->
     <div id="tier-list" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl {% if not poll.response %} hidden {% endif %}">
       {% for tier in ["S", "A", "B", "C", "D", "F"] %}

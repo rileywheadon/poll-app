@@ -18,8 +18,8 @@
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
-- [ ] Adjust 'create' image sizes to fit the screen
-- [ ] Change 'create'/'report' confirmation messages to a modal
+- [ ] Adjust 'create-card' to fit the screen
+
 
 # Roadmap
 
