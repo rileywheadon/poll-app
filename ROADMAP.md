@@ -9,19 +9,13 @@
 
 ### Important
 
-- Style the graphs and implement breakpoints
-  - [ ] Make each graph as aesthetically/interactively pleasing as possible
-  - [ ] Annotate 'choose one' and 'choose many' with the user's response
-  - [ ] Brainstorm tier lists annotation
-  - [ ] Add breakpoints and ensure there is a pleasing mobile experience
+- [ ] Fix ranked alignment issue
+- [ ] Perfect graph visuals
+- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
 
-- [ ] Make sure poll results display properly with no responses
-- [ ] Restyle hot/top/new buttons
-- [ ] Round percentages on choose one/choose many
-- [ ] Add a message/graphic to an empty feed
-- [ ] Find a way to differentiate between choose one and choose many
+- [ ] Adjust 'create-card' to fit the screen
 
 # Roadmap
 

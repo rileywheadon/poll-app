@@ -14,13 +14,11 @@ OUTPUT: List of two parallel lists representing (x, y) points
                 [2, 5, 1, 5, 2, 4]  <-- y-vals
         ]
 '''
-
-
 def smooth_hist(data, bandwidth):
     # Third parameter (must be above 101) helps with local 
     # smoothing but anything above 150 casues a noticable
     # drop in performance
-    x_vals = np.linspace(0, 100, 200)
+    x_vals = np.linspace(0, 100, 101)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
 
@@ -44,4 +42,3 @@ def format_time(timeStr):
     dates = list(map(int, locale[:timeStr.index(" ")].split("-")))
     times = list(map(int, locale[1 + timeStr.index(" "):].split(":")))
     return datetime(dates[0], dates[1], dates[2], times[0], times[1], times[2]).strftime("%a %d, %I:%M %p") + " " + str(datetime.now().astimezone().tzinfo)
-

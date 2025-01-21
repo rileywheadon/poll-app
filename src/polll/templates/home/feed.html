@@ -1,29 +1,50 @@
 {% extends "home/home.html" %}
 
-{%macro filter_btn(name) %}
-
-  <a 
-    id="{{ name }}" 
-    href="{{ url_for('home.feed', board = session.board, order = name) }}"
-    class="bg-nord-4 text-nord-0 border-2 border-nord-3 dark:border-nord-2 text-nord-0 rounded-lg w-9 sm:w-10 md:w-11 lg:w-12 h-6 md:h-7 lg:h-8 m-1 flex justify-center items-center font-light {% if session.feed==name %}bg-nord-9 dark:bg-nord-7 font-semibold{% endif %}"
-  >
-    {{ name.capitalize() }}
-  </a>
-
-{%endmacro%}
-
 {% block home_content %}
+  <!-- Filter dropdown -->
+  <div class="relative select-none">
 
-  <div class="w-full">
-    <div class="flex flex-row text-xs md:text-sm">
-      {{ filter_btn("hot") }}
-      {{ filter_btn("top") }}
-      {{ filter_btn("new") }}
-    </div>
+    <button id="filter-dropdown-btn" class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-xs px-2 py-1" onclick="toggle_filter_dropdown()">
+      {{ session.feed.capitalize() }} <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+      <div id="filter-dropdown" class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2">
+        <ul class="py-2 text-xs text-nord-6">
+          <li>
+            <a href="?board={{ session.board|safe }}&order=hot"><button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button></a>
+          </li>
+          <li>
+            <a href="?board={{ session.board|safe }}&order=top"><button class="px-4 py-1 hover:bg-nord-3 w-full">Top</button></a>
+          </li>
+          <li>
+            <a href="?board={{ session.board|safe }}&order=new"><button class="px-4 py-1 hover:bg-nord-3 w-full">New</button></a>
+          </li>
+        </ul>
+      </div>
+
   </div>
 
-  {% for poll in polls %}
-    {% include poll["poll_template"] %}
-  {% endfor %}
+  {% if polls %}
+
+    {% for poll in polls %}
+      {% include poll["poll_template"] %}
+    {% endfor %}  
+
+  {% else %}
+
+    <div class="flex flex-row text-center items-center justify-center py-16 select-none">
+      <p class="text-xl font-light">
+        {% if session.board == "All" %}
+        You've answered every poll!
+        {% else %}
+        You've answered every poll in {{ session.board }}!
+        {% endif %}
+        <br />
+        <br />
+        Login later for more...
+      </p>
+    </div>
+
+  {% endif %}
 
 {% endblock %}

@@ -1,13 +1,21 @@
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
-  <div id="tier-list" class="w-[36rem] mt-4">
+  <div id="tier-list" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl">
     {% for tier in ["S", "A", "B", "C", "D", "F"] %}
       <div class="flex flex-row h-16">
-        <div class="w-16 border border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] flex items-center justify-center">
-          <span class="text-2xl">{{ tier }}</span>
+        <div class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] flex items-center justify-center">
+          <span class="text-2xl
+          {% if   tier == 'S' %} text-tier-S
+          {% elif tier == 'A' %} text-tier-A
+          {% elif tier == 'B' %} text-tier-B
+          {% elif tier == 'C' %} text-tier-C
+          {% elif tier == 'D' %} text-tier-D
+          {% elif tier == 'F' %} text-tier-F
+          {% endif %}
+          ">{{ tier }}</span>
         </div>
-        <div class="border border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}"
+        <div class="{% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}"
              ondragstart="tierDragStart(event)"
              ondragenter="tierDragEnter(event)"
              ondragover="cancelDefault(event)"

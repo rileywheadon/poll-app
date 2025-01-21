@@ -1,0 +1,77 @@
+<div id="poll-result-{{ poll.id }}" class="hidden">
+
+  <div class="flex flex-row justify-around font-light text-2xl">
+    <p class="{% if not poll.response %} hidden {% endif %}">You</p>
+    <p>Average</p>
+  </div>
+  
+  <div class="flex flex-row space-x-10 select-none">
+    <!-- User response -->
+    <div id="tier-list" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl {% if not poll.response %} hidden {% endif %}">
+      {% for tier in ["S", "A", "B", "C", "D", "F"] %}
+
+        <div class="flex flex-row h-16">
+          <div class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] flex items-center justify-center">
+            <span class="text-2xl
+            {% if   tier == 'S' %} text-tier-S
+            {% elif tier == 'A' %} text-tier-A
+            {% elif tier == 'B' %} text-tier-B
+            {% elif tier == 'C' %} text-tier-C
+            {% elif tier == 'D' %} text-tier-D
+            {% elif tier == 'F' %} text-tier-F
+            {% endif %}
+            ">{{ tier }}</span>
+          </div>
+          <div class="{% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}">
+
+            {% for r in poll.response %}
+              {% if r.tier == tier %} 
+                <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full w-32 flex items-center justify-center">
+                  {{ r.answer }}
+                </div>  
+              {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+
+      {% endfor %}
+    </div>
+
+
+    <!-- Average response -->
+    <div id="tier-list" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl">
+      {% for tier in ["S", "A", "B", "C", "D", "F"] %}
+
+        <div class="flex flex-row h-16">
+          <div class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] flex items-center justify-center">
+            <span class="text-2xl
+            {% if   tier == 'S' %} text-tier-S
+            {% elif tier == 'A' %} text-tier-A
+            {% elif tier == 'B' %} text-tier-B
+            {% elif tier == 'C' %} text-tier-C
+            {% elif tier == 'D' %} text-tier-D
+            {% elif tier == 'F' %} text-tier-F
+            {% endif %}
+            ">{{ tier }}</span>
+          </div>
+          <div class="{% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}">
+
+            {% for r in poll.results %}
+              {% if r.tier == tier %} 
+                <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full w-32 flex items-center justify-center">
+                  {{ r.answer }}
+                </div>  
+              {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+
+      {% endfor %}
+    </div>
+
+
+  </div>
+
+</div>
