@@ -240,9 +240,9 @@ def tier_list(poll_id, user):
         for tier, points in TIERS:
             res = cur.execute(TIER_RESULT_B, (answer["id"], tier)).fetchone()
             score += res["count"] * points
-            responses += len(res)
+            responses += res["count"]
 
-        answer["score"] = int(round(score / responses))
+        answer["score"] = int(round(score / responses)) if responses else 0
 
     # Get the user's response (if necessary)
     response = {}
