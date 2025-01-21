@@ -65,8 +65,10 @@ function toggle_poll_information(poll_id) {
 
 function update_answer_editor(poll_type) {
   editor = document.getElementById("answer-editor")
+  document.getElementById("question-lbl").innerHTML = poll_type.split("_").map((s) => s[0].toUpperCase() + s.substring(1)).toString().replace(",", " ");
   if (poll_type == "numeric_scale") {
     editor.classList.add("hidden");
+    document.getElementById("question-lbl").innerHTML = "Scale";
   } else {
     editor.classList.remove("hidden");
   }
