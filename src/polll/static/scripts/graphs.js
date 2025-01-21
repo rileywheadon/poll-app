@@ -1,6 +1,5 @@
 // I know I know
 cols = {
-    /* Tailwind-like Nord color names */
     'nord-0': '#2E3440',
     'nord-1': '#3B4252',
     'nord-2': '#434C5E',
@@ -19,12 +18,12 @@ cols = {
     'nord-15': '#B48EAD',
     'grad-start': '#1f1f1f',
     'grad-end': '#171717',
-    'polll-grad-1': '#D9EAD3', //polll logo gradient follows these 6 colors
-    'polll-green': '#B6D7A8', // this is the custom green to be used on icons
+    'polll-grad-1': '#D9EAD3',
+    'polll-green': '#B6D7A8',
     'polll-grad-3':'#A0CFB6',
     'polll-grad-4':'#97D0BF',
     'polll-grad-5':'#92D0D0',
-    'polll-blue':'#88bbd0' // this is the custom blue to be used on icons
+    'polll-blue':'#88bbd0'
 }
 
 function graphInit(type, poll_id, user_rs=null, rs = null, rs_kde = null) {
@@ -331,11 +330,10 @@ function tier_graph_options(user_rs, rs) {
             horizontalAlign: 'left',
             offsetX: 40
         },
-        // Not working atm - outputting polll gradient
+        // Not working atm - outputing polll gradient
         colors: get_col_gradient("#D9EAD3", "#88bbd0", rs.length),
         theme: {
             mode: "dark",
-            // palette: "palette10"
         }
     };
 

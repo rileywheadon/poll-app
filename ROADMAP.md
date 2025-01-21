@@ -14,23 +14,20 @@
 
 ### Important
 - [ ] Implement tier list side by side results
+- [ ] Fixed ranked results alignment
 - [ ] Restyle right sidebar
 - [ ] Make each graph as aesthetically/interactively pleasing as possible
-- [ ] Add breakpoints and ensure there is a pleasing mobile experience
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
-
-- [x] Fix filter labeling on page refresh
-- [x] Grey pie chart options on the side with no votes
-- [x] Restrict report and sharing buttons from popping out
-- [x] Remove datalabel on the bar graph if the option has no votes
-- [x] Be editing the text field automatically when having just added a new option in the 'create' tab
-- [ ] Change create/report confirmation message from the current js alert
+- [ ] Adjust 'create' image sizes to fit the screen
+- [ ] Change 'create'/'report' confirmation messages from the curent js alert
+- [ ] Fix the left sidebar's alignment
+- [ ] Implement colour graident function with appropriate colours
 
 # Roadmap
 
-- [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
+- [ ] Add image upload support for creating tier lists as well as displaying them in feed/results (can put images on graphs no problem).
 - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
 
 ## 1: Staging
