@@ -13,7 +13,6 @@
 ## Matt
 
 ### Important
-- [x] Restyle left/right sidebar
 - [ ] Fix ranked alignment issue
 - [ ] Perfect graph visuals
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
@@ -21,7 +20,6 @@
 ### Small/Secondary
 - [ ] Adjust 'create' image sizes to fit the screen
 - [ ] Change 'create'/'report' confirmation messages to a modal
-- [ ] Implement colour graident function with appropriate colours
 
 # Roadmap
 

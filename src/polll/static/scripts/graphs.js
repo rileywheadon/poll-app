@@ -105,7 +105,7 @@ function choose_one_options(user_rs, rs) {
               },
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-            return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? "#7E36AF" : "#D9534F";
+            return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? cols["polll-green"] : cols["polll-blue"];
           }],
         theme: {
             mode: "dark",
@@ -146,13 +146,13 @@ function choose_many_options(user_rs, rs) {
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
             if (value == 0) return "#808080";
-            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return "#7E36AF";
-            return "#D9534F";
+            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return cols["polll-green"];
+            return cols["polll-blue"];
           }],
           fill: {
             colors: [function({ value, seriesIndex, w }) {
-                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return "#7E36AF";
-                return "#D9534F";
+                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return cols["polll-green"];
+                return cols["polll-blue"];
               }],
           },
     }
