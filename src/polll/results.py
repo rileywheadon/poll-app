@@ -63,8 +63,6 @@ def choose_one(poll_id, user):
         response = dict(res.fetchone())
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -86,8 +84,6 @@ def choose_many(poll_id, user):
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -127,8 +123,6 @@ def numeric_star(poll_id, user):
         response = dict(res.fetchone())
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -150,8 +144,6 @@ def numeric_scale(poll_id, user):
         response = dict(res.fetchone())
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
@@ -201,12 +193,10 @@ def ranked_poll(poll_id, user):
         response = [dict(result) for result in res.fetchall()]
 
     # Return the results
-    print("RESULTS:", results)
-    print("RESPONSE:", response)
     return (results, response)
 
 
-TIERS = ["S", "A", "B", "C", "D", "F"]
+TIERS = [("S", 1), ("A", 2), ("B", 3), ("C", 4), ("D", 5), ("F", 6)]
 
 TIER_RESULT_A = """
 SELECT *
@@ -245,9 +235,14 @@ def tier_list(poll_id, user):
     for answer in results:
 
         # Set the counts for each (tier, answer) pair
-        for tier in TIERS:
+        score = 0
+        responses = 0
+        for tier, points in TIERS:
             res = cur.execute(TIER_RESULT_B, (answer["id"], tier)).fetchone()
-            answer[tier] = res["count"] if res else 0
+            score += res["count"] * points
+            responses += len(res)
+
+        answer["score"] = int(round(score / responses))
 
     # Get the user's response (if necessary)
     response = {}
