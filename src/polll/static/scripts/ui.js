@@ -35,9 +35,7 @@ function update_poll_editor(pressed_id) {
 
 // Only allows removal of the answer if there are three or more answers
 function remove_poll_answer(button) {
-  console.log(button);
   answer_list = document.getElementById("answer-list");
-
   if (answer_list.childElementCount > 2) {
     button.parentNode.remove(); 
   } else {
