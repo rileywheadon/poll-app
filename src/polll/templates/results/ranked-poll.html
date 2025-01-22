@@ -1,45 +1,51 @@
 <div id="poll-result-{{ poll.id }}" class="hidden">
 
-  <!-- Basically done but there's a really annoying alignment issues with "1."
-   that needs to be fixed -->
-  <div class="flex flex-col space-y-8 select-none">
+  <div class="flex flex-col space-y-8 justify-center select-none text-xs">
 
-    <div class="flex flex-row justify-evenly">
-      <p class="text-xl font-light">You</p>
-      <p class="text-xl font-light">Average Response</p>
+    <!-- User and results label -->
+    <div class="flex flex-row justify-center">
+      <div class="w-1/2">
+        <p class="font-light text-xl">You</p>  
+      </div>
+      <div class="">
+        <p class="font-light text-xl">Average response</p>  
+      </div>
     </div>
-
-    <!-- row length 2 containing the user's result on the left 
-     and the average response on the right for a given rank -->
 
     {% for result in poll.results %}
       
-
       <div class="flex flex-row space-x-10 justify-left">
 
         <!-- User box -->
-        <div class="flex flex-row space-x-10 {% if not poll.response %} hidden {% endif %}">
-
+        <div class="flex flex-row space-x-10 items-center {% if not poll.response %} hidden {% endif %} w-1/2">
           <div>
-            <p class="text-2xl font-light text-polll-blue">
-              {{ 1 + poll.results.index(result) }}
+            <p class="text-2xl font-light text-polll-blue {% if loop.index == 1 %}px-0.5{% endif %}">
+              {{ loop.index }}
             </p>
           </div>
 
           <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
 
-            <p class="text-white text-base font-light hover:cursor-default">
-              ...
+            <p class="text-white font-light hover:cursor-default">
+              {% if poll.response[loop.index0].answer|length > 20 %} 
+              {{ poll.response[loop.index0].answer[0:20] }}... 
+              {% else %} 
+              {{ poll.response[loop.index0].answer }}
+              {% endif %}
             </p>
 
           </div>
         </div>
 
          <!-- Average Box -->
-        <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
+        <div class="border-4 border-polll-blue p-2 hover:border-polll-green justify-left">
 
-          <p class="text-white hover:cursor-default">
+          <p class="text-white font-light hover:cursor-default">
+            {% if result.answer|length > 20 %} 
+            {{ result.answer[0:20] }}... 
+            {% else %} 
             {{ result.answer }}
+            {% endif %}
           </p>
 
         </div>

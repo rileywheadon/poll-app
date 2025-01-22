@@ -9,15 +9,10 @@
 
 ### Important
 
-- [ ] Fix ranked alignment
 - [ ] Perfect graph visuals
 - [ ] Add breakpoints
 
 ### Small/Secondary
-
-- [x] Hide comments/show polls text on mobile
-- [x] Fix tier list box inheritence when dragging
-- [ ] Adjust 'create-card' to fit the screen/change to horizontal layout above/below the create space
 
 # Roadmap
 
