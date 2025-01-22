@@ -81,13 +81,8 @@ function update_answer_editor(poll_type) {
 function toggle_comments(poll_id) {
   comments = document.getElementById("poll-comments-" + poll_id);
   toggle = document.getElementById("comments-toggle-" + poll_id);
-
+  document.getElementById("com-btn-txt").innerHTML == "Show Comments" ? document.getElementById("com-btn-txt").innerHTML = "Hide Comments" : document.getElementById("com-btn-txt").innerHTML = "Show Comments";
   comments.classList.toggle("hidden");
-  if (comments.classList.contains("hidden")) {
-    toggle.innerHTML = "Show Comments";
-  } else {
-    toggle.innerHTML = "Hide Comments";
-  }
 }
 
 function show_reply_input(comment_id) {
