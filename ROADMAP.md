@@ -22,6 +22,7 @@
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
 - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
+- [ ] Allow users to set custom upper and lower bounds on scale polls
 
 ## 1: Staging
 
