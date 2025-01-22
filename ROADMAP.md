@@ -9,17 +9,10 @@
 
 ### Important
 
-- [ ] Perfect graph visuals
 - Add breakpoints
   - [ ] Tier list on Feed and results (same general changes)
-  - [ ] History
   - [ ] Create
-  - [ ] Profile
-  - Results:
-    - [ ] Choose one graph
-    - [ ] Choose many
-    - [ ] Scale graph
-    - [ ] Tier list results
+- [ ] Perfect graph visuals
 
 ### Small/Secondary
 
