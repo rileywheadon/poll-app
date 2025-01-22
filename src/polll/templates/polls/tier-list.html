@@ -1,10 +1,10 @@
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
-  <div id="tier-list" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl">
+  <div id="tier-list" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl w-full ">
     {% for tier in ["S", "A", "B", "C", "D", "F"] %}
       <div class="flex flex-row h-16">
-        <div class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] flex items-center justify-center">
+        <div class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 p-1 mt-[-1px] ml-[-1px] flex items-center justify-center">
           <span class="text-2xl
           {% if   tier == 'S' %} text-tier-S
           {% elif tier == 'A' %} text-tier-A
@@ -15,7 +15,7 @@
           {% endif %}
           ">{{ tier }}</span>
         </div>
-        <div class="grow flex flex-row justify-start {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] p-1 tier-{{ tier }}"
+        <div class="grow flex flex-row justify-start {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 p-1 dark:border-nord-4 mt-[-1px] ml-[-1px] tier-{{ tier }}"
              ondragstart="tierDragStart(event)"
              ondragenter="tierDragEnter(event)"
              ondragover="cancelDefault(event)"
@@ -24,9 +24,9 @@
       </div>
     {% endfor %}
   </div>
-  <div class="flex flex-row h-16 w-min my-4 space-x-4">
+  <div class="flex flex-wrap gap-2 w-full h-fit pr-10 max-screen-md">
     {% for answer in poll.answers %}
-    <div class="flex items-center justify-center rounded-xl h-full w-32 p-1 border border-nord-2 bg-nord-6 dark:bg-nord-2 dark:border-nord-6"
+    <div class="flex items-center justify-center rounded-xl w-16 md:w-full h-6 md:h-14 max-w-32 border border-nord-2 bg-nord-6 dark:bg-nord-2 dark:border-nord-6 font-light"
            draggable="true"
            ondragstart="tierDragStart(event)"
            ondragenter="cancelDefault(event)"
