@@ -20,26 +20,26 @@
   
       <!-- Share Button -->
       <button 
-        class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1"
+        class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
         title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square text-black dark:text-nord-4 hover:text-2xl"></i>
+        <i class="ml-1 fa fa-share-from-square text-polll-blue hover:text-polll-green"></i>
       </button>
 
       {% include "results/poll-lock.html" %}
 
       <!-- Delete Poll -->
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="ml-2 text-xl w-10 h-10 rounded-md py-1"
+      <button class="ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
           title="Delete"
           hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
           hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash text-black dark:text-nord-4 hover:text-2xl"></i>
+        <i class="fa fa-trash text-nord-11"></i>
       </button>
 
     {% endif %}
@@ -65,30 +65,30 @@
 
     <!-- Toggle Comments -->
     <button 
-      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center"
       onclick="toggle_comments({{ poll.id }})"
     >
       <span 
         class="text-black dark:text-nord-4" 
         id="comments-toggle-{{ poll.id }}"
       >
-        Show Comments
+        <p class="hidden md:flex md:font-light md:hover:text-nord-6">Show Comments</p>
       </span>
-      <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
+      <i class="fa fa-comment px-2 text-xl"></i>
     </button>
 
     <!-- Toggle Results -->
     <button 
-      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center"
       onclick="graphToggle({{ poll }})"
     >
       <span
         id="graph-toggle-{{ poll.id }}"
         class="text-black dark:text-nord-4"
       >
-        Show Results
+      <p id="rs-btn-txt-{{ poll.id }}" class="hidden md:flex md:font-light md:hover:text-nord-6">Show Results</p>
       </span>
-      <i class="fa fa-chart-simple ml-2 text-black dark:text-nord-4 text-xl"></i>
+      <i class="fa fa-chart-simple px-2  text-xl"></i>
     </button>
 
   </div>

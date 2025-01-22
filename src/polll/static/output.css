@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -1398,6 +1398,11 @@ video {
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
 }
 
+.text-nord-15 {
+  --tw-text-opacity: 1;
+  color: rgb(180 142 173 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -1469,6 +1474,10 @@ video {
   color: rgb(76 86 106 / var(--tw-text-opacity, 1));
 }
 
+.hover\:flex:hover {
+  display: flex;
+}
+
 .hover\:cursor-default:hover {
   cursor: default;
 }
@@ -1507,6 +1516,16 @@ video {
   background-color: rgb(136 192 208 / var(--tw-bg-opacity, 1));
 }
 
+.hover\:bg-polll-green:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(182 215 168 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-nord-11:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(191 97 106 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:text-2xl:hover {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1515,6 +1534,31 @@ video {
 .hover\:text-gray-300:hover {
   --tw-text-opacity: 1;
   color: rgb(209 213 219 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-polll-green:hover {
+  --tw-text-opacity: 1;
+  color: rgb(182 215 168 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-nord-11:hover {
+  --tw-text-opacity: 1;
+  color: rgb(191 97 106 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-nord-8:hover {
+  --tw-text-opacity: 1;
+  color: rgb(136 192 208 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-nord-6:hover {
+  --tw-text-opacity: 1;
+  color: rgb(236 239 244 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-nord-15:hover {
+  --tw-text-opacity: 1;
+  color: rgb(180 142 173 / var(--tw-text-opacity, 1));
 }
 
 .focus\:cursor-grabbing:focus {
@@ -1638,6 +1682,15 @@ video {
     font-size: 1rem;
     line-height: 1.5rem;
   }
+
+  .md\:font-light {
+    font-weight: 300;
+  }
+
+  .md\:hover\:text-nord-6:hover {
+    --tw-text-opacity: 1;
+    color: rgb(236 239 244 / var(--tw-text-opacity, 1));
+  }
 }
 
 .dark\:border-4:where(.dark, .dark *) {
@@ -1746,6 +1799,16 @@ video {
 .dark\:text-white:where(.dark, .dark *) {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+}
+
+.dark\:text-nord-11:where(.dark, .dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(191 97 106 / var(--tw-text-opacity, 1));
+}
+
+.dark\:text-polll-green:where(.dark, .dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(182 215 168 / var(--tw-text-opacity, 1));
 }
 
 .placeholder\:dark\:text-nord-4:where(.dark, .dark *)::-moz-placeholder {

@@ -35,36 +35,29 @@ function graphToggle(poll) {
 
   toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
   graph = document.getElementById(`poll-graph-${poll["id"]}`);
+  var btn_text = document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML;
+  
+  btn_text == "Show Results" ? document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML = "Hide Results" : document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML = "Show Results";
 
   // NOTE: Behaviour if the poll has no votes
   if (poll["votes"] == 0) {
 
-    const votes = document.createElement("p");
+    var votes = document.createElement("p");
     const votes_message = document.createTextNode("No votes yet!");
     votes.appendChild(votes_message);
 
-    if (toggle.innerHTML == "Hide Results") {
-      graph.removeChild(graph.firstElementChild);
-      toggle.innerHTML = "Show Results";
-    } else {
-      graph.insertBefore(votes, graph.firstElementChild);
-      toggle.innerHTML = "Hide Results";
-    }
-
+    btn_text == "Hide Results" ? graph.removeChild(graph.firstElementChild) : graph.insertBefore(votes, graph.firstElementChild);
     return
+
   }
 
   // NOTE: Behaviour for ranked poll / tier list
   if (poll["poll_type"] == "RANKED_POLL" || poll["poll_type"] == "TIER_LIST") {
 
     result = document.getElementById(`poll-result-${poll["id"]}`);
-    if (toggle.innerHTML == "Hide Results") {
-      result.classList.add("hidden");
-      toggle.innerHTML = "Show Results";
-    } else {
-      result.classList.remove("hidden");
-      toggle.innerHTML = "Hide Results";
-    }
+
+    btn_text == "Hide Results" ? result.classList.add("hidden") : result.classList.remove("hidden");
+
   }
 
   // NOTE: Behaviour for all other poll types
@@ -72,11 +65,8 @@ function graphToggle(poll) {
     if (poll["id"] in charts) {
       charts[poll["id"]].destroy();
       delete charts[poll["id"]];
-      toggle.innerHTML = "Show Results";
-    } else {
-      graphInitRewritten(poll);
-      toggle.innerHTML = "Hide Results";
-    }
+      //toggle.innerHTML = "Show Results";
+    } else graphInitRewritten(poll);
   }
 }
 

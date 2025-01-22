@@ -9,13 +9,15 @@
 
 ### Important
 
-- [ ] Fix ranked alignment issue
+- [ ] Fix ranked alignment
 - [ ] Perfect graph visuals
-- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
+- [ ] Add breakpoints everywhere
 
 ### Small/Secondary
 
-- [ ] Adjust 'create-card' to fit the screen
+- [ ] Adjust 'create-card' to fit the screen/change to horizontal layout above/below the create space
+- [ ] Fix tier list box inheritence when dragging
+- [ ] Hide comments/show polls text on mobile
 
 # Roadmap
 
