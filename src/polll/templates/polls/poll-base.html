@@ -29,33 +29,33 @@
 
       <!-- Share Button -->
       <button 
-        class="w-10 rounded-md py-1 text-nord-6 dark:text-nord-0" 
+        class="w-10 rounded-md py-1 select-none text-polll-blue hover:text-polll-green" 
         title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square text-xl text-black dark:text-white"></i>
+        <i class="ml-1 fa fa-share-from-square text-xl"></i>
       </button>
 
       <!-- Report Button -->
       <button
-        class="w-10 ml-2 h-10 rounded-md py-1 text-nord-6 dark:text-nord-0"
+        class="w-10 ml-2 h-10 rounded-md py-1 select-none text-polll-blue hover:text-nord-11"
         title="Report"
         hx-post="{{ url_for('home.report', poll_id = poll.id) }}"
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="outerHTML"
         type="button"
       >
-        <i class="ml-1 fa fa-triangle-exclamation text-xl text-black dark:text-white"></i>
+        <i class="ml-1 fa fa-triangle-exclamation text-xl"></i>
       </button>
 
       <!-- Submit Button -->
       <button
-        class="ml-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+        class="ml-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center text-polll-blue hover:text-polll-green"
         type="submit"
       >
-        <span class="font-medium text-nord-4 mr-1">Submit</span>
-        <i class="ml-1 fa fa-paper-plane text-xl text-nord-4"></i>
+        <span class="hidden md:flex md:font-medium text-nord-4 md:mr-1">Submit</span>
+        <i class="ml-1 fa fa-paper-plane text-xl"></i>
       </button>
 
     </div>

@@ -15,7 +15,7 @@
           {% endif %}
           ">{{ tier }}</span>
         </div>
-        <div class="{% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] grow flex flex-row justify-start tier-{{ tier }}"
+        <div class="grow flex flex-row justify-start {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 mt-[-1px] ml-[-1px] p-1 tier-{{ tier }}"
              ondragstart="tierDragStart(event)"
              ondragenter="tierDragEnter(event)"
              ondragover="cancelDefault(event)"
@@ -24,9 +24,9 @@
       </div>
     {% endfor %}
   </div>
-  <div class="flex flex-row h-16 w-min my-4">
+  <div class="flex flex-row h-16 w-min my-4 space-x-4">
     {% for answer in poll.answers %}
-      <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full w-32 flex items-center justify-center"
+    <div class="flex items-center justify-center rounded-xl h-full w-32 p-1 border border-nord-2 bg-nord-6 dark:bg-nord-2 dark:border-nord-6"
            draggable="true"
            ondragstart="tierDragStart(event)"
            ondragenter="cancelDefault(event)"
