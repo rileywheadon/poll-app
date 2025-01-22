@@ -15,9 +15,9 @@
 
 ### Small/Secondary
 
-- [ ] Adjust 'create-card' to fit the screen/change to horizontal layout above/below the create space
+- [x] Hide comments/show polls text on mobile
 - [ ] Fix tier list box inheritence when dragging
-- [ ] Hide comments/show polls text on mobile
+- [ ] Adjust 'create-card' to fit the screen/change to horizontal layout above/below the create space
 
 # Roadmap
 
