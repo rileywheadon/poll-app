@@ -2,12 +2,8 @@
 
   <!-- Include the poll question -->
   <div class="flex flex-col p-2">
-    {% if poll.is_anonymous == 1 %}
-      <p class="text-nord-4 font-light">anonymous ⋅ {{ poll.age }}</p>
-    {% else %}
-      <p class="text-nord-4 font-light">@{{ poll.creator }} ⋅ {{ poll.age }}</p>
-    {% endif %}
-    <p class="rounded-md text-2xl font-light">{{ poll.question }}</p>
+    <p class="font-light text-neutral-500">{% if poll.is_anonymous == 1 %}anonymous{% else %}@{{ poll.creator }}{% endif %} ⋅ {{ poll.age }}</p>
+    <p class="font-light text-neutral-200 text-2xl">{{ poll.question }}</p>
   </div>
 
   <form
@@ -24,7 +20,7 @@
     <div class="flex flex-row text-sm justify-end items-center mt-4 font-light">
       
       <p class="grow">Votes:
-        <i>{{ poll.votes }}</i>
+        {{ poll.votes }}
       </p>
 
       <!-- Share Button -->
