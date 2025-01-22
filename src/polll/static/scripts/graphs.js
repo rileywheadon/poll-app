@@ -1,5 +1,5 @@
 // I know I know
-cols = {
+const cols = {
     'nord-0': '#2E3440',
     'nord-1': '#3B4252',
     'nord-2': '#434C5E',
@@ -26,6 +26,16 @@ cols = {
     'polll-grad-5':'#92D0D0',
     'polll-blue':'#88bbd0'
 }
+
+const bps =  {
+    'xs': '520px',
+    'sm': '640px',
+    'md': '768px',
+    'lg': '1024px',
+    'xl': '1536px',
+  }
+
+const bp = 768;
 
 // Global charts object use to handle creating/destroying charts
 var charts = {} 
@@ -65,7 +75,6 @@ function graphToggle(poll) {
     if (poll["id"] in charts) {
       charts[poll["id"]].destroy();
       delete charts[poll["id"]];
-      //toggle.innerHTML = "Show Results";
     } else graphInitRewritten(poll);
   }
 }
@@ -124,9 +133,9 @@ function choose_one_options(user_rs, rs) {
         }],
         chart: {
             type: 'bar',
-            height: 200,
-            width: 500,
             background: 'null',
+            width: "100%",
+            height: "100%",
             toolbar: {
                 show: false
             }
@@ -157,7 +166,20 @@ function choose_one_options(user_rs, rs) {
                     return Math.round(val * total_answers / 100);
                 }
             }
-        }
+        },
+        responsive: [{
+            breakpoint: bp,
+            options: {
+                chart: {
+                    chart: {
+                        type: "pie",
+                        background: "null",
+                        width: bp,
+                        height: bp,
+                    },
+                },
+            },
+        }],
     };
 
 }
@@ -172,8 +194,8 @@ function choose_many_options(user_rs, rs) {
         chart: {
             type: "pie",
             background: "null",
-            width: 500,
-            height: 500,
+            width: "100%",
+            height: "100%",
         },
         theme: {
             mode: "dark",
@@ -195,6 +217,19 @@ function choose_many_options(user_rs, rs) {
                 return cols["polll-blue"];
               }],
           },
+          responsive: [{
+            breakpoint: bp,
+            options: {
+                chart: {
+                    chart: {
+                        type: "pie",
+                        background: "null",
+                        width: bp,
+                        height: bp,
+                    },
+                },
+            },
+        }],
     }
 
 }
@@ -310,6 +345,19 @@ function scale_graph_options(user_rs, rs, rs_kde) {
 
                 ]
         },
+        responsive: [{
+            breakpoint: bp,
+            options: {
+                chart: {
+                    chart: {
+                        type: "pie",
+                        background: "null",
+                        width: bp,
+                        height: bp,
+                    },
+                },
+            },
+        }],
     };
 
 }

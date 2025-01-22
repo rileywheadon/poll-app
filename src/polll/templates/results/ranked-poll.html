@@ -3,7 +3,7 @@
   <div class="flex flex-col space-y-8 justify-center select-none text-xs">
 
     <!-- User and results label -->
-    <div class="flex flex-row justify-center">
+    <div class="flex flex-row justify-center border-b-2 border-nord-6 pb-2">
       <div class="w-1/2">
         <p class="font-light text-xl">You</p>  
       </div>
@@ -11,6 +11,7 @@
         <p class="font-light text-xl">Average response</p>  
       </div>
     </div>
+    
 
     {% for result in poll.results %}
       
