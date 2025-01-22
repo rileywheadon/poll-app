@@ -11,12 +11,12 @@
 
 - [ ] Fix ranked alignment
 - [ ] Perfect graph visuals
-- [ ] Add breakpoints everywhere
+- [ ] Add breakpoints
 
 ### Small/Secondary
 
 - [x] Hide comments/show polls text on mobile
-- [ ] Fix tier list box inheritence when dragging
+- [x] Fix tier list box inheritence when dragging
 - [ ] Adjust 'create-card' to fit the screen/change to horizontal layout above/below the create space
 
 # Roadmap

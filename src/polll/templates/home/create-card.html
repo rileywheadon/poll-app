@@ -1,9 +1,12 @@
 {% if not session.on_cooldown %}
 
-<div class="flex flex-row select-none">
 
-  <!-- Options column with graphics + labels -->
-  <div class="flex flex-col justify-center items-center w-1/6 px-4">
+
+<!-- Image + create container -->
+<div class="flex flex-col h-full pr-10 space-y-10">
+
+  <!-- Image row -->
+  <div class="flex flex-row justify space-x-10">
 
     <label class="p-2 w-fit rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
@@ -62,10 +65,13 @@
       >
       <img class="" src="../../static/assets/tier-list.png"/>
     </label>
-
+    
   </div>
 
-  <!-- Create Input -->
+
+
+
+  <!-- Create input field -->
   <div class="flex flex-col h-fit grow border-2 border-nord-3 rounded-lg">
 
     <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
@@ -180,4 +186,12 @@
   </p>
 </div>
 
-{% endif %}
+{% endif %} 
+
+
+</div>
+
+
+
+
+
