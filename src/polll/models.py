@@ -1,81 +1,13 @@
+# NOTE: This file contains database queries for actions that need to be abstracted
+# accross multiple endpoints, including such as getting poll/comment information
+
 from flask import request, session
 from datetime import datetime, timedelta
 from polll.db import get_db
 import polll.results as result_handlers
 import polll.responses as response_handlers
-from polll.utils import smooth_hist
+from polll.utils import *
 import base64
-
-
-# Helper function to check if a user is on cooldown from making a poll
-def on_cooldown(user_dict):
-
-    next_poll_allowed = user_dict["next_poll_allowed"]
-
-    if next_poll_allowed:
-
-        next_poll_time = datetime.strptime(
-            next_poll_allowed,
-            '%Y-%m-%d %H:%M:%S'
-        )
-
-        return datetime.utcnow() < next_poll_time
-
-    return False
-
-
-# Get the age of a poll (i.e. 2h or 4d)
-def format_timestamp(string):
-    timestamp = datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
-    age = datetime.utcnow() - timestamp
-
-    if age.days > 0:
-        return f"{age.days}d"
-    elif age.seconds // 3600 > 0:
-        return f"{age.seconds // 3600}h"
-    elif age.seconds // 60 > 0:
-        return f"{age.seconds // 60}m"
-    else:
-        return f"{age.seconds}s"
-
-
-# Helper functions to add "result_template" and "poll_template" to a poll dictionary
-def result_template(poll):
-    template = "poll-graph"
-    if poll["poll_type"] == "RANKED_POLL":
-        template = "ranked-poll"
-
-    return f"results/{template}.html"
-
-
-def poll_template(poll):
-    template = poll["poll_type"].lower().replace("_", "-")
-    return f"polls/{template}.html"
-
-
-# Helper function to get days behind current time
-def get_days_behind(days):
-    time = datetime.utcnow() - timedelta(days=days)
-    return datetime.strftime(time, '%Y-%m-%d %H:%M:%S')
-
-
-# Helper functions to encode/decode a poll ID as a URL string
-def id_to_url(n):
-    hash = ((0x0000FFFF & n) << 16) + ((0xFFFF0000 & n) >> 16)
-    code = base64.urlsafe_b64encode(str(hash).encode()).decode()
-    return f"{request.scheme}://{request.host}/poll/{code}"
-
-
-def url_to_id(code):
-    hash = int(base64.urlsafe_b64decode(code.encode()).decode())
-    return ((0x0000FFFF & hash) << 16) + ((0xFFFF0000 & hash) >> 16)
-
-
-# Helper function to get how "trendy" a poll is, in responses/second
-def popularity(poll):
-    timestamp = datetime.strptime(poll["date_created"], '%Y-%m-%d %H:%M:%S')
-    age = (datetime.utcnow() - timestamp).total_seconds()
-    return poll["votes"] / age
 
 
 # Given a poll ID, gets all useful information including:
@@ -83,7 +15,6 @@ def popularity(poll):
 #  - Number of votes on the poll
 #  - All poll answers (just the text)
 #  - The custom poll URL
-
 # NOTE: Does not get the results of the poll (see results.py)
 def query_poll_details(id):
 
@@ -220,6 +151,74 @@ def query_comment_details(comment_id):
     return comment
 
 
+# Fully deletes a poll, including all associated comments and responses
+def delete_poll(poll_id):
+
+    # Open the database connection
+    db = get_db()
+    cur = db.cursor()
+
+   # Delete the poll, poll/board, answers, and responses
+    poll_query = "DELETE FROM poll WHERE poll.id = ?"
+    poll_board_query = "DELETE FROM poll_board WHERE poll_id = ?"
+    answer_query = "DELETE FROM poll_answer WHERE poll_answer.poll_id = ?"
+    response_query = "DELETE FROM response WHERE response.poll_id = ?"
+
+    # Delete the secondary response rows (if they exist)
+    secondary_response_query = """
+    DELETE FROM {table}
+    WHERE response_id IN (
+        SELECT {table}.response_id FROM {table}
+        INNER JOIN response ON response.id = {table}.response_id
+        WHERE response.poll_id = ?
+    )
+    """
+
+    # List of secondary response tables
+    secondary_tables = [
+        "discrete_response",
+        "numeric_response",
+        "ranked_response",
+        "tiered_response"
+    ]
+
+    # Get a list of comments and then call delete_comment() on them
+    comment_query = "SELECT id FROM comment WHERE poll_id = ?"
+    res = cur.execute(comment_query, (poll_id,)).fetchall()
+    for comment in res:
+        delete_comment(comment["id"])
+
+    # Execute the queries in reverse order
+    for table in secondary_tables:
+        query = secondary_response_query.format(table=table)
+        cur.execute(query, (poll_id,))
+
+    cur.execute(response_query, (poll_id,))
+    cur.execute(answer_query, (poll_id,))
+    cur.execute(poll_board_query, (poll_id,))
+    cur.execute(poll_query, (poll_id,))
+    db.commit()
+
+
+# Fully deletes a comment, including all associated replies/likes/dislikes
+def delete_comment(comment_id):
+
+    # Open the database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Delete all comments, likes, and dislikes
+    comment_query = "DELETE FROM comment WHERE id = ?"
+    like_query = "DELETE FROM like WHERE comment_id=?"
+    dislike_query = "DELETE FROM dislike WHERE comment_id=?"
+
+    # Execute the queries in reverse order
+    cur.execute(like_query, (comment_id,))
+    cur.execute(dislike_query, (comment_id,))
+    cur.execute(comment_query, (comment_id,))
+    db.commit()
+
+
 # If the user has not already responded, add the response to the database
 def validate_response(form, poll_id):
 
@@ -241,6 +240,8 @@ def validate_response(form, poll_id):
     # If the user created the poll or already responded, return
     is_creator = session["user"]["id"] == poll["creator_id"]
     is_admin = session["user"]["email"] == "admin@polll.org"
+
+    # This is essentially an error code that should be caught by the caller
     if (res.fetchone() != None or is_creator) and not is_admin:
         return "Invalid Response"
 

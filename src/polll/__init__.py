@@ -29,11 +29,9 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-
     app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
     app.jinja_env.globals.update(format_time=utils.format_time)
     app.jinja_env.filters['zip'] = zip
-    
 
     # Register the database commands
     from . import db
@@ -51,15 +49,17 @@ def create_app(test_config=None):
         server_metadata_url=f'https://{domain}/.well-known/openid-configuration'
     )
 
-    # Import the authenticaiton, home, admin, and anonymous poll blueprints
+    # Import the blueprints
     from polll.auth import auth
     from polll.home import home
     from polll.admin import admin
     from polll.poll import poll
+    from polll.comment import comment
 
-    # Register the authenticaiton, home, admin, and anonymous poll blueprints
+    # Register the blueprints
     app.register_blueprint(auth)
     app.register_blueprint(home)
     app.register_blueprint(admin)
     app.register_blueprint(poll)
+    app.register_blueprint(comment)
     return app
