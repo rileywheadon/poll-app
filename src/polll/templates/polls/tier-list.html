@@ -9,7 +9,7 @@
       <div class="flex flex-row h-16 hover:cursor-default"> 
 
         <button type="button" id="{{ tier }}-label" class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 p-1 mt-[-1px] ml-[-1px] flex items-center justify-center hover:cursor-default" 
-                >
+        >
           <span class="text-2xl
             {% if   tier == 'S' %} text-tier-S
             {% elif tier == 'A' %} text-tier-A
@@ -23,7 +23,7 @@
           </span>
         </button>
         <button type="button" id="{{ tier }}-content-{{ poll.id }}" class="grow flex flex-row justify-start {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 p-1 dark:border-nord-4 mt-[-1px] ml-[-1px] hover:cursor-default tier-{{ tier }}" 
-                onclick="handle_tier_select('{{ poll.id }}', '{{ tier }}')">
+        onclick="handle_tier_select('{{ poll.id }}', '{{ tier }}')">
         </button>
         
       </div>
@@ -34,7 +34,7 @@
   <div id="tier-ans-container-{{ poll.id }}" class="flex flex-wrap gap-2 w-fit h-fit mt-6">
     {% for answer in poll.answers %}
     <div id="tier-answer-{{ answer.id }}" class="flex">
-      <input type="radio" id="tier-{{ answer.id }}" name="answer_id" value="{{ answer.id }}" class="hidden peer">
+      <input type="radio" id="tier-{{ answer.id }}" name="answer_id" value="{{ answer.id }}" class="hidden peer" onclick="handle_btn_select()">
       <label for="tier-{{ answer.id }}"
         class="items-center justify-center w-full h-full max-w-32
         rounded-lg cursor-default p-4
