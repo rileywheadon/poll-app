@@ -26,37 +26,38 @@
 
   </div>
 
+  <!-- NOTE: The comment is top level if comment.parent_id == 0 -->
+
   <!-- REPLY INPUT -->
-  <div id="reply-input-{{ comment.id }}" class="flex flex-row ml-4 hidden">
+  {% if comment.parent_id == 0 %}
+    <div id="reply-input-{{ comment.id }}" class="flex flex-row ml-4 hidden">
 
-    <input class="grow text-l p-2 bg-transparent border-b border-nord-3 dark:text-white focus:outline-none font-light" 
-      autocomplete="off"
-      name="reply"
-      placeholder="Add a reply..."
-    />
-    <button 
-      class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
-      onclick="hide_reply_input({{ comment.id }})"
-    >
-      <span class="text-sm text-light">Cancel</span>
-      <i class="fa fa-xmark ml-1 text-black dark:text-nord-4"></i>
-    </button>
+      <input class="grow text-l p-2 bg-transparent border-b border-nord-3 dark:text-white focus:outline-none font-light" 
+        autocomplete="off"
+        name="reply"
+        placeholder="Add a reply..."
+      />
+      <button 
+        class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+        onclick="hide_reply_input({{ comment.id }})"
+      >
+        <span class="text-sm text-light">Cancel</span>
+        <i class="fa fa-xmark ml-1 text-black dark:text-nord-4"></i>
+      </button>
 
-    <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
-      hx-include="previous input"
-      hx-post="{{ url_for('poll.reply', comment_id = comment.id) }}"
-      hx-target="#comment-{{ comment.id }}"
-      hx-swap="outerHTML"
-    >
-      <span class="text-sm text-light">Reply</span>
-      <i class="fa fa-paper-plane ml-1 text-black dark:text-nord-4"></i>
-    </button>
+      <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+        hx-include="previous input"
+        hx-post="{{ url_for('comment.reply', comment_id = comment.id) }}"
+        hx-target="#comment-{{ comment.id }}"
+        hx-swap="outerHTML"
+      >
+        <span class="text-sm text-light">Reply</span>
+        <i class="fa fa-paper-plane ml-1 text-black dark:text-nord-4"></i>
+      </button>
 
-  </div>
+    </div>
 
-  <!-- REPLY LIST -->
-  {% if comment.replies %}
-
+    <!-- REPLY LIST -->
     <div class="ml-4 mt-1">
       <button 
         class="text-nord-7" 
@@ -73,7 +74,9 @@
 
         {% for reply in comment.replies %}
 
-          {% include "results/reply-body.html" %}
+          {% with comment=reply %} 
+            {% include "results/comment-body.html" %}
+          {% endwith %}
 
         {% endfor %}
 
