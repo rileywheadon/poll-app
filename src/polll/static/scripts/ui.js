@@ -114,30 +114,46 @@ function toggle_filter_dropdown() {
   document.getElementById("filter-dropdown").classList.toggle("hidden");
 }
 
-function handle_tier_select(poll_id, tier) {
-  // This is being called twice and it's not because there are two buttons that call this function
-  console.log("new");
 
+function handle_btn_select() {
+
+  console.log("Radio button clicked")
+
+}
+
+
+
+function handle_tier_select(poll_id, tier) {
+  // This is being called twice and it's not because there are two buttons that call this function 
+  // (removed the second button onclick and same thing happens)
+  // might be happening because none of the radio buttons are clicked yet
+
+  // Double 'click' is hapending when clicking on an element already in a tier
+
+  console.log("new");
   document.getElementById(`tier-ans-container-${poll_id}`).querySelectorAll("input").forEach((e) => {
     if (e.checked) document.getElementById(`${tier}-content-${poll_id}`).appendChild(e.parentNode);
+    // console.log(e);
     e.checked = false;
   });
 
-  ["S", "A", "B", "C", "D", "F"].forEach((e) =>  {
-    if (document.getElementById(`${e}-content-${poll_id}`).childNodes.length > 1) {
-      console.log(`${e} tier`);
-      Array.from(document.getElementById(`${e}-content-${poll_id}`).childNodes).slice(1).forEach((i) => {
-        console.log("here");
-        console.log(i);
-        console.log(document.getElementById(`${tier}-content-${poll_id}`));
-        if (Array.from(i.querySelectorAll("input"))[0].checked) {
-          document.getElementById(`${tier}-content-${poll_id}`).appendChild(i);
-        }
+  ["S", "A", "B", "C", "D", "F"].forEach((t) =>  {
+    if (document.getElementById(`${t}-content-${poll_id}`).childNodes.length > 1) {
+      //console.log(`${e} tier`);
+      Array.from(document.getElementById(`${t}-content-${poll_id}`).childNodes).slice(1).forEach((i) => {
+        Array.from(i.querySelectorAll("input")).forEach((j) => {
+          //console.log(j);
+          console.log(j.checked)
+          if (j.checked) {
+            document.getElementById(`${tier}-content-${poll_id}`).appendChild(i); 
+          } 
+        })
       })
-    }
+    }    
   })
 
 
   console.log("\n\n\n");
+  
 
 }
