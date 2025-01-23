@@ -282,8 +282,19 @@ def delete_board(board_id):
     # Remove the board and all connected polls from the database
     board_query = "DELETE FROM board WHERE id=?"
     poll_board_query = "DELETE FROM poll_board WHERE board_id=?"
-    cur.execute(board_query, (board_id,))
+    poll_query = """
+    DELETE FROM poll 
+    WHERE id IN (
+        SELECT poll_id 
+        FROM poll_board 
+        WHERE board_id=?
+    )
+    """
+
+    # Execute the queries, starting with poll_query
+    cur.execute(poll_query, (board_id,))
     cur.execute(poll_board_query, (board_id,))
+    cur.execute(board_query, (board_id,))
     db.commit()
 
     # Get the list of boards

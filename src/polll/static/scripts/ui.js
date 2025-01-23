@@ -1,15 +1,6 @@
 function open_settings() {
-  const modal = document.getElementById("settings");
   const main = document.getElementById("main");
-  modal.style.display = "flex";
   main.classList.add("blur-sm");
-}
-
-function close_settings() {
-  const modal = document.getElementById("settings");
-  const main = document.getElementById("main");
-  modal.style.display = "none";
-  main.classList.remove("blur-sm");
 }
 
 function toggle_user_information(user_id) {

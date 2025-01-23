@@ -1,10 +1,15 @@
-<div id="settings" class="hidden fixed justify-center items-center z-10 w-full h-full z-10 text-nord-0 dark:text-nord-4">
+<div class="flex fixed justify-center items-center z-10 w-full h-full z-10 text-nord-0 dark:text-nord-4">
 
   <!-- Modal content -->
   <div class="flex flex-col w-2/3 h-2/3 rounded-xl border-2 bg-nord-4 border-nord-2 dark:bg-nord-0 dark:border-nord-6 px-6 py-4">
 
     <div class="flex flex-row mb-4">
-      <a href="{{ url_for('home.feed') }}" class="text-4xl cursor-pointer">&times;</a>
+      <a 
+        href="{{ return_url }}" 
+        class="text-4xl cursor-pointer"
+      >
+        &times;
+      </a>
     </div>
 
     <!-- Username Editor -->
@@ -53,7 +58,5 @@
 
 
   </div>
-
-
 
 </div>

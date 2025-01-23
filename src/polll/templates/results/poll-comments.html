@@ -5,21 +5,21 @@
       autocomplete="off"
       name="comment"
       placeholder="Add a comment..."
-      id="comment-input"
+      id="comment-input-{{ poll.id }}"
     />
     <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
       hx-include="previous input"
       hx-post="{{ url_for('poll.comment', poll_id = poll.id) }}"
-      hx-target="#comments-list"
+      hx-target="#comments-list-{{ poll.id }}"
       hx-swap="afterbegin"
-      hx-on::after-request="document.getElementById('comment-input').value = '';"
+      hx-on::after-request="document.getElementById('comment-input-{{ poll.id }}').value = '';"
     >
       <span class="text-sm text-light">Send</span>
       <i class="fa fa-paper-plane ml-1 text-black dark:text-nord-4"></i>
     </button>
   </div>
 
-  <div id="comments-list" class="px-4 pt-4">
+  <div id="comments-list-{{ poll.id }}" class="px-4 pt-4">
 
     {% for comment in poll.comments %}
       {% include "results/comment-body.html" %}

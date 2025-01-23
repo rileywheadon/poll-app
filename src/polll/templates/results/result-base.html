@@ -1,6 +1,7 @@
 <div 
   id="poll-card-{{ poll.id }}"
   class="poll-card py-2 border-b-2 dark:border-nord-3 overflow-hidden"
+  {% if show_graph %}hx-on::after-settle="graphToggle({{ poll }});"{% endif %}
 >    
 
   <!-- Include the poll question -->
@@ -65,15 +66,11 @@
 
     <!-- Toggle Comments -->
     <button 
-      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-black dark:text-nord-4 flex items-center justify-center"
       onclick="toggle_comments({{ poll.id }})"
     >
-      <span 
-        class="text-black dark:text-nord-4" 
-        id="comments-toggle-{{ poll.id }}"
-      >
-        Show Comments
-      </span>
+      <span id="comments-toggle-{{ poll.id }}">Show Comments </span>
+      &nbsp(<span id="comments-count-{{ poll.id }}">{{ poll.comments|length }}</span>)
       <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
     </button>
 
