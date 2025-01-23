@@ -115,6 +115,8 @@ function toggle_filter_dropdown() {
 }
 
 function handle_tier_select(poll_id, tier) {
+  // This is being called twice and it's not because there are two buttons that call this function
+  console.log("new");
 
   document.getElementById(`tier-ans-container-${poll_id}`).querySelectorAll("input").forEach((e) => {
     if (e.checked) document.getElementById(`${tier}-content-${poll_id}`).appendChild(e.parentNode);
@@ -125,13 +127,17 @@ function handle_tier_select(poll_id, tier) {
     if (document.getElementById(`${e}-content-${poll_id}`).childNodes.length > 1) {
       console.log(`${e} tier`);
       Array.from(document.getElementById(`${e}-content-${poll_id}`).childNodes).slice(1).forEach((i) => {
+        console.log("here");
         console.log(i);
         console.log(document.getElementById(`${tier}-content-${poll_id}`));
-        if (Array.from(i.querySelectorAll("input"))[0].checked) document.getElementById(`${tier}-content-${poll_id}`).appendChild(i);
-        i.checked = false;
+        if (Array.from(i.querySelectorAll("input"))[0].checked) {
+          document.getElementById(`${tier}-content-${poll_id}`).appendChild(i);
+        }
       })
     }
   })
 
+
+  console.log("\n\n\n");
 
 }

@@ -9,15 +9,14 @@
 
 ### Important
 
-#### Goals for toaday:
-- [ ] Implement new tier list viusal that scales with a varying screen size
-- [ ] Change tier list drag and drop to a clickable interface
+- Change tier list drag and drop to a clickable interface
+  - [ ] fix bug where when answers are selected inside of the tier list, 
+        they are not unchecked when placed on some other tier
+  - [ ] Correctly wire tier list results to the backend
 - [ ] Restructure ranked input so that it supports a clickable interface
-- [ ] Implement clickable interface for ranked input
-
-
+- [ ] Implement clickable ranked input interface
 - Add breakpoints
-  - [ ] Create
+  - [x] Create
 - [ ] Perfect graph visuals
 
 ### Small/Secondary
