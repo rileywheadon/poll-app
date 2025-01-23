@@ -3,7 +3,7 @@
   <!-- LIKE BUTTON -->
   <button
     class="text-xl"
-    hx-post="{{ url_for('poll.like', comment_id = comment.id) }}"
+    hx-post="{{ url_for('comment.like', comment_id=comment.id, action='like') }}"
     hx-target="#comment-like-{{ comment.id }}"
     hx-swap="outerHTML"
   >
@@ -19,7 +19,7 @@
   <!-- DISLIKE BUTTON -->
   <button
     class="text-xl"
-    hx-post="{{ url_for('poll.dislike', comment_id = comment.id) }}"
+    hx-post="{{ url_for('comment.like', comment_id=comment.id, action='dislike') }}"
     hx-target="#comment-like-{{ comment.id }}"
     hx-swap="outerHTML"
   >
