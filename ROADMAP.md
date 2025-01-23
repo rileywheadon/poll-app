@@ -2,29 +2,22 @@
 
 ## Riley
 
-Code Quality (Commit #1)
-
-- [ ] Improve code quality:
-  - Reorganize blueprints (admin/home/poll/comment)
-  - Centralize helpers in a single `utils.py` file
-  - Create abstractions where possible (i.e. `like`/`dislike`)
 - [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
 - [ ] Test for bugs, do a full click through of the app
 
-UI Improvements (Commit #2)
+Admin Improvements (Commit #2)
+
+- [ ] View polls in boards (admin) should redirect to polls
+- [ ] Add ability to mute user (prevent from posting/commenting), ban user
+- [ ] Add ability to view comments from poll UI and delete them
+- [ ] Add other sort options to the poll section of the admin UI
+
+UI Improvements (Commit #3)
 
 - [ ] Ability to pin polls from admin
 - [ ] Sort top by day/week/month/year/all time
 - [ ] Switch the pie/bar chart for choose one/many
 - [ ] Enforce lowercase usernames without spaces and special characters
-
-Admin Improvements (Commit #3)
-
-- [ ] View polls in boards (admin) should redirect to polls
-- [ ] Ensure that deleting a board fully deletes all polls
-- [ ] Add ability to mute user (prevent from posting/commenting), ban user
-- [ ] Add ability to view comments from poll UI and delete them
-- [ ] Add other sort options to the poll section of the admin UI
 
 ## Matt
 
