@@ -22,8 +22,17 @@
 
     <!-- Include the submit button, share button, and report button -->
     <div class="flex flex-row text-sm justify-end items-center mt-4 font-light">
+
+      <!-- Submit Button -->
+      <button
+        class="w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+        type="submit"
+      >
+        <span class="font-medium text-nord-4 mr-1">Submit</span>
+        <i class="ml-1 fa fa-paper-plane text-xl text-nord-4"></i>
+      </button>
       
-      <p class="grow">Votes:
+      <p class="ml-4 grow">Votes:
         <i>{{ poll.votes }}</i>
       </p>
 
@@ -47,15 +56,6 @@
         type="button"
       >
         <i class="ml-1 fa fa-triangle-exclamation text-xl text-black dark:text-white"></i>
-      </button>
-
-      <!-- Submit Button -->
-      <button
-        class="ml-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
-        type="submit"
-      >
-        <span class="font-medium text-nord-4 mr-1">Submit</span>
-        <i class="ml-1 fa fa-paper-plane text-xl text-nord-4"></i>
       </button>
 
     </div>

@@ -10,9 +10,17 @@
     />
   </a>
 
-  <!-- Settings menu -->
+  <!-- Settings menu (appears only when not in the administrator menu) -->
   {% if not session.admin %}
-    <button class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-9 h-9 flex justify-center items-center" onclick="open_settings()">
+
+    <!-- A pesky Javascript function is also needed to set the blur on the main div -->
+    <button 
+      class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-9 h-9 flex justify-center items-center" 
+      hx-get="{{ url_for('home.open_settings') }}"
+      hx-target="#settings"
+      hx-swap="innerHTML"
+      hx-on::after-request="open_settings();"
+    >
       <i id="settings-icon" class="fas fa-gear text-xl cursor-pointer"></i>
     </button>
   {% endif %}

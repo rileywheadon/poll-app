@@ -1,0 +1,6 @@
+{% include "results/comment-body.html" %}
+
+<!-- Out of band swap to update the comment counter -->
+<span id="comments-count-{{ poll.id }}" hx-swap-oob="true">
+  {{ poll.comments|length }}
+</span>

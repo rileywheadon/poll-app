@@ -21,8 +21,21 @@ def index():
     return render_template("index.html")
 
 
+# Route for opening the settings window
+@home.route("/settings/open")
+@requires_auth
+def open_settings():
+    current_url = request.headers.get("HX-Current-Url")
+    root_url = request.url_root
+
+    # Remove the url (i.e. polll.org), and the query params
+    return_endpoint = current_url.replace(root_url, "").split("?")[0]
+    return_url = url_for(f"home.{return_endpoint}")
+    return render_template("settings.html", session=session, return_url=return_url)
+
+
 # Route for updating settings (just username at the moment)
-@home.route("/settings")
+@home.route("/settings/save")
 @requires_auth
 def save_settings():
 
@@ -58,8 +71,9 @@ def save_settings():
     r.headers.set("HX-Trigger", notification)
     return r
 
+    # Home page (poll feed). The board/order is optional (set to All/hot by default)
 
-# Home page (poll feed). The board/order is optional (set to All/hot by default)
+
 @home.route("/feed")
 @requires_auth
 def feed():
@@ -124,8 +138,9 @@ def feed():
     session["feed"] = order
     return render_template("home/feed.html", session=session, polls=polls, boards=boards)
 
+    # Home page (poll feed)
 
-# Home page (poll feed)
+
 @home.route("/report/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def report(poll_id):
@@ -157,8 +172,9 @@ def report(poll_id):
     r.headers.set("HX-Trigger", notification)
     return r
 
+    # Home page (response history)
 
-# Home page (response history)
+
 @home.route("/history")
 @requires_auth
 def history():
@@ -184,8 +200,9 @@ def history():
     session["tab"] = "history"
     return render_template("home/history.html", session=session, polls=polls)
 
+    # Home page (create poll)
 
-# Home page (create poll)
+
 @home.route("/create")
 @requires_auth
 def create():
@@ -283,15 +300,12 @@ def create_poll():
 
     # Assign the boards to the poll
     for board_id in board_ids:
-
         query = "INSERT INTO poll_board (poll_id, board_id) VALUES (?, ?)"
         cur.execute(query, (poll["id"], board_id))
 
     # Add the poll answers to the database unless they are numeric
     if not numeric:
-
         query = "INSERT INTO poll_answer (poll_id, answer) VALUES (?, ?)"
-
         for answer in answers:
             cur.execute(query, (poll["id"], answer))
 
@@ -333,6 +347,7 @@ def create_poll():
         session=session,
         boards=boards
     ))
+
     notification = '{"notification": "Poll Submitted!"}'
     r.headers.set("HX-Trigger", notification)
     return r
@@ -378,6 +393,7 @@ def response(poll_id):
 
         # If the poll isn't already in the responses, add the user's response
         if not any([r["poll"] == poll_id for r in session["responses"]]):
+
             response = {
                 "form": request.form.to_dict(flat=False),
                 "poll": poll_id
@@ -385,7 +401,7 @@ def response(poll_id):
             session["responses"].append(response)
             session.modified = True
 
-        return render_template("anonymous/submit.html")
+            return render_template("anonymous/submit.html")
 
     # Validate the response, then render the results
     error = validate_response(request.form.to_dict(flat=False), poll_id)
@@ -398,12 +414,13 @@ def response(poll_id):
         r.headers.set("HX-Reswap", "none")
         return r
 
-    return redirect(url_for("home.result", poll_id=poll_id))
+    return redirect(url_for("home.result", poll_id=poll_id, show_graph=True))
 
 
 # HTTP endpoint for getting the results card
-@home.route("/result/<poll_id>")
+@home.route("/result/<poll_id>/<show_graph>")
+@home.route("/result/<poll_id>", defaults={"show_graph": False})
 @requires_auth
-def result(poll_id):
+def result(poll_id, show_graph):
     poll = query_poll_details(poll_id)
-    return render_template("results/result-base.html", poll=poll)
+    return render_template("results/result-base.html", poll=poll, show_graph=show_graph)

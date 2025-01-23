@@ -4,7 +4,10 @@
 
 {% block body %}
 
-{% include "settings.html" %}
+<!-- Settings div (empty by default) -->
+<div id="settings">
+
+</div>
 
 <main id="main">
 
@@ -40,8 +43,7 @@
 
             {% for board in boards %}
         
-              <a class="flex flex-row items-center justify-center rounded-md w-full h-8 border-2 dark:border-nord-3 mb-4 px-10 
-                        font-light text-polll-blue {% if session.board == board.name %} text-polll-green {% endif %}"
+              <a class="flex flex-row items-center justify-center rounded-md w-full h-8 border-2 dark:border-nord-3 mb-4 px-10 font-light text-polll-blue {% if session.board == board.name %} text-polll-green {% endif %}"
                 href="{{ url_for('home.feed', board = board.name, order = session.feed) }}"
               >
                 {{ board.name }}

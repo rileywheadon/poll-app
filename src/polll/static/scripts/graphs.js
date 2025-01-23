@@ -174,7 +174,11 @@ function choose_one_options(user_rs, rs) {
 
 function choose_many_options(user_rs, rs) {
 
-    user_rs ? user_rs = user_rs.map((e) => e["answer"]) : user_rs = "";
+    if (user_rs == {}) {
+      user_rs = user_rs.map((e) => e["answer"]);
+    } else {
+      user_rs = "";
+    }
 
     return {
         series: rs.map((e) => e["count"]),

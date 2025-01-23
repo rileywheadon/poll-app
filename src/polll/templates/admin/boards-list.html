@@ -7,16 +7,19 @@
   <div class="flex flex-row border-x border-b border-nord-0 dark:border-nord-4 p-4 items-center">
 
     <p class="text-xl">{{ board.name }}</p>
-    <button class="ml-auto rounded-md w-32 h-10 dark:bg-nord-4 dark:text-nord-0">
+    <button 
+      class="ml-auto rounded-md w-32 h-10 dark:bg-nord-4 dark:text-nord-0"
+      hx-get=""
+      hx-include=""
+    >
       View Polls
       <i class="fa fa-newspaper ml-1"></i>
     </button>
     <button class="ml-4 rounded-md w-40 h-10 dark:bg-nord-11 dark:text-nord-0"
       hx-get="{{ url_for('admin.delete_board', board_id = board.id) }}"
-      hx-include="previous input"
       hx-target="#boards-list"
       hx-swap="innerHTML"
-      hx-confirm="Are you sure you want to delete board '{{ board.name }}'?"
+      hx-confirm="WARNING: This will delete all polls in '{{ board.name }}'. On production, this can be EXTREMELY destructive. Are you sure you want to delete board '{{ board.name }}'?"
     >
       Delete Board
       <i class="fa fa-trash ml-1"></i>

@@ -184,7 +184,7 @@ def comment(poll_id):
     # Insert the new comment into the database
     # NOTE: Set parent_id = 0 because Javscript doesn't play nice with null values
     query = """
-    INSERT INTO comment (parent_id, poll_id, user_id, comment, timestamp) 
+    INSERT INTO comment (parent_id, poll_id, user_id, comment, timestamp)
     VALUES (0, ?, ?, ?, ?) RETURNING id
     """
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
@@ -194,7 +194,8 @@ def comment(poll_id):
 
     # Redirect to the comments endpoint to render the comments
     comment = query_comment_details(res["id"])
-    return render_template("results/comment-body.html", comment=comment)
+    poll = query_poll_details(poll_id)
+    return render_template("results/comment-response.html", poll=poll, comment=comment)
 
 
 @poll.route("/poll/like/<comment_id>", methods=["GET", "POST"])
@@ -212,12 +213,17 @@ def like(comment_id):
     dislike = cur.execute(dislike_query, (comment_id, user_id)).fetchone()
 
     # If the user has already liked the comment, remove the like
-    if (not dislike) and like:
+    if like:
         query = "DELETE FROM like WHERE user_id=? AND comment_id=?"
         cur.execute(query, (session["user"]["id"], comment_id))
 
-    # If the user has not liked or disliked the comment, add a like
-    if (not dislike) and (not like):
+    # If the user has disliked the comment, remove the dislike
+    if dislike:
+        query = "DELETE FROM dislike WHERE user_id=? AND comment_id=?"
+        cur.execute(query, (session["user"]["id"], comment_id))
+
+    # If the user had not liked the comment before, add a like
+    if not like:
         query = "INSERT INTO like (user_id, comment_id, timestamp) VALUES (?, ?, ?)"
         timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
         cur.execute(query, (session["user"]["id"], comment_id, timestamp))
@@ -248,22 +254,27 @@ def dislike(comment_id):
     like = cur.execute(like_query, (comment_id, user_id)).fetchone()
     dislike = cur.execute(dislike_query, (comment_id, user_id)).fetchone()
 
-    # If the user has already liked the comment, remove the like
-    if (not like) and dislike:
+    # If the user has already disliked the comment, remove the dislike
+    if dislike:
         query = "DELETE FROM dislike WHERE user_id=? AND comment_id=?"
         cur.execute(query, (session["user"]["id"], comment_id))
 
-    # If the user has not liked or disliked the comment, add a like
-    if (not like) and (not dislike):
+    # If the user has liked the comment, remove the like
+    if like:
+        query = "DELETE FROM like WHERE user_id=? AND comment_id=?"
+        cur.execute(query, (session["user"]["id"], comment_id))
+
+    # If the user had not disliked the comment before, add a dislike
+    if not dislike:
         query = "INSERT INTO dislike (user_id, comment_id, timestamp) VALUES (?, ?, ?)"
         timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
         cur.execute(query, (session["user"]["id"], comment_id, timestamp))
 
-    # Get information about the comment and re-render its template
-    db.commit()
-    comment = query_comment_details(comment_id)
+        # Get information about the comment and re-render its template
+        db.commit()
+        comment = query_comment_details(comment_id)
 
-    # If the commment is a reply, render the reply template
+        # If the commment is a reply, render the reply template
     if comment["parent_id"] != 0:
         return render_template("results/reply-like.html", reply=comment)
 
