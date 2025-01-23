@@ -135,7 +135,7 @@ function choose_one_options(user_rs, rs) {
             type: 'bar',
             background: 'null',
             width: "100%",
-            height: "100%",
+            height: 250,
             toolbar: {
                 show: false
             }
@@ -195,7 +195,7 @@ function choose_many_options(user_rs, rs) {
             type: "pie",
             background: "null",
             width: "100%",
-            height: "100%",
+            height: 350,
         },
         theme: {
             mode: "dark",
