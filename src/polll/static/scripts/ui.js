@@ -113,3 +113,9 @@ function toggle_replies(comment_id) {
 function toggle_filter_dropdown() {
   document.getElementById("filter-dropdown").classList.toggle("hidden");
 }
+
+function handle_tier_select(tier) {
+  document.getElementById("tier-ans-container").querySelectorAll("input").forEach((e) => {
+    if (e.checked) document.getElementById(`${tier}-content`).appendChild(e.parentNode);
+  })
+}

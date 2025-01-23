@@ -10,7 +10,7 @@
 ### Important
 
 #### Goals for toaday:
-- [ ] Umplement new tier list viusal that scales with a varying screen size
+- [ ] Implement new tier list viusal that scales with a varying screen size
 - [ ] Change tier list drag and drop to a clickable interface
 - [ ] Restructure ranked input so that it supports a clickable interface
 - [ ] Implement clickable interface for ranked input
