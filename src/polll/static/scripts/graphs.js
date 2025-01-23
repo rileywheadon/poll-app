@@ -1,5 +1,5 @@
 // I know I know
-cols = {
+const cols = {
     'nord-0': '#2E3440',
     'nord-1': '#3B4252',
     'nord-2': '#434C5E',
@@ -27,6 +27,16 @@ cols = {
     'polll-blue':'#88bbd0'
 }
 
+const bps =  {
+    'xs': '520px',
+    'sm': '640px',
+    'md': '768px',
+    'lg': '1024px',
+    'xl': '1536px',
+  }
+
+const bp = 768;
+
 // Global charts object use to handle creating/destroying charts
 var charts = {} 
 
@@ -35,36 +45,29 @@ function graphToggle(poll) {
 
   toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
   graph = document.getElementById(`poll-graph-${poll["id"]}`);
+  var btn_text = document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML;
+  
+  btn_text == "Show Results" ? document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML = "Hide Results" : document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML = "Show Results";
 
   // NOTE: Behaviour if the poll has no votes
   if (poll["votes"] == 0) {
 
-    const votes = document.createElement("p");
+    var votes = document.createElement("p");
     const votes_message = document.createTextNode("No votes yet!");
     votes.appendChild(votes_message);
 
-    if (toggle.innerHTML == "Hide Results") {
-      graph.removeChild(graph.firstElementChild);
-      toggle.innerHTML = "Show Results";
-    } else {
-      graph.insertBefore(votes, graph.firstElementChild);
-      toggle.innerHTML = "Hide Results";
-    }
-
+    btn_text == "Hide Results" ? graph.removeChild(graph.firstElementChild) : graph.insertBefore(votes, graph.firstElementChild);
     return
+
   }
 
   // NOTE: Behaviour for ranked poll / tier list
   if (poll["poll_type"] == "RANKED_POLL" || poll["poll_type"] == "TIER_LIST") {
 
     result = document.getElementById(`poll-result-${poll["id"]}`);
-    if (toggle.innerHTML == "Hide Results") {
-      result.classList.add("hidden");
-      toggle.innerHTML = "Show Results";
-    } else {
-      result.classList.remove("hidden");
-      toggle.innerHTML = "Hide Results";
-    }
+
+    btn_text == "Hide Results" ? result.classList.add("hidden") : result.classList.remove("hidden");
+
   }
 
   // NOTE: Behaviour for all other poll types
@@ -72,11 +75,7 @@ function graphToggle(poll) {
     if (poll["id"] in charts) {
       charts[poll["id"]].destroy();
       delete charts[poll["id"]];
-      toggle.innerHTML = "Show Results";
-    } else {
-      graphInitRewritten(poll);
-      toggle.innerHTML = "Hide Results";
-    }
+    } else graphInitRewritten(poll);
   }
 }
 
@@ -134,9 +133,9 @@ function choose_one_options(user_rs, rs) {
         }],
         chart: {
             type: 'bar',
-            height: 200,
-            width: 500,
             background: 'null',
+            width: "100%",
+            height: 250,
             toolbar: {
                 show: false
             }
@@ -167,7 +166,20 @@ function choose_one_options(user_rs, rs) {
                     return Math.round(val * total_answers / 100);
                 }
             }
-        }
+        },
+        responsive: [{
+            breakpoint: bp,
+            options: {
+                chart: {
+                    chart: {
+                        type: "pie",
+                        background: "null",
+                        width: bp,
+                        height: bp,
+                    },
+                },
+            },
+        }],
     };
 
 }
@@ -186,8 +198,8 @@ function choose_many_options(user_rs, rs) {
         chart: {
             type: "pie",
             background: "null",
-            width: 500,
-            height: 500,
+            width: "100%",
+            height: 350,
         },
         theme: {
             mode: "dark",
@@ -209,6 +221,19 @@ function choose_many_options(user_rs, rs) {
                 return cols["polll-blue"];
               }],
           },
+          responsive: [{
+            breakpoint: bp,
+            options: {
+                chart: {
+                    chart: {
+                        type: "pie",
+                        background: "null",
+                        width: bp,
+                        height: bp,
+                    },
+                },
+            },
+        }],
     }
 
 }
@@ -324,6 +349,19 @@ function scale_graph_options(user_rs, rs, rs_kde) {
 
                 ]
         },
+        responsive: [{
+            breakpoint: bp,
+            options: {
+                chart: {
+                    chart: {
+                        type: "pie",
+                        background: "null",
+                        width: bp,
+                        height: bp,
+                    },
+                },
+            },
+        }],
     };
 
 }

@@ -8,12 +8,8 @@
   <div class="flex flex-row items-center p-2">
 
     <div class="flex flex-col p-2 select-none">
-      {% if poll.is_anonymous == 1 %}
-        <p class="text-nord-4 font-light">anonymous ⋅ {{ poll.age }}</p>
-      {% else %}
-        <p class="text-nord-4 font-light">@{{ poll.creator }} ⋅ {{ poll.age }}</p>
-      {% endif %}
-      <p class="rounded-md text-2xl font-light">{{ poll.question }}</p>
+      <p class="font-light text-neutral-500">{% if poll.is_anonymous == 1 %}anonymous{% else %}@{{ poll.creator }}{% endif %} ⋅ {{ poll.age }}</p>
+      <p class=" font-light text-neutral-200 text-2xl">{{ poll.question }}</p>
     </div>
 
     <!-- If the user created this poll, allow them to edit it -->
@@ -21,26 +17,26 @@
   
       <!-- Share Button -->
       <button 
-        class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1"
+        class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
         title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square text-black dark:text-nord-4 hover:text-2xl"></i>
+        <i class="ml-1 fa fa-share-from-square text-polll-blue hover:text-polll-green"></i>
       </button>
 
       {% include "results/poll-lock.html" %}
 
       <!-- Delete Poll -->
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="ml-2 text-xl w-10 h-10 rounded-md py-1"
+      <button class="ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
           title="Delete"
           hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
           hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash text-black dark:text-nord-4 hover:text-2xl"></i>
+        <i class="fa fa-trash text-nord-11"></i>
       </button>
 
     {% endif %}
@@ -48,7 +44,7 @@
   </div>
 
   <!-- Poll Graph -->
-  <div id="poll-graph-{{ poll.id }}" class="px-8 py-4">
+  <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4">
 
     <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
@@ -61,7 +57,7 @@
 
   <div class="flex flex-row text-sm px-4 items-center my-4 select-none">
     <p class="font-light">
-      Votes: <i>{{ poll.votes }}</i>
+      Votes: {{ poll.votes }}
     </p>
 
     <!-- Toggle Comments -->
@@ -76,16 +72,16 @@
 
     <!-- Toggle Results -->
     <button 
-      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none"
       onclick="graphToggle({{ poll }})"
     >
       <span
         id="graph-toggle-{{ poll.id }}"
         class="text-black dark:text-nord-4"
       >
-        Show Results
+      <p id="rs-btn-txt-{{ poll.id }}" class="hidden md:flex md:font-light md:hover:text-nord-6">Show Results</p>
       </span>
-      <i class="fa fa-chart-simple ml-2 text-black dark:text-nord-4 text-xl"></i>
+      <i class="fa fa-chart-simple px-2  text-xl"></i>
     </button>
 
   </div>

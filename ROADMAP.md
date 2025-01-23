@@ -30,13 +30,17 @@ Admin Improvements (Commit #3)
 
 ### Important
 
-- [ ] Fix ranked alignment issue
+- Change tier list drag and drop to a clickable interface
+  - [ ] fix bug where when answers are selected inside of the tier list, 
+        they are not unchecked when placed on some other tier (not breaking but annoying)
+  - [ ] Correctly wire tier list results to the backend (breaking and annoying)
+- [ ] Restructure ranked input so that it supports a clickable interface
+- [ ] Implement clickable ranked input interface
 - [ ] Perfect graph visuals
-- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
-
-- [ ] Adjust 'create-card' to fit the screen
+- [ ] WHERE THE FUCK DID THE FOOTER GO ON CREATE MOBILE!!!!!!!!!!!!?!?!??!
+    
 
 # Roadmap
 
@@ -44,6 +48,7 @@ Admin Improvements (Commit #3)
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
 - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
+- [ ] Allow users to set custom upper and lower bounds on scale polls
 
 ## Launch
 
