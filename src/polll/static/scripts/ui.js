@@ -114,8 +114,24 @@ function toggle_filter_dropdown() {
   document.getElementById("filter-dropdown").classList.toggle("hidden");
 }
 
-function handle_tier_select(tier) {
-  document.getElementById("tier-ans-container").querySelectorAll("input").forEach((e) => {
-    if (e.checked) document.getElementById(`${tier}-content`).appendChild(e.parentNode);
+function handle_tier_select(poll_id, tier) {
+
+  document.getElementById(`tier-ans-container-${poll_id}`).querySelectorAll("input").forEach((e) => {
+    if (e.checked) document.getElementById(`${tier}-content-${poll_id}`).appendChild(e.parentNode);
+    e.checked = false;
+  });
+
+  ["S", "A", "B", "C", "D", "F"].forEach((e) =>  {
+    if (document.getElementById(`${e}-content-${poll_id}`).childNodes.length > 1) {
+      console.log(`${e} tier`);
+      Array.from(document.getElementById(`${e}-content-${poll_id}`).childNodes).slice(1).forEach((i) => {
+        console.log(i);
+        console.log(document.getElementById(`${tier}-content-${poll_id}`));
+        if (Array.from(i.querySelectorAll("input"))[0].checked) document.getElementById(`${tier}-content-${poll_id}`).appendChild(i);
+        i.checked = false;
+      })
+    }
   })
+
+
 }
