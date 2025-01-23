@@ -5,7 +5,8 @@ import requests
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.models import on_cooldown, get_days_behind, query_poll_details
+from polll.utils import *
+from polll.models import delete_poll
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
@@ -68,7 +69,7 @@ def resetcooldown():
 
     # Update the user's next_poll_allowed value
     query = """
-    UPDATE user 
+    UPDATE user
     SET next_poll_allowed = ?
     WHERE id = ?
     """
@@ -119,7 +120,7 @@ def polls():
     # Create the query and build the values tuple
     poll_query = f"""
     SELECT
-        poll.*, 
+        poll.*,
         user.username AS creator,
         user.email AS creator_email
     FROM poll
@@ -280,19 +281,16 @@ def delete_board(board_id):
     cur = db.cursor()
 
     # Remove the board and all connected polls from the database
-    board_query = "DELETE FROM board WHERE id=?"
-    poll_board_query = "DELETE FROM poll_board WHERE board_id=?"
-    poll_query = """
-    DELETE FROM poll 
-    WHERE id IN (
-        SELECT poll_id 
-        FROM poll_board 
-        WHERE board_id=?
-    )
-    """
+    board_query = "DELETE FROM board WHERE id = ?"
+    poll_board_query = "DELETE FROM poll_board WHERE board_id = ?"
+    poll_query = "SELECT poll_id FROM poll_board WHERE board_id = ?"
+
+    # Get all of the polls to be deleted and delete them
+    res = cur.execute(poll_query, (board_id,)).fetchal()
+    for poll in res:
+        delete_poll(poll["poll_id"])
 
     # Execute the queries, starting with poll_query
-    cur.execute(poll_query, (board_id,))
     cur.execute(poll_board_query, (board_id,))
     cur.execute(board_query, (board_id,))
     db.commit()
