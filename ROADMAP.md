@@ -15,11 +15,10 @@
   - [ ] Correctly wire tier list results to the backend
 - [ ] Restructure ranked input so that it supports a clickable interface
 - [ ] Implement clickable ranked input interface
-- Add breakpoints
-  - [x] Create
 - [ ] Perfect graph visuals
 
 ### Small/Secondary
+    
 
 # Roadmap
 
