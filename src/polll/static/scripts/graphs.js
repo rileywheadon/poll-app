@@ -22,7 +22,6 @@ const cols = {
     'polll-green': '#B6D7A8',
     'polll-grad-3':'#A0CFB6',
     'polll-grad-4':'#97D0BF',
-
     'polll-grad-5':'#92D0D0',
     'polll-blue':'#88bbd0'
 }
@@ -101,96 +100,234 @@ function graphInitRewritten(poll) {
   chart.render();
 }
 
-function choose_one_options(user_rs, rs) {
+function choose_one_options(user_rs, rs, type="pie") {
 
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
 
-    return {
-        grid: {
-            show: false,
-        },
-        xaxis: {
-            categories: rs.map((e) => e["answer"]),
-            labels: {
-                formatter: function (val) {
-                    return val;
-                }
+
+    // PIE CHART (default)
+    if (type == "pie") {
+        return {
+            series: rs.map((e) => e["count"]),
+            labels: rs.map((e) => e["answer"] == user_rs ? e["answer"] + " (you)" : e["answer"]),
+            chart: {
+                type: "pie",
+                background: "null",
+                width: "100%",
+                height: 350,
             },
-            max: 100,
-        },
-        yaxis: {
-            labels: {
-                formatter: function (val) {
-                    return "";
-                }
+    
+            theme: {
+                mode: "dark",
             },
-        },
-        series: [{
-            name: "",
-            data: rs.map((e) => e["count"] / total_answers * 100)
-        }],
-        chart: {
-            type: 'bar',
-            background: 'null',
-            width: "100%",
-            height: 250,
-            toolbar: {
-                show: false
-            }
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 4,
-                borderRadiusApplication: 'end',
-                horizontal: true,
-            }
-        },
-        dataLabels: {
-            enabled: true,
-            formatter: function (val, opt) {
-                return opt.w.globals.labels[opt.dataPointIndex] + ":  " + Math.round(val) + "%";
-              },
-        },
-        colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-            return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? cols["polll-green"] : cols["polll-blue"];
-          }],
-        theme: {
-            mode: "dark",
-        },
-        tooltip: {
-            enabled: true,
-            y: {
-                formatter: (val) => {
-                    return Math.round(val * total_answers / 100);
-                }
-            }
-        },
-        responsive: [{
-            breakpoint: bp,
-            options: {
-                chart: {
-                    chart: {
-                        type: "pie",
-                        background: "null",
-                        width: bp,
-                        height: bp,
-                    },
+    
+            dataLabels: {
+                enabled: true,
+                formatter: function (val) {
+                    return Math.round(val) + "%"
                 },
             },
-        }],
-    };
+            colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+                if (value == 0) return "#808080";
+                return w.globals.labels[seriesIndex].includes("(you)") ? cols["polll-green"] : cols["polll-blue"];
+              }],
+              fill: {
+                colors: [function({ value, seriesIndex, w }) {
+                    return w.globals.labels[seriesIndex].includes("(you)") ? cols["polll-green"]: cols["polll-blue"];
+                  }],
+              },
+              
+    
+            responsive: [{
+                breakpoint: bp,
+                options: {
+                    chart: {
+                        chart: {
+                            type: "pie",
+                            background: "null",
+                            width: bp,
+                            height: bp,
+                        },
+                    },
+                },
+            }],
+    
+        }
+    }
+
+
+    // BAR CHART
+    else {
+        return {
+            grid: {
+                show: false,
+            },
+            xaxis: {
+                categories: rs.map((e) => e["answer"]),
+                labels: {
+                    formatter: function (val) {
+                        return val;
+                    }
+                },
+                max: 100,
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (val) {
+                        return "";
+                    }
+                },
+            },
+            series: [{
+                name: "",
+                data: rs.map((e) => e["count"] / total_answers * 100)
+            }],
+            chart: {
+                type: 'bar',
+                background: 'null',
+                width: "100%",
+                height: 250,
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    borderRadiusApplication: 'end',
+                    horizontal: true,
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val, opt) {
+                    return opt.w.globals.labels[opt.dataPointIndex] + ":  " + Math.round(val) + "%";
+                  },
+            },
+            colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+                return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? cols["polll-green"] : cols["polll-blue"];
+              }],
+            theme: {
+                mode: "dark",
+            },
+            tooltip: {
+                enabled: true,
+                y: {
+                    formatter: (val) => {
+                        return Math.round(val * total_answers / 100);
+                    }
+                }
+            },
+            responsive: [{
+                breakpoint: bp,
+                options: {
+                    chart: {
+                        chart: {
+                            type: "bar",
+                            background: "null",
+                            width: bp,
+                            height: bp,
+                        },
+                    },
+                },
+            }],
+        };
+    }
 
 }
 
-function choose_many_options(user_rs, rs) {
+function choose_many_options(user_rs, rs, type="bar") {
 
-    if (user_rs == {}) {
-      user_rs = user_rs.map((e) => e["answer"]);
-    } else {
-      user_rs = "";
+    user_rs == {} ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
+
+    if (type == "bar") {
+        return {
+
+            grid: {
+                show: false,
+            },
+            xaxis: {
+                categories: rs.map((e) => e["answer"]),
+                labels: {
+                    formatter: function (val) {
+                        return val;
+                    }
+                },
+                
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (val) {
+                        return "";
+                    }
+                },
+            },
+            series: [{
+                name: "",
+                data: rs.map((e) => e["count"])
+            }],
+            chart: {
+                type: 'bar',
+                background: 'null',
+                width: bp,
+                height: 250,
+                toolbar: {
+                    show: false
+                }
+            },
+    
+            plotOptions: {
+                bar: {
+                    borderRadius: 4,
+                    borderRadiusApplication: 'end',
+                    horizontal: true,
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function (val, opt) {
+                    const i = opt.w.globals.labels[opt.dataPointIndex];
+                    const lbl = i + ": " + Math.round(val);
+                    return user_rs.includes(i) ? lbl + " (you)" : lbl; // colours might be enough?
+                  },
+            },
+            colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+                console.log(w.globals.labels[dataPointIndex]);
+
+                return user_rs.includes(w.globals.labels[dataPointIndex]) ? cols["polll-green"] : cols["polll-blue"];
+              }],
+
+            tooltip: {
+                enabled: true,
+                y: {
+                    formatter: function(val, { series, seriesIndex, dataPointIndex, w }) {
+                        return val; // lbl w/ user_rs
+                      }
+                }
+            },
+            theme: {
+                mode: "dark"
+            },
+            responsive: [{
+                breakpoint: bp,
+                options: {
+                    chart: {
+                        chart: {
+                            type: "bar",
+                            background: "null",
+                            width: bp,
+                            height: bp,
+                        },
+                    },
+                },
+            }],
+    
+        }
     }
+
+    else {
 
     return {
         series: rs.map((e) => e["count"]),
@@ -234,6 +371,7 @@ function choose_many_options(user_rs, rs) {
                 },
             },
         }],
+    }
     }
 
 }

@@ -65,7 +65,7 @@
       class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-black dark:text-nord-4 flex items-center justify-center"
       onclick="toggle_comments({{ poll.id }})"
     >
-      <span id="comments-toggle-{{ poll.id }}">Show Comments </span>
+      <span class="hidden md:flex" id="comments-toggle-{{ poll.id }}">Show Comments</span>
       &nbsp(<span id="comments-count-{{ poll.id }}">{{ poll.comments|length }}</span>)
       <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
     </button>
