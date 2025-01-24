@@ -20,7 +20,9 @@
         </div>
         <div class="border-4 border-polll-blue p-2 hover:border-polll-green">
           <p class="text-white font-light hover:cursor-default">
-            {{ poll.response[loop.index0].answer }}
+            {% if poll.response %}
+              {{ poll.response[loop.index0].answer }}
+            {% endif %}
           </p>
         </div>
       </div>

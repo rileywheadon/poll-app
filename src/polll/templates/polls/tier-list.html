@@ -2,13 +2,19 @@
 
 {% block poll_content %}
 
-  <div id="tier-list-{{ poll.id }}" class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl w-full">
+<div id="tier-list-{{ poll.id }}">
+
+  <div class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl w-full">
+
     {% for tier in ["S", "A", "B", "C", "D", "F"] %}
 
-    <!-- Add listener to this div -->
+      <!-- Add listener to this div -->
       <div class="flex flex-row h-16 hover:cursor-default"> 
 
-        <button type="button" id="{{ tier }}-label" class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 p-1 mt-[-1px] ml-[-1px] flex items-center justify-center hover:cursor-default" 
+        <button 
+          type="button" 
+          id="{{ tier }}-label" 
+          class="w-16 border-r-2 {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 dark:border-nord-4 p-1 mt-[-1px] ml-[-1px] flex items-center justify-center hover:cursor-default" 
         >
           <span class="text-2xl
             {% if   tier == 'S' %} text-tier-S
@@ -22,28 +28,56 @@
             {{ tier }}
           </span>
         </button>
-        <button type="button" id="{{ tier }}-content-{{ poll.id }}" class="grow flex flex-row justify-start {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 p-1 dark:border-nord-4 mt-[-1px] ml-[-1px] hover:cursor-default tier-{{ tier }}" 
-        onclick="handle_tier_select('{{ poll.id }}', '{{ tier }}')">
-        </button>
+        <div 
+          id="{{ tier }}-content-{{ poll.id }}" 
+          class="grow flex flex-row gap-1 justify-start {% if not tier == 'F' %} border-b-2 {% endif %} border-nord-0 p-1 dark:border-nord-4 mt-[-1px] ml-[-1px] hover:cursor-default tier-{{ tier }}" 
+          onmousedown="handle_tier_select('{{ poll.id }}', '{{ tier }}')"
+        >
+        </div>
         
       </div>
 
     {% endfor %}
   </div>
+
   <!-- TOOD: Fix selection bug and wire to different tiers -->
-  <div id="tier-ans-container-{{ poll.id }}" class="flex flex-wrap gap-2 w-fit h-fit mt-6">
+  <div 
+    id="tier-ans-container-{{ poll.id }}" 
+    class="flex flex-wrap gap-2 w-fit h-fit mt-6"
+  >
+ 
     {% for answer in poll.answers %}
-    <div id="tier-answer-{{ answer.id }}" class="flex">
-      <input type="radio" id="tier-{{ answer.id }}" name="answer_id" value="{{ answer.id }}" class="hidden peer" onclick="handle_btn_select()">
-      <label for="tier-{{ answer.id }}"
-        class="items-center justify-center w-full h-full max-w-32
-        rounded-lg cursor-default p-4
-        border-2 border-gray-700 bg-gray-800 text-gray-400
-        hover:text-gray-300 hover:bg-gray-700
-        peer-checked:border-polll-green peer-checked:text-gray-300">
-        {{ answer.answer }}
-      </label>
-    </div>
+
+      <div class="flex">
+        <input
+          class="hidden"
+          type="text"
+          name="answer_id"
+          value="{{ answer.id }}"
+        />
+        <input
+          class="hidden"
+          type="text"
+          name="answer_tier"
+          value="X"
+        />
+        <button 
+          type="button"
+          class="tier-answer 
+          flex items-center justify-center w-full h-full max-w-32
+          rounded-lg cursor-default p-4 min-w-16
+          border-2 border-gray-700 bg-gray-800 text-gray-400
+          hover:text-gray-300 hover:bg-gray-700
+          focus:border-polll-green peer-checked:text-gray-300"
+        >
+          {{ answer.answer }}
+        </button>
+      </div>
+
     {% endfor %}
+
   </div>
+
+</div>
+
 {% endblock %}

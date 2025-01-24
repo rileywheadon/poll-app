@@ -6,7 +6,7 @@ import requests
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
 from polll.utils import *
-from polll.models import delete_poll
+from polll.models import delete_poll, query_poll_details
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
@@ -280,15 +280,9 @@ def delete_board(board_id):
     db = get_db()
     cur = db.cursor()
 
-    # Remove the board and all connected polls from the database
+    # Remove the board and all connections from the database
     board_query = "DELETE FROM board WHERE id = ?"
     poll_board_query = "DELETE FROM poll_board WHERE board_id = ?"
-    poll_query = "SELECT poll_id FROM poll_board WHERE board_id = ?"
-
-    # Get all of the polls to be deleted and delete them
-    res = cur.execute(poll_query, (board_id,)).fetchal()
-    for poll in res:
-        delete_poll(poll["poll_id"])
 
     # Execute the queries, starting with poll_query
     cur.execute(poll_board_query, (board_id,))
