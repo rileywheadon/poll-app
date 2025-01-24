@@ -27,10 +27,10 @@ Testing
 
 ### Important
 
-- [ ] Fix ranked alignment issue
-- [ ] Perfect graph visuals
+- [ ] Fix ranked element size issue (min width on grid?)
 - [ ] Switch the pie/bar chart for choose one/many
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
+- [ ] Perfect graph visuals
 
 ### Small/Secondary
 

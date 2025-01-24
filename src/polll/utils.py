@@ -121,7 +121,8 @@ def smooth_hist(data, bandwidth):
 # Formats the given timestamp to be more readable as well as converts it to the user's local timezone
 def format_time(time_string):
     locale = str(datetime.strptime(time_string, "%Y-%m-%d %H:%M:%S").replace(
-        tzinfo=tz.tzutc()).astimezone(tz.tzlocal()))[:locale.rindex("-")]
+        tzinfo=tz.tzutc()).astimezone(tz.tzlocal()))
+    locale=locale[:locale.rindex("-")]
     dates = list(map(int, locale[:time_string.index(" ")].split("-")))
     times = list(map(int, locale[1 + time_string.index(" "):].split(":")))
     return datetime(dates[0], dates[1], dates[2], times[0], times[1], times[2]).strftime("%a %d, %I:%M %p") + " " + str(datetime.now().astimezone().tzinfo)
