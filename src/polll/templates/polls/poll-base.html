@@ -8,7 +8,7 @@
 
   <form
     class="p-2"
-    hx-post="{{ url_for('home.response', poll_id = poll.id) }}"
+    hx-post="{{ url_for('poll.response', poll_id = poll.id) }}"
     hx-target="closest .poll-card"
     hx-trigger="submit"
     hx-swap="outerHTML"
@@ -21,13 +21,13 @@
 
       <!-- Submit Button -->
       <button
-        class="w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center"
+        class="mr-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center text-polll-blue hover:text-polll-green"
         type="submit"
       >
-        <span class="font-medium text-nord-4 mr-1">Submit</span>
-        <i class="ml-1 fa fa-paper-plane text-xl text-nord-4"></i>
+        <span class="hidden md:flex md:font-medium text-nord-4 md:mr-1">Submit</span>
+        <i class="ml-1 fa fa-paper-plane text-xl"></i>
       </button>
-      
+     
       <p class="grow">Votes:
         {{ poll.votes }}
       </p>
@@ -54,14 +54,6 @@
         <i class="ml-1 fa fa-triangle-exclamation text-xl"></i>
       </button>
 
-      <!-- Submit Button -->
-      <button
-        class="ml-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center text-polll-blue hover:text-polll-green"
-        type="submit"
-      >
-        <span class="hidden md:flex md:font-medium text-nord-4 md:mr-1">Submit</span>
-        <i class="ml-1 fa fa-paper-plane text-xl"></i>
-      </button>
 
     </div>
   </form>

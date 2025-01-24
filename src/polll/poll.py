@@ -11,7 +11,7 @@ import polll.results as result_handlers
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
 from polll.utils import url_to_id
-from polll.models import delete_poll, query_poll_details, query_comment_details
+from polll.models import *
 
 # Create a blueprint for answering anonymous polls
 poll = Blueprint('poll', __name__, template_folder='templates')
@@ -126,3 +126,50 @@ def comment(poll_id):
     comment = query_comment_details(res["id"])
     poll = query_poll_details(poll_id)
     return render_template("results/comment-response.html", poll=poll, comment=comment)
+
+
+# HTTP endpoint for responding to polls
+@poll.route("/poll/response/<poll_id>", methods=["GET", "POST"])
+def response(poll_id):
+
+    # If the user is not logged in, add their response to the session variable
+    if not session.get("user"):
+
+        # Create a list in the session variable if it doesn't already exist
+        if session.get("responses") is None:
+            session["responses"] = []
+
+        # If the poll isn't already in the responses, add the user's response
+        if not any([r["poll"] == poll_id for r in session["responses"]]):
+
+            response = {
+                "form": request.form.to_dict(flat=False),
+                "poll": poll_id
+            }
+            session["responses"].append(response)
+            session.modified = True
+
+            return render_template("anonymous/submit.html")
+
+    # Validate the response, then render the results
+    print(request.form.to_dict(flat=False))
+    error = validate_response(request.form.to_dict(flat=False), poll_id)
+
+    # If the response was invalid, notify the user
+    if error == "Invalid Response":
+        r = make_response("")
+        notification = '{"notification": "You can''t respond to this poll!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", "none")
+        return r
+
+    return redirect(url_for("home.result", poll_id=poll_id, show_graph=True))
+
+
+# HTTP endpoint for getting the results card
+@poll.route("/poll/result/<poll_id>/<show_graph>")
+@poll.route("/poll/result/<poll_id>", defaults={"show_graph": False})
+@requires_auth
+def result(poll_id, show_graph):
+    poll = query_poll_details(poll_id)
+    return render_template("results/result-base.html", poll=poll, show_graph=show_graph)

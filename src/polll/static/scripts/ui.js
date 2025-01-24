@@ -72,7 +72,13 @@ function update_answer_editor(poll_type) {
 function toggle_comments(poll_id) {
   comments = document.getElementById("poll-comments-" + poll_id);
   toggle = document.getElementById("comments-toggle-" + poll_id);
-  document.getElementById("com-btn-txt").innerHTML == "Show Comments" ? document.getElementById("com-btn-txt").innerHTML = "Hide Comments" : document.getElementById("com-btn-txt").innerHTML = "Show Comments";
+
+  if (toggle.innerHTML == "Show Comments") {
+    toggle.innerHTML = "Hide Comments"
+  } else {
+    toggle.innerHTML = "Show Comments"
+  }
+
   comments.classList.toggle("hidden");
 }
 
@@ -105,46 +111,18 @@ function toggle_filter_dropdown() {
   document.getElementById("filter-dropdown").classList.toggle("hidden");
 }
 
-
-function handle_btn_select() {
-
-  console.log("Radio button clicked")
-
-}
-
-
-
 function handle_tier_select(poll_id, tier) {
-  // This is being called twice and it's not because there are two buttons that call this function 
-  // (removed the second button onclick and same thing happens)
-  // might be happening because none of the radio buttons are clicked yet
 
-  // Double 'click' is hapending when clicking on an element already in a tier
+  if (document.activeElement.classList.contains("tier-answer")) {
+    item = document.activeElement.parentNode;
 
-  console.log("new");
-  document.getElementById(`tier-ans-container-${poll_id}`).querySelectorAll("input").forEach((e) => {
-    if (e.checked) document.getElementById(`${tier}-content-${poll_id}`).appendChild(e.parentNode);
-    // console.log(e);
-    e.checked = false;
-  });
+    input = item.querySelector("input[name='answer_tier']");
+    input.value = tier;
+    console.log(input)
 
-  ["S", "A", "B", "C", "D", "F"].forEach((t) =>  {
-    if (document.getElementById(`${t}-content-${poll_id}`).childNodes.length > 1) {
-      //console.log(`${e} tier`);
-      Array.from(document.getElementById(`${t}-content-${poll_id}`).childNodes).slice(1).forEach((i) => {
-        Array.from(i.querySelectorAll("input")).forEach((j) => {
-          //console.log(j);
-          console.log(j.checked)
-          if (j.checked) {
-            document.getElementById(`${tier}-content-${poll_id}`).appendChild(i); 
-          } 
-        })
-      })
-    }    
-  })
-
-
-  console.log("\n\n\n");
-  
+    container = document.getElementById(`${tier}-content-${poll_id}`);
+    item.parentNode.removeChild(item);
+    container.appendChild(item);
+  } 
 
 }

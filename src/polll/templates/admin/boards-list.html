@@ -19,7 +19,7 @@
       hx-get="{{ url_for('admin.delete_board', board_id = board.id) }}"
       hx-target="#boards-list"
       hx-swap="innerHTML"
-      hx-confirm="WARNING: This will delete all polls in '{{ board.name }}'. On production, this can be EXTREMELY destructive. Are you sure you want to delete board '{{ board.name }}'?"
+      hx-confirm="Are you sure you want to delete board '{{ board.name }}'?"
     >
       Delete Board
       <i class="fa fa-trash ml-1"></i>
