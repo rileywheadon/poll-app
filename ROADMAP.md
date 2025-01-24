@@ -2,38 +2,46 @@
 
 ## Riley
 
-- [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
-- [ ] Test for bugs, do a full click through of the app
-
-Admin Improvements (Commit #2)
+Admin Changes
 
 - [ ] View polls in boards (admin) should redirect to polls
 - [ ] Add ability to mute user (prevent from posting/commenting), ban user
 - [ ] Add ability to view comments from poll UI and delete them
 - [ ] Add other sort options to the poll section of the admin UI
-
-UI Improvements (Commit #3)
-
 - [ ] Ability to pin polls from admin
+
+Other Changes
+
 - [ ] Sort top by day/week/month/year/all time
-- [ ] Switch the pie/bar chart for choose one/many
+- [ ] Poll sorting in history/mypolls
 - [ ] Enforce lowercase usernames without spaces and special characters
+- [ ] Add custom endpoints to the scale
+- [ ] Ranked poll needs two-click interface
+
+Testing
+
+- [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
+- [ ] Test for bugs, do a full click through of the app
 
 ## Matt
 
 ### Important
 
-- Change tier list drag and drop to a clickable interface
-  - [ ] fix bug where when answers are selected inside of the tier list, 
-        they are not unchecked when placed on some other tier (not breaking but annoying)
-  - [ ] Correctly wire tier list results to the backend (breaking and annoying)
-- [ ] Restructure ranked input so that it supports a clickable interface
-- [ ] Implement clickable ranked input interface
+- [ ] Fix ranked alignment issue
 - [ ] Perfect graph visuals
+- [ ] Switch the pie/bar chart for choose one/many
+- [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 
 ### Small/Secondary
-- [ ] WHERE THE FUCK DID THE FOOTER GO ON CREATE MOBILE!!!!!!!!!!!!?!?!??!
-    
+
+- [ ] Adjust 'create-card' to fit the screen
+- [ ] Change "all" board to general
+- [ ] Change the board colour scheme (in create, to poll green/blue)
+- [ ] Add a nice icon (an eye, maybe?) to the anonymous checkbox
+- [ ] Light up tier list sections on hover
+- [ ] Widen the ranking boxes in results so they all have the same size
+- [ ] In ranking, make the "you" boxes green and the "average" boxes blue
+- [ ] Set default colour scheme to dark mode (just add the "dark" class to body I think)
 
 # Roadmap
 
@@ -41,7 +49,6 @@ UI Improvements (Commit #3)
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
 - [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
-- [ ] Allow users to set custom upper and lower bounds on scale polls
 
 ## Launch
 
