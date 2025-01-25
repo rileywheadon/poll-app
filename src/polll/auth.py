@@ -56,8 +56,15 @@ def callback():
     # If the user doesn't exist add them to the database
     if res.fetchone() is None:
         query = """
-        INSERT INTO user (username, email, account_created, last_online)
-            VALUES (?, ?, ?, ?)
+        INSERT INTO user (
+            username,
+            email,
+            account_created,
+            last_online,
+            is_muted,
+            is_banned
+        )
+        VALUES (?, ?, ?, ?, 0, 0)
         """
         now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
         values = (username, email, now, now)
@@ -106,7 +113,7 @@ def logout():
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if not session["user"]:
+        if not session.get("user"):
             return redirect(url_for('home.index'))
 
         return f(*args, **kwargs)
@@ -119,7 +126,7 @@ def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        if not session["user"]:
+        if not session.get("user"):
             return redirect(url_for('home.index'))
 
         elif session["user"]["email"] != "admin@polll.org":

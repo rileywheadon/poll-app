@@ -2,23 +2,17 @@
 
 ## Riley
 
-Admin Changes
-
+- [ ] Poll sorting in history/mypolls
+- [ ] Add custom endpoints to the scale
 - [ ] View polls in boards (admin) should redirect to polls
-- [ ] Add ability to mute user (prevent from posting/commenting), ban user
+- [ ] Add ability to mute user (prevent from posting/commenting)
+- [ ] Add ability to ban user (prevent from logging in)
 - [ ] Add ability to view comments from poll UI and delete them
 - [ ] Add other sort options to the poll section of the admin UI
-- [ ] Ability to pin polls from admin
-
-Other Changes
-
-- [ ] Sort top by day/week/month/year/all time
-- [ ] Poll sorting in history/mypolls
+- [ ] Add ability to delete comments that you created
 - [ ] Enforce lowercase usernames without spaces and special characters
-- [ ] Add custom endpoints to the scale
-- [ ] Ranked poll needs two-click interface
 
-Testing
+---
 
 - [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
 - [ ] Test for bugs, do a full click through of the app
@@ -27,9 +21,8 @@ Testing
 
 ### Important
 
-- [x] Fix ranked element size issue (min width on grid?)
-- [x] Switch the pie/bar chart for choose one/many
-- [x] Add a hint that green is for user results and blue is for average
+- [ ] Ranked poll needs two-click interface
+- [ ] Perfect graph visuals
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 - [ ] Perfect graph visuals
 

@@ -6,13 +6,14 @@ DROP TABLE IF EXISTS poll;
 DROP TABLE IF EXISTS poll_board;
 DROP TABLE IF EXISTS board;
 DROP TABLE IF EXISTS poll_answer;
-DROP TABLE IF EXISTS report;
+DROP TABLE IF EXISTS poll_report;
 DROP TABLE IF EXISTS response;
 DROP TABLE IF EXISTS discrete_response;
 DROP TABLE IF EXISTS numeric_response;
 DROP TABLE IF EXISTS ranked_response;
 DROP TABLE IF EXISTS tiered_response;
 DROP TABLE IF EXISTS comment;
+DROP TABLE IF EXISTS comment_report;
 DROP TABLE IF EXISTS like;
 DROP TABLE IF EXISTS dislike;
 
@@ -23,7 +24,9 @@ CREATE TABLE user (
 	account_created DATETIME NOT NULL, 
 	last_online DATETIME NOT NULL, 
   last_poll_created DATETIME,
-  next_poll_allowed DATETIME
+  next_poll_allowed DATETIME,
+  is_muted BOOLEAN NOT NULL CHECK (is_muted IN (0, 1)), 
+  is_banned BOOLEAN NOT NULL CHECK (is_banned IN (0, 1))
 );
 
 
@@ -33,6 +36,7 @@ CREATE TABLE poll (
 	question TEXT NOT NULL, 
 	poll_type TEXT NOT NULL, 
 	date_created DATETIME NOT NULL, 
+  is_pinned BOOLEAN NOT NULL CHECK (is_pinned IN (0, 1)), 
   is_anonymous BOOLEAN NOT NULL CHECK (is_anonymous IN (0, 1)), 
   is_active BOOLEAN NOT NULL CHECK (is_active IN (0, 1)), 
   FOREIGN KEY (creator_id) REFERENCES user (id)
@@ -62,7 +66,7 @@ CREATE TABLE poll_answer (
 );
 
 
-CREATE TABLE report (
+CREATE TABLE poll_report (
 	id INTEGER PRIMARY KEY, 
 	poll_id INTEGER NOT NULL, 
 	receiver_id INTEGER NOT NULL, 
@@ -131,6 +135,19 @@ CREATE TABLE comment (
   FOREIGN KEY (user_id) REFERENCES user (id),
   FOREIGN KEY (parent_id) REFERENCES comment (id)
 );
+
+
+CREATE TABLE comment_report (
+	id INTEGER PRIMARY KEY, 
+	comment_id INTEGER NOT NULL, 
+	receiver_id INTEGER NOT NULL, 
+	creator_id INTEGER NOT NULL, 
+	timestamp DATETIME NOT NULL, 
+  FOREIGN KEY (comment_id) REFERENCES poll (id),
+  FOREIGN KEY (receiver_id) REFERENCES user (id),
+  FOREIGN KEY (creator_id) REFERENCES user (id)
+);
+
 
 CREATE TABLE like (
   id INTEGER PRIMARY KEY,

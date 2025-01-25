@@ -71,9 +71,8 @@ def save_settings():
     r.headers.set("HX-Trigger", notification)
     return r
 
-    # Home page (poll feed). The board/order is optional (set to All/hot by default)
 
-
+# Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
 def feed():
@@ -81,6 +80,7 @@ def feed():
     # Get the request arguments (board and order)
     board = request.args.get("board") or "All"
     order = request.args.get("order") or "hot"
+    period = request.args.get("period") or "day"
 
     # Get the database connection
     db = get_db()
@@ -91,17 +91,30 @@ def feed():
     res = cur.execute(board_query, (board,)).fetchone()
     board_id = dict(res)["id"] if res else "1"
 
+    # Determine the time cutoff if necessary
+    cutoff_periods = {
+        "day": 1,
+        "week": 7,
+        "month": 30,
+        "year": 365,
+    }
+
+    cutoff_query = "True"
+    if order == "top" and period != "all":
+        cutoff_time = get_days_behind(cutoff_periods[period])
+        cutoff_query = f"poll.date_created > '{cutoff_time}'"
+
     # Query the database for all polls that meet the following conditions:
     #  1. ARE in the selected board
     #  2. NOT made by the user
     #  3. NOT responded to by the user
     #  4. NOT reported by the user
     #  5. ARE active (i.e. is_active = 1)
-    id_query = """
+    id_query = f"""
     SELECT poll.id
     FROM poll
     INNER JOIN poll_board ON poll_id=poll.id
-    WHERE board_id = ? AND creator_id != ? AND is_active = 1
+    WHERE board_id = ? AND creator_id != ? AND is_active = 1 AND {cutoff_query} 
     EXCEPT SELECT poll_id FROM (
         SELECT DISTINCT poll_id
         FROM response
@@ -112,6 +125,7 @@ def feed():
         WHERE report.creator_id = ?
     )
     """
+
     user_id = session["user"]["id"]
     res = cur.execute(id_query, (board_id, user_id, user_id, user_id))
     ids = [response["id"] for response in res.fetchall()]
@@ -120,12 +134,12 @@ def feed():
     polls = [query_poll_details(id) for id in ids]
 
     # Sort the polls based on the provided order
-    if order == "hot":
-        polls = sorted(polls, key=lambda p: popularity(p), reverse=True)
-    if order == "top":
-        polls = sorted(polls, key=lambda p: p["votes"], reverse=True)
-    if order == "new":
-        polls = sorted(polls, key=lambda p: p["date_created"], reverse=True)
+    orders = {
+        "hot": lambda p: (p["is_pinned"], popularity(p)),
+        "top": lambda p: (p["is_pinned"], p["votes"]),
+        "new": lambda p: (p["is_pinned"], p["date_created"]),
+    }
+    polls = sorted(polls, key=orders[order], reverse=True)
 
     # Get the boards
     query = "SELECT * FROM board"
@@ -136,11 +150,11 @@ def feed():
     session["tab"] = "feed"
     session["board"] = board
     session["feed"] = order
+    session["period"] = period
     return render_template("home/feed.html", session=session, polls=polls, boards=boards)
 
-    # Home page (poll feed)
 
-
+# Home page (poll feed)
 @home.route("/report/<poll_id>", methods=["GET", "POST"])
 @requires_auth
 def report(poll_id):
@@ -284,9 +298,10 @@ def create_poll():
         poll_type,
         date_created,
         is_anonymous,
-        is_active
+        is_active,
+        is_pinned
     )
-    VALUES (?, ?, ?, ?, ?, ?) RETURNING id
+    VALUES (?, ?, ?, ?, ?, ?, 0) RETURNING id
     """
     values = (
         creator_id,
@@ -378,49 +393,3 @@ def mypolls():
     session["admin"] = False
     session["tab"] = "mypolls"
     return render_template("home/mypolls.html", session=session, polls=polls)
-
-
-# HTTP endpoint for responding to polls
-@home.route("/response/<poll_id>", methods=["GET", "POST"])
-def response(poll_id):
-
-    # If the user is not logged in, add their response to the session variable
-    if not session.get("user"):
-
-        # Create a list in the session variable if it doesn't already exist
-        if session.get("responses") is None:
-            session["responses"] = []
-
-        # If the poll isn't already in the responses, add the user's response
-        if not any([r["poll"] == poll_id for r in session["responses"]]):
-
-            response = {
-                "form": request.form.to_dict(flat=False),
-                "poll": poll_id
-            }
-            session["responses"].append(response)
-            session.modified = True
-
-            return render_template("anonymous/submit.html")
-
-    # Validate the response, then render the results
-    error = validate_response(request.form.to_dict(flat=False), poll_id)
-
-    # If the response was invalid, notify the user
-    if error == "Invalid Response":
-        r = make_response("")
-        notification = '{"notification": "You can''t respond to this poll!"}'
-        r.headers.set("HX-Trigger", notification)
-        r.headers.set("HX-Reswap", "none")
-        return r
-
-    return redirect(url_for("home.result", poll_id=poll_id, show_graph=True))
-
-
-# HTTP endpoint for getting the results card
-@home.route("/result/<poll_id>/<show_graph>")
-@home.route("/result/<poll_id>", defaults={"show_graph": False})
-@requires_auth
-def result(poll_id, show_graph):
-    poll = query_poll_details(poll_id)
-    return render_template("results/result-base.html", poll=poll, show_graph=show_graph)
