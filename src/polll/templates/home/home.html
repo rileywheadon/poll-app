@@ -9,10 +9,11 @@
 
 </div>
 
-<main id="main">
+<main id="main" class="relative min-h-screen">
 
   <!-- Background -->
-  <div class="w-screen h-screen flex flex-col dark:text-nord-4 dark:bg-gradient-to-t dark:from-grad-start dark:to-grad-end">
+  <!-- NOTE: Add extra padding to account for the footer on small screens -->
+  <div class="w-screen h-screen flex flex-col dark:text-nord-4 dark:bg-gradient-to-t dark:from-grad-start dark:to-grad-end pb-10 md:pb-0">
 
     {% include "navbar.html" %}
 
@@ -27,7 +28,7 @@
       </div>
 
       <!-- Main Column (Polls) -->
-      <div id="home-content" class="w-full overflow-auto  p-2 no-scrollbar select-none">
+      <div id="home-content" class="w-full overflow-auto p-2 no-scrollbar select-none">
 
         {% block home_content %}{% endblock %}
 
@@ -37,7 +38,8 @@
       <div class="hidden md:flex md:justify-center md:items-center md:px-16 select-none">
 
         {% if session.tab == "feed" %}
-        <div class="flex flex-col overflow-hidden items-center h-full min-w-max">
+
+          <div class="flex flex-col overflow-hidden items-center h-full min-w-max">
             
           <p class="mb-2 font-light">Boards</p>
 
@@ -58,12 +60,14 @@
 
     </div>
 
-    <!-- Footer (only appears on small screens) -->
-    <div class="visible md:hidden flex flex-row justify-around items-end select-none">
+  </div>
+
+  <!-- Footer (only appears on small screens) -->
+  <footer class="absolute bottom-0 w-full bg-neutral-900">
+    <div class="visible md:hidden flex flex-row justify-around items-center select-none">
       {{ macs.buttons(showIcons=False) }}
     </div>
-
-  </div>
+  </footer>
 
 </main>
 
