@@ -2,35 +2,15 @@
 
 ## Riley
 
-- [x] Boolean pin attribute for polls
-- [x] Ability to pin polls from admin
-
----
-
-- [x] Sort top by day/week/month/year/all time
 - [ ] Poll sorting in history/mypolls
-
----
-
-- [ ] Custom endpoints for numeric_scale (use poll_answer)
 - [ ] Add custom endpoints to the scale
-
----
-
-- [x] Boolean muted attribute for users
-- [x] Boolean ban attribute for users
-- [x] Reports table for comments
 - [ ] View polls in boards (admin) should redirect to polls
 - [ ] Add ability to mute user (prevent from posting/commenting)
 - [ ] Add ability to ban user (prevent from logging in)
 - [ ] Add ability to view comments from poll UI and delete them
 - [ ] Add other sort options to the poll section of the admin UI
-
----
-
 - [ ] Add ability to delete comments that you created
 - [ ] Enforce lowercase usernames without spaces and special characters
-- [ ] Ranked poll needs two-click interface
 
 ---
 
@@ -41,6 +21,7 @@
 
 ### Important
 
+- [ ] Ranked poll needs two-click interface
 - [ ] Fix ranked alignment issue
 - [ ] Perfect graph visuals
 - [ ] Switch the pie/bar chart for choose one/many
