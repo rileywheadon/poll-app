@@ -1,0 +1,23 @@
+<button 
+  class="bg-nord-3 mr-2 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-4 h-8 rounded-md"
+  id="pin-toggle-{{ poll.id }}"
+  hx-get="{{ url_for('poll.pin', poll_id = poll.id) }}"
+  hx-include="previous input"
+  hx-target="this"
+  hx-swap="outerHTML"
+>
+  {% if poll.is_pinned == 1 %}Unpin{% else %}Pin{% endif %} Poll
+  <i class="fa fa-trash ml-2"></i>
+</button>
+
+<!-- Some hx-swap-oob shenanigans -->
+<template>
+  <tr id="poll-pinned-{{ poll.id }}" hx-swap-oob="true">
+    <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+      Pinned
+    </td>
+    <td class="border border-nord-3 dark:border-nord-4 py-1 px-2">
+      {% if poll.is_pinned == 1 %}True{% else %}False{% endif %}
+    </td>
+  </tr>
+</template>

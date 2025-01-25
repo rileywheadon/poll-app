@@ -111,6 +111,10 @@ function toggle_filter_dropdown() {
   document.getElementById("filter-dropdown").classList.toggle("hidden");
 }
 
+function toggle_filter_time_dropdown() {
+  document.getElementById("filter-time-dropdown").classList.toggle("hidden");
+}
+
 function handle_tier_select(poll_id, tier) {
 
   if (document.activeElement.classList.contains("tier-answer")) {
