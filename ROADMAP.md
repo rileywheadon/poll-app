@@ -22,7 +22,6 @@
 ### Important
 
 - [ ] Ranked poll needs two-click interface
-- [ ] Perfect graph visuals
 - [ ] Visually differentiate the 'choose one' and 'choose many' input fields
 - [ ] Perfect graph visuals
 

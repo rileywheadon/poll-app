@@ -1,12 +1,12 @@
 {% if not session.on_cooldown %}
 
 <!-- Image + create container -->
-<div class="flex flex-col h-full space-y-4 pr-4 pb-2">
+<div class="flex flex-col h-full space-y-4 pb-2">
 
   <!-- Image row -->
-  <div class="flex flex-row justify">
+  <div class="flex flex-row justify space-x-4">
 
-    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -18,7 +18,7 @@
       <img class="min-w-10" src="../../static/assets/choose-one.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -29,7 +29,7 @@
       <img class="min-w-10" src="../../static/assets/choose-many.png"/>
     </label>
 
-    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
+    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -41,7 +41,7 @@
     </label>
 
 
-    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -53,7 +53,7 @@
     </label>
 
 
-    <label class="p-2 rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -70,7 +70,7 @@
 
 
   <!-- Create input field -->
-  <div class="flex flex-col h-fit grow border-2 border-polll-green rounded-md">
+  <div class="flex flex-col grow border-2 border-polll-green rounded-md">
 
     <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
       Choose One
@@ -153,9 +153,18 @@
     <!-- Footer -->
     <div class="flex flex-row items-center px-10 pb-6">
 
-      <!-- HIDE USERNAME -->
-      <span class="mr-2 font-light">Anonymous:</span>
-      <input class="poll-create w-5 h-5" name="poll_anonymous" type="checkbox">
+      <!-- HIDE USERNAME (hack?)--> 
+      <input id="anon-toggle" class="poll-create peer opacity-0 w- z-10 w-8 h-8 relative" name="poll_anonymous" type="checkbox">
+      <span class="opacity-100 peer-checked:opacity-0 absolute justify-center items-center">
+        <i class="text-2xl fa-solid fa-eye"></i>
+      </span>
+      <span class="opacity-0 peer-checked:opacity-100 absolute justify-center items-center">
+        <i class="text-2xl fa-solid fa-eye-slash"></i>
+      </span>
+
+
+      
+
     
       <!-- SUBMIT BUTTON -->
       <button class="rounded-lg bg-nord-15 text-black py-2 px-4 ml-auto" 
