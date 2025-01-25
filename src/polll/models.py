@@ -10,6 +10,69 @@ from polll.utils import *
 import base64
 
 
+# Poll search query. Arguments (except board/cutoff) can be true/false/none. Example:
+# - responded=True (restrict search to polls user has responded to)
+# - responded=False (restrict search to polls user has not responded to)
+# - responded=None (get polls regardless of response state)
+#
+# The other arguments are
+# - created=True (get polls user has created)
+# - reported=True (get polls reported by the user)
+# - active=True (get polls that are currently active)
+# - board_id: int or None (get polls in a specific board)
+# - cutoff: str or None (get polls created after a cutoff data)
+#
+# NOTE: This function only returns a list of poll IDs, not a hydrated object
+# WARNING: This function is incomplete
+def search_polls(responded, created, reported, active, board, cutoff):
+
+    # Construct the queries, leaving them empty if the argument is None
+    responded_query = ""
+    if responded is not None:
+        responded_query = "SELECT DISTINCT poll_id FROM response WHERE user_id=?"
+
+    created_query = ""
+    if created is not None:
+        created_query = "SELECT DISTINCT id AS poll_id FROM poll WHERE creator_id=?"
+
+    reported_query = ""
+    if reported is not None:
+        reported_query = "SELECT DISTINCT poll_id FROM report WHERE creator_id=?"
+
+    active_query = ""
+    if active is not None:
+        active_query = "SELECT DISTINCT id AS poll_id FROM poll WHERE is_active=1"
+
+    board_query = ""
+    if board is not None:
+        board_query = "SELECT DISTINCT poll_id FROM poll_board WHERE board_id=?"
+
+    cutoff_query = ""
+    if cutoff is not None:
+        cutoff_query = "SELECT DISTINCT id AS poll_id FROM poll WHERE date_created>?"
+
+    # Take the union of every true query, excepting on each false query
+    query = """
+    SELECT id FROM poll 
+    WHERE id IN (
+        ...
+        UNION
+        ...
+        UNION
+        ...
+    )
+    EXCEPT SELECT poll_id FROM (
+        ...
+        UNION
+        ...
+        UNION
+        ...
+    )
+    """
+
+    return
+
+
 # Given a poll ID, gets all useful information including:
 #  - Poll age using get_poll_age
 #  - Number of votes on the poll
@@ -24,7 +87,7 @@ def query_poll_details(id):
 
     # Query for getting the poll data along with the creator's username
     poll_query = """
-    SELECT poll.*, user.username AS creator
+    SELECT poll.*, user.username AS creator, user.email AS creator_email
     FROM poll
     INNER JOIN user ON user.id = poll.creator_id
     WHERE poll.id = ?

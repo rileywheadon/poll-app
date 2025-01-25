@@ -1,9 +1,21 @@
 <div class="poll-card border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-2 select-none">
-
   <!-- Include the poll question -->
   <div class="flex flex-col p-2">
-    <p class="font-light text-neutral-500">{% if poll.is_anonymous == 1 %}anonymous{% else %}@{{ poll.creator }}{% endif %} ⋅ {{ poll.age }}</p>
-    <p class="font-light text-neutral-200 text-2xl">{{ poll.question }}</p>
+    <div class="flex flex-row">
+      <p class="font-light text-neutral-500">
+        {% if poll.is_anonymous == 1 %}
+          anonymous
+        {% else %}
+          @{{ poll.creator }}
+        {% endif %} ⋅ {{ poll.age }}
+      </p>
+      {% if poll.is_pinned == 1 %}
+        <i class="ml-auto fa fa-thumbtack text-2xl text-polll-green rotate-45"></i>
+      {% endif %}
+      </div>
+    <p class="font-light text-neutral-200 text-2xl">
+      {{ poll.question }}
+    </p>
   </div>
 
   <form

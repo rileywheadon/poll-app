@@ -1,28 +1,75 @@
 {% extends "home/home.html" %}
 
 {% block home_content %}
-  <!-- Filter dropdown -->
-  <div class="relative select-none">
 
-    <button id="filter-dropdown-btn" class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-xs px-2 py-1" onclick="toggle_filter_dropdown()">
-      {{ session.feed.capitalize() }} <i class="px-1 fa fa-caret-down"></i>
+<div class="flex flex-row">
+
+  <!-- Filter Dropdown -->
+  <div class="relative select-none w-20 mr-2">
+
+    <button 
+      id="filter-dropdown-btn"
+      class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-md px-2 py-1 w-full"
+      onclick="toggle_filter_dropdown()"
+    >
+      {{ session.feed.capitalize() }} 
+      <i class="px-1 fa fa-caret-down"></i>
     </button>
     
-      <div id="filter-dropdown" class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2">
-        <ul class="py-2 text-xs text-nord-6">
-          <li>
-            <a href="?board={{ session.board|safe }}&order=hot"><button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button></a>
-          </li>
-          <li>
-            <a href="?board={{ session.board|safe }}&order=top"><button class="px-4 py-1 hover:bg-nord-3 w-full">Top</button></a>
-          </li>
-          <li>
-            <a href="?board={{ session.board|safe }}&order=new"><button class="px-4 py-1 hover:bg-nord-3 w-full">New</button></a>
-          </li>
-        </ul>
-      </div>
+    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-nord-2 overflow-hidden w-full">
+      <a href="?board={{ session.board|safe }}&order=hot">
+        <button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button>
+      </a>
+      <a href="?board={{ session.board|safe }}&order=top">
+        <button class="px-4 py-1 hover:bg-nord-3 w-full">Top</button>
+      </a>
+      <a href="?board={{ session.board|safe }}&order=new">
+        <button class="px-4 py-1 hover:bg-nord-3 w-full">New</button>
+      </a>
+    </div>
 
   </div>
+
+  <!-- Filter Time Dropdown (WHY IS THIS SO LONG) -->
+  {% if session.feed == "top" %}
+
+    <div class="relative select-none w-24">
+
+      <button 
+        id="filter-time-dropdown-btn"
+        class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-md px-2 py-1 w-full"
+        onclick="toggle_filter_time_dropdown()"
+      >
+        {{ session.period.capitalize() }}
+        <i class="px-1 fa fa-caret-down"></i>
+      </button>
+      
+      <div 
+        id="filter-time-dropdown" 
+        class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2 overflow-hidden"
+      >
+        <a href="?board={{ session.board|safe }}&order=top&period=day">
+          <button class="px-4 py-1 hover:bg-nord-3 w-full">Day</button>
+        </a>
+        <a href="?board={{ session.board|safe }}&order=top&period=week">
+          <button class="px-4 py-1 hover:bg-nord-3 w-full">Week</button>
+        </a>
+        <a href="?board={{ session.board|safe }}&order=top&period=month">
+          <button class="px-4 py-1 hover:bg-nord-3 w-full">Month</button>
+        </a>
+        <a href="?board={{ session.board|safe }}&order=top&period=year">
+          <button class="px-4 py-1 hover:bg-nord-3 w-full">Year</button>
+        </a>
+        <a href="?board={{ session.board|safe }}&order=top&period=all">
+          <button class="px-4 py-1 hover:bg-nord-3 w-full">All</button>
+        </a>
+      </div>
+
+    </div>
+  {% endif %}
+
+</div>
+
 
   {% if polls %}
 

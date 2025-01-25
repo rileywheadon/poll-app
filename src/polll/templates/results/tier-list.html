@@ -26,8 +26,8 @@
 
             {% for r in poll.response %}
               {% if r.tier == tier %} 
-                <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full w-32 flex items-center justify-center">
-                  {{ r.answer }}
+                <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full px-4 flex items-center justify-center">
+                  <p class="text-center">{{ r.answer }}</p>
                 </div>  
               {% endif %}
             {% endfor %}
@@ -59,8 +59,8 @@
 
             {% for r in poll.results %}
               {% if r.tier == tier %} 
-                <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full w-32 flex items-center justify-center">
-                  {{ r.answer }}
+                <div class="border bg-nord-6 border-nord-2 dark:bg-nord-2 dark:border-nord-6 rounded-xl h-full px-4 flex items-center justify-center">
+                  <p class="text-center">{{ r.answer }}</p>
                 </div>  
               {% endif %}
             {% endfor %}
