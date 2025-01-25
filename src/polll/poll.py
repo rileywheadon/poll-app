@@ -31,6 +31,7 @@ def anonymous(poll_code):
 
 
 @poll.route("/poll/delete/<poll_id>")
+@requires_auth
 def delete(poll_id):
 
     # Get a database connection
@@ -58,6 +59,7 @@ def delete(poll_id):
 
 
 @poll.route("/poll/toggle/<poll_id>/<active>")
+@requires_auth
 def toggle(poll_id, active):
 
     # Get a database connection
@@ -96,6 +98,7 @@ def toggle(poll_id, active):
 
 
 @poll.route("/poll/comment/<poll_id>", methods=["GET", "POST"])
+@requires_auth
 def comment(poll_id):
 
     # Get a database connection
@@ -152,7 +155,6 @@ def response(poll_id):
             return render_template("anonymous/submit.html")
 
     # Validate the response, then render the results
-    print(request.form.to_dict(flat=False))
     error = validate_response(request.form.to_dict(flat=False), poll_id)
 
     # If the response was invalid, notify the user
@@ -163,7 +165,7 @@ def response(poll_id):
         r.headers.set("HX-Reswap", "none")
         return r
 
-    return redirect(url_for("home.result", poll_id=poll_id, show_graph=True))
+    return redirect(url_for("poll.result", poll_id=poll_id, show_graph=True))
 
 
 # HTTP endpoint for getting the results card
@@ -173,3 +175,26 @@ def response(poll_id):
 def result(poll_id, show_graph):
     poll = query_poll_details(poll_id)
     return render_template("results/result-base.html", poll=poll, show_graph=show_graph)
+
+
+# Toggles the pin state on a poll
+@poll.route("/poll/pin/<poll_id>")
+@requires_admin
+def pin(poll_id):
+
+    # Get database connection
+    db = get_db()
+    cur = db.cursor()
+
+    # Check if the current poll is pinned or not
+    query = "SELECT is_pinned FROM poll WHERE id = ?"
+    res = cur.execute(query, (poll_id,)).fetchone()["is_pinned"]
+
+    # Query the database to toggle the pin state of the poll
+    query = f"UPDATE poll SET is_pinned = {0 if res == 1 else 1} WHERE id = ?"
+    cur.execute(query, (poll_id,))
+    db.commit()
+
+    # Get the new poll details and re-render the card
+    poll = query_poll_details(poll_id)
+    return render_template("admin/polls-pin.html", poll=poll)
