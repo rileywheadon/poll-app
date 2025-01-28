@@ -29,8 +29,8 @@
 
 - [x] Adjust 'create-card' to fit the screen
 - [x] Change the board colour scheme in create to polll blue/green (Not sure what this meant but I did my best)
+- [x] Light up tier list sections on hover (I don't like it)
 - [ ] Change "all" board to general (need to change redirect from login page from 'All' to 'General')
-- [ ] Light up tier list sections on hover
 - [ ] Set default colour scheme to dark mode (just add the "dark" class to body I think)
 
 # Roadmap
