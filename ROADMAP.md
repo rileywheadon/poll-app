@@ -27,13 +27,10 @@
 
 ### Small/Secondary
 
-- [ ] Adjust 'create-card' to fit the screen
-- [ ] Change "all" board to general
-- [ ] Change the board colour scheme (in create, to poll green/blue)
-- [ ] Add a nice icon (an eye, maybe?) to the anonymous checkbox
+- [x] Adjust 'create-card' to fit the screen
+- [x] Change the board colour scheme in create to polll blue/green (Not sure what this meant but I did my best)
+- [ ] Change "all" board to general (need to change redirect from login page from 'All' to 'General')
 - [ ] Light up tier list sections on hover
-- [ ] Widen the ranking boxes in results so they all have the same size
-- [ ] In ranking, make the "you" boxes green and the "average" boxes blue
 - [ ] Set default colour scheme to dark mode (just add the "dark" class to body I think)
 
 # Roadmap

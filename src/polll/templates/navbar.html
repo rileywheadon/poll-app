@@ -5,7 +5,7 @@
   <a href="/">
     <img 
       id="logo-icon-home" 
-      class="h-9"
+      class="h-9 cursor-default"
       src="{{ url_for('static', filename='assets/logo-name-dark.svg') }}"
     />
   </a>
@@ -15,24 +15,24 @@
 
     <!-- A pesky Javascript function is also needed to set the blur on the main div -->
     <button 
-      class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-9 h-9 flex justify-center items-center" 
+      class="!ml-auto bg-nord-3 text-nord-6 dark:bg-nord-4 dark:text-nord-0 rounded-lg w-9 h-9 flex justify-center items-center cursor-default" 
       hx-get="{{ url_for('home.open_settings') }}"
       hx-target="#settings"
       hx-swap="innerHTML"
       hx-on::after-request="open_settings();"
     >
-      <i id="settings-icon" class="fas fa-gear text-xl cursor-pointer"></i>
+      <i id="settings-icon" class="fas fa-gear text-xl"></i>
     </button>
   {% endif %}
 
   <!-- Admin panel, if logged in as administrator -->
   {% if session.user.email == "admin@polll.org" %} 
     {% if session.admin %}
-      <a class="!ml-auto bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
+      <a class="!ml-auto bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center cursor-default" href="{{ url_for('home.feed') }}">
         Home
       </a>
     {% else %}
-      <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('admin.users') }}">
+      <a class="bg-nord-15 text-nord-0 rounded-lg w-24 h-10 flex justify-center items-center cursor-default" href="{{ url_for('admin.users') }}">
         Admin
       </a>
     {% endif %} 

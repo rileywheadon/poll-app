@@ -130,3 +130,17 @@ function handle_tier_select(poll_id, tier) {
   } 
 
 }
+
+
+// annoyed so did this
+['load', 'htmx:afterSettle'].forEach( evt => 
+  window.addEventListener(evt, function() {
+  
+    document.getElementById("multiple-ans").querySelectorAll("input").forEach((textBox) => {
+      textBox.addEventListener("keypress", (kp) => {
+        if (kp["key"] == "Enter") document.getElementById("answer-add").click();
+      });
+    });
+
+  })
+);

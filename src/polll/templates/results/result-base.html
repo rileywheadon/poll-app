@@ -62,7 +62,7 @@
 
     <!-- Toggle Comments -->
     <button 
-      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-black dark:text-nord-4 flex items-center justify-center"
+      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-black dark:text-nord-4 flex items-center justify-center cursor-default"
       onclick="toggle_comments({{ poll.id }})"
     >
       <span class="hidden md:flex" id="comments-toggle-{{ poll.id }}">Show Comments</span>
@@ -72,7 +72,7 @@
 
     <!-- Toggle Results -->
     <button 
-      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none"
+      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none cursor-default"
       onclick="graphToggle({{ poll }})"
     >
       <span

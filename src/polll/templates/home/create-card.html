@@ -1,12 +1,12 @@
 {% if not session.on_cooldown %}
 
 <!-- Image + create container -->
-<div class="flex flex-col h-full space-y-4 pb-2">
+<div class="flex flex-col h-full space-y-4 pb-2 pr-0 md:pr-6">
 
   <!-- Image row -->
-  <div class="flex flex-row justify space-x-4">
+  <div class="flex flex-row">
 
-    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -18,7 +18,7 @@
       <img class="min-w-10" src="../../static/assets/choose-one.png"/>
     </label>
 
-    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -29,7 +29,7 @@
       <img class="min-w-10" src="../../static/assets/choose-many.png"/>
     </label>
 
-    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Scale">
+    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -41,7 +41,7 @@
     </label>
 
 
-    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -53,7 +53,7 @@
     </label>
 
 
-    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -70,19 +70,19 @@
 
 
   <!-- Create input field -->
-  <div class="flex flex-col grow border-2 border-polll-green rounded-md">
+  <div class="flex flex-col grow border-2 border-neutral-600 rounded-md">
 
     <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
       Choose One
     </div>
 
     <div class="px-10 pt-8 text-2xl"> 
-      <input class="poll-create bg-transparent dark:text-white w-11/12 focus:outline-none font-light" 
+      <input class="poll-create bg-transparent dark:text-white w-11/12 focus:outline-none font-light placeholder:text-neutral-400" 
         autocomplete="off"
         name="poll_question"
         placeholder="Write your poll of the day..."
       />
-      <hr>
+      <hr class="border border-neutral-600">
     </div>
 
     <div class="grow p-8">
@@ -98,7 +98,7 @@
               hx-swap="beforeend" 
               hx-target="#answer-list"
             >
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus text-xl text-polll-blue hover:text-polll-green"></i>
             </button>
 
             <div id="answer-list" class="flex flex-col grow">
@@ -121,11 +121,11 @@
 
       {% for board in boards %}
 
-        <label class="rounded-2xl px-3 mr-2 h-8 border-4 border-nord-4 hover:dark:bg-nord-0 has-[:checked]:border-nord-10 {% if board.name == 'All' %}border-nord-10{% endif %}">
+        <label class="rounded-2xl px-3 mr-2 h-8 border border-polll-blue has-[:checked]:border-2 has-[:checked]:border-polll-green {% if board.name == 'General' %} border-polll-green {% endif %}">
           {{ board.name }}
 
           <!-- Very unfourtunate hack to prevent all from being unselected -->
-          {% if board.name == 'All' %}
+          {% if board.name == 'General' %}
             <input class="poll-create hidden"
               name="poll_board"
               value="{{ board.id }}" 
@@ -151,30 +151,30 @@
     </div>
 
     <!-- Footer -->
-    <div class="flex flex-row items-center px-10 pb-6">
+    <div class="flex flex-row items-center px-10 p-6">
 
       <!-- HIDE USERNAME (hack?)--> 
-      <input id="anon-toggle" class="poll-create peer opacity-0 w- z-10 w-8 h-8 relative" name="poll_anonymous" type="checkbox">
-      <span class="opacity-100 peer-checked:opacity-0 absolute justify-center items-center">
-        <i class="text-2xl fa-solid fa-eye"></i>
-      </span>
-      <span class="opacity-0 peer-checked:opacity-100 absolute justify-center items-center">
-        <i class="text-2xl fa-solid fa-eye-slash"></i>
-      </span>
+       <div class="flex flex-row">Anonymous:
+        <div class="pl-2 pt-1 flex flex-row relative">
+          <input id="anon-toggle" class="poll-create peer opacity-0 z-10 w-8 h-8 absolute" name="poll_anonymous" type="checkbox">
+          <span class="opacity-100 peer-checked:opacity-0 absolute justify-center items-center">
+            <i class="text-xl fa-solid fa-eye"></i>
+          </span>
+          <span class="opacity-0 text-polll-blue peer-checked:opacity-100 absolute justify-center items-center">
+            <i class="text-xl fa-solid fa-eye-slash"></i>
+          </span>
+        </div>
+       </div>
 
-
-      
-
-    
       <!-- SUBMIT BUTTON -->
-      <button class="rounded-lg bg-nord-15 text-black py-2 px-4 ml-auto" 
+      <button class="rounded-lg bg-polll-blue hover:bg-polll-green text-nord-3 hover:text-nord-2 text-black py-2 px-4 ml-auto cursor-default" 
         hx-get="{{ url_for('home.create_poll') }}" 
         hx-target="#create-card" 
         hx-swap="innerHTML" 
         hx-include=".poll-create"             
         hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
       >
-        <p class="font-light">Publish</p>
+        <p class="font-base">Publish</p>
       </button>
     </div>
 
