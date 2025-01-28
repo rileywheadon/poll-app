@@ -111,6 +111,36 @@
         </div>
 
       </div>
+      <!-- Custom scale endpoints input -->
+        <div id="endpoint-container" class="hidden flex flex-col">
+
+          <label class="inline-flex items-center cursor-pointer">
+            <input onclick="toggle_custom_endpoints()" id="endpoint-toggle" type="checkbox" class="sr-only peer">
+            <div class="
+            relative w-11 h-6 bg-polll-blue rounded-xl 
+            dark:border-gray-600 peer-checked:bg-polll-green
+            peer peer-focus:outline-none
+            peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+            <span class="ml-2 text-sm font-light">Custom Endpoints</span>
+          </label>
+
+          <div id="endpoint-editor" class="hidden flex flex-row p-4 space-x-3 justify-center items-center">
+            <input id="endpoint-left"
+            class="w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-nord-0 dark:text-nord-6 border-2 border-polll-blue placeholder:text-neutral-400 focus:outline-none focus:border-polll-green"
+            placeholder="From..."
+            name="endpoint-right"
+            autocomplete="off">
+    
+            <input id="endpoint-right"
+            class="w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-nord-0 dark:text-nord-6 border-2 border-polll-blue placeholder:text-neutral-400 focus:outline-none focus:border-polll-green"
+            placeholder="To..."
+            name="endpoint-left"
+            autocomplete="off">
+          </div>
+  
+        </div>
+      
+
     </div>
 
     <!-- Boards -->
@@ -167,11 +197,11 @@
        </div>
 
       <!-- SUBMIT BUTTON -->
-      <button class="rounded-lg bg-polll-blue hover:bg-polll-green text-nord-3 hover:text-nord-2 text-black py-2 px-4 ml-auto cursor-default" 
-        hx-get="{{ url_for('home.create_poll') }}" 
-        hx-target="#create-card" 
-        hx-swap="innerHTML" 
-        hx-include=".poll-create"             
+      <button class="rounded-lg bg-polll-blue hover:bg-polll-green text-nord-3 hover:text-nord-2 text-black py-2 px-4 ml-auto cursor-default"
+        hx-get="{{ url_for('home.create_poll') }}"
+        hx-target="#create-card"
+        hx-swap="innerHTML"
+        hx-include=".poll-create"
         hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
       >
         <p class="font-base">Publish</p>

@@ -50,7 +50,7 @@ function toggle_colour_scheme() {
 // Add event listeners to ensure correct theme
 ['load','htmx:afterSettle'].forEach( evt => 
   window.addEventListener(evt, function() {
-    if (localStorage.theme === null) {
+    if (typeof localStorage.theme == "undefined" || localStorage.theme == null) {
       set_dark_mode();
     } else if (localStorage.theme == "dark") {
       set_dark_mode();

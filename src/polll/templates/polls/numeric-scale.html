@@ -1,14 +1,15 @@
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
-  <div class="my-2 flex items-center">
+
+  <div class="my-2 flex flex-row justify-center items-center">
     <input type="range"
            name="slider_rating"
            value="0"
            min="0"
            max="100"
            autocomplete="off"
-           class="accent-polll-blue hover:accent-polll-green"
+           class=" w-3/4 accent-polll-blue hover:accent-polll-green"
            oninput="this.nextElementSibling.innerHTML = this.value">
     <span class="range-slider__value pl-3 font-light">0</span><span></span>
   </div>

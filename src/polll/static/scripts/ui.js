@@ -1,3 +1,16 @@
+// annoyed so did this
+['load', 'htmx:afterSettle'].forEach( evt => 
+  window.addEventListener(evt, function() {
+  
+    document.getElementById("multiple-ans").querySelectorAll("input").forEach((textBox) => {
+      textBox.addEventListener("keypress", (kp) => {
+        if (kp["key"] == "Enter") document.getElementById("answer-add").click();
+      });
+    });
+
+  })
+);
+
 function open_settings() {
   const main = document.getElementById("main");
   main.classList.add("blur-sm");
@@ -57,13 +70,17 @@ function toggle_poll_information(poll_id) {
 function update_answer_editor(poll_type) {
 
   editor = document.getElementById("answer-editor");
+  var endpoint_editor = document.getElementById("endpoint-container");
+
   // Hack
   document.getElementById("question-lbl").innerHTML = poll_type.split("_").map((s) => s[0].toUpperCase() + s.substring(1)).toString().replace(",", " ");
 
   if (poll_type == "numeric_scale") {
+    endpoint_editor.classList.remove("hidden");
     editor.classList.add("hidden");
     document.getElementById("question-lbl").innerHTML = "Scale";
   } else {
+    endpoint_editor.classList.add("hidden");
     editor.classList.remove("hidden");
   }
 
@@ -122,8 +139,7 @@ function handle_tier_select(poll_id, tier) {
 
     input = item.querySelector("input[name='answer_tier']");
     input.value = tier;
-    console.log(input)
-
+    
     container = document.getElementById(`${tier}-content-${poll_id}`);
     item.parentNode.removeChild(item);
     container.appendChild(item);
@@ -131,16 +147,8 @@ function handle_tier_select(poll_id, tier) {
 
 }
 
-
-// annoyed so did this
-['load', 'htmx:afterSettle'].forEach( evt => 
-  window.addEventListener(evt, function() {
-  
-    document.getElementById("multiple-ans").querySelectorAll("input").forEach((textBox) => {
-      textBox.addEventListener("keypress", (kp) => {
-        if (kp["key"] == "Enter") document.getElementById("answer-add").click();
-      });
-    });
-
-  })
-);
+function toggle_custom_endpoints() {
+  document.getElementById("endpoint-editor").classList.toggle("hidden");
+  document.getElementById("endpoint-left").value = "";
+  document.getElementById("endpoint-right").value = "";
+}

@@ -4,10 +4,11 @@
 
 <div id="tier-list-{{ poll.id }}">
 
-  <div class="w-[36rem] mt-4  rounded-xl w-full">
+  <div class="w-[36rem] mt-4 border-2 dark:border-nord-4 rounded-xl w-full">
 
     {% for tier in ["S", "A", "B", "C", "D", "F"] %}
-      <div class="flex flex-row h-16 hover:cursor-default {% if tier == 'S' %} rounded-t-lg {% elif tier == 'F' %} rounded-b-lg {% endif %}  hover:border-4 hover:border-polll-blue"> 
+    <!-- Highlight tiers on hover: hover:cursor-default {% if tier == 'S' %} rounded-t-lg {% elif tier == 'F' %} rounded-b-lg {% endif %}  hover:border-4 hover:border-polll-blue -->
+      <div class="flex flex-row h-16"> 
         <button 
           type="button" 
           id="{{ tier }}-label" 
