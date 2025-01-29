@@ -152,3 +152,46 @@ function toggle_custom_endpoints() {
   document.getElementById("endpoint-left").value = "";
   document.getElementById("endpoint-right").value = "";
 }
+
+
+
+// TODO: Discuss in what format the data will be submitted and assign values to inputs accordingly
+function handle_rank_select(poll_id, ans_id) {
+
+  var opts = document.getElementById(`ans-container-${poll_id}`).querySelectorAll("input");
+  var rs = document.getElementById(`checkbox-${ans_id}`);
+
+  // count how many check box items are clicked AFTER the one that called this function was clicked
+  var checkCount = Array.from(opts).map((b) => b.checked ? 1 : 0).reduce((acc, curr) => acc + curr);
+
+  // could also have it in the html already but would still have to change the value
+  var ranked_text = document.createElement("p");
+  ranked_text.innerHTML = checkCount.toString();
+  ranked_text.id = `rank-text-${ans_id}`;
+  ranked_text.classList.add("font-light");
+  ranked_text.classList.add("text-xs");
+
+
+  // add rank to the label
+  document.getElementById(`label-${ans_id}`).insertBefore(ranked_text, Array.from(document.getElementById(`label-${ans_id}`).children)[0]);
+
+
+  // Ensure the button is not able to be clicked again
+  rs.disabled = true;
+
+}
+
+
+function clear_ranking(poll_id) {
+  document.getElementById(`ans-container-${ poll_id }`).querySelectorAll("input").forEach((e) => {
+
+    if (e.checked) {
+      // removes the ranking text from the label
+      var ans_id = e.parentNode.querySelector("input").id.toString();
+      var ans_id_num = ans_id.substring(ans_id.indexOf("-") + 1);
+      document.getElementById(`rank-text-${ans_id_num}`).remove();
+    }
+    e.checked = false;
+    e.disabled = false;
+  })
+}

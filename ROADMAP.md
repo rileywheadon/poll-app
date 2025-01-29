@@ -23,14 +23,16 @@
 
 - [ ] Change ranked into a clickable interface
 - Add custom endpoints to scale:
-  - [ ] Add in create as an input option
+  - [x] Add in create as an input option
   - [ ] Add to input slider
-  - [ ] Add to line graph
+  - [ ] Add to line graph output
+- [ ] Disable submit button until a response is given
+- [ ] Remove ranked.js from base and scripts
 
 ### Small/Secondary
 
 - [ ] Change "all" board to general (need to change redirect from login page from 'All' to 'General')
-- [ ] Short message in history and account when they're empty
+- [ ] Allow a feed to be scrollable when the mouse in the left and right side bar
 
 # Roadmap
 
