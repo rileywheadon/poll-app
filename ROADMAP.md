@@ -21,13 +21,16 @@
 
 ### Important
 
-- [ ] Change ranked into a clickable interface
+- Change ranked into a clickable interface
+  - [x] Implement ui
+  - [ ] Wire to backend
 - Add custom endpoints to scale:
   - [x] Add in create as an input option
   - [ ] Add to input slider
   - [ ] Add to line graph output
 - [ ] Disable submit button until a response is given
-- [ ] Remove ranked.js from base and scripts
+- [x] Remove ranked.js from base and scripts
+- [ ] Change tier list html structure to a something responsive to an arbitrary number of entires in a tier (grid?)
 
 ### Small/Secondary
 
@@ -39,7 +42,8 @@
 - [ ] Implement captcha on form submit
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
-- [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
+- [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE) 
+- [ ] Profiles
 
 ## Launch
 

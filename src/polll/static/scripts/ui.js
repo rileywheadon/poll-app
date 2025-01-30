@@ -153,8 +153,6 @@ function toggle_custom_endpoints() {
   document.getElementById("endpoint-right").value = "";
 }
 
-
-
 // TODO: Discuss in what format the data will be submitted and assign values to inputs accordingly
 function handle_rank_select(poll_id, ans_id) {
 
@@ -171,26 +169,24 @@ function handle_rank_select(poll_id, ans_id) {
   ranked_text.classList.add("font-light");
   ranked_text.classList.add("text-xs");
 
-
   // add rank to the label
   document.getElementById(`label-${ans_id}`).insertBefore(ranked_text, Array.from(document.getElementById(`label-${ans_id}`).children)[0]);
 
-
-  // Ensure the button is not able to be clicked again
+  // Ensure the button cannot be clicked again
   rs.disabled = true;
 
 }
-
 
 function clear_ranking(poll_id) {
   document.getElementById(`ans-container-${ poll_id }`).querySelectorAll("input").forEach((e) => {
 
     if (e.checked) {
-      // removes the ranking text from the label
+      // remove the ranking text from the label
       var ans_id = e.parentNode.querySelector("input").id.toString();
       var ans_id_num = ans_id.substring(ans_id.indexOf("-") + 1);
       document.getElementById(`rank-text-${ans_id_num}`).remove();
     }
+    // reset to default behaviour
     e.checked = false;
     e.disabled = false;
   })
