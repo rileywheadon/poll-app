@@ -7,8 +7,11 @@
   <div class="flex flex-col p-4 select-none">
     
       {% for tier in ["S", "A", "B", "C", "D", "F"] %}
+      <!-- TODO: try highliting again -->
       <!-- Highlight tiers on hover: hover:cursor-default {% if tier == 'S' %} rounded-t-lg {% elif tier == 'F' %} rounded-b-lg {% endif %}  hover:border-4 hover:border-polll-blue -->
-      <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
+      <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 
+      hover:border-b-2 hover:border-polll-blue 
+      {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
         <div 
         id="{{ tier }}-label" 
         class="flex flex-wrap grow w-2/12 min-w-20 h-auto min-h-20 border-r-2 broder-nord-6 justify-center items-center font-light text-2xl">
@@ -29,7 +32,7 @@
         id="{{ tier }}-content-{{ poll.id }}"
         class="flex flex-wrap w-10/12"
         onmousedown="handle_tier_select('{{ poll.id }}', '{{ tier }}')"
-        >  
+        >
         </div>
       </div>
       {% endfor %}
