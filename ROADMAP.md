@@ -29,8 +29,7 @@
   - [ ] Add to input slider
   - [ ] Add to line graph output
 - [ ] Disable submit button until a response is given
-- [x] Remove ranked.js from base and scripts
-- [ ] Change tier list html structure to a something responsive to an arbitrary number of entires in a tier (grid?)
+- [ ] Add rank number to a top corner of an its answer box
 
 ### Small/Secondary
 
@@ -39,6 +38,7 @@
 
 # Roadmap
 
+- [ ] Refactor duplicated code as macros with paramters (tier list, buttons with a common colour/hover scheme, etc.)
 - [ ] Implement captcha on form submit
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).

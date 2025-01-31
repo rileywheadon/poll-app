@@ -8,13 +8,14 @@
      <div id="ans-container-{{ poll.id }}" class="flex justify-center items-center">
       <div class="flex flex-wrap justify-center items-center max-w-md">
         {% for answer in poll.answers %}
-          <div class="space-x-4 space-y-4">
+          <div class="space-x-4 space-y-4 relative">
             <input type="checkbox" id="checkbox-{{ answer.id }}" name="answer_id" value="{{ answer.answer }}-{{ answer.id }}" class="hidden peer" onclick="handle_rank_select('{{ poll.id|safe }}', '{{ answer.id|safe }}')">
+            <span id="rank-num-{{ answer.id }}" class="hidden absolute size-fit z-10 rounded-full px-1 font-light text-xs bg-polll-blue"></span>
             <label id="label-{{ answer.id }}" for="checkbox-{{ answer.id }}" 
-            class="flex p-4 min-w-lg rounded-lg cursor-default 
+            class="relative flex p-4 min-w-lg rounded-lg cursor-default
                   border-2 border-gray-700 bg-gray-800 text-gray-400
                   hover:text-gray-300 hover:bg-gray-700
-                  peer-checked:border-polll-green peer-checked:text-gray-300">
+                  peer-checked:border-polll-green">
               <p class="font-light select-none">{{ answer.answer }}</p>
             </label>
           </div>
@@ -24,7 +25,7 @@
 
     <!-- Reset -->
      <div class="flex">
-      <div class="grow"></div>
+      <div class=" grow"></div>
       <button type="button" id="reset-btn-{{ poll.id }}" class="flex flex-row p-0.5 font-light bg-nord-11 border-2 border-nord-3 rounded-lg cursor-default" onclick="clear_ranking({{ poll.id|safe }})">
         <i class="fa-solid p-2 fa-rotate-right"></i>
         <p class="pt-1 pr-2">Reset</p>
