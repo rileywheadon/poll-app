@@ -39,9 +39,61 @@
 {% endmacro %}
 
 
-{% macro loading_icon() %}
+{% macro tierList(poll_id, interactive=False, results=None) %}
 
-    <div id="loading" 
-         class="border-4 border-t-16 border-polll-blue rounded-lg sise-12 animate-spin hidden"></div>
+    <div class="flex flex-col p-4 select-none">
+        
+        {% for tier in ["S", "A", "B", "C", "D", "F"] %}
+
+        <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 
+                    hover:border-b-2 hover:border-polll-blue 
+                    {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
+                <div id="{{ tier }}-label" 
+                    class="flex flex-wrap grow w-2/12 min-w-20 h-auto min-h-20 border-r-2 broder-nord-6 justify-center items-center font-light text-2xl">
+                    <span class="text-2xl
+                        {% if   tier == 'S' %} text-tier-S
+                        {% elif tier == 'A' %} text-tier-A
+                        {% elif tier == 'B' %} text-tier-B
+                        {% elif tier == 'C' %} text-tier-C
+                        {% elif tier == 'D' %} text-tier-D
+                        {% elif tier == 'F' %} text-tier-F
+                        {% endif %}
+                        ">
+                        {{ tier }}
+                    </span>
+                </div>
+        
+                <div 
+                {% if interactive %} id="{{ tier }}-content-{{ poll_id }}" {% endif %}
+                class="flex flex-wrap w-10/12"
+                {% if interactive %} onmousedown="handle_tier_select('{{ poll_id }}', '{{ tier }}')" {% endif %}
+                >
+
+                    {% if not interactive %}
+                    
+                        <div id="{{ tier }}-content-{{ poll_id }}" 
+                            class="flex flex-wrap gap-2 w-fit h-fit mt-6 justify-left items-start tier-{{ tier }}"
+                            >
+                                {% for r in results %}
+                                
+                                    {% if r.tier == tier %} 
+                                    <div class="flex items-center justify-center w-2/12 min-w-20 h-auto min-h-20 max-w-32
+                                                rounded-lg cursor-default p-4 min-w-16
+                                                border-2 border-polll-green bg-gray-800 text-gray-400">
+                                        <p class="text-center">{{ r.answer }}</p>
+                                    </div>  
+                                    {% endif %}
+                                {% endfor %}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+        {% endfor %}
+
+    </div>
+    
 
 {% endmacro %}

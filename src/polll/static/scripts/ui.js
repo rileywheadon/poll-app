@@ -202,11 +202,9 @@ function loading(url, parent_div) {
   loading_div.classList.add("animate-spin");  
   loading_div.innerHTML = '<i class="fa-solid fa-spinner text-base md:text-2xl text-polll-green p-4"></i>'
   
-
   // Replace the current main content body with the loading div
   document.getElementById(parent_div).replaceWith(loading_div)
   
-
   // go to the url that was pressed
   window.location.href = url;
 

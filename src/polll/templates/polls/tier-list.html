@@ -3,41 +3,11 @@
 {% block poll_content %}
 
 <div id="tier-list-{{ poll.id }}">
-  <!-- Tier list -->
-  <div class="flex flex-col p-4 select-none">
-    
-      {% for tier in ["S", "A", "B", "C", "D", "F"] %}
-      <!-- TODO: try highliting again -->
-      <!-- Highlight tiers on hover: hover:cursor-default {% if tier == 'S' %} rounded-t-lg {% elif tier == 'F' %} rounded-b-lg {% endif %}  hover:border-4 hover:border-polll-blue -->
-      <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 
-      hover:border-b-2 hover:border-polll-blue 
-      {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
-        <div 
-        id="{{ tier }}-label" 
-        class="flex flex-wrap grow w-2/12 min-w-20 h-auto min-h-20 border-r-2 broder-nord-6 justify-center items-center font-light text-2xl">
-          <span class="text-2xl
-          {% if   tier == 'S' %} text-tier-S
-          {% elif tier == 'A' %} text-tier-A
-          {% elif tier == 'B' %} text-tier-B
-          {% elif tier == 'C' %} text-tier-C
-          {% elif tier == 'D' %} text-tier-D
-          {% elif tier == 'F' %} text-tier-F
-          {% endif %}
-          ">
-          {{ tier }}
-          </span>
-        </div>
-    
-        <div 
-        id="{{ tier }}-content-{{ poll.id }}"
-        class="flex flex-wrap w-10/12"
-        onmousedown="handle_tier_select('{{ poll.id }}', '{{ tier }}')"
-        >
-        </div>
-      </div>
-      {% endfor %}
-
-  </div>
+  <!-- Tier list body -->
+    {{ macs.tierList(poll_id='{{ poll.id }}',
+                    interactive=True,
+                    results=None
+    ) }}
 
   <!-- Options pool -->
   <div 

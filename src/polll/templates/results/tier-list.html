@@ -1,100 +1,30 @@
 <div id="poll-result-{{ poll.id }}" class="hidden">
 
+  <!-- Labels -->
   <div class="flex flex-row justify-around font-light text-2xl pb-4">
     <p class="{% if not poll.response %} hidden {% endif %}">You</p>
     <p>Average</p>
   </div>
 
+  <!-- Tier lists -->
   <div class="flex flex-row space-x-4 justify-center items-start">
 
     <!-- User -->
-    <div class="flex flex-col select-none">
-      
-      {% for tier in ["S", "A", "B", "C", "D", "F"] %}
-      <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
-        <div 
-        class="flex flex-wrap grow w-2/12 min-w-20 h-auto min-h-20 border-r-2 broder-nord-6 justify-center items-center font-light text-2xl">
-          <span class="text-2xl
-          {% if   tier == 'S' %} text-tier-S
-          {% elif tier == 'A' %} text-tier-A
-          {% elif tier == 'B' %} text-tier-B
-          {% elif tier == 'C' %} text-tier-C
-          {% elif tier == 'D' %} text-tier-D
-          {% elif tier == 'F' %} text-tier-F
-          {% endif %}
-          ">
-          {{ tier }}
-          </span>
-        </div>
-    
-        <!-- Responses -->
-        <div class="flex flex-wrap w-10/12">
-
-        <div 
-        id="{{ tier }}-content-{{ poll.id }}" 
-        class="flex flex-wrap gap-2 w-fit h-fit mt-6 justify-left items-start tier-{{ tier }}"
-        >
-          {% for r in poll.response %}
-            {% if r.tier == tier %} 
-              <div class="flex items-center justify-center w-2/12 min-w-20 h-auto min-h-20 max-w-32
-                          rounded-lg cursor-default p-4 min-w-16
-                          border-2 border-polll-green bg-gray-800 text-gray-400">
-                <p class="text-center">{{ r.answer }}</p>
-              </div>  
-            {% endif %}
-          {% endfor %}
-        </div> 
-
-        </div>
-      </div>
-      {% endfor %}
-
-    </div>
+     {% set user_rs = poll.response %}
+      {{ macs.tierList(poll_id='{{ poll.id }}',
+      interactive=False,
+      results=user_rs
+  ) }}
 
     <!-- Average -->
-    <div class="flex flex-col select-none">
-      
-      {% for tier in ["S", "A", "B", "C", "D", "F"] %}
-      <!-- Highlight tiers on hover: hover:cursor-default {% if tier == 'S' %} rounded-t-lg {% elif tier == 'F' %} rounded-b-lg {% endif %}  hover:border-4 hover:border-polll-blue -->
-      <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
-        <div 
-        class="flex flex-wrap grow w-2/12 min-w-20 h-auto min-h-20 border-r-2 broder-nord-6 justify-center items-center font-light text-2xl">
-          <span class="text-2xl
-          {% if   tier == 'S' %} text-tier-S
-          {% elif tier == 'A' %} text-tier-A
-          {% elif tier == 'B' %} text-tier-B
-          {% elif tier == 'C' %} text-tier-C
-          {% elif tier == 'D' %} text-tier-D
-          {% elif tier == 'F' %} text-tier-F
-          {% endif %}
-          ">
-          {{ tier }}
-          </span>
-        </div>
+    {% set average_rs = poll.results %}
+      {{ macs.tierList(poll_id='{{ poll.id }}',
+      interactive=False,
+      results=average_rs
+  ) }}
 
-        <!-- Responses -->
-        <div class="flex flex-wrap w-10/12">
 
-          <div 
-          id="{{ tier }}-content-{{ poll.id }}" 
-          class="flex flex-wrap gap-2 w-fit h-fit mt-6 justify-left items-start tier-{{ tier }}"
-          >
-            {% for r in poll.results %}
-              {% if r.tier == tier %} 
-                <div class="flex items-center justify-center w-2/12 min-w-20 h-auto min-h-20 max-w-32
-                            rounded-lg cursor-default p-4 min-w-16
-                            border-2 border-polll-blue bg-gray-800 text-gray-400">
-                  <p class="text-center">{{ r.answer }}</p>
-                </div>  
-              {% endif %}
-            {% endfor %}
-          </div>
 
-        </div>
-      </div>
-      {% endfor %}
-
-    </div>
   </div>  
 
   

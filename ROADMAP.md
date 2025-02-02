@@ -20,16 +20,14 @@
 ## Matt
 
 ### TODAY: 
-- [x] Input slider
-- [ ] Add loading icon between page loads
-- [ ] Abstract duplicated code
-
+- Abstract duplicated code
+  - [ ] Tier list grid
 
 ### Important
 
-- [ ] Add a loading bar to page loads
 
 ### Small/Secondary
+- [ ] Add a loading bar to show graphs/comments
 
 # Roadmap
 
