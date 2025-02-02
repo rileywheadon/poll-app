@@ -15,21 +15,16 @@ def on_cooldown(user_dict):
     next_poll_allowed = user_dict["next_poll_allowed"]
 
     if next_poll_allowed:
-
-        next_poll_time = datetime.strptime(
-            next_poll_allowed,
-            '%Y-%m-%d %H:%M:%S'
-        )
-
-        return datetime.utcnow() < next_poll_time
+        next_poll_time = datetime.fromisoformat(next_poll_allowed)
+        return datetime.now().astimezone() < next_poll_time
 
     return False
 
 
 # Get the age of a poll (i.e. 2h or 4d)
 def format_timestamp(string):
-    timestamp = datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
-    age = datetime.utcnow() - timestamp
+    timestamp = datetime.fromisoformat(string)
+    age = datetime.now().astimezone() - timestamp
 
     if age.days > 0:
         return f"{age.days}d"
@@ -41,15 +36,6 @@ def format_timestamp(string):
         return f"{age.seconds}s"
 
 
-# Helper functions to add "result_template" and "poll_template" to a poll dictionary
-def result_template(poll):
-    template = "poll-graph"
-    if poll["poll_type"] == "RANKED_POLL":
-        template = "ranked-poll"
-
-    return f"results/{template}.html"
-
-
 def poll_template(poll):
     template = poll["poll_type"].lower().replace("_", "-")
     return f"polls/{template}.html"
@@ -57,8 +43,7 @@ def poll_template(poll):
 
 # Helper function to get days behind current time
 def get_days_behind(days):
-    time = datetime.utcnow() - timedelta(days=days)
-    return datetime.strftime(time, '%Y-%m-%d %H:%M:%S')
+    return (datetime.now() - timedelta(days=days)).astimezone().isoformat()
 
 
 # Helper functions to encode/decode a poll ID as a URL string
@@ -75,9 +60,9 @@ def url_to_id(code):
 
 # Helper function to get how "trendy" a poll is, in responses/second
 def popularity(poll):
-    timestamp = datetime.strptime(poll["date_created"], '%Y-%m-%d %H:%M:%S')
+    timestamp = datetime.strptime(poll["created_at"], '%Y-%m-%d %H:%M:%S')
     age = (datetime.utcnow() - timestamp).total_seconds()
-    return poll["votes"] / age
+    return poll["response_count"] / age
 
 
 """
@@ -122,7 +107,7 @@ def smooth_hist(data, bandwidth):
 def format_time(time_string):
     locale = str(datetime.strptime(time_string, "%Y-%m-%d %H:%M:%S").replace(
         tzinfo=tz.tzutc()).astimezone(tz.tzlocal()))
-    locale=locale[:locale.rindex("-")]
+    locale = locale[:locale.rindex("-")]
     dates = list(map(int, locale[:time_string.index(" ")].split("-")))
     times = list(map(int, locale[1 + time_string.index(" "):].split(":")))
     return datetime(dates[0], dates[1], dates[2], times[0], times[1], times[2]).strftime("%a %d, %I:%M %p") + " " + str(datetime.now().astimezone().tzinfo)

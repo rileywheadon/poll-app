@@ -1,7 +1,7 @@
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
-  {% for answer in poll.answers %}
+  {% for id, answer in poll.answers.items() %}
 
   <!-- Put this in macros.jinja if keeping the same design for "choose one" and "choose many" -->
   <div class="space-y-6">

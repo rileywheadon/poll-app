@@ -1,0 +1,7 @@
+{% for id, comment in comments.items() %}
+  {% include "results/comment-body.html" %}
+{% endfor %}
+
+{% with swap=1 %}
+  {% include "results/comment-load.html" %}
+{% endwith %}

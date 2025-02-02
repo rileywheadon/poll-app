@@ -1,20 +1,26 @@
 <div 
   id="poll-card-{{ poll.id }}"
   class="poll-card py-2 border-b-2 dark:border-nord-3 overflow-hidden"
-  {% if show_graph %}hx-on::after-settle="graphToggle({{ poll }});"{% endif %}
 >    
 
   <!-- Include the poll question -->
   <div class="flex flex-row items-center p-2">
 
     <div class="flex flex-col p-2 select-none">
-      <p class="font-light text-neutral-500">{% if poll.is_anonymous == 1 %}anonymous{% else %}@{{ poll.creator }}{% endif %} ⋅ {{ poll.age }}</p>
+      <p class="font-light text-neutral-500">
+        {% if poll.is_anonymous == 1 %}
+          anonymous
+        {% else %}
+          @{{ poll.creator }}
+        {% endif %} ⋅ {{ poll.age }}
+      </p>
       <p class=" font-light text-neutral-200 text-2xl">{{ poll.question }}</p>
     </div>
 
     <!-- If the user created this poll, allow them to edit it -->
     {% if session.user.id == poll.creator_id %} 
-  
+
+ 
       <!-- Share Button -->
       <button 
         class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
@@ -22,16 +28,33 @@
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square text-polll-blue hover:text-polll-green"></i>
+        <i class="ml-1 fa fa-share-from-square text-polll-blue hover:text-polll-green">
+        </i>
       </button>
 
-      {% include "results/poll-lock.html" %}
+      <!-- Toggle Lock -->
+      {% with %}
+        {% set id=poll.id %}
+        {% set is_active=poll.is_active %}
+        {% include "results/poll-lock.html" %}
+      {% endwith %}
 
+      <!-- If the user is an administrator, allow them to pin this poll -->
+      {% if session.user.is_admin %}
+
+        {% with %}
+          {% set id=poll.id %}
+          {% set is_pinned=poll.is_pinned %}
+          {% include "results/poll-pin.html" %}
+        {% endwith %}
+
+      {% endif %}
+      
       <!-- Delete Poll -->
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
       <button class="ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
           title="Delete"
-          hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
+          hx-get="{{ url_for('poll.delete', poll_id = id) }}"
           hx-include="previous input"
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
@@ -46,7 +69,6 @@
   <!-- Poll Graph -->
   <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4">
 
-    <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
     {% elif poll.poll_type == "TIER_LIST" %}
@@ -57,35 +79,48 @@
 
   <div class="flex flex-row text-sm px-4 items-center my-4 select-none">
     <p class="font-light">
-      Votes: {{ poll.votes }}
+      Votes: {{ poll.response_count }}
     </p>
 
-    <!-- Toggle Comments -->
+    <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
-      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-black dark:text-nord-4 flex items-center justify-center"
-      onclick="toggle_comments({{ poll.id }})"
+      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none"
+      hx-on::after-request="toggle_comments({{ poll.id }})"
+      hx-get="{{ url_for('poll.comments', poll_id = id) }}"
+      hx-target="#poll-comments-{{ poll.id }}"
+      hx-swap="innerHTML"
     >
-      <span class="hidden md:flex" id="comments-toggle-{{ poll.id }}">Show Comments</span>
-      &nbsp(<span id="comments-count-{{ poll.id }}">{{ poll.comments|length }}</span>)
-      <i class="fa fa-comment ml-2 text-black dark:text-nord-4 text-xl"></i>
+      <div class="text-black dark:text-nord-4 whitespace-nowrap">
+        <span id="comments-toggle-{{ poll.id }}">Show Comments</span> 
+        <span id="comments-count-{{ poll.id }}">
+          &nbsp({{ poll.comment_count }})
+        </span>
+      </div>
+      <i class="fa fa-comment pl-2 text-xl"></i>
     </button>
 
-    <!-- Toggle Results -->
+    <!-- Show Results -->
     <button 
       class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none"
-      onclick="graphToggle({{ poll }})"
+      hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
+      hx-target="#poll-graph-{{ poll.id }}"
+      hx-swap="none"
     >
       <span
         id="graph-toggle-{{ poll.id }}"
-        class="text-black dark:text-nord-4"
+        class="graph-toggle text-black dark:text-nord-4"
       >
-      <p id="rs-btn-txt-{{ poll.id }}" class="hidden md:flex md:font-light md:hover:text-nord-6">Show Results</p>
+        Show Results
       </span>
-      <i class="fa fa-chart-simple px-2  text-xl"></i>
+      <i class="fa fa-chart-simple pl-2 text-xl"></i>
     </button>
 
   </div>
 
-  {% include "results/poll-comments.html" %}
+  <div class="poll-comments px-4 py-4 hidden" id="poll-comments-{{ poll.id }}">
+
+    {% include "results/poll-comments.html" %}
+
+  </div>
 
 </div>

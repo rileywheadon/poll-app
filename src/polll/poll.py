@@ -2,11 +2,12 @@
 
 from datetime import datetime, timedelta
 import time
+import json 
 from flask import Blueprint, url_for, session, redirect
 from flask import make_response, render_template, request
 
-import polll.responses as response_handlers
-import polll.results as result_handlers
+from polll.responses import query_response, create_response
+from polll.results import query_results
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
@@ -16,41 +17,39 @@ from polll.models import *
 # Create a blueprint for answering anonymous polls
 poll = Blueprint('poll', __name__, template_folder='templates')
 
+# Comment limit
+COMMENT_LIMIT = 10
 
 @poll.route("/poll/<poll_code>")
 def anonymous(poll_code):
 
-    # Get a database connection
+    # Get the poll details
     db = get_db()
-    cur = db.cursor()
-
-    # Recover the poll ID, query the database
     poll_id = url_to_id(poll_code)
-    poll = query_poll_details(poll_id)
-    return render_template("anonymous/poll.html", poll=poll, session=session)
+    res = db.rpc("poll", {"pid": poll_id}).execute()
+    poll = query_poll_details(res.data[0])
+
+    # Reset the comments and replies
+    del session["comments"]
+    del session["replies"]
+    session["comments"] = {}
+    session["replies"] = {}
+
+    # Add poll to session and render the poll
+    session["polls"][str(poll_id)] = poll
+    session.modified = True
+    return render_template("anonymous/poll.html", session=session, poll=poll)
 
 
+# WARN: Need to add row level security to this action
 @poll.route("/poll/delete/<poll_id>")
 @requires_auth
 def delete(poll_id):
 
-    # Get a database connection
+    # Get a database connection and delete the poll
     db = get_db()
-    cur = db.cursor()
-
-    # Check that the user is allowed to delete the poll
-    res = cur.execute("SELECT * FROM poll WHERE id=?", (poll_id,))
-    poll = dict(res.fetchone())
-    is_creator = session["user"]["id"] == poll["creator_id"]
-    is_admin = session["user"]["email"] == "admin@polll.org"
-
-    # If user is not poll creator or admin, return without deleting the poll
-    if (not is_creator) and (not is_admin):
-        return ""
-
-    # Delete the poll and all comments
-    delete_poll(poll_id)
-
+    db.table("poll").delete().eq("id", poll_id).execute()
+    
     # Send a notification to the user
     r = make_response("")
     notification = '{"notification": "Poll Deleted!"}'
@@ -58,54 +57,102 @@ def delete(poll_id):
     return r
 
 
-@poll.route("/poll/toggle/<poll_id>/<active>")
+# WARN: Need to add row level security to this action
+@poll.route("/poll/toggle/<poll_id>/<active_str>")
 @requires_auth
-def toggle(poll_id, active):
+def toggle(poll_id, active_str):
 
-    # Get a database connection
+    # Update the poll state
     db = get_db()
-    cur = db.cursor()
-
-    # Check that the user is allowed to interact with the poll
-    res = cur.execute("SELECT * FROM poll WHERE id=?", (poll_id,))
-    poll = dict(res.fetchone())
-    is_creator = session["user"]["id"] == poll["creator_id"]
-    is_admin = session["user"]["email"] == "admin@polll.org"
-
-    # If user is not poll creator or admin, return without deleting the poll
-    if (not is_creator) and (not is_admin):
-        return ""
-
-    # Update the state of is_active depending on active
-    query = """
-    UPDATE poll
-    SET is_active = ?
-    WHERE id = ?
-    """
-    next_active = 0 if int(active) == 1 else 1
-    cur.execute(query, (next_active, poll_id))
-    db.commit()
-
-    # Update the poll object
-    poll["is_active"] = next_active
+    active = True if active_str == "True" else False
+    db.table("poll").update({"is_active": not active}).eq("id", poll_id).execute()
 
     # Add a notification and send the response
-    message = '"Poll Closed!"' if next_active == 0 else '"Poll Opened!"'
+    message = '"Poll Closed!"' if active else '"Poll Opened!"'
     notification = f'{{"notification": {message}}}'
-    r = make_response(render_template("results/poll-lock.html", poll=poll))
+    t = render_template("results/poll-lock.html", id=poll_id, is_active=not active)
+    r = make_response(t)
     r.headers.set("HX-Trigger", notification)
     return r
 
 
-@poll.route("/poll/comment/<poll_id>", methods=["GET", "POST"])
-@requires_auth
-def comment(poll_id):
+# WARN: Need to add row level security to this action
+@poll.route("/poll/pin/<poll_id>/<pinned_str>")
+@requires_admin
+def pin(poll_id, pinned_str):
 
-    # Get a database connection
+    # Update the poll state
     db = get_db()
-    cur = db.cursor()
+    pinned = True if pinned_str == "True" else False
+    db.table("poll").update({"is_pinned": not pinned}).eq("id", poll_id).execute()
+
+    # Add a notification and send the response
+    message = '"Poll Unpinned!"' if pinned else '"Poll Pinned!"'
+    notification = f'{{"notification": {message}}}'
+    t = render_template("results/poll-pin.html", id=poll_id, is_pinned=not pinned)
+    r = make_response(t)
+    r.headers.set("HX-Trigger", notification)
+    return r
+
+
+# Helper function to query comments given a page and an count
+def query_comments(poll_id, page, count):
+    db = get_db()
+    user_id = session["user"]["id"]
+    return (
+        db.table("comment")
+        .select("*, like(count), dislike(count), user(*), reply:comment(count)")
+        .eq("poll_id", poll_id)
+        .is_("parent_id", "null")
+        .order("created_at", desc=True)
+        .range(page * count, (page * count) + (count - 1))
+        .execute()
+    )
+
+
+@poll.route("/poll/comments/<poll_id>", methods=["GET", "POST"])
+@requires_auth
+def comments(poll_id):
+
+    # Get all of the comments for this poll, their likes and replies
+    db = get_db()
+    user_id = session["user"]["id"]
+    res = query_comments(poll_id, 0, COMMENT_LIMIT)
+
+    # Set the full variable to False if less res is below the comment limit
+    session["comment_full"] = True
+    if len(res.data) < COMMENT_LIMIT:
+        session["comment_full"] = False
+
+    # Call query_comment_details to get information about the comments
+    del session["comments"]
+    poll = session["polls"][int(poll_id)]
+    session["comments"] = {c["id"]: query_comment_details(c) for c in res.data}
+    session["comments_page"] = 0
+
+    # Get a list of the user's likes and dislikes by comment ID
+    res = (
+        db.table("user")
+        .select("like(comment_id)", "dislike(comment_id)")
+        .eq("id", user_id)
+        .execute()
+    )
+    session["user"]["likes"] = [c["comment_id"] for c in res.data[0]["like"]]
+    session["user"]["dislikes"] = [c["comment_id"] for c in res.data[0]["dislike"]]
+
+    # Update the session and render the comment list template
+    del session["replies"]
+    session["replies"] = {}
+    session.modified = True
+    return render_template("results/poll-comments.html", session=session, poll=poll)
+
+
+@poll.route("/poll/create_comment/<poll_id>", methods=["GET", "POST"])
+@requires_auth
+def create_comment(poll_id):
 
     # If the comment is empty, send an error
+    db = get_db()
     comment = request.form.get("comment")
     if not comment:
         notification = '{"notification": "Comment cannot be empty!"}'
@@ -115,25 +162,73 @@ def comment(poll_id):
         return r
 
     # Insert the new comment into the database
-    # NOTE: Set parent_id = 0 because Javscript doesn't play nice with null values
-    query = """
-    INSERT INTO comment (parent_id, poll_id, user_id, comment, timestamp)
-    VALUES (0, ?, ?, ?, ?) RETURNING id
-    """
-    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    user_id = session["user"]["id"]
-    res = cur.execute(query, (poll_id, user_id, comment, timestamp)).fetchone()
-    db.commit()
+    res = db.table("comment").insert({
+        "poll_id": poll_id,
+        "user_id": session["user"]["id"],
+        "comment": comment
+    }).execute()
 
-    # Redirect to the comments endpoint to render the comments
-    comment = query_comment_details(res["id"])
-    poll = query_poll_details(poll_id)
-    return render_template("results/comment-response.html", poll=poll, comment=comment)
+    # Set additional information on the new comment 
+    comment = res.data[0]
+    comment["user"] = session["user"]
+    comment["age"] = format_timestamp(comment["created_at"])
+    comment["like_count"] = 0
+    comment["dislike_count"] = 0 
+    comment["reply_count"] = 0
+
+    # Update the client-side poll object and render the comments again
+    poll = session["polls"][int(poll_id)]
+    poll["comment_count"] += 1 
+    session["comments"][int(comment["id"])] = comment
+    session.modified = True
+
+    # Render the response template
+    return render_template(
+        "results/responses/comment-response.html",
+        poll = poll,
+        comment = comment
+    )
 
 
-# HTTP endpoint for responding to polls
+@poll.route("/poll/load_comments/<poll_id>/<page>")
+@requires_auth
+def load_comments(poll_id, page):
+
+    # Get all of the comments for this poll, their likes and replies
+    db = get_db()
+    page = int(page) + 1
+    res = query_comments(poll_id, page, COMMENT_LIMIT)
+
+    # Update the session variable
+    comments = { c["id"] : query_comment_details(c) for c in res.data }
+    session["comments"].update(comments)
+    session["comments_page"] = page
+
+    # If the query is not completely full, hide the response button
+    session["comment_full"] = True
+    if len(res.data) < COMMENT_LIMIT:
+        session["comment_full"] = False
+
+    # Render the response template
+    return render_template(
+        "results/responses/load-comments-response.html",
+        session=session,
+        comments=comments,
+        poll_id=poll_id,
+    )
+
+
+# WARN: Add row level security to prevent duplicate responses
 @poll.route("/poll/response/<poll_id>", methods=["GET", "POST"])
 def response(poll_id):
+
+    # Check if the form is empty, if it is, return immediately and notify the user
+    if not request.form:
+        r = make_response("")
+        notification = '{"notification": "Response cannot be empty!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", "none")
+        return r
 
     # If the user is not logged in, add their response to the session variable
     if not session.get("user"):
@@ -152,49 +247,91 @@ def response(poll_id):
             session["responses"].append(response)
             session.modified = True
 
-            return render_template("anonymous/submit.html")
+        return render_template("anonymous/submit.html")
 
-    # Validate the response, then render the results
-    error = validate_response(request.form.to_dict(flat=False), poll_id)
+    # Get the user and the poll from the session variable
+    poll = session["polls"][poll_id]
+    user = session["user"]
+    form = request.form.to_dict(flat=False)
+    poll["response_count"] += 1
+    poll["response"] = create_response(form, poll)
+    poll["results"] = query_results(poll)
 
-    # If the response was invalid, notify the user
-    if error == "Invalid Response":
-        r = make_response("")
-        notification = '{"notification": "You can''t respond to this poll!"}'
-        r.headers.set("HX-Trigger", notification)
-        r.headers.set("HX-Reswap", "none")
-        return r
+    # If the poll is a scale, add the KDE
+    if poll["poll_type"] == "NUMERIC_SCALE":
+        poll["kde"] = smooth_hist(poll["results"], 0.25)
 
-    return redirect(url_for("poll.result", poll_id=poll_id, show_graph=True))
+    session.modified = True
+
+    # If the poll is ranked or tier list, get the HTML template
+    template = render_template("results/result-base.html", poll=poll)
+    r = make_response(template)
+    graph = '{"graph": ' + json.dumps(poll) + '}'
+    r.headers.set("HX-Trigger-After-Settle", graph)
+    return r
 
 
 # HTTP endpoint for getting the results card
-@poll.route("/poll/result/<poll_id>/<show_graph>")
-@poll.route("/poll/result/<poll_id>", defaults={"show_graph": False})
+@poll.route("/poll/result/<poll_id>")
 @requires_auth
-def result(poll_id, show_graph):
-    poll = query_poll_details(poll_id)
-    return render_template("results/result-base.html", poll=poll, show_graph=show_graph)
+def result(poll_id):
+
+    # Get the user's response and the results, if the poll has at least 1 vote
+    poll = session["polls"][int(poll_id)]
+    user = session["user"]
+
+    if poll["response_count"] > 0:
+        poll["response"] = query_response(poll, user)
+        poll["results"] = query_results(poll)
+    else: 
+        poll["response"] = {}
+        poll["results"] = {}
+
+    # If the poll is a scale, add the KDE
+    if poll["poll_type"] == "NUMERIC_SCALE":
+        poll["kde"] = smooth_hist(poll["results"], 0.25)
+
+    session.modified = True
+
+    # If the poll is ranked or tier list, get the HTML template
+    template = ""
+    reswap = "none"
+
+    if poll["poll_type"] == "RANKED_POLL":
+        template = render_template("results/ranked-poll.html", poll=poll)
+        reswap = "innerHTML"
+    if poll["poll_type"] == "TIER_LIST":
+        template = render_template("results/tier-list.html", poll=poll)
+        reswap = "innerHTML"
+
+    r = make_response(template)
+    graph = '{"graph": ' + json.dumps(poll) + '}'
+    r.headers.set("HX-Trigger-After-Settle", graph)
+    r.headers.set("HX-Reswap", reswap)
+    return r
 
 
-# Toggles the pin state on a poll
-@poll.route("/poll/pin/<poll_id>")
-@requires_admin
-def pin(poll_id):
+# Report a poll
+@poll.route("/poll/report/<poll_id>", methods=["GET", "POST"])
+@requires_auth
+def report(poll_id):
 
-    # Get database connection
+    # Get a database connection
     db = get_db()
-    cur = db.cursor()
+    poll = session["polls"][int(poll_id)]
 
-    # Check if the current poll is pinned or not
-    query = "SELECT is_pinned FROM poll WHERE id = ?"
-    res = cur.execute(query, (poll_id,)).fetchone()["is_pinned"]
+    # Insert the report into the database
+    db.table("poll_report").insert({ 
+        "poll_id": poll_id,
+        "receiver_id": poll["creator_id"],
+        "creator_id": session["user"]["id"]
+    }).execute()
 
-    # Query the database to toggle the pin state of the poll
-    query = f"UPDATE poll SET is_pinned = {0 if res == 1 else 1} WHERE id = ?"
-    cur.execute(query, (poll_id,))
-    db.commit()
+    # Return a notification
+    r = make_response("")
+    notification = '{"notification": "Poll Reported!"}'
+    r.headers.set("HX-Trigger", notification)
+    return r
 
-    # Get the new poll details and re-render the card
-    poll = query_poll_details(poll_id)
-    return render_template("admin/polls-pin.html", poll=poll)
+
+

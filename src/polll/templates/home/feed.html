@@ -81,7 +81,7 @@
 
     <div class="flex flex-row text-center items-center justify-center py-16 select-none">
       <p class="text-xl font-light">
-        {% if session.board == "All" %}
+        {% if session.board.name == "All" %}
         You've answered every poll!
         {% else %}
         You've answered every poll in {{ session.board }}!

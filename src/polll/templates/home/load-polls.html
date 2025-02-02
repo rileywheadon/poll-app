@@ -1,0 +1,14 @@
+<div 
+  id="poll-load"
+  class="w-full flex flex-row justify-center py-4 {% if not session.poll_full %}hidden{% endif %}"
+  {% if swap==1 %}hx-swap-oob="true"{% endif %}
+>
+  <button 
+    class="w-64 border-2 rounded-md border-nord-3 p-2 hover:bg-nord-2"
+    hx-get="{{ url_for('home.load_more', origin=session.tab, page=session.page) }}"
+    hx-target="#poll-container"
+    hx-swap="beforeend"
+  >
+    Load More
+  </button>
+</div>

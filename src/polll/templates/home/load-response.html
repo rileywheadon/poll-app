@@ -1,0 +1,9 @@
+{% for id, poll in polls.items() %}
+  {% include "results/result-base.html" %}
+{% endfor %}
+
+{% with swap=1 %}
+  {% include "home/load-polls.html" %}
+{% endwith %}
+
+

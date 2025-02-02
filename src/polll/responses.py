@@ -1,150 +1,268 @@
 from flask import redirect, url_for, session
 from datetime import datetime
-
 from polll.db import get_db
 import polll.results as result_handlers
+
+# NOTE: Each handler in this file returns a response dictionary
+
+# Gets the response previously submitted by the user
+def query_response(poll, user):
+    if poll["poll_type"] == "CHOOSE_ONE":
+        return query_choose_one(poll, user)
+    if poll["poll_type"] == "CHOOSE_MANY":
+        return query_choose_many(poll, user)
+    if poll["poll_type"] == "NUMERIC_SCALE":
+        return query_numeric_scale(poll, user)
+    if poll["poll_type"] == "RANKED_POLL":
+        return query_ranked_poll(poll, user)
+    if poll["poll_type"] == "TIER_LIST":
+        return query_tier_list(poll, user)
+
+
+def query_choose_one(poll, user):
+
+    db = get_db()
+    res = (
+        db.table("response")
+        .select("user_id", "poll_id", "discrete_response(answer_id)")
+        .eq("poll_id", poll["id"])
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(1)
+        .maybe_single()
+        .execute()
+    )
+
+    if not res:
+        return None
+    
+    response = res.data
+    id = response["discrete_response"][0]["answer_id"]
+    response["answer"] = poll["answers"][id]["answer"]
+    return response
+
+
+def query_choose_many(poll, user):
+
+    db = get_db()
+    res = (
+        db.table("response")
+        .select("user_id", "poll_id", "discrete_response(answer_id)")
+        .eq("poll_id", poll["id"])
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(1)
+        .maybe_single()
+        .execute()
+    )
+
+    if not res:
+        return None
+
+    response = [] 
+    for row in res.data["discrete_response"]: 
+        id = row["answer_id"]
+        response.append(poll["answers"][id])
+
+    return response
+
+
+def query_numeric_scale(poll, user):
+
+    db = get_db()
+    res = (
+        db.table("response")
+        .select("user_id", "poll_id", "numeric_response(value)")
+        .eq("poll_id", poll["id"])
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(1)
+        .maybe_single()
+        .execute()
+    )
+
+    if not res:
+        return None
+    
+    response = res.data
+    response["value"] = response["numeric_response"][0]["value"]
+    del response["numeric_response"]
+
+    return response
+
+
+def query_ranked_poll(poll, user):
+
+    db = get_db()
+    res = (
+        db.table("response")
+        .select("user_id", "poll_id", "ranked_response(answer_id, rank)")
+        .eq("poll_id", poll["id"])
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(1)
+        .maybe_single()
+        .execute()
+    )
+
+    if not res:
+        return None
+    
+    response = [] 
+    for row in res.data["ranked_response"]: 
+        id = row["answer_id"]
+        answer = poll["answers"][id]
+        answer["rank"] = row["rank"]
+        response.append(answer)
+
+    return response
+
+
+def query_tier_list(poll, user):
+
+    db = get_db()
+    res = (
+        db.table("response")
+        .select("user_id", "poll_id", "tiered_response(answer_id, tier)")
+        .eq("poll_id", poll["id"])
+        .eq("user_id", user["id"])
+        .order("created_at", desc=True)
+        .limit(1)
+        .maybe_single()
+        .execute()
+    )
+
+    if not res:
+        return None
+    
+    response = [] 
+    tiers = {1: "S", 2: "A", 3: "B", 4: "C", 5: "D", 6: "F"}
+    for row in res.data["tiered_response"]: 
+        id = row["answer_id"]
+        answer = poll["answers"][id]
+        answer["tier"] = tiers[row["tier"]]
+        response.append(answer)
+
+    return response
 
 
 # Creates and adds a response object to the database, returning its ID
 def create_response(form, poll):
 
-    # Get database connection
-    db = get_db()
-    cur = db.cursor()
-
     # Get arguments for the database operation
+    db = get_db()
     user_id = session["user"]["id"]
     poll_id = poll["id"]
-    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
     # Insert a new response into the database
-    query = """
-    INSERT INTO response (user_id, poll_id, timestamp)
-    VALUES (?, ?, ?)
-    RETURNING id
-    """
-    values = (user_id, poll_id, timestamp)
-    response = cur.execute(query, values)
-    response_id = response.fetchone()["id"]
+    res = db.table("response").insert({
+        "user_id": user_id,
+        "poll_id": poll_id
+    }).execute()
 
-    # Commit to the database, return the ID
-    db.commit()
-    return response_id
+    response_id = res.data[0]["id"]
+
+    # Call the right handler to add the secondary response rows
+    if poll["poll_type"] == "CHOOSE_ONE":
+        return respond_choose_one(form, poll, response_id)
+    if poll["poll_type"] == "CHOOSE_MANY":
+        return respond_choose_many(form, poll, response_id)
+    if poll["poll_type"] == "NUMERIC_SCALE":
+        return respond_numeric_scale(form, poll, response_id)
+    if poll["poll_type"] == "RANKED_POLL":
+        return respond_ranked_poll(form, poll, response_id)
+    if poll["poll_type"] == "TIER_LIST":
+        return respond_tier_list(form, poll, response_id)
 
 
-def choose_one(form, poll):
-
-    # Get database connection and add a response
-    db = get_db()
-    cur = db.cursor()
-    response_id = create_response(form, poll)
+# Submit a single discrete response to the database
+def respond_choose_one(form, poll, response_id):
 
     # Insert a new discrete_response into the database
-    query = """
-    INSERT INTO discrete_response (answer_id, response_id)
-    VALUES (?, ?)
-    """
-    answer_id = form.get("answer_id")[0]
-    cur.execute(query, (answer_id, response_id))
-
-    # Commit the changes to the database
-    db.commit()
-
-
-def choose_many(form, poll):
-
-    # Get database connection and add a response
     db = get_db()
-    cur = db.cursor()
-    response_id = create_response(form, poll)
+    answer_id = int(form.get("answer_id")[0])
+    data = {"answer_id": answer_id, "response_id": response_id}
+    res = db.table("discrete_response").insert(data).execute()
+    response = res.data[0]
+    
+    # Assign the answer string to the response using the cached poll
+    response["answer"] = poll["answers"][answer_id]["answer"]
+    return response
+
+
+# Submit multiple discrete responses to the database
+def respond_choose_many(form, poll, response_id):
 
     # Insert new discrete_response objects into the database
-    query = """
-    INSERT INTO discrete_response (answer_id, response_id)
-    VALUES (?, ?)
-    """
-    answer_ids = form.get("answer_id")
-    for answer_id in answer_ids:
-        cur.execute(query, (answer_id, response_id))
-
-    # Commit the changes to the database
-    db.commit()
-
-
-def numeric_star(form, poll):
-
-    # Get database connection and add a response
     db = get_db()
-    cur = db.cursor()
-    response_id = create_response(form, poll)
+    answer_ids = [int(id) for id in form.get("answer_id")]
+    data = [{"answer_id": id, "response_id": response_id} for id in answer_ids]
+    res = db.table("discrete_response").insert(data).execute()
+    response = res.data
+
+    # Assign the answer strings to the responses
+    for answer, id in zip(response, answer_ids):
+        answer["answer"] = poll["answers"][id]["answer"]
+
+    print(response)
+    return response
+   
+
+# Insert a single numeric repsonse into the database  
+def respond_numeric_scale(form, poll, response_id):
 
     # Insert new numeric_response object into the database
-    query = """
-    INSERT INTO numeric_response (value, response_id)
-    VALUES (?, ?)
-    """
-    rating = form.get("star_rating")[0]
-    cur.execute(query, (rating, response_id))
-
-    # Commit the changes to the database
-    db.commit()
-
-
-def numeric_scale(form, poll):
-
-    # Get database connection and add a response
     db = get_db()
-    cur = db.cursor()
-    response_id = create_response(form, poll)
-
-    # Insert new numeric_response object into the database
-    query = """
-    INSERT INTO numeric_response (value, response_id)
-    VALUES (?, ?)
-    """
     rating = form.get("slider_rating")[0]
-    cur.execute(query, (rating, response_id))
+    data = {"value": rating, "response_id": response_id}
+    res = db.table("numeric_response").insert(data).execute()
+    response = res.data[0]
+    return response
 
-    # Commit the changes to the database
-    db.commit()
 
+# Insert a list of ranked responses into the database
+def respond_ranked_poll(form, poll, response_id):
 
-def ranked_poll(form, poll):
-
-    # Get database connection and add a response
+    # Create all of the new row objects 
     db = get_db()
-    cur = db.cursor()
-    response_id = create_response(form, poll)
+    answer_ids = [int(id) for id in form.get("answer_id")]
+    data = []
+    for rank, id in enumerate(answer_ids):
+        data.append({"answer_id": id, "response_id": response_id, "rank": rank + 1})
 
-    # Insert new ranked_response objects into the database
-    query = """
-    INSERT INTO ranked_response (answer_id, response_id, rank)
-    VALUES (?, ?, ?)
-    """
-    answer_ids = form.get("answer_id")
-    for rank, answer_id in enumerate(answer_ids):
-        cur.execute(query, (answer_id, response_id, rank + 1))
+    # Submit all of the new row objects
+    res = db.table("ranked_response").insert(data).execute()
+    response = res.data
 
-    # Commit the changes to the database
-    db.commit()
+    # Assign the answer strings to the responses
+    for answer, id in zip(response, answer_ids):
+        answer["answer"] = poll["answers"][id]["answer"]
+
+    return response
 
 
-def tier_list(form, poll):
+# Insert a list of tiered responses into the database
+def respond_tier_list(form, poll, response_id):
 
-    # Get database connection and add a response
+    # Get the answer IDs, tiers, and the the tier score mappings
     db = get_db()
-    cur = db.cursor()
-    response_id = create_response(form, poll)
-
-    # Insert new ranked_response objects into the database
-    query = """
-    INSERT INTO tiered_response (answer_id, response_id, tier)
-    VALUES (?, ?, ?)
-    """
-    answer_ids = form.get("answer_id")
+    answer_ids = [int(id) for id in form.get("answer_id")]
     answer_tiers = form.get("answer_tier")
-    for answer_id, tier in zip(answer_ids, answer_tiers):
-        cur.execute(query, (answer_id, response_id, tier))
+    tiers = {"S": 1, "A": 2, "B": 3, "C": 4, "D": 5, "F": 6}
 
-    # Commit the changes to the database
-    db.commit()
+    # Create the new row objects and add them to the database
+    data = []
+    for id, tier in zip(answer_ids, answer_tiers):
+        data.append({"answer_id": id, "response_id": response_id, "tier": tiers[tier]})
+
+    res = db.table("tiered_response").insert(data).execute()
+    response = res.data
+
+    # Assign the answer and tier strings to the responses
+    for answer, id in zip(response, answer_ids):
+        answer["answer"] = poll["answers"][id]["answer"]
+        answer["tier"] = list(tiers.keys())[answer["tier"] - 1]
+
+    return response
+
+

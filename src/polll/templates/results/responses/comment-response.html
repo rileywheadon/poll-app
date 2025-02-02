@@ -1,0 +1,17 @@
+<!-- NOTE: This is a response template for rendering a newly added comment -->
+
+{% include "results/comment-body.html" %}
+
+<!-- Out of band swap to reset the comment input -->
+<input class="grow text-l p-2 bg-transparent border-b border-nord-3 dark:text-white focus:outline-none font-light" 
+  autocomplete="off"
+  name="comment"
+  placeholder="Add a comment..."
+  id="comment-input-{{ poll.id }}"
+  hx-swap-oob="true"
+/>
+
+<!-- Out of band swap to update the comment counter -->
+<span id="comments-count-{{ poll.id }}" hx-swap-oob="true">
+  &nbsp({{ poll.comment_count }})
+</span>

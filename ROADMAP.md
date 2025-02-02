@@ -2,20 +2,36 @@
 
 ## Riley
 
-- [ ] Poll sorting in history/mypolls
-- [ ] Add custom endpoints to the scale
-- [ ] View polls in boards (admin) should redirect to polls
-- [ ] Add ability to mute user (prevent from posting/commenting)
-- [ ] Add ability to ban user (prevent from logging in)
-- [ ] Add ability to view comments from poll UI and delete them
-- [ ] Add other sort options to the poll section of the admin UI
-- [ ] Add ability to delete comments that you created
-- [ ] Enforce lowercase usernames without spaces and special characters
+### Rewrite
 
----
+- Add ability to delete your own comments from poll UI
 
-- [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
-- [ ] Test for bugs, do a full click through of the app
+Admin:
+
+- Just has to list comment reports (show text), poll reports (show question & answer), and boards
+- Add the ability to mark a report as handled so it goes to the bottom of the list
+- From the reports, add the option to ban (prevent from logging in) / mute (prevent from posting/commenting) the user
+- Ability to set a primary board (which all polls are placed in automatically)
+
+Comments:
+
+- Currently querying user likes/dislikes with all comments. This is not scalable.
+
+Results/Responses:
+
+- Add custom endpoints to the scale
+
+Security:
+
+- Need to add row level security in a few places (see WARN comments)
+- Need to add row level security to prevent duplicate poll submission (see WARN comments)
+- Need to add row level security to prevent deleting other people's comments (see WARN comments)
+
+Testing:
+
+- Need to make sure poll pinning/closing works properly with multiple users
+- Implement "Load More" button on feed
+- Need to test out the feed using synthetic data
 
 ## Matt
 

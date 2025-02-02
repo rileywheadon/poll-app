@@ -1,0 +1,14 @@
+<div 
+  id="comment-load"
+  class="w-full flex flex-row p-2 {% if not session.comment_full %}hidden{% endif %}"
+  {% if swap==1 %}hx-swap-oob="true"{% endif %}
+>
+  <button 
+    class="text-nord-7 font-bold"
+    hx-get="/poll/load_comments/{{ poll_id }}/{{ session.comments_page }}"
+    hx-target="#comments-list-{{ poll_id }}"
+    hx-swap="beforeend"
+  >
+    Load More Comments
+  </button>
+</div>

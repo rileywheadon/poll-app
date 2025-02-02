@@ -6,7 +6,7 @@ import requests
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
 from polll.utils import *
-from polll.models import delete_poll, query_poll_details
+from polll.models import query_poll_details
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
@@ -15,30 +15,15 @@ admin = Blueprint('admin', __name__, template_folder='templates/admin')
 @requires_admin
 def users():
 
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-
     # Get the headers from the HTTP request, if they exist
+    db = get_db()
     column = request.args.get("column") or "username"
     search = request.args.get("search") or ""
 
     # Include similar values in the query, unless we are searching by ID
     value = "%{}%".format(search) if column != "id" else search
-
-    # Check that the search column is valid to prevent SQL injection
-    if column not in ["username", "email", "id"]:
-        return ""
-
-    # Query the database for all users matching the search
-    query = f"""
-    SELECT *
-    FROM user
-    WHERE {column}
-    LIKE ?
-    """
-    res = cur.execute(query, (value,))
-    users = [dict(row) for row in res.fetchall()]
+    res = db.table("user").select("*").like(column, value).execute()
+    users = res.data
 
     # Update the cooldown state for each user
     for user in users:
@@ -56,29 +41,30 @@ def users():
     return render_template("users.html", session=session, users=users, form=form)
 
 
-@admin.route("/admin/users/resetcooldown")
+@admin.route("/admin/users/reset_cooldown")
 @requires_admin
-def resetcooldown():
-
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
+def reset_cooldown():
 
     # Get the user ID from the HTTP request
+    db = get_db()
     user_id = request.args.get("user_id")
 
     # Update the user's next_poll_allowed value
-    query = """
-    UPDATE user
-    SET next_poll_allowed = ?
-    WHERE id = ?
-    """
-    now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    res = cur.execute(query, (now, user_id))
-    db.commit()
+    now = datetime.now().astimezone().isoformat()
+    res = (
+        db.table("user")
+        .update({"next_poll_allowed": now})
+        .eq("id", user_id)
+        .execute()
+    )
+
+    # Fetch the user so they can be rendered by the client
+    res = db.table("user").select("*").eq("id", user_id).execute()
+    user = res.data[0]
+    user["on_cooldown"] = on_cooldown(user)
 
     # UI Changes are handled in Javascript
-    return ""
+    return render_template("admin/users-table.html", user=user)
 
 
 @admin.route("/admin/polls")
@@ -222,13 +208,10 @@ def stats():
 @requires_admin
 def boards():
 
-    # Get a database connection
+    # Select all boards from the database
     db = get_db()
-    cur = db.cursor()
-
-    # Get the list of boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    res = db.table("board").select("*").execute()
+    boards = res.data
 
     # Render the template
     session["admin"] = True
@@ -240,16 +223,13 @@ def boards():
 @requires_admin
 def create_board():
 
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-
     # Check that the board name is unique
+    db = get_db()
     name = request.args.get("name")
-    query = "SELECT * FROM board WHERE name=?"
+    res = db.table("board").select("*").eq("name", name).execute()
 
     # If the name is not unique, do nothing and notify the user
-    if cur.execute(query, (name,)).fetchone() is not None:
+    if res.data:
         r = make_response("")
         notification = '{"notification": "Board already exists!"}'
         r.headers.set("HX-Trigger", notification)
@@ -257,13 +237,11 @@ def create_board():
         return r
 
     # Add the board to the database
-    query = "INSERT INTO board (name) VALUES (?)"
-    cur.execute(query, (name,))
-    db.commit()
+    res = db.table("board").insert({"name": name}).execute()
 
     # Get the list of boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    res = db.table("board").select("*").execute()
+    boards = res.data
 
     # Render the boards list again
     r = make_response(render_template("boards-list.html", boards=boards))
@@ -276,22 +254,13 @@ def create_board():
 @requires_admin
 def delete_board(board_id):
 
-    # Get a database connection
+    # Remove the board (cascade should take care of poll_board)
     db = get_db()
-    cur = db.cursor()
-
-    # Remove the board and all connections from the database
-    board_query = "DELETE FROM board WHERE id = ?"
-    poll_board_query = "DELETE FROM poll_board WHERE board_id = ?"
-
-    # Execute the queries, starting with poll_query
-    cur.execute(poll_board_query, (board_id,))
-    cur.execute(board_query, (board_id,))
-    db.commit()
+    db.table("board").delete().eq("id", board_id).execute()
 
     # Get the list of boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    res = db.table("board").select("*").execute()
+    boards = res.data
 
     # Render the boards list again
     r = make_response(render_template("boards-list.html", boards=boards))
