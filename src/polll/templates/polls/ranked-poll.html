@@ -9,13 +9,14 @@
       <div class="flex flex-wrap justify-center items-center max-w-md">
         {% for answer in poll.answers %}
           <div class="space-x-4 space-y-4 relative">
-            <input type="checkbox" id="checkbox-{{ answer.id }}" name="answer_id" value="{{ answer.answer }}-{{ answer.id }}" class="hidden peer" onclick="handle_rank_select('{{ poll.id|safe }}', '{{ answer.id|safe }}')">
-            <span id="rank-num-{{ answer.id }}" class="hidden absolute size-fit z-10 rounded-full px-1 font-light text-xs bg-polll-blue"></span>
+            <input type="checkbox" id="checkbox-{{ answer.id }}" class="hidden peer" onclick="handle_rank_select('{{ poll.id|safe }}', '{{ answer.id|safe }}')">
+            <input class="hidden" id="answer-id-{{ answer.id }}" name="answer_id" value="{{ answer.id }}">
+            <input class="hidden" id="rank-input-{{ answer.id }}" name="answer_rank" value="">
+            <span id="rank-num-{{ answer.id }}" class="hidden absolute size-fit z-10 rounded-full px-2 font-light bg-polll-blue text-nord-1"></span>
             <label id="label-{{ answer.id }}" for="checkbox-{{ answer.id }}" 
             class="relative flex p-4 min-w-lg rounded-lg cursor-default
                   border-2 border-gray-700 bg-gray-800 text-gray-400
-                  hover:text-gray-300 hover:bg-gray-700
-                  peer-checked:border-polll-green">
+                  hover:text-gray-300 hover:bg-gray-700">
               <p class="font-light select-none">{{ answer.answer }}</p>
             </label>
           </div>

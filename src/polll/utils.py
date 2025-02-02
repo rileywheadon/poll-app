@@ -99,18 +99,20 @@ def smooth_hist(data, bandwidth):
     # Third parameter (must be above 101) helps with local
     # smoothing but anything above 150 casues a noticable
     # drop in performance
-    x_vals = np.linspace(0, 100, 101)
+    x_vals = np.linspace(0, 100, 501)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
 
     # Return a flat chart if there is no data
     if len(data) == 0:
         return [x_vals.tolist(), [0] * 101]
-
-    # If there is data, append one extra point (KDE fails with one point)
+    
     if len(data) == 1:
         adj_data.append(adj_data[0] + 1)
         bandwidth = 10
+
+    if len(data) == 2:
+        bandwidth = 0.5
 
     return [
         x_vals.tolist(),

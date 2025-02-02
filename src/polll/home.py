@@ -78,7 +78,7 @@ def save_settings():
 def feed():
 
     # Get the request arguments (board and order)
-    board = request.args.get("board") or "All"
+    board = request.args.get("board") or "General"
     order = request.args.get("order") or "hot"
     period = request.args.get("period") or "day"
 
@@ -271,6 +271,8 @@ def create_poll():
     is_anonymous = 1 if request.args.get("poll_anonymous") else 0
     is_active = 1  # Polls are active by default
     answers = request.args.getlist("poll_answer")
+    endpoint_left = request.args.get("endpoint_left")
+    endpoint_right = request.args.get("endpoint_right")
     board_ids = request.args.getlist("poll_board")
 
     # Check that the question and answers are not empty
@@ -319,7 +321,11 @@ def create_poll():
         cur.execute(query, (poll["id"], board_id))
 
     # Add the poll answers to the database unless they are numeric
-    if not numeric:
+    if numeric:
+        query = "INSERT INTO poll_answer (poll_id, answer) VALUES (?, ?)"
+        for endpoint in [endpoint_left, endpoint_right]:
+            cur.execute(query, (poll["id"], endpoint))
+    else:
         query = "INSERT INTO poll_answer (poll_id, answer) VALUES (?, ?)"
         for answer in answers:
             cur.execute(query, (poll["id"], answer))

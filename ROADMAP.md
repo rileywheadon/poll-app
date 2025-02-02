@@ -19,22 +19,17 @@
 
 ## Matt
 
+### TODAY: 
+- [x] Input slider
+- [ ] Add loading icon between page loads
+- [ ] Abstract duplicated code
+
+
 ### Important
 
-- Change ranked into a clickable interface
-  - [x] Implement ui
-  - [ ] Wire to backend
-- Add custom endpoints to scale:
-  - [x] Add in create as an input option
-  - [ ] Add to input slider
-  - [ ] Add to line graph output
-- [ ] Disable submit button until a response is given
-- [ ] Add rank number to a top corner of an its answer box
+- [ ] Add a loading bar to page loads
 
 ### Small/Secondary
-
-- [ ] Change "all" board to general (need to change redirect from login page from 'All' to 'General')
-- [ ] Allow a feed to be scrollable when the mouse in the left and right side bar
 
 # Roadmap
 
@@ -42,7 +37,7 @@
 - [ ] Implement captcha on form submit
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).
-- [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE) 
+- [ ] If adopting a poll type with exactly two answers e.g. poltical compass, use a scatter plot/heatmap representing frequency in 2D (might need 2D KDE)
 - [ ] Profiles
 
 ## Launch

@@ -3,6 +3,9 @@
 {% block poll_content %}
 
   <div class="my-2 flex flex-row justify-center items-center">
+    <!-- TODO: keep constant endpoints -->
+    {% if poll.answers[0].id | int > poll.answers[1].id | int %} {% set left_index = 1 | int %} {% else %} {% set left_index = 0 | int %} {% endif %}
+    <span class="px-4 justify-center items-center text-center">{{ poll.answers[left_index].answer }}</span>
     <input type="range"
            name="slider_rating"
            value="0"
@@ -11,6 +14,7 @@
            autocomplete="off"
            class=" w-3/4 accent-polll-blue hover:accent-polll-green"
            oninput="this.nextElementSibling.innerHTML = this.value">
-    <span class="range-slider__value pl-3 font-light">0</span><span></span>
+    <span class="range-slider__value pl-3 font-light {% if not poll.answers|length == 0 %}  hidden {% endif %}">0</span><span></span>
+    <span class="px-4 justify-center items-center text-center">{{ poll.answers[not left_index].answer }}</span>
   </div>
 {% endblock %}

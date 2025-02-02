@@ -1689,6 +1689,11 @@ video {
   color: rgb(161 161 170 / var(--tw-text-opacity, 1));
 }
 
+.text-nord-2 {
+  --tw-text-opacity: 1;
+  color: rgb(67 76 94 / var(--tw-text-opacity, 1));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -1771,6 +1776,16 @@ video {
 .placeholder\:text-neutral-400::placeholder {
   --tw-text-opacity: 1;
   color: rgb(163 163 163 / var(--tw-text-opacity, 1));
+}
+
+.before\:content-\[\'\'\]::before {
+  --tw-content: '';
+  content: var(--tw-content);
+}
+
+.before\:content-\[\'asdf\'\]::before {
+  --tw-content: 'asdf';
+  content: var(--tw-content);
 }
 
 .after\:absolute::after {

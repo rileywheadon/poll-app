@@ -102,6 +102,11 @@ def numeric_scale(form, poll):
     INSERT INTO numeric_response (value, response_id)
     VALUES (?, ?)
     """
+
+    print("\n\n\n")
+    print(form.get("slider_rating"))
+    print("\n\n\n")
+
     rating = form.get("slider_rating")[0]
     cur.execute(query, (rating, response_id))
 
@@ -122,8 +127,9 @@ def ranked_poll(form, poll):
     VALUES (?, ?, ?)
     """
     answer_ids = form.get("answer_id")
-    for rank, answer_id in enumerate(answer_ids):
-        cur.execute(query, (answer_id, response_id, rank + 1))
+    answer_ranks = form.get("answer_rank")
+    for answer_id, rank in zip(answer_ids, answer_ranks):
+        cur.execute(query, (answer_id, response_id, rank))
 
     # Commit the changes to the database
     db.commit()

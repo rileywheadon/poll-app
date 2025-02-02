@@ -381,14 +381,28 @@ function scale_graph_options(user_rs, rs, rs_kde) {
     user_rs ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
-
+    var endpoints = ["left", "right"];
+    // var endpoints = [];
     return  {
         grid: {
             show: false,
         },
         xaxis: {
             type: 'numeric',
-            categories: [...Array(rs_kde[0].length).keys()]
+            labels: {
+                style: {
+                    fontSize: "14px",
+                    fontWeight: "bold"
+                },
+                formatter: function (val) {
+                    if (endpoints.length != 0) {
+                        if (val == 0) return endpoints[0];
+                        if (Math.round(val) == 100) return endpoints[1];
+                       return "";
+                    }
+                    else return Math.round(val)
+                }
+            },
         },
         yaxis: {
             labels: {
@@ -421,7 +435,7 @@ function scale_graph_options(user_rs, rs, rs_kde) {
         },
         tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-                return '<div class="arrow_box">' + '</div>'
+                return ""
             }
 
         },
@@ -487,19 +501,6 @@ function scale_graph_options(user_rs, rs, rs_kde) {
 
                 ]
         },
-        responsive: [{
-            breakpoint: bp,
-            options: {
-                chart: {
-                    chart: {
-                        type: "pie",
-                        background: "null",
-                        width: bp,
-                        height: bp,
-                    },
-                },
-            },
-        }],
     };
 
 }

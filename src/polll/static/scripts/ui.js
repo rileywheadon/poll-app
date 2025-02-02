@@ -165,6 +165,8 @@ function handle_rank_select(poll_id, ans_id) {
   document.getElementById(`rank-num-${ans_id}`).innerHTML = checkCount.toString();
   document.getElementById(`rank-num-${ans_id}`).classList.remove("hidden");
 
+  document.getElementById(`rank-input-${ans_id}`).value = checkCount.toString();
+
   // Ensure the button cannot be clicked again
   rs.disabled = true;
 
@@ -179,6 +181,7 @@ function clear_ranking(poll_id) {
       var ans_id_num = ans_id.substring(ans_id.indexOf("-") + 1);
       document.getElementById(`rank-num-${ans_id_num}`).classList.add("hidden");
       document.getElementById(`rank-num-${ans_id_num}`).innerHTML = "";
+      document.getElementById(`rank-input-${ans_id_num}`).value = "";
     }
     // reset to default behaviour
     e.checked = false;
