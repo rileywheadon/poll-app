@@ -77,6 +77,7 @@ def save_settings():
 @requires_auth
 def feed():
 
+
     # Get the request arguments (board and order)
     board = request.args.get("board") or "General"
     order = request.args.get("order") or "hot"
@@ -192,6 +193,7 @@ def report(poll_id):
 @home.route("/history")
 @requires_auth
 def history():
+
 
     # Get the database connection
     db = get_db()
@@ -378,6 +380,7 @@ def create_poll():
 @home.route("/mypolls")
 @requires_auth
 def mypolls():
+
 
     # Get the database connection
     db = get_db()

@@ -188,3 +188,26 @@ function clear_ranking(poll_id) {
     e.disabled = false;
   })
 }
+
+function loading(url, parent_div) {
+  
+  // Create the icon (if you want text then you have to make a parent div and only make the fa icon spin)
+  var loading_div = document.createElement("div");
+  loading_div.classList.add("flex");
+  loading_div.classList.add("flex-col");
+  loading_div.classList.add("grow");
+  loading_div.classList.add("justify-center");
+  loading_div.classList.add("items-center");
+  loading_div.classList.add("size-fit");
+  loading_div.classList.add("animate-spin");  
+  loading_div.innerHTML = '<i class="fa-solid fa-spinner text-base md:text-2xl text-polll-green p-4"></i>'
+  
+
+  // Replace the current main content body with the loading div
+  document.getElementById(parent_div).replaceWith(loading_div)
+  
+
+  // go to the url that was pressed
+  window.location.href = url;
+
+}
