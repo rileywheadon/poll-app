@@ -4,7 +4,6 @@
 {% block poll_content %}
   {% for answer in poll.answers %}
 
-  <!-- Put this in macros.jinja if keeping the same design for "choose one" and "choose many" -->
   <div class="space-y-4">
     {{ macs.chooseInput("radio", answer.id, answer.answer) }}
   </div>

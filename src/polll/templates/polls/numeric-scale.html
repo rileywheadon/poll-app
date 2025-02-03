@@ -14,7 +14,7 @@
            autocomplete="off"
            class=" w-3/4 accent-polll-blue hover:accent-polll-green"
            oninput="this.nextElementSibling.innerHTML = this.value">
-    <span class="range-slider__value pl-3 font-light {% if not poll.answers|length == 0 %}  hidden {% endif %}">0</span><span></span>
+    <span class="range-slider__value pl-3 font-light {% if not poll.answers|length == 0 %} hidden {% endif %}">0</span><span></span>
     <span class="px-4 justify-center items-center text-center">{{ poll.answers[not left_index].answer }}</span>
   </div>
 {% endblock %}

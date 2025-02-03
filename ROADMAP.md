@@ -20,10 +20,12 @@
 ## Matt
 
 ### TODAY: 
-- [ ] Explore image uploading and how the backend supports it
 
 
 ### Important
+- [ ] Tier list results toggle between user and average response
+- [ ] Fix Tier list breakpoint issues
+
 
 ### Small/Secondary
 - [ ] Add a loading bar to show graphs/comments

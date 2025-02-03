@@ -91,7 +91,7 @@ function graphInitRewritten(poll) {
       options = choose_many_options(poll["response"], poll["results"]);
       break;
     case "NUMERIC_SCALE":
-      options = scale_graph_options(poll["response"], poll["results"], poll["kde"]);
+      options = scale_graph_options(poll["response"], poll["results"], poll["kde"], poll["answers"]);
       break;
   }
 
@@ -376,13 +376,17 @@ function choose_many_options(user_rs, rs, type="bar") {
 
 }
 
-function scale_graph_options(user_rs, rs, rs_kde) {
+function scale_graph_options(user_rs, rs, rs_kde, answers) {
 
     user_rs ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
-    var endpoints = ["left", "right"];
-    // var endpoints = [];
+
+    left_index = null;
+    answers[0]["id"] > answers[1]["id"] ? left_index = 1 : left_index = 0;
+    endpoints = [answers[left_index]["answer"], answers[Number(!left_index)]["answer"]];
+    console.log(endpoints)
+
     return  {
         grid: {
             show: false,
