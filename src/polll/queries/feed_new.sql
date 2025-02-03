@@ -1,12 +1,4 @@
- -- Query the database for all polls that meet the following conditions:
- --  1. ARE in the selected board
- --  2. NOT made by the user
- --  3. NOT responded to by the user
- --  4. NOT reported by the user
- --  5. ARE active (i.e. is_active = 1)
- --  6. Were created AFTER the cutoff
-
-CREATE OR REPLACE FUNCTION feed(bid bigint, uid bigint, cutoff timestamp with time zone) 
+CREATE OR REPLACE FUNCTION feed_new(bid bigint, uid bigint, page int, lim int) 
 RETURNS TABLE(
   id bigint, 
   created_at timestamp with time zone, 
@@ -49,7 +41,7 @@ RETURNS TABLE(
     intersect
     SELECT id
     FROM poll
-    WHERE creator_id != uid AND is_active = true AND created_at > cutoff
+    WHERE creator_id != uid AND is_active = true
     except
     SELECT poll_id
     FROM poll_report
@@ -59,5 +51,8 @@ RETURNS TABLE(
     FROM response
     WHERE response.user_id = uid
   )
-  GROUP BY poll.id, "user".username; 
+  GROUP BY poll.id, "user".username
+  ORDER BY poll.is_pinned DESC, poll.created_at DESC 
+  LIMIT lim
+  OFFSET lim * page;
 $$ LANGUAGE sql;

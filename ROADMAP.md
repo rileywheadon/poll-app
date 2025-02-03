@@ -1,37 +1,22 @@
 # Development Checklist
 
+If login is too slow, note that we are currently:
+
+- Querying user likes/dislikes on login
+- Querying boards on login
+
 ## Riley
 
-### Rewrite
-
-- Add ability to delete your own comments from poll UI
-
-Admin:
-
-- Just has to list comment reports (show text), poll reports (show question & answer), and boards
-- Add the ability to mark a report as handled so it goes to the bottom of the list
-- From the reports, add the option to ban (prevent from logging in) / mute (prevent from posting/commenting) the user
-- Ability to set a primary board (which all polls are placed in automatically)
-
-Comments:
-
-- Currently querying user likes/dislikes with all comments. This is not scalable.
-
-Results/Responses:
+### After Merge
 
 - Add custom endpoints to the scale
+- Light mode
 
-Security:
+### Production
 
-- Need to add row level security in a few places (see WARN comments)
-- Need to add row level security to prevent duplicate poll submission (see WARN comments)
-- Need to add row level security to prevent deleting other people's comments (see WARN comments)
-
-Testing:
-
-- Need to make sure poll pinning/closing works properly with multiple users
-- Implement "Load More" button on feed
-- Need to test out the feed using synthetic data
+- Integrate the supabase CLI with github and create a branch
+- https://makerkit.dev/docs/next-supabase-turbo/going-to-production/supabase
+- https://flask.palletsprojects.com/en/stable/deploying/
 
 ## Matt
 

@@ -3,6 +3,7 @@ function add_notification_listener() {
   document.body.addEventListener("notification", function(evt) { 
     notify(evt.detail.value)
   });
+
 }
 
 
@@ -21,7 +22,7 @@ function notify(message) {
 
   // Create the notification div
   const notification = document.createElement("div");
-  notification.className = "flex flex-row items-center py-2 w-48 mt-2 bg-nord-15/50 border-2 border-nord-15 rounded-md text-nord-0 dark:text-nord-4";
+  notification.className = "flex flex-row items-center py-2 w-56 mt-2 bg-nord-15/50 border-2 border-nord-15 rounded-md text-nord-0 dark:text-nord-4";
   notification.innerHTML = `<p class='mx-2'>${message}</p><button onclick='close_notification(this)' class='ml-auto mr-2'><i class='fa fa-close'></i></button>`;
 
   // Push the notification to the user, at the top of the notification queue

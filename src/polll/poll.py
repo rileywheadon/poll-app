@@ -11,8 +11,8 @@ from polll.results import query_results
 
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
-from polll.utils import url_to_id
-from polll.models import *
+from polll.utils import *
+
 
 # Create a blueprint for answering anonymous polls
 poll = Blueprint('poll', __name__, template_folder='templates')
@@ -26,6 +26,7 @@ def anonymous(poll_code):
     # Get the poll details
     db = get_db()
     poll_id = url_to_id(poll_code)
+    print(poll_id)
     res = db.rpc("poll", {"pid": poll_id}).execute()
     poll = query_poll_details(res.data[0])
 
@@ -41,7 +42,6 @@ def anonymous(poll_code):
     return render_template("anonymous/poll.html", session=session, poll=poll)
 
 
-# WARN: Need to add row level security to this action
 @poll.route("/poll/delete/<poll_id>")
 @requires_auth
 def delete(poll_id):
@@ -57,7 +57,6 @@ def delete(poll_id):
     return r
 
 
-# WARN: Need to add row level security to this action
 @poll.route("/poll/toggle/<poll_id>/<active_str>")
 @requires_auth
 def toggle(poll_id, active_str):
@@ -76,7 +75,6 @@ def toggle(poll_id, active_str):
     return r
 
 
-# WARN: Need to add row level security to this action
 @poll.route("/poll/pin/<poll_id>/<pinned_str>")
 @requires_admin
 def pin(poll_id, pinned_str):
@@ -119,30 +117,20 @@ def comments(poll_id):
     user_id = session["user"]["id"]
     res = query_comments(poll_id, 0, COMMENT_LIMIT)
 
-    # Set the full variable to False if less res is below the comment limit
-    session["comment_full"] = True
-    if len(res.data) < COMMENT_LIMIT:
-        session["comment_full"] = False
-
     # Call query_comment_details to get information about the comments
     del session["comments"]
     poll = session["polls"][int(poll_id)]
     session["comments"] = {c["id"]: query_comment_details(c) for c in res.data}
-    session["comments_page"] = 0
 
-    # Get a list of the user's likes and dislikes by comment ID
-    res = (
-        db.table("user")
-        .select("like(comment_id)", "dislike(comment_id)")
-        .eq("id", user_id)
-        .execute()
-    )
-    session["user"]["likes"] = [c["comment_id"] for c in res.data[0]["like"]]
-    session["user"]["dislikes"] = [c["comment_id"] for c in res.data[0]["dislike"]]
+    # Set the full variable to True if less res is below the comment limit
+    session["state"]["comment_page"] = 0
+    session["state"]["comment_full"] = len(res.data) < COMMENT_LIMIT
 
-    # Update the session and render the comment list template
+    # Update the session 
     del session["replies"]
     session["replies"] = {}
+
+    # Render the template
     session.modified = True
     return render_template("results/poll-comments.html", session=session, poll=poll)
 
@@ -202,12 +190,10 @@ def load_comments(poll_id, page):
     # Update the session variable
     comments = { c["id"] : query_comment_details(c) for c in res.data }
     session["comments"].update(comments)
-    session["comments_page"] = page
 
     # If the query is not completely full, hide the response button
-    session["comment_full"] = True
-    if len(res.data) < COMMENT_LIMIT:
-        session["comment_full"] = False
+    session["state"]["comment_page"] = page
+    session["state"]["comment_full"] = len(res.data) < COMMENT_LIMIT
 
     # Render the response template
     return render_template(
@@ -218,7 +204,6 @@ def load_comments(poll_id, page):
     )
 
 
-# WARN: Add row level security to prevent duplicate responses
 @poll.route("/poll/response/<poll_id>", methods=["GET", "POST"])
 def response(poll_id):
 
@@ -250,24 +235,31 @@ def response(poll_id):
         return render_template("anonymous/submit.html")
 
     # Get the user and the poll from the session variable
-    poll = session["polls"][poll_id]
+    poll = session["polls"][int(poll_id)]
     user = session["user"]
-    form = request.form.to_dict(flat=False)
-    poll["response_count"] += 1
-    poll["response"] = create_response(form, poll)
-    poll["results"] = query_results(poll)
 
-    # If the poll is a scale, add the KDE
+    # Get the user's response, either from a previous response or from the form
+    r = make_response("")
+    poll["response"] = query_response(poll, user)
+
+    if poll["response"] and not user["is_admin"]:
+        notification = '{"notification": "You\'ve already responded to this poll!"}'
+        r.headers.set("HX-Trigger", notification)
+    else:
+        form = request.form.to_dict(flat=False)
+        poll["response"] = create_response(form, poll)
+        poll["response_count"] += 1
+
+    # Get the results and add the KDE if the poll is numeric
+    poll["results"] = query_results(poll)
     if poll["poll_type"] == "NUMERIC_SCALE":
         poll["kde"] = smooth_hist(poll["results"], 0.25)
 
-    session.modified = True
-
-    # If the poll is ranked or tier list, get the HTML template
-    template = render_template("results/result-base.html", poll=poll)
-    r = make_response(template)
+    # Fill out the HTTP response and trigger a graph draw event
     graph = '{"graph": ' + json.dumps(poll) + '}'
     r.headers.set("HX-Trigger-After-Settle", graph)
+    r.data = render_template("results/result-base.html", poll=poll)
+    session.modified = True
     return r
 
 
@@ -327,11 +319,8 @@ def report(poll_id):
         "creator_id": session["user"]["id"]
     }).execute()
 
-    # Return a notification
+    # Send the user a notification
     r = make_response("")
     notification = '{"notification": "Poll Reported!"}'
     r.headers.set("HX-Trigger", notification)
     return r
-
-
-

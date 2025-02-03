@@ -53,13 +53,26 @@ def callback():
         res = db.table("user").insert({
             "username": user["username"],
             "email": user["email"],
-            "is_muted": False,
-            "is_banned": False,
-            "is_admin": True
+            "is_admin": False
         }).execute()
 
     # Add the user to the flask session
     session["user"] = res.data[0]
+
+    # Get a list of the user's likes and dislikes by comment ID
+    res = (
+        db.table("user")
+        .select("like(comment_id)", "dislike(comment_id)")
+        .eq("id", session["user"]["id"])
+        .execute()
+    )
+    session["user"]["likes"] = [c["comment_id"] for c in res.data[0]["like"]]
+    session["user"]["dislikes"] = [c["comment_id"] for c in res.data[0]["dislike"]]
+
+    # Get a list of boards
+    db = get_db()
+    res = db.table("board").select("*").execute()
+    session["boards"] = {b["id"] : b for b in res.data}
 
     # Render the home.feed template
     return redirect(url_for('home.feed'))
@@ -152,8 +165,17 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        if not session.get("user"):
+        db = get_db()
+        user = session.get("user")
+        true_user = db.auth.get_user().user
+
+        # If the user doesn't exist, redirect them to the index
+        if not true_user:
             return redirect(url_for("auth.index"))
+
+        # If the user does exist but doesn't match the session's user, log them out
+        if true_user.user_metadata["email"] != user["email"]:
+            return redirect(url_for("auth.logout"))
 
         return f(*args, **kwargs)
 
@@ -165,10 +187,21 @@ def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        if not session.get("user"):
+        db = get_db()
+        user = session.get("user")
+        true_user = db.auth.get_user().user
+
+        # If the user doesn't exist, redirect them to the index
+        if not true_user:
             return redirect(url_for("auth.index"))
 
-        elif not session["user"]["is_admin"]:
+        # If the user does exist but doesn't match the session's user, log them out
+        if true_user.user_metadata["email"] != user["email"]:
+            return redirect(url_for("auth.logout"))
+
+        # If the user is not an administrator, redirect them to the feed
+        emails = env.get("ADMIN_EMAILS").split(" ")
+        if true_user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 
         return f(*args, **kwargs)

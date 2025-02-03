@@ -1,4 +1,4 @@
-{% if not session.on_cooldown %}
+{% if not session.user.on_cooldown %}
 
 <!-- Image + create container -->
 <div class="flex flex-col h-full space-y-4 pb-2">
@@ -119,13 +119,13 @@
       <!-- SELECT BOARD -->
       <span class="mr-2">Select Boards:</span>
 
-      {% for board in session.boards %}
+      {% for id, board in session.boards.items() %}
 
         <label class="rounded-2xl px-3 mr-2 h-8 border-4 border-nord-4 hover:dark:bg-nord-0 has-[:checked]:border-nord-10 {% if board.name == 'All' %}border-nord-10{% endif %}">
           {{ board.name }}
 
           <!-- Very unfourtunate hack to prevent all from being unselected -->
-          {% if board.name == 'All' %}
+          {% if board.primary %}
             <input class="poll-create hidden"
               name="poll_board"
               value="{{ board.id }}" 
@@ -193,16 +193,9 @@
     Sorry! We only allow users to make one poll a day.
     <br />
     <br />
-    You'll be allowed to make another poll {{ format_time(session.user.next_poll_allowed)}}
+    You'll be allowed to make another poll on {{ format_time(session.user.next_poll_allowed)}}.
   </p>
 </div>
 
 {% endif %} 
-
-
-</div>
-
-
-
-
 

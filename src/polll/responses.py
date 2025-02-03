@@ -204,7 +204,6 @@ def respond_choose_many(form, poll, response_id):
     for answer, id in zip(response, answer_ids):
         answer["answer"] = poll["answers"][id]["answer"]
 
-    print(response)
     return response
    
 

@@ -24,7 +24,7 @@
 
 </div>
 
-{% with poll_id=poll.id %}
+{% with poll_id=poll.id, state=session.state %}
   {% include "results/comment-load.html" %}
 {% endwith %}
 

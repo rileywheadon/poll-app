@@ -1,0 +1,10 @@
+<button
+  class="ml-2 bg-nord-3 dark:bg-nord-13 text-nord-6 dark:text-nord-0 px-4 h-8 rounded-md"
+  hx-get="{{ url_for('admin.mute') }}"
+  hx-include="previous input"
+  hx-swap="outerHTML"
+>
+  {% if user.is_muted %}Unmute{% else %}Mute{% endif %} User
+  <i class="fa fa-microphone-slash ml-2"></i>
+</button>
+

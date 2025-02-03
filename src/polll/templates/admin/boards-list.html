@@ -1,21 +1,21 @@
-{% if boards %}
+{% if session.boards %}
 
-<div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-4 border-collapse my-2">
+<div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-3 border-collapse my-2">
 
-  {% for board in boards %}
+  {% for id, board in session.boards.items() %}
 
-  <div class="flex flex-row border-x border-b border-nord-0 dark:border-nord-4 p-4 items-center">
+  <div class="flex flex-row border-x border-b border-nord-0 dark:border-nord-3 p-4 items-center">
 
     <p class="text-xl">{{ board.name }}</p>
-    <button 
-      class="ml-auto rounded-md w-32 h-10 dark:bg-nord-4 dark:text-nord-0"
-      hx-get=""
-      hx-include=""
+    <p class="ml-auto mr-2">Primary:</p>
+    <input 
+      type="checkbox" 
+      class="w-6 h-6 mr-4"
+      hx-get="{{ url_for('admin.update_board', board_id = board.id) }}"
+      hx-swap="none"
+      {% if board.primary %}checked{% endif %}
     >
-      View Polls
-      <i class="fa fa-newspaper ml-1"></i>
-    </button>
-    <button class="ml-4 rounded-md w-40 h-10 dark:bg-nord-11 dark:text-nord-0"
+    <button class="rounded-md w-40 h-10 dark:bg-nord-11 dark:text-nord-0"
       hx-get="{{ url_for('admin.delete_board', board_id = board.id) }}"
       hx-target="#boards-list"
       hx-swap="innerHTML"

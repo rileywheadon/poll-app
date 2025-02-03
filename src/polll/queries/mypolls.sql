@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION mypolls(cid bigint) 
+CREATE OR REPLACE FUNCTION mypolls(cid bigint, page int, lim int) 
 RETURNS TABLE(
   id bigint, 
   created_at timestamp with time zone, 
@@ -35,5 +35,8 @@ RETURNS TABLE(
   LEFT JOIN response ON response.poll_id = poll.id
   LEFT JOIN comment ON comment.poll_id = poll.id
   WHERE poll.creator_id = cid
-  GROUP BY poll.id, "user".username; 
+  GROUP BY poll.id, "user".username
+  ORDER BY poll.created_at DESC
+  LIMIT lim
+  OFFSET lim * page;
 $$ LANGUAGE sql;

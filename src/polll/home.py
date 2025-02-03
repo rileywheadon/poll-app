@@ -9,8 +9,8 @@ import polll.responses as response_handlers
 import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
+from polll.utils import *
 from polll.db import get_db
-from polll.models import *
 
 
 # Create a blueprint for the poll endpoints
@@ -18,6 +18,15 @@ home = Blueprint('home', __name__, template_folder='templates')
 
 # Maixmimum number of polls loaded at once
 POLL_LIMIT = 10
+
+# Conversion of cutoff periods to days
+CUTOFF_PERIODS = {
+    "day": 1,
+    "week": 7,
+    "month": 30,
+    "year": 365,
+    "all": 10000
+}
 
 
 # Route for opening the settings window
@@ -74,53 +83,55 @@ def save_settings():
     return r
 
 
+# Helper function to call the correct feed RPC handler
+def query_feed(bid, order, period, page):
+    res = None
+    db = get_db()
+    uid = session["user"]["id"]
+
+    # NOTE: Change 0 to uid before going to production
+    args = {"bid": bid, "uid": 0, "page": page, "lim": POLL_LIMIT}
+
+    if order == "hot":
+        res = db.rpc("feed_hot", args).execute()
+    if order == "top":
+        cutoff = get_days_behind(CUTOFF_PERIODS[period])
+        session["state"]["cutoff"] = cutoff
+        args["cutoff"] = cutoff
+        res = db.rpc("feed_top", args).execute()
+    if order == "new":
+        res = db.rpc("feed_new", args).execute()
+
+    return res
+
+
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
 def feed():
 
-    # Get the request arguments (board and order)
+    # Get the request arguments (board and order) and query the database
     bid = request.args.get("board") or 1
     order = request.args.get("order") or "hot"
     period = request.args.get("period") or "day"
-    uid = session["user"]["id"]
+    res = query_feed(bid, order, period, 0)
 
-    # Get the database connection and the boards
-    db = get_db()
-    res = db.table("board").select("*").execute()
-    session["boards"] = {b["id"] : b for b in res.data}
+    # Update the session state variable and render the feed
+    session["polls"] = {p["id"]: query_poll_details(p) for p in res.data}
+    session["comments"] = {}
+    session["replies"] = {}
 
-    # Determine the time cutoff if necessary
-    cutoff_periods = {
-        "day": 1,
-        "week": 7,
-        "month": 30,
-        "year": 365,
-    }
+    session["state"].update({
+        "admin": False,
+        "tab": "feed",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT,
+        "board": session["boards"][int(bid)],
+        "order": order,
+        "period": period,
+    })
 
-    cutoff = get_days_behind(cutoff_periods[period])
-    res = db.rpc("feed", {"bid": bid, "uid": uid, "cutoff": cutoff}).execute()
-
-    # Sort the polls based on the provided order
-    orders = {
-        "hot": lambda p: (p["is_pinned"], popularity(p)),
-        "top": lambda p: (p["is_pinned"], p["response_count"]),
-        "new": lambda p: (p["is_pinned"], p["created_at"]),
-    }
-
-    polls = sorted(res.data, key=orders[order], reverse=True)
-
-    # Iterate through the poll IDs, getting the details
-    session["polls"] = {p["id"]: p for p in polls}
-    session["admin"] = False
-    session["tab"] = "feed"
-    session["board"] = session["boards"][bid]
-    session["feed"] = order
-    session["period"] = period
     return render_template("home/feed.html", session=session)
-
-
-
 
 
 # Home page (create poll)
@@ -128,15 +139,14 @@ def feed():
 @requires_auth
 def create():
 
-    # Get the boards from the database
-    db = get_db()
-    res = db.table("board").select("*").execute()
-    session["boards"] = res.data
+    # Sort the boards by primary first
+    boards = session["boards"].items()
+    boards = sorted(boards, key = lambda b : b[1]["primary"], reverse=True)
+    session["boards"] = dict(boards)
 
-    # Set the session variables
-    session["admin"] = False
-    session["tab"] = "create"
-    session["on_cooldown"] = on_cooldown(session["user"])
+    # Update the session state variable and render the feed
+    session["user"]["on_cooldown"] = on_cooldown(session["user"])
+    session["state"] = {"admin": False, "tab": "create"}
 
     # Render the HTML template
     return render_template("home/create.html", session=session)
@@ -153,6 +163,14 @@ def create_answer():
 @home.route("/create/poll")
 @requires_auth
 def create_poll():
+
+    # If the user is muted prevent them from creating the poll
+    if session["user"]["is_muted"]:
+        r = make_response("")
+        notification = '{"notification": "You have been muted!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", 'none')
+        return r
 
     # Get request data for creating the poll
     creator_id = session["user"]["id"]
@@ -187,8 +205,6 @@ def create_poll():
         "question": question,
         "poll_type": poll_type,
         "is_anonymous": is_anonymous,
-        "is_active": 1,
-        "is_pinned": 0
     }
 
     db = get_db()
@@ -222,7 +238,10 @@ def create_poll():
     }).eq("id", creator_id).execute()
 
     # Update the current user's information in the session
+    session["user"]["last_poll_created"] = last_poll_created
+    session["user"]["next_poll_allowed"] = next_poll_allowed
     session["user"]["on_cooldown"] = on_cooldown(session["user"])
+    session.modified = True
 
     # Render the create.html template, while triggering a notification
     template = render_template("home/create-card.html", session=session)
@@ -243,26 +262,49 @@ def mypolls():
     data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
     res = db.rpc("mypolls", data).execute()
 
-    # If the query was below the limit, set the full variable
-    session["poll_full"] = True
-    if len(res.data) < POLL_LIMIT:
-        session["poll_full"] = False
-
     # Update the session object with the new state
-    session["admin"] = False
-    session["tab"] = "mypolls"
-    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
-    session["page"] = 0
-    session.modified = True
-
-    # Reset the loaded comments and replies
-    del session["comments"]
-    del session["replies"]
     session["comments"] = {}
     session["replies"] = {}
+    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+
+    session["state"] = {
+        "admin": False,
+        "tab": "mypolls",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT
+    }
 
     # Render the HTML template
+    session.modified = True
     return render_template("home/mypolls.html", session=session)
+
+
+# Home page (response history)
+@home.route("/history")
+@requires_auth
+def history():
+
+    # Query the database for all polls responded to by the user
+    db = get_db()
+    user = session["user"]
+    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("history", data).execute()
+
+    # Set data on the session object
+    session["comments"] = {}
+    session["replies"] = {}
+    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+
+    session["state"] = {
+        "admin": False, 
+        "tab": "history",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT
+    }
+
+    # Render the HTML template
+    session.modified = True
+    return render_template("home/history.html", session=session)
 
 
 # Render more polls in the history tab
@@ -277,57 +319,29 @@ def load_more(origin, page):
 
     # Modify the RPC call depending on the origin
     res = None
+    if origin == "feed":
+        bid = session["state"]["board"]["id"]
+        order = session["state"]["order"]
+        period = session["state"]["period"]
+        res = query_feed(bid, order, period, page)
     if origin == "history":
-        data = {"uid": user["id"], "page": page, "lim": POLL_LIMIT}
-        res = db.rpc("history", data).execute()
+        args = {"uid": user["id"], "page": page, "lim": POLL_LIMIT}
+        res = db.rpc("history", args).execute()
     if origin == "mypolls":
-        data = {"cid": user["id"], "page": page, "lim": POLL_LIMIT}
-        res = db.rpc("mypolls", data).execute()
-
-    # If the query was below the limit, set the full variable
-    session["poll_full"] = True
-    if len(res.data) < POLL_LIMIT:
-        session["poll_full"] = False
+        args = {"cid": user["id"], "page": page, "lim": POLL_LIMIT}
+        res = db.rpc("mypolls", args).execute()
 
     # Add the new polls to the polls dictionary
     polls = {p["id"]: query_poll_details(p) for p in res.data}
+
+    # Update the session state
     session["polls"].update(polls)
+    session["state"]["poll_page"] = page
+    session["state"]["poll_full"] = len(res.data) < POLL_LIMIT
 
     # Render the HTML template
-    session["page"] = page
     session.modified = True
-    return render_template("home/load-response.html", session=session, polls=polls)
+    state = session["state"]
+    return render_template("home/load-response.html", state=state, polls=polls)
 
-
-# Home page (response history)
-@home.route("/history")
-@requires_auth
-def history():
-
-    # Query the database for all polls responded to by the user
-    db = get_db()
-    user = session["user"]
-    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
-    res = db.rpc("history", data).execute()
-
-    # If the query was below the limit, set the full variable
-    session["poll_full"] = True
-    if len(res.data) < POLL_LIMIT:
-        session["poll_full"] = False
-
-    # Set some data on the session object
-    session["admin"] = False
-    session["tab"] = "history"
-    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
-    session["page"] = 0
-    session.modified = True
-
-    # Reset the loaded comments and replies
-    del session["comments"]
-    del session["replies"]
-    session["comments"] = {}
-    session["replies"] = {}
-
-    # Render the HTML template
-    return render_template("home/history.html", session=session)
 

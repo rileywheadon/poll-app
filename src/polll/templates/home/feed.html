@@ -12,26 +12,26 @@
       class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-md px-2 py-1 w-full"
       onclick="toggle_filter_dropdown()"
     >
-      {{ session.feed.capitalize() }} 
+      {{ session.state.order.capitalize() }} 
       <i class="px-1 fa fa-caret-down"></i>
     </button>
     
     <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-nord-2 overflow-hidden w-full">
-      <a href="?board={{ session.board|safe }}&order=hot">
+      <a href="?board={{ session.state.board.id }}&order=hot">
         <button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button>
       </a>
-      <a href="?board={{ session.board|safe }}&order=top">
+      <a href="?board={{ session.state.board.id }}&order=top">
         <button class="px-4 py-1 hover:bg-nord-3 w-full">Top</button>
       </a>
-      <a href="?board={{ session.board|safe }}&order=new">
+      <a href="?board={{ session.state.board.id }}&order=new">
         <button class="px-4 py-1 hover:bg-nord-3 w-full">New</button>
       </a>
     </div>
 
   </div>
 
-  <!-- Filter Time Dropdown (WHY IS THIS SO LONG) -->
-  {% if session.feed == "top" %}
+  <!-- Filter Time Dropdown -->
+  {% if session.state.order == "top" %}
 
     <div class="relative select-none w-24">
 
@@ -40,7 +40,7 @@
         class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-md px-2 py-1 w-full"
         onclick="toggle_filter_time_dropdown()"
       >
-        {{ session.period.capitalize() }}
+        {{ session.state.period.capitalize() }}
         <i class="px-1 fa fa-caret-down"></i>
       </button>
       
@@ -48,19 +48,19 @@
         id="filter-time-dropdown" 
         class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2 overflow-hidden"
       >
-        <a href="?board={{ session.board|safe }}&order=top&period=day">
+        <a href="?board={{ session.state.board.id }}&order=top&period=day">
           <button class="px-4 py-1 hover:bg-nord-3 w-full">Day</button>
         </a>
-        <a href="?board={{ session.board|safe }}&order=top&period=week">
+        <a href="?board={{ session.state.board.id }}&order=top&period=week">
           <button class="px-4 py-1 hover:bg-nord-3 w-full">Week</button>
         </a>
-        <a href="?board={{ session.board|safe }}&order=top&period=month">
+        <a href="?board={{ session.state.board.id }}&order=top&period=month">
           <button class="px-4 py-1 hover:bg-nord-3 w-full">Month</button>
         </a>
-        <a href="?board={{ session.board|safe }}&order=top&period=year">
+        <a href="?board={{ session.state.board.id }}&order=top&period=year">
           <button class="px-4 py-1 hover:bg-nord-3 w-full">Year</button>
         </a>
-        <a href="?board={{ session.board|safe }}&order=top&period=all">
+        <a href="?board={{ session.state.board.id }}&order=top&period=all">
           <button class="px-4 py-1 hover:bg-nord-3 w-full">All</button>
         </a>
       </div>
@@ -71,20 +71,26 @@
 </div>
 
 
-  {% if polls %}
+  {% if session.polls %}
 
-    {% for poll in polls %}
-      {% include poll["poll_template"] %}
-    {% endfor %}  
+    <div id="poll-container">
+      {% for id, poll in session.polls.items() %}
+        {% include poll["poll_template"] %}
+      {% endfor %}  
+    </div>
+
+    {% with state=session.state %}
+      {% include "home/load-polls.html" %}
+    {% endwith %}
 
   {% else %}
 
     <div class="flex flex-row text-center items-center justify-center py-16 select-none">
       <p class="text-xl font-light">
-        {% if session.board.name == "All" %}
+        {% if session.state.board.name == "All" %}
         You've answered every poll!
         {% else %}
-        You've answered every poll in {{ session.board }}!
+        You've answered every poll in {{ session.state.board.name }}!
         {% endif %}
         <br />
         <br />

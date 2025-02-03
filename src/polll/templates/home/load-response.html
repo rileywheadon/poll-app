@@ -1,5 +1,9 @@
 {% for id, poll in polls.items() %}
-  {% include "results/result-base.html" %}
+  {% if state.tab == "feed" %}
+    {% include poll.poll_template %}
+  {% else %}
+    {% include "results/result-base.html" %}
+  {% endif %}
 {% endfor %}
 
 {% with swap=1 %}

@@ -3,9 +3,9 @@ function open_settings() {
   main.classList.add("blur-sm");
 }
 
-function toggle_user_information(user_id) {
-  const info = document.getElementById("user-info-" + user_id)
-  const toggle = document.getElementById("user-toggle-" + user_id)
+function toggle_admin_information(type, id) {
+  const info = document.getElementById(`${type}-info-${id}`)
+  const toggle = document.getElementById(`${type}-toggle-${id}`)
   info.classList.toggle("hidden")
 
   if (toggle.classList.contains("fa-angle-right")) {
@@ -15,6 +15,7 @@ function toggle_user_information(user_id) {
     toggle.classList.remove("fa-angle-down");
     toggle.classList.add("fa-angle-right");
   }
+
 }
 
 function update_poll_editor(pressed_id) {
@@ -32,20 +33,6 @@ function remove_poll_answer(button) {
     notify("Polls require at least two answers!")
   }
 
-}
-
-function toggle_poll_information(poll_id) {
-  const info = document.getElementById("poll-info-" + poll_id)
-  const toggle = document.getElementById("poll-toggle-" + poll_id)
-  info.classList.toggle("hidden")
-
-  if (toggle.classList.contains("fa-angle-right")) {
-    toggle.classList.remove("fa-angle-right");
-    toggle.classList.add("fa-angle-down");
-  } else {
-    toggle.classList.remove("fa-angle-down");
-    toggle.classList.add("fa-angle-right");
-  }
 }
 
 function update_answer_editor(poll_type) {
@@ -90,7 +77,6 @@ function toggle_comments(poll_id) {
 
 function show_reply_input(comment_id) {
   reply_input = document.getElementById("reply-input-" + comment_id);
-  console.log(reply_input);
   reply_input.classList.remove("hidden");
 }
 
@@ -143,7 +129,6 @@ function handle_tier_select(poll_id, tier) {
 
     input = item.querySelector("input[name='answer_tier']");
     input.value = tier;
-    console.log(input)
 
     container = document.getElementById(`${tier}-content-${poll_id}`);
     item.parentNode.removeChild(item);

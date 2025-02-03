@@ -10,9 +10,8 @@
 
   </div>
 
-  {% with swap=0 %}
+  {% with state=session.state %}
     {% include "home/load-polls.html" %}
   {% endwith %}
-
 
 {% endblock %}

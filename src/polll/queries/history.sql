@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION history(uid bigint) 
+CREATE OR REPLACE FUNCTION history(uid bigint, page int, lim int) 
 RETURNS TABLE(
   id bigint, 
   created_at timestamp with time zone, 
@@ -32,9 +32,11 @@ RETURNS TABLE(
   FROM poll 
   INNER JOIN "user" ON "user".id = poll.creator_id
   LEFT JOIN answer ON answer.poll_id = poll.id
-  INNER JOIN response ON response.poll_id = poll.id
+  LEFT JOIN response ON response.poll_id = poll.id
   LEFT JOIN comment ON comment.poll_id = poll.id
   WHERE response.user_id = uid
   GROUP BY poll.id, "user".username
   ORDER BY poll.created_at DESC
+  LIMIT lim
+  OFFSET lim * page;
 $$ LANGUAGE sql;

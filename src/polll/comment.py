@@ -11,7 +11,7 @@ import polll.results as result_handlers
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
 from polll.utils import *
-from polll.models import url_to_id, query_poll_details, query_comment_details
+
 
 # Create a blueprint for answering anonymous polls
 comment = Blueprint('comment', __name__, template_folder='templates')
@@ -139,6 +139,10 @@ def create_reply(comment_id):
     comment["reply_count"] += 1 
     session["replies"][int(reply["id"])] = reply
 
+    # Update the poll's information and render it again
+    poll = session["polls"][int(poll_id)]
+    poll["comment_count"] += 1
+
     # Slightly less sinful hack to move the new reply to the top of the replies dict
     replies = list(session["replies"].items())
     replies.insert(0, replies.pop()) 
@@ -146,11 +150,8 @@ def create_reply(comment_id):
 
     # Render the response template
     session.modified = True
-    return render_template(
-        "results/responses/send-reply-response.html",
-        session = session,
-        comment = comment
-    )
+    kwargs = {"session": session, "poll": poll, "comment": comment}
+    return render_template("results/responses/create-reply.html", **kwargs)
 
 
 # Delete a comment
@@ -161,14 +162,14 @@ def delete(comment_id):
     # Delete the comment
     db = get_db()
     db.table("comment").delete().eq("id", comment_id).execute()
-    b = "results/responses/"
     t = None
 
     # Different behaviour is needed if the comment is a comment or reply
     if int(comment_id) in session["comments"]:
 
-        # Query the database to get the number of comments for the poll
         comment = session["comments"][int(comment_id)]
+
+        # Query the database to get the number of comments for the poll
         poll_id = comment["poll_id"]
         poll = session["polls"][int(poll_id)]
         res = db.table("comment").select("id").eq("poll_id", poll_id).execute()
@@ -178,36 +179,35 @@ def delete(comment_id):
         del session["comments"][int(comment_id)]
 
         # Set the correct template
-        t = render_template(f"{b}delete-comment.html", poll=poll)
+        kwargs = {"poll": poll}
+        t = render_template(f"results/responses/delete-comment.html", **kwargs)
 
     else:
-
-        print("deleting a reply")
 
         # Decrement the reply count on the parent comment
         reply = session["replies"][int(comment_id)]
         parent_id = reply["parent_id"]
         comment = session["comments"][int(parent_id)]
         comment["reply_count"] -= 1
+
+        # Decrement the comment count on the poll
         poll_id = comment["poll_id"]
         poll = session["polls"][int(poll_id)]
+        poll["comment_count"] -= 1
 
         # Remove the reply from the session
         del session["replies"][int(comment_id)]
 
         # Set the correct template
-        t = render_template(
-            f"{b}delete-reply.html",
-            session=session,
-            comment=comment,
-            poll=poll
-        )
+        kwargs = {"session": session, "comment": comment, "poll": poll}
+        t = render_template(f"results/responses/delete-reply.html", **kwargs)
     
     r = make_response(t)
     notification = '{"notification": "Comment Deleted!"}'
     r.headers.set("HX-Trigger", notification)
     session.modified = True
     return r
+
 
 # Report a poll
 @comment.route("/comment/report/<comment_id>", methods=["GET", "POST"])
