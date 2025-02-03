@@ -382,8 +382,8 @@ function scale_graph_options(user_rs, rs, rs_kde, answers) {
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
 
-    left_index = null;
-    answers[0]["id"] > answers[1]["id"] ? left_index = 1 : left_index = 0;
+    left_index = 0;
+    if (answers[0]["id"] > answers[1]["id"]) left_index = 1
     endpoints = [answers[left_index]["answer"], answers[Number(!left_index)]["answer"]];
     console.log(endpoints)
 

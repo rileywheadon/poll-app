@@ -29,7 +29,6 @@
 
 ### Small/Secondary
 - [ ] Add a loading bar to show graphs/comments
-- [ ] Refactor choose one and choose many so styling can be controlled in one spot
 
 # Roadmap
 
