@@ -1,3 +1,5 @@
+{% import 'macros.jinja' as macs %}
+
 <div id="poll-result-{{ poll.id }}" class="hidden">
 
   <!-- Labels -->
@@ -10,20 +12,12 @@
   <div class="flex flex-row space-x-4 justify-center items-start">
 
     <!-- User -->
-     {% set user_rs = poll.response %}
-      {{ macs.tierList(poll_id='{{ poll.id }}',
-      interactive=False,
-      results=user_rs
-  ) }}
+    {% set user_rs = poll.response %}
+    {{ macs.tierList('{{ poll.id }}', False, user_rs) }}
 
     <!-- Average -->
     {% set average_rs = poll.results %}
-      {{ macs.tierList(poll_id='{{ poll.id }}',
-      interactive=False,
-      results=average_rs
-  ) }}
-
-
+    {{ macs.tierList('{{ poll.id }}', False, average_rs) }}
 
   </div>  
 

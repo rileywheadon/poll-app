@@ -1,4 +1,4 @@
-{% macro buttons(showIcons=true, feed="visible", history="visible", create="visible", myPolls="visible") %}
+{% macro sidebarButtons(showIcons=true, feed="visible", history="visible", create="visible", myPolls="visible") %}
 
     <button class="{{feed}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light cursor-default"
         onclick="loading('{{ url_for('home.feed') }}', 'home-content')"

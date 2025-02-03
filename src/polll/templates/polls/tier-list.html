@@ -1,13 +1,11 @@
+{% import 'macros.jinja' as macs %}
 {% extends "polls/poll-base.html" %}
 
 {% block poll_content %}
 
 <div id="tier-list-{{ poll.id }}">
   <!-- Tier list body -->
-    {{ macs.tierList(poll_id='{{ poll.id }}',
-                    interactive=True,
-                    results=None
-    ) }}
+    {{ macs.tierList('{{ poll.id }}', True, None) }}
 
   <!-- Options pool -->
   <div 

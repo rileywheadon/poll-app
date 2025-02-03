@@ -20,11 +20,16 @@
 ## Matt
 
 ### TODAY: 
-- Abstract duplicated code
-  - [ ] Tier list grid
+- [ ] Explore image uploading and how the backend supports it
+
 
 ### Important
+     {% set user_rs = poll.response %}
+    {{ macs.tierList('{{ poll.id }}', False, user_rs) }}
 
+    <!-- Average -->
+    {% set average_rs = poll.results %}
+    {{ macs.tierList('{{ poll.id }}', False, average_rs) }}
 
 ### Small/Secondary
 - [ ] Add a loading bar to show graphs/comments
