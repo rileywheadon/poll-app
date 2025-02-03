@@ -24,19 +24,13 @@
 
 
 ### Important
-     {% set user_rs = poll.response %}
-    {{ macs.tierList('{{ poll.id }}', False, user_rs) }}
-
-    <!-- Average -->
-    {% set average_rs = poll.results %}
-    {{ macs.tierList('{{ poll.id }}', False, average_rs) }}
 
 ### Small/Secondary
 - [ ] Add a loading bar to show graphs/comments
+- [ ] Refactor choose one and choose many so styling can be controlled in one spot
 
 # Roadmap
 
-- [ ] Refactor duplicated code as macros with paramters (tier list, buttons with a common colour/hover scheme, etc.)
 - [ ] Implement captcha on form submit
 - [ ] Load up to 20 polls at a time before having to click "load more"
 - [ ] Add image upload support for creating tier lists as well as displaying then in feed/results (can put images on graph no problem).

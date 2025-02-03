@@ -1,11 +1,11 @@
-{% macro sidebarButtons(showIcons=true, feed="visible", history="visible", create="visible", myPolls="visible") %}
+{% macro sidebarButtons(show_icons=true, feed="visible", history="visible", create="visible", myPolls="visible") %}
 
     <button class="{{feed}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light cursor-default"
         onclick="loading('{{ url_for('home.feed') }}', 'home-content')"
         >
         <span class="{% if session.tab == 'feed' %} text-polll-green {% endif %} cursor-default">
             <i class="ml-2 text-xl md:text-base fa-solid fa-fire px-2"></i>
-            {% if showIcons %} Feed {% endif %}
+            {% if show_icons %} Feed {% endif %}
         </span>
     </button>
 
@@ -14,7 +14,7 @@
             >
         <span class="{% if session.tab == 'history' %} text-polll-green {% endif %} cursor-default">
             <i class="ml-2 text-xl md:text-base fa-solid fa-book px-2"></i>
-            {% if showIcons %} History {% endif %}
+            {% if show_icons %} History {% endif %}
         </span>
     </button>
 
@@ -23,7 +23,7 @@
             >
         <span class="{% if session.tab == 'create' %} text-polll-green {% endif %} cursor-default">
             <i class="ml-2 text-xl md:text-base fa-solid fa-pen underline px-2"></i>
-            {% if showIcons %} Create {% endif %}
+            {% if show_icons %} Create {% endif %}
         </span>
     </button>
 
@@ -32,7 +32,7 @@
         >
         <span class="{% if session.tab == 'mypolls' %} text-polll-green {% endif %} cursor-default">
             <i class="ml-2 text-xl md:text-base fa-solid fa-user px-2"></i>
-            {% if showIcons %} {{session.user.username}} {% endif %}
+            {% if show_icons %} {{session.user.username}} {% endif %}
         </span>
     </button>
 
@@ -96,4 +96,20 @@
     </div>
     
 
+{% endmacro %}
+
+
+{% macro chooseInput(input_type, answer_id, answer_content) %}
+    
+    <input type="{{ input_type }}" id="{{ answer_id }}" name="answer_id" value="{{ answer_id }}" class="hidden peer">
+    <label for="{{ answer_id }}"
+            class="flex w-1/2 p-4 rounded-lg cursor-default 
+            border-2 border-gray-700 bg-gray-800 text-gray-400
+            hover:text-gray-300 hover:border-polll-blue
+            peer-checked:border-polll-green peer-checked:text-gray-300">
+            <p class="font-light select-none">
+            {{ answer_content }}
+            </p>
+    </label>
+    
 {% endmacro %}
