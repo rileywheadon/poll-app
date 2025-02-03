@@ -1,0 +1,72 @@
+{% extends "admin/admin.html" %}
+
+{% block admin_content %}
+
+{% if reports %}
+
+  <div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-3 border-collapse my-6">
+
+  {% for report in reports %}
+
+    <div class="border-x border-b border-nord-0 dark:border-nord-3 p-4">
+
+      <div 
+        class="flex flex-row justify-center" 
+        onclick="toggle_admin_information('comment', {{ report.id }})"
+      >
+
+        {% include "admin/comments-alert.html" %}
+
+         <p class="text-l">
+          <span class="font-bold">{{ format_time(report.created_at) }}</span>
+        </p>
+        <button class="ml-auto">
+          <i class="fa fa-angle-right" id="comment-toggle-{{ report.id }}"></i>
+        </button>
+      </div>
+
+      <div class="hidden" id="comment-info-{{ report.id }}">
+        <p class="py-2">{{ report.content }}</p>
+        <p>
+          <i>Report Creator: </i>
+          <a 
+            class="text-nord-7 hover:underline" 
+            href="{{ url_for('admin.users', column='id', search=report.creator.id) }}"
+          >
+            {{ report.creator.username }}
+          </a>
+        </p>
+        <p>
+          <i>Comment Creator: </i>
+          <a 
+            class="text-nord-7 hover:underline" 
+            href="{{ url_for('admin.users', column='id', search=report.receiver.id) }}"
+          >
+            {{ report.receiver.username }}
+          </a>
+        </p>
+        <div class="flex flex-row items-center">
+          <p>Mark as complete:</p>
+          <input 
+            class="ml-2 w-4 h-4" 
+            type="checkbox" 
+            autocomplete="off"
+            hx-get="{{ url_for('admin.handle_comment', report_id=report.id) }}"
+            hx-target="#comment-alert-{{ report.id }}"
+            hx-swap="outerHTML"
+            hx-trigger="click"
+            {% if report.handled %}checked{% endif %}
+          >
+        </div>
+      </div>
+
+    </div>
+
+  {% endfor %}
+  
+  </div>
+
+{% endif %}
+
+{% endblock %}
+

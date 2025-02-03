@@ -1,0 +1,45 @@
+{% macro reply_area(session, comment, open, swap=0) -%}
+
+<div 
+  class="ml-4 mt-1"
+  id="reply-area-{{ comment.id }}"
+  {% if swap==1 %}hx-swap-oob="True"{% endif %}
+>
+
+  <div class="{% if comment.reply_count == 0 %}hidden{% endif %}">
+
+    <button 
+      class="text-nord-7" 
+      onclick="toggle_replies({{ comment.id }})"
+      hx-get="{{ url_for('comment.replies', comment_id = comment.id) }}"
+      hx-target="#reply-list-{{ comment.id }}"
+      hx-swap="innerHTML"
+    >
+      <span id="reply-count-{{ comment.id }}">
+        {{ comment.reply_count }} 
+        {% if comment.reply_count == 1 %}Reply{% else %}Replies{% endif %}
+      </span>
+      <i 
+        id="reply-icon-{{ comment.id }}" 
+        class="fa {% if open == 0 %}fa-angle-right{% else %}fa-angle-down{% endif %}"
+      ></i>
+    </button>
+
+    <div 
+      id="reply-list-{{ comment.id }}" 
+      class="poll-replies {% if open == 0 %}hidden{% endif %}"
+    >
+
+      {% for id, comment in session.replies.items() %}
+
+        {% include "results/comment-body.html" %}
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+</div>
+
+{%- endmacro %}

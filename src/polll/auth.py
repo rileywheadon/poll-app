@@ -1,120 +1,181 @@
 from os import environ as env
 from datetime import datetime
 from functools import wraps
-from authlib.integrations.flask_client import OAuth
-from flask import Blueprint, url_for, session, redirect
-from urllib.parse import quote_plus, urlencode
-
+from flask import Blueprint, url_for, session, redirect, render_template, request
 from polll.db import get_db
+from gotrue.errors import AuthApiError
 
-# Lazily create and export the authenticator
-oauth = OAuth()
 
 # Create a blueprint for the authentication endpoints
 auth = Blueprint('auth', __name__, template_folder='templates')
 
 
-# Login endpoint
-@auth.route('/login')
-def login():
+# Landing page for advertising to potential users
+@auth.route("/")
+def index():
+    return render_template("index.html")
 
-    # If user is logged in, redirect to home
-    if "user" in session and session["user"]["id"] != None:
+
+# Authentication page endpoint
+@auth.route('/<action>')
+def authenticate(action):
+
+    # If the user is already logged in, go to the feed
+    if session.get("user"):
         return redirect(url_for("home.feed"))
 
-    # Otherwise hit the auth0 authentication endpoint
-    uri = url_for("auth.callback", _external=True)
-    return oauth.auth0.authorize_redirect(redirect_uri=uri)
+    error = request.args.get("error")
+    return render_template("auth/authentication.html", action=action, error=error)
+
+
+# Callback after email verification
+@auth.route('/auth/confirm')
+def callback():
+
+    # Verify the magic link request
+    db = get_db()
+    res = db.auth.verify_otp({
+        "token_hash": request.args.get("token_hash"),
+        "type": "email"
+    })
+
+    # Set the session
+    access_token = res.session.access_token
+    refresh_token = res.session.refresh_token
+    res = db.auth.set_session(access_token, refresh_token)
+
+    # Check if the user is in the database
+    user = res.user.user_metadata
+    res = db.table("user").select("*").eq("email", user["email"]).execute()
+
+    # If the user does not exist, add them to the database
+    if not res.data:
+        res = db.table("user").insert({
+            "username": user["username"],
+            "email": user["email"],
+            "is_admin": False
+        }).execute()
+
+    # Add the user to the flask session
+    session["user"] = res.data[0]
+
+    # Get a list of the user's likes and dislikes by comment ID
+    res = (
+        db.table("user")
+        .select("like(comment_id)", "dislike(comment_id)")
+        .eq("id", session["user"]["id"])
+        .execute()
+    )
+    session["user"]["likes"] = [c["comment_id"] for c in res.data[0]["like"]]
+    session["user"]["dislikes"] = [c["comment_id"] for c in res.data[0]["dislike"]]
+
+    # Get a list of boards
+    db = get_db()
+    res = db.table("board").select("*").execute()
+    session["boards"] = {b["id"] : b for b in res.data}
+
+    # Render the home.feed template
+    return redirect(url_for('home.feed'))
+
+
+# Helper function to throw a redirect with a given error
+def invalid_login(action, error):
+    return redirect(url_for("auth.authenticate", action=action, error=error))
+
+
+# Login endpoint
+@auth.route("/auth/login", methods=["GET", "POST"])
+def login():
+
+    db = get_db()
+
+    # Create the sign in request
+    login_data = {
+        "type": "email",
+        "email": request.form.get("email"),
+        "options": {
+            "should_create_user": False,
+            "email_redirect_to": f"{request.url_root}confirm",
+        }
+    }
+
+    # Catch invalid email address errors
+    try:
+        res = db.auth.sign_in_with_otp(login_data)
+    except AuthApiError as e:
+        return invalid_login("login", "email")
+
+    return render_template("auth/verify-email.html")
 
 
 # Signup endpoint
-@auth.route("/register")
+@auth.route("/auth/register", methods=["GET", "POST"])
 def register():
 
-    # If user is logged in, redirect to home
-    if "user" in session and session["user"]["id"] != None:
-        return redirect(url_for("home.feed"))
-
-    # Otherwise hit the auth0 authentication endpoint
-    uri = url_for("auth.callback", _external=True)
-    return oauth.auth0.authorize_redirect(redirect_uri=uri, screen_hint="signup")
-
-
-# Callback endpoint
-@auth.route("/callback", methods=["GET", "POST"])
-def callback():
-
-    token = oauth.auth0.authorize_access_token()
-    email = token["userinfo"]["email"]
-    username = token["userinfo"]["nickname"]
     db = get_db()
-    cur = db.cursor()
+    email = request.form.get("email")
+    username = request.form.get("username")
 
-    # Check if the user is in the database
-    res = cur.execute(f"SELECT * FROM user WHERE email=?", (email,))
+    # If the username is empty, throw an error
+    if not username:
+        return invalid_login("register", "name")
 
-    # If the user doesn't exist add them to the database
-    if res.fetchone() is None:
-        query = """
-        INSERT INTO user (
-            username,
-            email,
-            account_created,
-            last_online,
-            is_muted,
-            is_banned
-        )
-        VALUES (?, ?, ?, ?, 0, 0)
-        """
-        now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-        values = (username, email, now, now)
-        cur.execute(query, values)
-        db.commit()
+    # If the email is already in the users table, throw an error
+    res = db.table("user").select("*").eq("email", email).execute()
+    if res.data:
+        return invalid_login("register", "duplicate_email")
 
-    # Then set session["user"] to the current user (as a dictionary)
-    query = """
-    SELECT *
-    FROM user
-    WHERE email=?
-    """
-    res = cur.execute(query, (email,))
-    session["user"] = dict(res.fetchone())
+    # If the username is already in the users table, throw an error
+    res = db.table("user").select("*").eq("username", username).execute()
+    if res.data:
+        return invalid_login("register", "duplicate_name")
 
-    # Iterate through the list of responses and add them to the database
-    if session.get("responses"):
-        from polll.models import validate_response
-        for response in session["responses"]:
-            validate_response(response["form"], response["poll"])
-
-    # Reset the responses dictionary and redirect the user to their feed
-    session["responses"] = []
-    session.modified = True
-    return redirect(url_for("home.feed"))
-
-
-# Logout endpoint
-@auth.route("/logout")
-def logout():
-
-    # Remove the user data from the session
-    session.clear()
-
-    # Hit the Auth0 return_url to finalize this change
-    return_data = {
-        "returnTo": url_for("home.index", _external=True),
-        "client_id": env.get('AUTH0_CLIENT_ID')
+    # Create dictionary of data for the registration
+    register_data = {
+        "type": "email",
+        "email": email,
+        "options": {
+            "should_create_user": True,
+            "email_redirect_to": f"{request.url_root}confirm",
+            "data": {"username": request.form.get("username")}
+        }
     }
 
-    return_query = urlencode(return_data, quote_via=quote_plus)
-    return redirect(f"https://{env.get('AUTH0_DOMAIN')}/v2/logout?{return_query}")
+    # Catch invalid email address errors
+    try:
+        res = db.auth.sign_in_with_otp(register_data)
+    except AuthApiError as e:
+        return redirect(url_for("auth.authenticate", action="register", error="email"))
+
+    return render_template("auth/verify-email.html")
+
+
+# Log out the user and clear the endpoint
+@auth.route("/auth/logout", methods=["GET", "POST"])
+def logout():
+    db = get_db()
+    res = db.auth.sign_out()
+    session.pop("user")
+    return redirect(url_for("auth.index"))
 
 
 # Decorator for checking if a user is logged in
 def requires_auth(f):
+
     @wraps(f)
     def decorated(*args, **kwargs):
-        if not session.get("user"):
-            return redirect(url_for('home.index'))
+
+        db = get_db()
+        user = session.get("user")
+        true_user = db.auth.get_user().user
+
+        # If the user doesn't exist, redirect them to the index
+        if not true_user:
+            return redirect(url_for("auth.index"))
+
+        # If the user does exist but doesn't match the session's user, log them out
+        if true_user.user_metadata["email"] != user["email"]:
+            return redirect(url_for("auth.logout"))
 
         return f(*args, **kwargs)
 
@@ -126,11 +187,22 @@ def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        if not session.get("user"):
-            return redirect(url_for('home.index'))
+        db = get_db()
+        user = session.get("user")
+        true_user = db.auth.get_user().user
 
-        elif session["user"]["email"] != "admin@polll.org":
-            return redirect(url_for('home.feed'))
+        # If the user doesn't exist, redirect them to the index
+        if not true_user:
+            return redirect(url_for("auth.index"))
+
+        # If the user does exist but doesn't match the session's user, log them out
+        if true_user.user_metadata["email"] != user["email"]:
+            return redirect(url_for("auth.logout"))
+
+        # If the user is not an administrator, redirect them to the feed
+        emails = env.get("ADMIN_EMAILS").split(" ")
+        if true_user.user_metadata["email"] not in emails:
+            return redirect(url_for("home.feed"))
 
         return f(*args, **kwargs)
 

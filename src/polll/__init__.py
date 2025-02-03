@@ -2,18 +2,28 @@ import json
 import os
 from urllib.parse import quote_plus, urlencode
 from os import environ as env
-from flask import Flask, redirect, render_template, session, url_for
+from flask import Flask, redirect, render_template, session, url_for, g
+from redis import Redis
+from flask_session import Session
+from supabase import create_client, Client
 
 import polll.utils
 
 
 def create_app(test_config=None):
+
     # Create a new Flask application
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY=env.get("APP_SECRET_KEY"),
-        DATABASE=os.path.join(app.instance_path, "polll.sqlite")
+        SESSION_TYPE = 'redis',
+        SESSION_COOKIE_SAMESITE = 'None',
+        SESSION_COOKIE_SECURE = True,
+        SESSION_REDIS = Redis(host='localhost', port=6379)
     )
+
+    # Add the server-side session
+    Session(app)
 
     # Load the instance config, if it exists, when not testing
     if test_config is None:
@@ -32,22 +42,6 @@ def create_app(test_config=None):
     app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
     app.jinja_env.globals.update(format_time=utils.format_time)
     app.jinja_env.filters['zip'] = zip
-
-    # Register the database commands
-    from . import db
-    db.init_app(app)
-
-    # Register the application with Auth0
-    from polll.auth import oauth
-    domain = env.get("AUTH0_DOMAIN")
-    oauth.init_app(app)
-    oauth.register(
-        "auth0",
-        client_id=env.get("AUTH0_CLIENT_ID"),
-        client_secret=env.get("AUTH0_CLIENT_SECRET"),
-        client_kwargs={"scope": "openid profile email"},
-        server_metadata_url=f'https://{domain}/.well-known/openid-configuration'
-    )
 
     # Import the blueprints
     from polll.auth import auth

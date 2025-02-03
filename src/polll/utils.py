@@ -9,27 +9,59 @@ from datetime import datetime
 from dateutil import tz
 
 
+# Gets some additional information about a poll without making database requests
+def query_poll_details(poll):
+
+    # If the poll has its answers attached, reformat them into a dictionary
+    poll["answers"] = {a["id"]: a for a in poll["answers"]}
+
+    # Get the template, custom URL, time string, and comment details
+    poll["poll_template"] = poll_template(poll)
+    poll["url"] = id_to_url(poll["id"])
+    poll["age"] = format_timestamp(poll["created_at"])
+    poll["comments"] = {}
+
+    # Return the populated poll dictionary
+    return poll
+
+
+# Gets some additional information about a comment without making database requests
+def query_comment_details(comment):
+        
+    # Set the like count and remove the like field
+    comment["like_count"] = comment["like"][0]["count"]
+    del comment["like"]
+
+    # Set the dislike count and remove the dislike field
+    comment["dislike_count"] = comment["dislike"][0]["count"]
+    del comment["dislike"]
+
+    # Set the reply count and remove the reply field
+    if not comment["parent_id"]:
+        comment["reply_count"] = comment["reply"][0]["count"]
+        del comment["reply"]
+
+    # Set the comment age 
+    comment["age"] = format_timestamp(comment["created_at"])
+    return comment
+
+
 # Helper function to check if a user is on cooldown from making a poll
 def on_cooldown(user_dict):
 
     next_poll_allowed = user_dict["next_poll_allowed"]
 
     if next_poll_allowed:
-
-        next_poll_time = datetime.strptime(
-            next_poll_allowed,
-            '%Y-%m-%d %H:%M:%S'
-        )
-
-        return datetime.utcnow() < next_poll_time
+        next_poll_time = datetime.fromisoformat(next_poll_allowed)
+        return datetime.now().astimezone() < next_poll_time
 
     return False
 
 
 # Get the age of a poll (i.e. 2h or 4d)
 def format_timestamp(string):
-    timestamp = datetime.strptime(string, '%Y-%m-%d %H:%M:%S')
-    age = datetime.utcnow() - timestamp
+    timestamp = datetime.fromisoformat(string)
+    age = datetime.now().astimezone() - timestamp
 
     if age.days > 0:
         return f"{age.days}d"
@@ -41,15 +73,6 @@ def format_timestamp(string):
         return f"{age.seconds}s"
 
 
-# Helper functions to add "result_template" and "poll_template" to a poll dictionary
-def result_template(poll):
-    template = "poll-graph"
-    if poll["poll_type"] == "RANKED_POLL":
-        template = "ranked-poll"
-
-    return f"results/{template}.html"
-
-
 def poll_template(poll):
     template = poll["poll_type"].lower().replace("_", "-")
     return f"polls/{template}.html"
@@ -57,8 +80,7 @@ def poll_template(poll):
 
 # Helper function to get days behind current time
 def get_days_behind(days):
-    time = datetime.utcnow() - timedelta(days=days)
-    return datetime.strftime(time, '%Y-%m-%d %H:%M:%S')
+    return (datetime.now() - timedelta(days=days)).astimezone().isoformat()
 
 
 # Helper functions to encode/decode a poll ID as a URL string
@@ -75,9 +97,9 @@ def url_to_id(code):
 
 # Helper function to get how "trendy" a poll is, in responses/second
 def popularity(poll):
-    timestamp = datetime.strptime(poll["date_created"], '%Y-%m-%d %H:%M:%S')
-    age = (datetime.utcnow() - timestamp).total_seconds()
-    return poll["votes"] / age
+    timestamp = datetime.fromisoformat(poll["created_at"])
+    age = (datetime.now().astimezone() - timestamp).total_seconds()
+    return poll["response_count"] / age
 
 
 """
@@ -112,17 +134,21 @@ def smooth_hist(data, bandwidth):
         adj_data.append(adj_data[0] + 1)
         bandwidth = 10
 
+    # If there is data, append one extra point (KDE fails with one point)
+    if len(data) == 2:
+        adj_data.append(adj_data[0] + 1)
+        bandwidth = 0.5 
+
     return [
         x_vals.tolist(),
         gaussian_kde(adj_data, bw_method=bandwidth)(x_vals).tolist()
     ]
 
 
-# Formats the given timestamp to be more readable as well as converts it to the user's local timezone
+# Formats the given timestamp to be more readable. Also includes the time zone
 def format_time(time_string):
-    locale = str(datetime.strptime(time_string, "%Y-%m-%d %H:%M:%S").replace(
-        tzinfo=tz.tzutc()).astimezone(tz.tzlocal()))
-    locale=locale[:locale.rindex("-")]
-    dates = list(map(int, locale[:time_string.index(" ")].split("-")))
-    times = list(map(int, locale[1 + time_string.index(" "):].split(":")))
-    return datetime(dates[0], dates[1], dates[2], times[0], times[1], times[2]).strftime("%a %d, %I:%M %p") + " " + str(datetime.now().astimezone().tzinfo)
+    return (datetime
+        .fromisoformat(time_string)
+        .astimezone()
+        .strftime('%b %d, %Y at %I:%M%p')
+    )

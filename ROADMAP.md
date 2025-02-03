@@ -1,21 +1,22 @@
 # Development Checklist
 
+If login is too slow, note that we are currently:
+
+- Querying user likes/dislikes on login
+- Querying boards on login
+
 ## Riley
 
-- [ ] Poll sorting in history/mypolls
-- [ ] Add custom endpoints to the scale
-- [ ] View polls in boards (admin) should redirect to polls
-- [ ] Add ability to mute user (prevent from posting/commenting)
-- [ ] Add ability to ban user (prevent from logging in)
-- [ ] Add ability to view comments from poll UI and delete them
-- [ ] Add other sort options to the poll section of the admin UI
-- [ ] Add ability to delete comments that you created
-- [ ] Enforce lowercase usernames without spaces and special characters
+### After Merge
 
----
+- Add custom endpoints to the scale
+- Light mode
 
-- [ ] Test for security vulnerabilities (SQL injection, endpoint permissions)
-- [ ] Test for bugs, do a full click through of the app
+### Production
+
+- Integrate the supabase CLI with github and create a branch
+- https://makerkit.dev/docs/next-supabase-turbo/going-to-production/supabase
+- https://flask.palletsprojects.com/en/stable/deploying/
 
 ## Matt
 

@@ -3,9 +3,9 @@ function open_settings() {
   main.classList.add("blur-sm");
 }
 
-function toggle_user_information(user_id) {
-  const info = document.getElementById("user-info-" + user_id)
-  const toggle = document.getElementById("user-toggle-" + user_id)
+function toggle_admin_information(type, id) {
+  const info = document.getElementById(`${type}-info-${id}`)
+  const toggle = document.getElementById(`${type}-toggle-${id}`)
   info.classList.toggle("hidden")
 
   if (toggle.classList.contains("fa-angle-right")) {
@@ -15,6 +15,7 @@ function toggle_user_information(user_id) {
     toggle.classList.remove("fa-angle-down");
     toggle.classList.add("fa-angle-right");
   }
+
 }
 
 function update_poll_editor(pressed_id) {
@@ -22,7 +23,6 @@ function update_poll_editor(pressed_id) {
   answers.classList.remove("hidden");
   pressed_id == "scale-btn" ? answers.classList.add("hidden") : answers.classList.remove("hidden");
 }
-
 
 // Only allows removal of the answer if there are three or more answers
 function remove_poll_answer(button) {
@@ -33,25 +33,6 @@ function remove_poll_answer(button) {
     notify("Polls require at least two answers!")
   }
 
-}
-
-function reset_poll_cooldown(user_id) {
-  const cooldown = document.getElementById("user-cooldown-" + user_id);
-  cooldown.innerHTML = "False";
-}
-
-function toggle_poll_information(poll_id) {
-  const info = document.getElementById("poll-info-" + poll_id)
-  const toggle = document.getElementById("poll-toggle-" + poll_id)
-  info.classList.toggle("hidden")
-
-  if (toggle.classList.contains("fa-angle-right")) {
-    toggle.classList.remove("fa-angle-right");
-    toggle.classList.add("fa-angle-down");
-  } else {
-    toggle.classList.remove("fa-angle-down");
-    toggle.classList.add("fa-angle-right");
-  }
 }
 
 function update_answer_editor(poll_type) {
@@ -73,13 +54,25 @@ function toggle_comments(poll_id) {
   comments = document.getElementById("poll-comments-" + poll_id);
   toggle = document.getElementById("comments-toggle-" + poll_id);
 
-  if (toggle.innerHTML == "Show Comments") {
+  if (comments.classList.contains("hidden")) {
+
+    // Close all dropdowns
+    dropdowns = document.getElementsByClassName("poll-comments");
+    for (var i = 0; i < dropdowns.length; i++) {
+      id = dropdowns[i].getAttribute("id").substr(14);
+      document.getElementById("poll-comments-" + id).classList.add("hidden");
+      document.getElementById("comments-toggle-" + id).innerHTML = "Show Comments";
+    }
+
+    // Open the current dropdown
+    comments.classList.remove("hidden")
     toggle.innerHTML = "Hide Comments"
+
   } else {
+    comments.classList.add("hidden")
     toggle.innerHTML = "Show Comments"
   }
 
-  comments.classList.toggle("hidden");
 }
 
 function show_reply_input(comment_id) {
@@ -93,18 +86,32 @@ function hide_reply_input(comment_id) {
 }
 
 function toggle_replies(comment_id) {
+
   reply_list = document.getElementById("reply-list-" + comment_id);
   reply_icon = document.getElementById("reply-icon-" + comment_id);
 
-  reply_list.classList.toggle("hidden");
+  if (reply_icon.classList.contains("fa-angle-right")) {
 
-  if (reply_list.classList.contains("hidden")) {
-    reply_icon.classList.remove("fa-angle-down");
-    reply_icon.classList.add("fa-angle-right");
-  } else {
+    // Close all the other reply dropdowns
+    dropdowns = document.getElementsByClassName("poll-replies");
+    for (var i = 0; i < dropdowns.length; i++) {
+      id = dropdowns[i].getAttribute("id").substr(11);
+      document.getElementById("reply-list-" + id).classList.add("hidden");
+      document.getElementById("reply-icon-" + id).classList.remove("fa-angle-down");
+      document.getElementById("reply-icon-" + id).classList.add("fa-angle-right");
+    }
+
+    // Open this reply dropdown
+    reply_list.classList.remove("hidden");
     reply_icon.classList.remove("fa-angle-right");
     reply_icon.classList.add("fa-angle-down");
+
+  } else {
+    reply_list.classList.add("hidden");
+    reply_icon.classList.remove("fa-angle-down");
+    reply_icon.classList.add("fa-angle-right");
   }
+
 }
 
 function toggle_filter_dropdown() {
@@ -122,7 +129,6 @@ function handle_tier_select(poll_id, tier) {
 
     input = item.querySelector("input[name='answer_tier']");
     input.value = tier;
-    console.log(input)
 
     container = document.getElementById(`${tier}-content-${poll_id}`);
     item.parentNode.removeChild(item);

@@ -1,0 +1,48 @@
+<table id="user-table-{{ user.id }}" class="border-collapse my-4">
+  <tbody>
+    <tr>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        User ID
+      </td>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        {{ user.id }}
+      </td>
+    </tr>
+    <tr>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        Account Created
+      </td>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        {{ format_time(user.created_at) }}
+      </td>
+    </tr>
+    <tr>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        Last Poll Created
+      </td>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        {{ format_time(user.last_poll_created) }}
+      </td>
+    </tr>
+    <tr>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        Next Poll Allowed
+      </td>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        {{ format_time(user.next_poll_allowed) }}
+      </td>
+    </tr>
+    <tr>
+      <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
+        On Poll Cooldown
+      </td>
+      <td
+        id="user-cooldown-{{ user.id }}"
+        class="border border-nord-3 dark:border-nord-3 py-1 px-2"
+      >
+        {{ user.on_cooldown }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+

@@ -1,0 +1,34 @@
+{% macro reply_input(comment, swap) -%}
+
+<div 
+  id="reply-input-{{ comment.id }}" 
+  class="flex flex-row ml-4 hidden"
+  {% if swap==1 %}hx-swap-oob="true"{% endif %}
+>
+
+  <input class="grow text-l p-2 bg-transparent border-b border-nord-3 dark:text-white focus:outline-none font-light" 
+    autocomplete="off"
+    name="reply"
+    placeholder="Add a reply..."
+  />
+  <button 
+    class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+    onclick="hide_reply_input({{ comment.id }})"
+  >
+    <span class="text-sm text-light">Cancel</span>
+    <i class="fa fa-xmark ml-1 text-black dark:text-nord-4"></i>
+  </button>
+
+  <button class="ml-2 px-4 py-1 rounded-md border-2 dark:hover:bg-nord-3 dark:border-nord-4 py-1"
+    hx-include="previous input"
+    hx-post="{{ url_for('comment.create_reply', comment_id = comment.id) }}"
+    hx-target="#reply-area-{{ comment.id }}"
+    hx-swap="outerHTML"
+  >
+    <span class="text-sm text-light">Reply</span>
+    <i class="fa fa-paper-plane ml-1 text-black dark:text-nord-4"></i>
+  </button>
+
+</div>
+
+{%- endmacro %}

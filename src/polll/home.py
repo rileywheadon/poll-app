@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import time
+import asyncio
 
 from flask import Blueprint, url_for, session, redirect
 from flask import render_template, request, make_response
@@ -8,17 +9,24 @@ import polll.responses as response_handlers
 import polll.results as result_handlers
 
 from polll.auth import requires_auth, requires_admin
+from polll.utils import *
 from polll.db import get_db
-from polll.models import *
+
 
 # Create a blueprint for the poll endpoints
 home = Blueprint('home', __name__, template_folder='templates')
 
+# Maixmimum number of polls loaded at once
+POLL_LIMIT = 10
 
-# Landing page for advertising to potential users
-@home.route("/")
-def index():
-    return render_template("index.html")
+# Conversion of cutoff periods to days
+CUTOFF_PERIODS = {
+    "day": 1,
+    "week": 7,
+    "month": 30,
+    "year": 365,
+    "all": 10000
+}
 
 
 # Route for opening the settings window
@@ -38,28 +46,31 @@ def open_settings():
 @home.route("/settings/save")
 @requires_auth
 def save_settings():
-
-    # Open database connection
     db = get_db()
-    cur = db.cursor()
-
-    # Check if the username the user wants is in the database
     username = request.args.get("username")
-    res = cur.execute("SELECT * FROM user WHERE username=?", (username,))
-    unique = res.fetchone() is None
 
-    # If the username is not different from the current username, return
-    if session["user"]["username"] == username:
+    # Check that username is nonempty
+    if not username:
+        r = make_response("")
+        notification = '{"notification": "Name cannot be empty!"}'
+        r.headers.set("HX-Trigger", notification)
+        return r
+
+    # Check that the username is different from the user's current name
+    if username == session["user"]["username"]:
         return ""
 
+    # Check if the username the user wants is already taken
+    res = db.table("user").select("*").eq("username", username).execute()
+    unique = len(res.data) == 0
+    notification = None
+
     # If the new username is unique, assign it to the user
-    notification = ""
     if unique:
         notification = '{"notification": "Name Changed!"}'
         session["user"]["username"] = username
         id = session["user"]["id"]
-        cur.execute("UPDATE user SET username=? WHERE id=?", (username, id))
-        db.commit()
+        db.table("user").update({"username": username}).eq("id", id).execute()
 
     # Otherwise notify the user that an error occured
     else:
@@ -72,182 +83,76 @@ def save_settings():
     return r
 
 
+# Helper function to call the correct feed RPC handler
+def query_feed(bid, order, period, page):
+    res = None
+    db = get_db()
+    uid = session["user"]["id"]
+
+    # NOTE: Change 0 to uid before going to production
+    args = {"bid": bid, "uid": 0, "page": page, "lim": POLL_LIMIT}
+
+    if order == "hot":
+        res = db.rpc("feed_hot", args).execute()
+    if order == "top":
+        cutoff = get_days_behind(CUTOFF_PERIODS[period])
+        session["state"]["cutoff"] = cutoff
+        args["cutoff"] = cutoff
+        res = db.rpc("feed_top", args).execute()
+    if order == "new":
+        res = db.rpc("feed_new", args).execute()
+
+    return res
+
+
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
 def feed():
 
-    # Get the request arguments (board and order)
-    board = request.args.get("board") or "All"
+    # Get the request arguments (board and order) and query the database
+    bid = request.args.get("board") or 1
     order = request.args.get("order") or "hot"
     period = request.args.get("period") or "day"
+    res = query_feed(bid, order, period, 0)
 
-    # Get the database connection
-    db = get_db()
-    cur = db.cursor()
+    # Update the session state variable and render the feed
+    session["polls"] = {p["id"]: query_poll_details(p) for p in res.data}
+    session["comments"] = {}
+    session["replies"] = {}
 
-    # Get the board ID
-    board_query = "SELECT id FROM board WHERE name=?"
-    res = cur.execute(board_query, (board,)).fetchone()
-    board_id = dict(res)["id"] if res else "1"
+    session["state"].update({
+        "admin": False,
+        "tab": "feed",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT,
+        "board": session["boards"][int(bid)],
+        "order": order,
+        "period": period,
+    })
 
-    # Determine the time cutoff if necessary
-    cutoff_periods = {
-        "day": 1,
-        "week": 7,
-        "month": 30,
-        "year": 365,
-    }
-
-    cutoff_query = "True"
-    if order == "top" and period != "all":
-        cutoff_time = get_days_behind(cutoff_periods[period])
-        cutoff_query = f"poll.date_created > '{cutoff_time}'"
-
-    # Query the database for all polls that meet the following conditions:
-    #  1. ARE in the selected board
-    #  2. NOT made by the user
-    #  3. NOT responded to by the user
-    #  4. NOT reported by the user
-    #  5. ARE active (i.e. is_active = 1)
-    id_query = f"""
-    SELECT poll.id
-    FROM poll
-    INNER JOIN poll_board ON poll_id=poll.id
-    WHERE board_id = ? AND creator_id != ? AND is_active = 1 AND {cutoff_query} 
-    EXCEPT SELECT poll_id FROM (
-        SELECT DISTINCT poll_id
-        FROM response
-        WHERE response.user_id = ?
-        UNION
-        SELECT DISTINCT poll_id
-        FROM report
-        WHERE report.creator_id = ?
-    )
-    """
-
-    user_id = session["user"]["id"]
-    res = cur.execute(id_query, (board_id, user_id, user_id, user_id))
-    ids = [response["id"] for response in res.fetchall()]
-
-    # Iterate through the poll IDs, getting the details
-    polls = [query_poll_details(id) for id in ids]
-
-    # Sort the polls based on the provided order
-    orders = {
-        "hot": lambda p: (p["is_pinned"], popularity(p)),
-        "top": lambda p: (p["is_pinned"], p["votes"]),
-        "new": lambda p: (p["is_pinned"], p["date_created"]),
-    }
-    polls = sorted(polls, key=orders[order], reverse=True)
-
-    # Get the boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
-
-    # Render the template
-    session["admin"] = False
-    session["tab"] = "feed"
-    session["board"] = board
-    session["feed"] = order
-    session["period"] = period
-    return render_template("home/feed.html", session=session, polls=polls, boards=boards)
+    return render_template("home/feed.html", session=session)
 
 
-# Home page (poll feed)
-@home.route("/report/<poll_id>", methods=["GET", "POST"])
-@requires_auth
-def report(poll_id):
-
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-
-    # Get the ID of the user recieving the poll
-    query = "SELECT creator_id FROM poll WHERE id=?"
-    res = cur.execute(query, (poll_id,)).fetchone()
-
-    # Get the other required values for the report
-    receiver_id = res["creator_id"]
-    creator_id = session["user"]["id"]
-    timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-
-    # Execute the insertion query
-    query = """
-    INSERT INTO report (poll_id, receiver_id, creator_id, timestamp)
-    VALUES (?, ?, ?, ?)
-    """
-    cur.execute(query, (poll_id, receiver_id, creator_id, timestamp))
-    db.commit()
-
-    # Remove the poll from the User's feed
-    r = make_response("")
-    notification = '{"notification": "Poll Reported!"}'
-    r.headers.set("HX-Trigger", notification)
-    return r
-
-    # Home page (response history)
-
-
-@home.route("/history")
-@requires_auth
-def history():
-
-    # Get the database connection
-    db = get_db()
-    cur = db.cursor()
-
-    # Get all polls IDs from polls the user has repsonded to
-    query = """
-    SELECT DISTINCT poll_id
-    FROM response
-    WHERE response.user_id = ?
-    """
-    res = cur.execute(query, (session["user"]["id"],))
-    ids = [response["poll_id"] for response in res.fetchall()]
-
-    # Get the poll details using query_poll_details
-    polls = [query_poll_details(id) for id in ids]
-
-    # Render the template
-    session["admin"] = False
-    session["tab"] = "history"
-    return render_template("home/history.html", session=session, polls=polls)
-
-    # Home page (create poll)
-
-
+# Home page (create poll)
 @home.route("/create")
 @requires_auth
 def create():
 
-    # Get the database connection
-    db = get_db()
-    cur = db.cursor()
+    # Sort the boards by primary first
+    boards = session["boards"].items()
+    boards = sorted(boards, key = lambda b : b[1]["primary"], reverse=True)
+    session["boards"] = dict(boards)
 
-    # Get the end of the poll cooldown from the database
-    query = """
-    SELECT *
-    FROM user
-    WHERE email=?
-    """
-    user = cur.execute(query, (session["user"]["email"],)).fetchone()
-    cooldown = on_cooldown(user)
-
-    # Get the boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
-
-    # Set the session variables
-    session["admin"] = False
-    session["tab"] = "create"
-    session["on_cooldown"] = cooldown
+    # Update the session state variable and render the feed
+    session["user"]["on_cooldown"] = on_cooldown(session["user"])
+    session["state"] = {"admin": False, "tab": "create"}
 
     # Render the HTML template
-    return render_template("home/create.html", session=session, boards=boards)
+    return render_template("home/create.html", session=session)
 
 
-# Create a new poll answer entry box
+# Create a new poll answer entry box. This is simpler than writing javascript.
 @home.route("/create/answer")
 @requires_auth
 def create_answer():
@@ -259,17 +164,21 @@ def create_answer():
 @requires_auth
 def create_poll():
 
-    # Get the database connection
-    db = get_db()
-    cur = db.cursor()
+    # If the user is muted prevent them from creating the poll
+    if session["user"]["is_muted"]:
+        r = make_response("")
+        notification = '{"notification": "You have been muted!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", 'none')
+        return r
 
-    # Get request data and other information
+    # Get request data for creating the poll
     creator_id = session["user"]["id"]
     question = request.args.get("poll_question")
     poll_type = request.args.get("poll_type")
-    date_created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     is_anonymous = 1 if request.args.get("poll_anonymous") else 0
-    is_active = 1  # Polls are active by default
+
+    # Get request data for creating the answer and poll_board connections
     answers = request.args.getlist("poll_answer")
     board_ids = request.args.getlist("poll_board")
 
@@ -291,78 +200,52 @@ def create_poll():
         return r
 
     # Add the poll to the database
-    query = """
-    INSERT INTO poll (
-        creator_id,
-        question,
-        poll_type,
-        date_created,
-        is_anonymous,
-        is_active,
-        is_pinned
-    )
-    VALUES (?, ?, ?, ?, ?, ?, 0) RETURNING id
-    """
-    values = (
-        creator_id,
-        question,
-        poll_type,
-        date_created,
-        is_anonymous,
-        is_active
-    )
-    poll = cur.execute(query, values).fetchone()
+    poll_data = {
+        "creator_id": creator_id,
+        "question": question,
+        "poll_type": poll_type,
+        "is_anonymous": is_anonymous,
+    }
+
+    db = get_db()
+    res = db.table("poll").insert(poll_data).execute()
+    poll_id = res.data[0]["id"]
 
     # Assign the boards to the poll
-    for board_id in board_ids:
-        query = "INSERT INTO poll_board (poll_id, board_id) VALUES (?, ?)"
-        cur.execute(query, (poll["id"], board_id))
+    board_data = [{"poll_id": poll_id, "board_id": id} for id in board_ids]
+    res = db.table("poll_board").insert(board_data).execute()
 
     # Add the poll answers to the database unless they are numeric
     if not numeric:
-        query = "INSERT INTO poll_answer (poll_id, answer) VALUES (?, ?)"
-        for answer in answers:
-            cur.execute(query, (poll["id"], answer))
+        answer_data = [{"poll_id": poll_id, "answer": a} for a in answers]
+        res = db.table("answer").insert(answer_data).execute()
 
     # Update the last poll created time for the user
-    id = session["user"]["id"]
-    last_poll_time = datetime.utcnow()
+    user_id = session["user"]["id"]
+    last_poll_time = datetime.now()
     next_poll_time = last_poll_time
 
-    # If user is not the administrator, increment next_poll_allowed by one day
-    if session["user"]["email"] != "admin@polll.org":
+    # If the user is not an administrator, increment next_poll_allowed by one day
+    if not session["user"]["is_admin"]:
         next_poll_time += timedelta(days=1)
 
     # Update the current user's information in the database
-    last_poll_created = last_poll_time.strftime('%Y-%m-%d %H:%M:%S')
-    next_poll_allowed = next_poll_time.strftime('%Y-%m-%d %H:%M:%S')
-    values = (last_poll_created, next_poll_allowed, creator_id)
-
-    query = """
-    UPDATE user
-    SET last_poll_created = ?, next_poll_allowed = ?
-    WHERE id=?
-    """
-
-    cur.execute(query, values)
-    db.commit()
+    last_poll_created = last_poll_time.astimezone().isoformat()
+    next_poll_allowed = next_poll_time.astimezone().isoformat()
+    res = db.table("user").update({
+        "last_poll_created": last_poll_created,
+        "next_poll_allowed": next_poll_allowed
+    }).eq("id", creator_id).execute()
 
     # Update the current user's information in the session
     session["user"]["last_poll_created"] = last_poll_created
     session["user"]["next_poll_allowed"] = next_poll_allowed
-    session["on_cooldown"] = on_cooldown(session["user"])
-
-    # Get the boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    session["user"]["on_cooldown"] = on_cooldown(session["user"])
+    session.modified = True
 
     # Render the create.html template, while triggering a notification
-    r = make_response(render_template(
-        "home/create-card.html",
-        session=session,
-        boards=boards
-    ))
-
+    template = render_template("home/create-card.html", session=session)
+    r = make_response(template)
     notification = '{"notification": "Poll Submitted!"}'
     r.headers.set("HX-Trigger", notification)
     return r
@@ -373,23 +256,92 @@ def create_poll():
 @requires_auth
 def mypolls():
 
-    # Get the database connection
-    db = get_db()
-    cur = db.cursor()
-
     # Query the database for all polls made by the user
-    query = """
-    SELECT id
-    FROM poll
-    WHERE creator_id = ?
-    """
-    res = cur.execute(query, (session["user"]["id"],))
-    ids = [response["id"] for response in res.fetchall()]
+    db = get_db()
+    user = session["user"]
+    data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("mypolls", data).execute()
 
-    # Iterate through the poll IDs, getting the details
-    polls = [query_poll_details(id) for id in ids]
+    # Update the session object with the new state
+    session["comments"] = {}
+    session["replies"] = {}
+    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+
+    session["state"] = {
+        "admin": False,
+        "tab": "mypolls",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT
+    }
 
     # Render the HTML template
-    session["admin"] = False
-    session["tab"] = "mypolls"
-    return render_template("home/mypolls.html", session=session, polls=polls)
+    session.modified = True
+    return render_template("home/mypolls.html", session=session)
+
+
+# Home page (response history)
+@home.route("/history")
+@requires_auth
+def history():
+
+    # Query the database for all polls responded to by the user
+    db = get_db()
+    user = session["user"]
+    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("history", data).execute()
+
+    # Set data on the session object
+    session["comments"] = {}
+    session["replies"] = {}
+    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+
+    session["state"] = {
+        "admin": False, 
+        "tab": "history",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT
+    }
+
+    # Render the HTML template
+    session.modified = True
+    return render_template("home/history.html", session=session)
+
+
+# Render more polls in the history tab
+@home.route("/load/<origin>/<page>")
+@requires_auth
+def load_more(origin, page):
+
+    # Query the database with the correct offset given by page + 1
+    db = get_db()
+    user = session["user"]
+    page = int(page) + 1
+
+    # Modify the RPC call depending on the origin
+    res = None
+    if origin == "feed":
+        bid = session["state"]["board"]["id"]
+        order = session["state"]["order"]
+        period = session["state"]["period"]
+        res = query_feed(bid, order, period, page)
+    if origin == "history":
+        args = {"uid": user["id"], "page": page, "lim": POLL_LIMIT}
+        res = db.rpc("history", args).execute()
+    if origin == "mypolls":
+        args = {"cid": user["id"], "page": page, "lim": POLL_LIMIT}
+        res = db.rpc("mypolls", args).execute()
+
+    # Add the new polls to the polls dictionary
+    polls = {p["id"]: query_poll_details(p) for p in res.data}
+
+    # Update the session state
+    session["polls"].update(polls)
+    session["state"]["poll_page"] = page
+    session["state"]["poll_full"] = len(res.data) < POLL_LIMIT
+
+    # Render the HTML template
+    session.modified = True
+    state = session["state"]
+    return render_template("home/load-response.html", state=state, polls=polls)
+
+

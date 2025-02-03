@@ -1,4 +1,4 @@
-{% if not session.on_cooldown %}
+{% if not session.user.on_cooldown %}
 
 <!-- Image + create container -->
 <div class="flex flex-col h-full space-y-4 pb-2">
@@ -119,13 +119,13 @@
       <!-- SELECT BOARD -->
       <span class="mr-2">Select Boards:</span>
 
-      {% for board in boards %}
+      {% for id, board in session.boards.items() %}
 
         <label class="rounded-2xl px-3 mr-2 h-8 border-4 border-nord-4 hover:dark:bg-nord-0 has-[:checked]:border-nord-10 {% if board.name == 'All' %}border-nord-10{% endif %}">
           {{ board.name }}
 
           <!-- Very unfourtunate hack to prevent all from being unselected -->
-          {% if board.name == 'All' %}
+          {% if board.primary %}
             <input class="poll-create hidden"
               name="poll_board"
               value="{{ board.id }}" 
@@ -154,17 +154,21 @@
     <div class="flex flex-row items-center px-10 pb-6">
 
       <!-- HIDE USERNAME (hack?)--> 
-      <input id="anon-toggle" class="poll-create peer opacity-0 w- z-10 w-8 h-8 relative" name="poll_anonymous" type="checkbox">
-      <span class="opacity-100 peer-checked:opacity-0 absolute justify-center items-center">
-        <i class="text-2xl fa-solid fa-eye"></i>
-      </span>
-      <span class="opacity-0 peer-checked:opacity-100 absolute justify-center items-center">
-        <i class="text-2xl fa-solid fa-eye-slash"></i>
-      </span>
-
-
-      
-
+      <div class="w-10 h-10 relative">
+        <input 
+          id="anon-toggle" 
+          class="poll-create peer opacity-0 absolute w-10 h-10 left-0 top-0 z-10" 
+          name="poll_anonymous" 
+          type="checkbox"
+          title="Hide Username"
+        >
+        <div class="w-10 h-10 opacity-100 peer-checked:opacity-0 absolute left-0 top-0 flex flex-row justify-center items-center">
+          <i class="text-2xl fa-solid fa-eye"></i>
+        </div>
+        <div class="w-10 h-10 opacity-0 peer-checked:opacity-100 absolute left-0 top-0 flex flex-row justify-center items-center">
+          <i class="text-2xl fa-solid fa-eye-slash"></i>
+        </div>
+      </div>
     
       <!-- SUBMIT BUTTON -->
       <button class="rounded-lg bg-nord-15 text-black py-2 px-4 ml-auto" 
@@ -189,16 +193,9 @@
     Sorry! We only allow users to make one poll a day.
     <br />
     <br />
-    You'll be allowed to make another poll {{ format_time(session.user.next_poll_allowed)}}
+    You'll be allowed to make another poll on {{ format_time(session.user.next_poll_allowed)}}.
   </p>
 </div>
 
 {% endif %} 
-
-
-</div>
-
-
-
-
 

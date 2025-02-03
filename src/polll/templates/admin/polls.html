@@ -1,153 +1,82 @@
 {% extends "admin/admin.html" %}
+
 {% block admin_content %}
 
-  <form hx-get="{{ url_for("admin.polls") }}"
-        hx-include=".poll-search"
-        hx-target="#polls-list"
-        hx-trigger="submit"
-        hx-swap="innerHTML">
+{% if reports %}
 
-    <div class="flex flex-row p-2 mt-4 mb-2 items-center">
-      <span class="mr-2">Search By:</span>
-      
-      <!-- SEARCH BY -->
-      <select class="poll-search bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg mr-4 w-32"
-              name="column">
-        <option value="creator" {% if form.column=="creator" %}selected{% endif %}>
-          Creator
-        </option>
-        <option value="question" {% if form.column=="question" %}selected{% endif %}>
-          Question
-        </option>
-        <option value="poll.id" {% if form.column=="poll.id" %}selected{% endif %}>
-          ID
-        </option>
-      </select>
+  <div class="grid grid-cols-1 border-t border-nord-0 dark:border-nord-3 border-collapse my-6">
 
-      <!-- SEARCH VALUE -->
-      <input class="poll-search bg-nord-4 dark:bg-nord-0 text-nord-0 dark:text-nord-4 px-2 rounded-md h-10 grow mr-4"
-             type="text"
-             name="search"
-             value="{{ form.search }}" />
+  {% for report in reports %}
 
-      <button class="bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 px-2 rounded-md h-10 w-16"
-              type="submit">
-        <i class="fa fa-search"></i>
-      </button>
+    <div class="border-x border-b border-nord-0 dark:border-nord-3 p-4">
+
+      <div 
+        class="flex flex-row" 
+        onclick="toggle_admin_information('poll', {{ report.id }})"
+      >
+
+        {% include "admin/polls-alert.html" %}
+
+        <p class="text-l">
+          <span class="font-bold">{{ format_time(report.created_at) }}</span>
+        </p>
+        <button class="ml-auto">
+          <i class="fa fa-angle-right" id="poll-toggle-{{ report.id }}"></i>
+        </button>
+      </div>
+
+      <div class="hidden" id="poll-info-{{ report.id }}">
+
+        <div class="py-2">
+          <p>{{ report.question }}</p>
+          <ul class="list-disc list-inside">
+            {% for answer in report.answers %}
+              <li>{{ answer }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <p>
+          <i>Report Creator: </i>
+          <a 
+            class="text-nord-7 hover:underline" 
+            href="{{ url_for('admin.users', column='id', search=report.creator.id) }}"
+          >
+            {{ report.creator.username }}
+          </a>
+        </p>
+        <p>
+          <i>Poll Creator: </i>
+          <a 
+            class="text-nord-7 hover:underline" 
+            href="{{ url_for('admin.users', column='id', search=report.receiver.id) }}"
+          >
+            {{ report.receiver.username }}
+          </a>
+        </p>
+        <div class="flex flex-row items-center">
+          <p>Mark as complete:</p>
+          <input 
+            class="ml-2 w-4 h-4" 
+            type="checkbox" 
+            autocomplete="off"
+            hx-trigger="click"
+            hx-get="{{ url_for('admin.handle_poll', report_id=report.id) }}"
+            hx-target="#poll-alert-{{ report.id }}"
+            hx-swap="outerHTML"
+            {% if report.handled %}checked{% endif %}
+          >
+        </div>
+
+      </div>
 
     </div>
-    <div class="flex flex-row">
 
-      <!-- POLL TYPE FILTER -->
-      <div class="w-1/3 p-2 items-center text-nord-0 dark:text-nord-4">
-        <span>Filter By:</span>
-
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="checkbox"
-                 name="search_type"
-                 value="CHOOSE_ONE"
-                 checked />
-          <label class="ml-2">Choose One</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="checkbox"
-                 name="search_type"
-                 value="CHOOSE_MANY"
-                 checked />
-          <label class="ml-2">Choose Many</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="checkbox"
-                 name="search_type"
-                 value="NUMERIC_STAR"
-                 checked />
-          <label class="ml-2">Numeric Star</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="checkbox"
-                 name="search_type"
-                 value="NUMERIC_SCALE"
-                 checked />
-          <label class="ml-2">Numeric Scale</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="checkbox"
-                 name="search_type"
-                 value="RANKED_POLL"
-                 checked />
-          <label class="ml-2">Ranking</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="checkbox"
-                 name="search_type"
-                 value="TIER_LIST"
-                 checked />
-          <label class="ml-2">Tier List</label>
-        </div>
-      </div>
-
-      <!-- POLL BOARD FILTER -->
-      <div class="w-1/3 p-2 items-center text-nord-0 dark:text-nord-4">
-        <span>Select Boards:</span>
-
-        {% for board in boards %}
-          <div class="ml-2">
-            <input class="poll-search"
-                   type="checkbox"
-                   name="board"
-                   value="{{ board.id }}"
-                   checked />
-            <label class="ml-2">{{ board.name }}</label>
-          </div>
-        {% endfor %}
-
-      </div>
-
-      <!-- SORTING OPTIONS -->
-      <div class="w-1/3 p-2 items-center text-nord-0 dark:text-nord-4">
-        <span>Sort By:</span>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="radio"
-                 name="sort"
-                 value="date_created"
-                 checked />
-          <label class="ml-2">Date Created</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search"
-                 type="radio"
-                 name="sort"
-                 value="responses"
-                 disabled />
-          <label class="ml-2">Responses</label>
-        </div>
-        <div class="ml-2">
-          <input class="poll-search" type="radio" name="sort" value="reports" disabled />
-          <label class="ml-2">Reports</label>
-        </div>
-        <div class="mt-4">
-          <span class="mr-2">Direction:</span>
-          <select class="poll-search bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 p-2 rounded-lg mr-4 w-32"
-                  name="sort_direction">
-            <option value="DESC">Descending</option>
-            <option value="ASC">Ascending</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <div id="polls-list">
-
-    {% include "admin/polls-list.html" %}
-
+  {% endfor %}
+  
   </div>
 
+{% endif %}
+
 {% endblock %}
+

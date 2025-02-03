@@ -1,52 +1,42 @@
 <!-- Menu for managing users/polls/reports -->
 <div
-  class="flex mb-4 rounded-lg border-2 border-nord-2 bg-nord-4 dark:border-nord-4 dark:bg-nord-0 overflow-hidden"
+  class="flex mb-4 rounded-lg border-2 border-nord-2 bg-nord-4 dark:border-nord-3 dark:bg-neutral-900 overflow-hidden"
 >
   <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
+    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-3 dark:border-nord-3 w-24 h-10 flex justify-center items-center grow"
     href="{{ url_for('admin.users') }}"
   >
-    <span class="{% if session.tab == 'users' %} underline {% endif %}"
+    <span class="{% if session.state.tab == 'users' %}underline{% endif %}"
       >Users</span
     >
     <i class="ml-2 fa-solid fa-user"></i>
   </a>
 
   <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('admin.polls') }}"
+    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-3 dark:border-nord-3 w-24 h-10 flex justify-center items-center grow"
+    href="{{ url_for('admin.comments') }}"
   >
-    <span class="{% if session.tab == 'polls' %} underline {% endif %}"
-      >Polls</span
-    >
-    <i class="ml-2 fa-solid fa-newspaper"></i>
-  </a>
-
-  <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('admin.reports') }}"
-  >
-    <span class="{% if session.tab == 'reports' %} underline {% endif %}"
-      >Reports</span
+    <span class="{% if session.state.tab == 'comments' %}underline{% endif %}"
+      >Comment Reports</span
     >
     <i class="ml-2 fa-solid fa-triangle-exclamation"></i>
   </a>
 
   <a
-    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-2 dark:border-nord-4 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
-    href="{{ url_for('admin.stats') }}"
+    class="text-nord-0 dark:text-nord-6 border-r-2 border-nord-3 dark:border-nord-3 w-24 h-10 flex justify-center items-center grow"
+    href="{{ url_for('admin.polls') }}"
   >
-    <span class="{% if session.tab == 'stats' %} underline {% endif %}"
-      >Stats</span
+    <span class="{% if session.state.tab == 'polls' %}underline{% endif %}"
+      >Poll Reports</span
     >
-    <i class="ml-2 fa-solid fa-chart-simple"></i>
+    <i class="ml-2 fa-solid fa-triangle-exclamation"></i>
   </a>
 
   <a
-    class="text-nord-0 dark:text-nord-6 w-24 h-10 flex justify-center items-center grow font-bold hover:bg-nord-8 hover:dark:bg-nord-10"
+    class="text-nord-0 dark:text-nord-6 w-24 h-10 flex justify-center items-center grow"
     href="{{ url_for('admin.boards') }}"
   >
-    <span class="{% if session.tab == 'boards' %} underline {% endif %}"
+    <span class="{% if session.state.tab == 'boards' %}underline{% endif %}"
       >Boards</span
     >
     <i class="ml-2 fa-solid fa-clipboard"></i>

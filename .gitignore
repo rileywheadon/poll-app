@@ -3,4 +3,6 @@
 
 htmlcov/**
 .venv/**
+.env
 .coverage
+dump.rdb

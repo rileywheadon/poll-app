@@ -4,7 +4,7 @@
 <!-- Consider Sortable.js for this: https://preline.co/docs/drag-and-drop.html (this entire site is sick) -->
 {% block poll_content %}
   <div class="my-2">
-    {% for answer in poll.answers %}
+    {% for id, answer in poll.answers.items() %}
       <div class="border-4 border-nord-3 rounded-lg dark:text-gray-300 dark:border-polll-green w-48 p-2 mt-[-4px] ml-[-4px] cursor-grab focus:cursor-grabbing select-none"
            draggable="true"
            ondragstart="rankedDragStart(event)"

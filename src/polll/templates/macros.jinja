@@ -1,28 +1,28 @@
 {% macro buttons(showIcons=true, feed="visible", history="visible", create="visible", myPolls="visible") %}
 
 <a class="{{feed}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.feed') }}">
-    <span class="{% if session.tab == 'feed' %} text-polll-green {% endif %}">
+    <span class="{% if session.state.tab == 'feed' %} text-polll-green {% endif %}">
         <i class="ml-2 text-xl md:text-base fa-solid fa-fire px-2"></i>
         {% if showIcons %} Feed {% endif %}
     </span>
 </a>
 
 <a class="{{history}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.history') }}">
-    <span class="{% if session.tab == 'history' %} text-polll-green {% endif %}">
+    <span class="{% if session.state.tab == 'history' %} text-polll-green {% endif %}">
         <i class="ml-2 text-xl md:text-base fa-solid fa-book px-2"></i>
         {% if showIcons %} History {% endif %}
     </span>
 </a>
 
 <a class="{{create}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.create') }}">
-    <span class="{% if session.tab == 'create' %} text-polll-green {% endif %}">
+    <span class="{% if session.state.tab == 'create' %} text-polll-green {% endif %}">
         <i class="ml-2 text-xl md:text-base fa-solid fa-pen underline px-2"></i>
         {% if showIcons %} Create {% endif %}
     </span>
 </a>
 
 <a class="{{myPolls}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.mypolls') }}">
-    <span class="{% if session.tab == 'mypolls' %} text-polll-green {% endif %}">
+    <span class="{% if session.state.tab == 'mypolls' %} text-polll-green {% endif %}">
         <i class="ml-2 text-xl md:text-base fa-solid fa-user px-2"></i>
         {% if showIcons %} {{session.user.username}} {% endif %}
     </span>

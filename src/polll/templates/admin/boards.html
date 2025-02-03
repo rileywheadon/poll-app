@@ -21,7 +21,12 @@
     </button>
   </div>
 
-  <div id="boards-list">
+  <p class="ml-2">
+    <span class="text-nord-13 font-bold">Warning</span>  
+    : Setting a board to 'primary' does not retroactively add polls to it. In general, you should be <i>very</i> careful with this menu. Deleting a board <i>does not</i> delete all polls within it, but editing boards can make it significantly more difficult for users to access their polls.
+  </p>
+
+  <div id="boards-list" class="mt-4">
 
     {% include "boards-list.html" %}
 

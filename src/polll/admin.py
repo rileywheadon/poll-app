@@ -6,7 +6,6 @@ import requests
 from polll.auth import requires_auth, requires_admin
 from polll.db import get_db
 from polll.utils import *
-from polll.models import delete_poll, query_poll_details
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
@@ -15,30 +14,19 @@ admin = Blueprint('admin', __name__, template_folder='templates/admin')
 @requires_admin
 def users():
 
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-
     # Get the headers from the HTTP request, if they exist
+    db = get_db()
     column = request.args.get("column") or "username"
     search = request.args.get("search") or ""
 
     # Include similar values in the query, unless we are searching by ID
-    value = "%{}%".format(search) if column != "id" else search
+    res = None
+    if column == "id":
+        res = db.table("user").select("*").eq("id", search).execute()
+    else:
+        res = db.table("user").select("*").like(column, "%{}%".format(search)).execute()
 
-    # Check that the search column is valid to prevent SQL injection
-    if column not in ["username", "email", "id"]:
-        return ""
-
-    # Query the database for all users matching the search
-    query = f"""
-    SELECT *
-    FROM user
-    WHERE {column}
-    LIKE ?
-    """
-    res = cur.execute(query, (value,))
-    users = [dict(row) for row in res.fetchall()]
+    users = res.data
 
     # Update the cooldown state for each user
     for user in users:
@@ -49,207 +37,222 @@ def users():
     if target and target == "users-list":
         return render_template("users-list.html", users=users)
 
-    # Render the page with all searched users
-    session["admin"] = True
-    session["tab"] = "users"
+    # Update the session object
+    session["users"] = {u["id"]: u for u in users}
+    session["state"] = {"admin": True, "tab": "users"}
     form = {"column": column, "search": search}
     return render_template("users.html", session=session, users=users, form=form)
 
 
-@admin.route("/admin/users/resetcooldown")
+# Resets the user's poll cooldown
+@admin.route("/admin/users/refresh")
 @requires_admin
-def resetcooldown():
-
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
+def refresh():
 
     # Get the user ID from the HTTP request
+    db = get_db()
     user_id = request.args.get("user_id")
 
     # Update the user's next_poll_allowed value
-    query = """
-    UPDATE user
-    SET next_poll_allowed = ?
-    WHERE id = ?
-    """
-    now = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-    res = cur.execute(query, (now, user_id))
-    db.commit()
+    now = datetime.now().astimezone().isoformat()
+    res = (
+        db.table("user")
+        .update({"next_poll_allowed": now})
+        .eq("id", user_id)
+        .execute()
+    )
+
+    # Fetch the user so they can be rendered by the client
+    user = session["users"][int(user_id)]
+    user["next_poll_allowed"] = now
+    user["on_cooldown"] = on_cooldown(user)
 
     # UI Changes are handled in Javascript
-    return ""
+    session.modified = True
+    return render_template("admin/users-table.html", user=user)
+
+
+# Mute user (DISABLED)
+# @admin.route("/admin/users/mute")
+# @requires_admin
+# def mute():
+#
+#     # Get request information and current user state
+#     db = get_db()
+#     user_id = request.args.get("user_id")
+#     user = session["users"][int(user_id)]
+#     is_muted = user["is_muted"]
+#     
+#     # Update the user's state in both the database and the session object
+#     db.table("user").update({"is_muted": not is_muted}).eq("id", user_id).execute()
+#     user["is_muted"] = not is_muted
+#
+#     # Swap out the button
+#     session.modified = True
+#     return render_template("admin/users-mute.html", user=user)
+
+
+# Ban user (DISABLED)
+# @admin.route("/admin/users/ban")
+# @requires_admin
+# def ban():
+#
+#     db = get_db()
+#     user_id = request.args.get("user_id")
+#     user = session["users"][int(user_id)]
+#     is_banned = user["is_banned"]
+#     
+#     # Update the user's state in both the database and the session object
+#     db.table("user").update({"is_banned": not is_banned}).eq("id", user_id).execute()
+#     user["is_banned"] = not is_banned
+#     
+#     # Swap out the button
+#     session.modified = True
+#     return render_template("admin/users-ban.html", user=user)
+
+
+# Get all reported comments
+@admin.route("/admin/comments")
+@requires_admin
+def comments():
+
+    # Get a database connection and get all the comment reports
+    db = get_db()
+    res = (
+        db.table("comment_report")
+        .select(
+            "*", 
+            "comment(comment)", 
+            "creator:creator_id(id, username)", 
+            "receiver:receiver_id(id, username)"
+        )
+        .order("handled")
+        .order("created_at")
+        .execute()
+    )
+    reports = res.data
+
+    # Rearrange the dictionary to make it easier to read
+    for r in reports:
+        r["content"] = r["comment"]["comment"]
+        del r["comment"]
+
+    # Set the state variable 
+    session["state"] = {"admin": True, "tab": "comments"}
+    session["comment_reports"] = {r["id"] : r for r in reports}
+
+    # Render the response
+    session.modified = True
+    return render_template("comments.html", session=session, reports=reports)
+
+
+# Mark a comment report as handled
+@admin.route("/admin/comments/handle/<report_id>")
+@requires_admin
+def handle_comment(report_id):
+    
+    # Swap the comment's state in the session
+    report = session["comment_reports"][int(report_id)]
+    report["handled"] = not report["handled"]
+
+    # Swap the comment's state in the database
+    db = get_db()
+    res = (
+        db.table("comment_report")
+        .update({"handled": report["handled"]})
+        .eq("id", report_id)
+        .execute()
+    )
+                                                                             
+    # Render the comment's header again
+    session.modified = True
+    return render_template("admin/comments-alert.html", report=report)
 
 
 @admin.route("/admin/polls")
 @requires_admin
 def polls():
 
-    # Get a db connection
+    # Get a database connection and get all the poll reports
     db = get_db()
-    cur = db.cursor()
-
-    # Get the request data or a default value if not provided
-    column = request.args.get("column") or "creator"
-    search = request.args.get("search") or ""
-    sort = request.args.get("sort") or "date_created"
-    direction = request.args.get("sort_direction") or "DESC"
-
-    # Check column, sort, direction are valid to avoid SQL injection
-    column_valid = column in ["creator", "question", "poll.id"]
-    sort_valid = sort in ["date_created"]
-    direction_valid = direction in ["DESC", "ASC"]
-    if not (column_valid and sort_valid and direction_valid):
-        return ""
-
-    # Include similar values in the query, unless we are searching by ID
-    value = "%{}%".format(search) if column != "poll.id" else search
-
-    # Construct a query for selecting the poll types
-    types = request.args.getlist("search_type") or []
-    type_query = " OR ".join([f"poll.poll_type='{t}'" for t in types])
-    if type_query == "":
-        type_query = "True"
-
-    # Construct a query for selecting the poll boards
-    boards = request.args.getlist("board") or []
-    board_query = " OR ".join([f"board_id={b}" for b in boards])
-    if board_query == "":
-        board_query = "True"
-
-    # Create the query and build the values tuple
-    poll_query = f"""
-    SELECT
-        poll.*,
-        user.username AS creator,
-        user.email AS creator_email
-    FROM poll
-        INNER JOIN user ON user.id = poll.creator_id
-    WHERE ({column} LIKE ?) AND ({type_query}) AND poll.id IN (
-        SELECT DISTINCT poll_id
-        FROM poll_board
-        WHERE ({board_query})
+    res = (
+        db.table("poll_report")
+        .select(
+            "*", 
+            "poll(question, answer(answer))", 
+            "creator:creator_id(id, username)", 
+            "receiver:receiver_id(id, username)"
+        )
+        .order("handled")
+        .order("created_at")
+        .execute()
     )
-    ORDER BY {sort} {direction}
-    """
-    res = cur.execute(poll_query, (value,))
-    ids = [poll["id"] for poll in res.fetchall()]
-    polls = [query_poll_details(id) for id in ids]
+    reports = res.data
 
-    # Get the list of poll boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    # Rearrange the dictionary to make it easier to read
+    for r in reports:
+        r["question"] = r["poll"]["question"]
+        r["answers"] = [a["answer"] for a in r["poll"]["answer"]]
+        del r["poll"]
 
-    # If the request is internal, only re-render the user list
-    target = request.headers.get("HX-Target")
-    if target and target == "polls-list":
-        return render_template("polls-list.html", polls=polls)
+    # Set the state variable 
+    session["state"] = {"admin": True, "tab": "polls"}
+    session["poll_reports"] = {r["id"] : r for r in reports}
 
-    # Otherwise, render the entire users page
-    session["admin"] = True
-    session["tab"] = "polls"
-    form = {"column": column, "search": search}
-    return render_template(
-        "polls.html",
-        session=session,
-        polls=polls,
-        boards=boards,
-        form=form
+    # Render the response
+    session.modified = True
+    return render_template("polls.html", session=session, reports=reports)
+
+
+# Mark a comment report as handled
+@admin.route("/admin/polls/handle/<report_id>")
+@requires_admin
+def handle_poll(report_id):
+    
+    # Swap the comment's state in the session
+    report = session["poll_reports"][int(report_id)]
+    report["handled"] = not report["handled"]
+
+    # Swap the comment's state in the database
+    db = get_db()
+    res = (
+        db.table("poll_report")
+        .update({"handled": report["handled"]})
+        .eq("id", report_id)
+        .execute()
     )
-
-
-@admin.route("/admin/reports")
-@requires_admin
-def reports():
-
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-
-    # Get the reports, from newest to oldest
-    query = """
-    SELECT *
-    FROM report
-    ORDER BY timestamp DESC
-    """
-    res = cur.execute(query).fetchall()
-    reports = [dict(report) for report in res]
-
-    # If there are no reports, return nothing
-    session["admin"] = True
-    session["tab"] = "reports"
-    return render_template("reports.html", session=session, reports=reports)
-
-
-@admin.route("/admin/stats")
-@requires_admin
-def stats():
-
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-    stats = {"responses": [], "polls": []}
-
-    # Get the datetimes 1 day, 7 days, and 30 days in the past
-    days = [get_days_behind(x) for x in (1, 7, 30)]
-
-    # Get the number of responses in the last 1 day, 7 days, 30 days
-    response_query = """
-    SELECT COUNT(*) AS count
-    FROM response
-    WHERE timestamp > ?
-    """
-
-    # Get the number of new polls in the last 1 day, 7 days, 30 days
-    poll_query = """
-    SELECT COUNT(*) AS count
-    FROM poll
-    WHERE date_created > ?
-    """
-
-    # Execute the queries on each date
-    def count(q, d): return dict(cur.execute(q, (d,)).fetchone())["count"]
-    for day in days:
-        stats["responses"].append(count(response_query, day))
-        stats["polls"].append(count(poll_query, day))
-
-    session["admin"] = True
-    session["tab"] = "stats"
-    return render_template("stats.html", session=session, stats=stats)
+                                                                             
+    # Render the comment's header again
+    session.modified = True
+    return render_template("admin/polls-alert.html", report=report)
 
 
 @admin.route("/admin/boards")
 @requires_admin
 def boards():
 
-    # Get a database connection
+    # Select all boards from the database
     db = get_db()
-    cur = db.cursor()
-
-    # Get the list of boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    res = db.table("board").select("*").execute()
+    session["boards"] = {b["id"] : b for b in res.data}
 
     # Render the template
-    session["admin"] = True
-    session["tab"] = "boards"
-    return render_template("boards.html", session=session, boards=boards)
+    session["state"] = {"admin": True, "tab": "boards"}
+    session.modified = True
+    return render_template("boards.html", session=session)
 
 
 @admin.route("/admin/boards/create")
 @requires_admin
 def create_board():
 
-    # Get a database connection
-    db = get_db()
-    cur = db.cursor()
-
     # Check that the board name is unique
+    db = get_db()
     name = request.args.get("name")
-    query = "SELECT * FROM board WHERE name=?"
+    names = [b["name"] for id, b in session["boards"].items()]
 
     # If the name is not unique, do nothing and notify the user
-    if cur.execute(query, (name,)).fetchone() is not None:
+    if name in names:
         r = make_response("")
         notification = '{"notification": "Board already exists!"}'
         r.headers.set("HX-Trigger", notification)
@@ -257,16 +260,15 @@ def create_board():
         return r
 
     # Add the board to the database
-    query = "INSERT INTO board (name) VALUES (?)"
-    cur.execute(query, (name,))
-    db.commit()
+    res = db.table("board").insert({"name": name}).execute()
 
-    # Get the list of boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    # Add the board to the list of boards stored in the session
+    board = res.data[0]
+    session["boards"][board["id"]] = board
+    session.modified = True
 
     # Render the boards list again
-    r = make_response(render_template("boards-list.html", boards=boards))
+    r = make_response(render_template("boards-list.html", session=session))
     notification = '{"notification": "Board created!"}'
     r.headers.set("HX-Trigger", notification)
     return r
@@ -276,25 +278,31 @@ def create_board():
 @requires_admin
 def delete_board(board_id):
 
-    # Get a database connection
+    # Remove the board (cascade should take care of poll_board)
     db = get_db()
-    cur = db.cursor()
+    db.table("board").delete().eq("id", board_id).execute()
 
-    # Remove the board and all connections from the database
-    board_query = "DELETE FROM board WHERE id = ?"
-    poll_board_query = "DELETE FROM poll_board WHERE board_id = ?"
-
-    # Execute the queries, starting with poll_query
-    cur.execute(poll_board_query, (board_id,))
-    cur.execute(board_query, (board_id,))
-    db.commit()
-
-    # Get the list of boards
-    query = "SELECT * FROM board"
-    boards = [dict(b) for b in cur.execute(query).fetchall()]
+    # Delete the board from the session
+    del session["boards"][int(board_id)]
 
     # Render the boards list again
-    r = make_response(render_template("boards-list.html", boards=boards))
+    r = make_response(render_template("boards-list.html", session=session))
     notification = '{"notification": "Board deleted!"}'
     r.headers.set("HX-Trigger", notification)
     return r
+
+
+# Swaps a board from primary to non-primary and vice-versa
+@admin.route("/admin/boards/update/<board_id>")
+@requires_admin
+def update_board(board_id):
+
+    # Update the board in the session
+    board = session["boards"][int(board_id)]
+    board["primary"] = not board["primary"]
+
+    # Update the board in the database
+    db = get_db()
+    db.table("board").update({"primary": board["primary"]}).eq("id", board_id).execute()
+    return ""
+

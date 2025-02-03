@@ -2,8 +2,16 @@
 
 {% block home_content %}
 
-  {% for poll in polls %}
-    {% include "results/result-base.html" %}
-  {% endfor %}
+  <div id="poll-container">
+
+    {% for id, poll in session.polls.items() %}
+      {% include "results/result-base.html" %}
+    {% endfor %}
+
+  </div>
+
+  {% with state=session.state %}
+    {% include "home/load-polls.html" %}
+  {% endwith %}
 
 {% endblock %}

@@ -36,46 +36,66 @@ const bps =  {
 
 const bp = 768;
 
-// Global charts object use to handle creating/destroying charts
-var charts = {} 
+// Global variable for the current chart
+var active_chart = null;
+
+// Global event listener for creating a new graph
+function add_graph_listener() {
+  document.body.addEventListener("graph", function(evt) { 
+    graphToggle(evt.detail);
+  });
+}
 
 // Results Toggling Function
 function graphToggle(poll) {
-
-  toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
-  graph = document.getElementById(`poll-graph-${poll["id"]}`);
-  var btn_text = document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML;
   
-  btn_text == "Show Results" ? document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML = "Hide Results" : document.getElementById(`rs-btn-txt-${poll["id"]}`).innerHTML = "Show Results";
+  // Destroy the active chart, if it exists
+  if (active_chart != null) {
+    active_chart.destroy();
+  }
 
-  // NOTE: Behaviour if the poll has no votes
-  if (poll["votes"] == 0) {
+  // Get elements from the DOM
+  var toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
+  var graph = document.getElementById(`poll-graph-${poll["id"]}`);
 
+  // If we are hiding results, just hide the graph and return
+  if (toggle.innerHTML == "Hide Results") {
+    toggle.innerHTML = "Show Results";
+    graph.classList.add("hidden");
+    return;
+  } 
+
+  // Hide all of the other graphs
+  graphs = document.getElementsByClassName("graph-toggle");
+  for (var i = 0; i < graphs.length; i++) {
+    id = graphs[i].getAttribute("id").substr(13);
+    document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
+    document.getElementById("poll-graph-" + id).classList.add("hidden");
+  }
+
+  // Then update toggle and graph
+  toggle.innerHTML = "Hide Results";
+  graph.classList.remove("hidden");
+
+  // Create a "No votes yet!" message if the poll has no votes
+  if (poll["response_count"] == 0) {
     var votes = document.createElement("p");
     const votes_message = document.createTextNode("No votes yet!");
     votes.appendChild(votes_message);
+    graph.appendChild(votes);
+  } 
 
-    btn_text == "Hide Results" ? graph.removeChild(graph.firstElementChild) : graph.insertBefore(votes, graph.firstElementChild);
-    return
-
+  // Unhide the results if the poll is ranked or tier list
+  else if (["RANKED_POLL", "TIER_LIST"].includes(poll["poll_type"])) {
+    result = document.getElementById("poll-result-" + poll["id"]);
+    result.classList.remove("hidden");
   }
 
-  // NOTE: Behaviour for ranked poll / tier list
-  if (poll["poll_type"] == "RANKED_POLL" || poll["poll_type"] == "TIER_LIST") {
-
-    result = document.getElementById(`poll-result-${poll["id"]}`);
-
-    btn_text == "Hide Results" ? result.classList.add("hidden") : result.classList.remove("hidden");
-
-  }
-
-  // NOTE: Behaviour for all other poll types
+  // Draw the graph if necessary
   else {
-    if (poll["id"] in charts) {
-      charts[poll["id"]].destroy();
-      delete charts[poll["id"]];
-    } else graphInitRewritten(poll);
+    graphInitRewritten(poll);
   }
+
 }
 
 function graphInitRewritten(poll) {
@@ -95,9 +115,9 @@ function graphInitRewritten(poll) {
       break;
   }
 
-  chart = new ApexCharts(graph, options);
-  charts[poll["id"]] = chart;
-  chart.render();
+  active_chart = new ApexCharts(graph, options);
+  active_chart.render();
+
 }
 
 function choose_one_options(user_rs, rs, type="pie") {
