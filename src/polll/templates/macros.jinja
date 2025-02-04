@@ -1,31 +1,113 @@
-{% macro buttons(showIcons=true, feed="visible", history="visible", create="visible", myPolls="visible") %}
+{% macro sidebarButtons(show_icons=true) %}
 
-<a class="{{feed}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.feed') }}">
-    <span class="{% if session.state.tab == 'feed' %} text-polll-green {% endif %}">
-        <i class="ml-2 text-xl md:text-base fa-solid fa-fire px-2"></i>
-        {% if showIcons %} Feed {% endif %}
-    </span>
+<a 
+  class="text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light cursor-default"
+  href="{{ url_for('home.feed') }}"
+  hx-indicator="#home-spinner"
+>
+  <span class="{% if session.state.tab == 'feed' %}text-polll-green{% endif %} cursor-default">
+    <i class="ml-2 text-xl md:text-base fa-solid fa-fire px-2"></i>
+    {% if show_icons %} Feed {% endif %}
+  </span>
 </a>
 
-<a class="{{history}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.history') }}">
-    <span class="{% if session.state.tab == 'history' %} text-polll-green {% endif %}">
-        <i class="ml-2 text-xl md:text-base fa-solid fa-book px-2"></i>
-        {% if showIcons %} History {% endif %}
-    </span>
+<a 
+  class="text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light cursor-default" 
+  href="{{ url_for('home.history') }}"
+  hx-indicator="#home-spinner"
+>
+  <span class="{% if session.state.tab == 'history' %}text-polll-green{% endif %} cursor-default">
+    <i class="ml-2 text-xl md:text-base fa-solid fa-book px-2"></i>
+    {% if show_icons %} History {% endif %}
+  </span>
 </a>
 
-<a class="{{create}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.create') }}">
-    <span class="{% if session.state.tab == 'create' %} text-polll-green {% endif %}">
-        <i class="ml-2 text-xl md:text-base fa-solid fa-pen underline px-2"></i>
-        {% if showIcons %} Create {% endif %}
-    </span>
+<a 
+  class="text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light cursor-default" 
+  href="{{ url_for('home.create') }}"
+  hx-indicator="#home-spinner"
+>
+  <span class="{% if session.state.tab == 'create' %} text-polll-green {% endif %} cursor-default">
+    <i class="ml-2 text-xl md:text-base fa-solid fa-pen underline px-2"></i>
+    {% if show_icons %} Create {% endif %}
+  </span>
 </a>
 
-<a class="{{myPolls}} text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light" href="{{ url_for('home.mypolls') }}">
-    <span class="{% if session.state.tab == 'mypolls' %} text-polll-green {% endif %}">
-        <i class="ml-2 text-xl md:text-base fa-solid fa-user px-2"></i>
-        {% if showIcons %} {{session.user.username}} {% endif %}
-    </span>
+<a 
+  class="text-nord-0 dark:text-polll-blue h-10 flex justify-center items-center pt-2 pb-2 md:pb-12 font-light cursor-default"
+  href="{{ url_for('home.mypolls') }}"
+  hx-indicator="#home-spinner"
+>
+  <span class="{% if session.state.tab == 'mypolls' %} text-polll-green {% endif %} cursor-default">
+    <i class="ml-2 text-xl md:text-base fa-solid fa-user px-2"></i>
+    {% if show_icons %} {{session.user.username}} {% endif %}
+  </span>
 </a>
+
+{% endmacro %}
+
+
+{% macro chooseInput(input_type, answer_id, answer_content) %}
+    
+<input type="{{ input_type }}" id="{{ answer_id }}" name="answer_id" value="{{ answer_id }}" class="hidden peer">
+<label 
+  for="{{ answer_id }}"
+  class="flex w-1/2 p-4 rounded-lg cursor-default 
+         border-2 border-gray-700 bg-gray-800 text-gray-400
+         hover:text-gray-300 hover:border-polll-blue
+         peer-checked:border-polll-green peer-checked:text-gray-300">
+  <p class="font-light select-none">{{ answer_content }}</p>
+</label>
+
+{% endmacro %}
+
+
+{% macro tierList(poll_id, interactive=False, results=None) %}
+
+<div class="flex flex-col p-4 select-none">
+    
+{% for tier in ["S", "A", "B", "C", "D", "F"] %}
+
+  <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-nord-6 hover:border-b-2 hover:border-polll-blue {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
+
+    <div
+      id="{{ tier }}-label" 
+      class="flex flex-wrap w-20 h-auto min-h-20 border-r-2 broder-nord-6 justify-center items-center font-light text-2xl"
+    >
+      <span class="text-2xl text-tier-{{ tier }}">{{ tier }}</span>
+    </div>
+
+    <div  
+      {% if interactive %} 
+        id="{{ tier }}-content-{{ poll_id }}" 
+      {% endif %}
+      class="flex flex-wrap w-10/12"
+      {% if interactive %} 
+        onmousedown="handle_tier_select('{{ poll_id }}', '{{ tier }}')" 
+      {% endif %}
+    >
+
+    {% if not interactive %}
+    
+    <div id="{{ tier }}-content-{{ poll_id }}" class="flex flex-wrap gap-2 w-fit h-fit mt-6 justify-left items-start tier-{{ tier }}">
+
+      {% for r in results %}
+        {% if r.tier == tier %} 
+          <div class="flex items-center justify-center w-2/12 min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default p-4 min-w-16 border-2 border-polll-green bg-gray-800 text-gray-400">
+            <p class="text-center">{{ r.answer }}</p>
+          </div>  
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+    </div>
+  </div>
+
+{% endfor %}
+
+</div>
 
 {% endmacro %}

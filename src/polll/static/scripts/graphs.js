@@ -111,7 +111,7 @@ function graphInitRewritten(poll) {
       options = choose_many_options(poll["response"], poll["results"]);
       break;
     case "NUMERIC_SCALE":
-      options = scale_graph_options(poll["response"], poll["results"], poll["kde"]);
+      options = scale_graph_options(poll);
       break;
   }
 
@@ -396,11 +396,26 @@ function choose_many_options(user_rs, rs, type="bar") {
 
 }
 
-function scale_graph_options(user_rs, rs, rs_kde) {
+// I'm just passing in the entire poll because there's too many arguments
+function scale_graph_options(poll) {
 
+    // Unpack Arguments
+    user_rs = poll["response"]
+    rs = poll["results"]
+    rs_kde = poll["kde"]
+    answers = poll["answers"]
+
+    // Rest of the function should be untouched
     user_rs ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
+
+    // This is a bit of a hack but if it works it works
+    if (answers) {
+      left_index = 0;
+      if (answers[0]["id"] > answers[1]["id"]) left_index = 1
+      endpoints = [answers[left_index]["answer"], answers[Number(!left_index)]["answer"]];
+    }
 
     return  {
         grid: {
@@ -408,7 +423,20 @@ function scale_graph_options(user_rs, rs, rs_kde) {
         },
         xaxis: {
             type: 'numeric',
-            categories: [...Array(rs_kde[0].length).keys()]
+            labels: {
+                style: {
+                    fontSize: "14px",
+                    fontWeight: "bold"
+                },
+                formatter: function (val) {
+                    if (endpoints.length != 0) {
+                        if (val == 0) return endpoints[0];
+                        if (Math.round(val) == 100) return endpoints[1];
+                       return "";
+                    }
+                    else return Math.round(val)
+                }
+            },
         },
         yaxis: {
             labels: {
@@ -441,7 +469,7 @@ function scale_graph_options(user_rs, rs, rs_kde) {
         },
         tooltip: {
             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-                return '<div class="arrow_box">' + '</div>'
+                return ""
             }
 
         },
@@ -507,19 +535,6 @@ function scale_graph_options(user_rs, rs, rs_kde) {
 
                 ]
         },
-        responsive: [{
-            breakpoint: bp,
-            options: {
-                chart: {
-                    chart: {
-                        type: "pie",
-                        background: "null",
-                        width: bp,
-                        height: bp,
-                    },
-                },
-            },
-        }],
     };
 
 }

@@ -34,10 +34,6 @@
 
   <!-- Custom Scripts. -->
   <script 
-    type="text/javascript"
-    src="{{ url_for('static', filename='scripts/drag-drop.js') }}">
-  </script>
-    <script 
     type="text/javascript" 
     src="{{ url_for('static', filename='scripts/ui.js') }}">
   </script>
@@ -49,6 +45,12 @@
     type="text/javascript" 
     src="{{ url_for('static', filename='scripts/graphs.js') }}">
   </script>
+
+  <!-- Custom Spinner Style -->
+  <link 
+    rel="stylesheet" 
+    href="{{ url_for('static', filename='styles/spinner.css') }}">
+  </link>
 
   <!-- Title + Favicon -->
   <title>{% block title %}{% endblock %}</title>

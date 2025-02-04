@@ -2,13 +2,13 @@ import json
 import os
 from urllib.parse import quote_plus, urlencode
 from os import environ as env
+
 from flask import Flask, redirect, render_template, session, url_for, g
 from redis import Redis
 from flask_session import Session
 from supabase import create_client, Client
 
-import polll.utils
-
+import polll.utils as utils
 
 def create_app(test_config=None):
 

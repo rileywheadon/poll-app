@@ -22,29 +22,35 @@
 
       <!-- Left Sidebar -->
       <div class="hidden p-2 md:flex md:justify-center md:px-8 select-none">
-          <div class="flex flex-col overflow-hidden items-start h-full min-w-max">
-            {{ macs.buttons() }}
-          </div>
+        <div class="flex flex-col overflow-hidden items-start h-full min-w-40">
+          {{ macs.sidebarButtons() }}
+        </div>
       </div>
 
       <!-- Main Column (Polls) -->
-      <div id="home-content" class="w-full overflow-auto p-2 no-scrollbar select-none">
+      <div id="home-content" class="w-full overflow-auto p-2 no-scrollbar select-none shrink">
 
-        {% block home_content %}{% endblock %}
+        <div id="home-spinner" class="peer home-indicator w-full flex flex-row grow justify-center items-center size-fit">
+          <i class="fa-solid fa-spinner animate-spin text-base md:text-2xl text-polll-green p-4"></i> 
+        </div>
+
+        <div class="peer-[.htmx-request]:hidden">
+          {% block home_content %}{% endblock %}
+        </div>
 
       </div>
 
       <!--Right Sidebar-->
-      <div class="hidden md:flex md:justify-center md:items-center md:px-16 select-none">
+      <div class="hidden md:flex md:justify-center md:items-center md:px-4 select-none">
 
         {% if session.state.tab == "feed" %}
 
-          <div class="flex flex-col overflow-hidden items-center h-full min-w-max">
-            <p class="mb-2 font-light">Boards</p>
+          <div class="flex flex-col overflow-hidden items-center h-full min-w-40">
+            <p class="mb-2 font-regular">Boards</p>
             {% for id, board in session.boards.items() %}
         
               <!-- This tag is fat as fuck lmao -->
-              <a class="flex flex-row items-center justify-center rounded-md w-full h-8 border-2 dark:border-nord-3 mb-4 px-10 font-light text-polll-blue {% if session.state.board.id == board.id %} text-polll-green {% endif %}" href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}">{{ board.name }}</a>
+              <a class="flex flex-row items-center justify-center rounded-md w-full h-8 mb-2 px-10 font-light text-polll-blue {% if session.state.board.id == board.id %} text-polll-green {% endif %}" href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}">{{ board.name }}</a>
 
             {% endfor %}
           </div>
@@ -60,7 +66,7 @@
   <!-- Footer (only appears on small screens) -->
   <footer class="absolute bottom-0 w-full bg-neutral-900">
     <div class="visible md:hidden flex flex-row justify-around items-center select-none">
-      {{ macs.buttons(showIcons=False) }}
+      {{ macs.sidebarButtons(show_icons=False) }}
     </div>
   </footer>
 

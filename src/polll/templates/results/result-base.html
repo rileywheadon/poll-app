@@ -20,7 +20,6 @@
     <!-- If the user created this poll, allow them to edit it -->
     {% if session.user.id == poll.creator_id %} 
 
- 
       <!-- Share Button -->
       <button 
         class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
@@ -54,7 +53,7 @@
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
       <button class="ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
           title="Delete"
-          hx-get="{{ url_for('poll.delete', poll_id = id) }}"
+          hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
@@ -69,6 +68,7 @@
   <!-- Poll Graph -->
   <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4">
 
+    <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
     {% elif poll.poll_type == "TIER_LIST" %}

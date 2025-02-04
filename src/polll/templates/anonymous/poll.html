@@ -6,38 +6,38 @@
 
 <main id="main">
 
-  <!-- Background -->
-  <div class="w-screen h-screen flex flex-col bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-neutral-900">
+<!-- Background -->
+<div class="w-screen h-screen flex flex-col bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-neutral-900">
 
-    <!-- Document Body -->
-    <div class="overflow-hidden grow w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
+  <!-- Document Body -->
+  <div class="overflow-hidden grow w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
 
-      <!-- Left Sidebar -->
-      <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
+    <!-- Left Sidebar -->
+    <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
 
-      <!-- Main Column (Polls) -->
-      <div class="overflow-auto no-scrollbar w-full flex-grow pt-1 px-3">
+    <!-- Main Column (Polls) -->
+    <div class="overflow-auto no-scrollbar w-full flex-grow pt-1 px-3">
 
-        {% if session.user %}
-          <div class="border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-4 select-none">
-            <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
-              <i class="fa fa-arrow-left"></i>
-              <span class="font-light">Return Home</span>
-            </a>
-          </div>
-        {% endif %}
+      {% if session.user %}
+        <div class="border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-4 select-none">
+          <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
+            <i class="fa fa-arrow-left"></i>
+            <span class="font-light">Return Home</span>
+          </a>
+        </div>
+      {% endif %}
 
-        {% include poll["poll_template"] %}
-
-      </div>
-
-
-      <!--Right Sidebar-->
-      <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
+      {% include poll["poll_template"] %}
 
     </div>
 
+
+    <!--Right Sidebar-->
+    <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
+
   </div>
+
+</div>
 
 </main>
 

@@ -3,7 +3,6 @@ function add_notification_listener() {
   document.body.addEventListener("notification", function(evt) { 
     notify(evt.detail.value)
   });
-
 }
 
 

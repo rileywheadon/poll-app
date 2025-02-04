@@ -1,21 +1,62 @@
 {% extends "polls/poll-base.html" %}
 
-
-<!-- Consider Sortable.js for this: https://preline.co/docs/drag-and-drop.html (this entire site is sick) -->
 {% block poll_content %}
-  <div class="my-2">
+
+<div class="flex flex-col p-4 space-y-4">
+
+  <!-- Answers -->
+  <div id="ans-container-{{ poll.id }}" class="flex justify-center items-center">
+    <div class="flex flex-wrap justify-center items-center max-w-md">
+
     {% for id, answer in poll.answers.items() %}
-      <div class="border-4 border-nord-3 rounded-lg dark:text-gray-300 dark:border-polll-green w-48 p-2 mt-[-4px] ml-[-4px] cursor-grab focus:cursor-grabbing select-none"
-           draggable="true"
-           ondragstart="rankedDragStart(event)"
-           ondragenter="rankedDragEnter(event)"
-           ondragover="cancelDefault(event)"
-           ondragexit="rankedDragExit(event)"
-           ondrop="rankedDrop(event)">
-        <input type="hidden" name="answer_id" value="{{ answer.id }}">
-        
-        <span class="pointer-events-none">{{ answer.answer }}</span>
+
+      <div class="space-x-4 space-y-4 relative">
+        <input 
+          type="checkbox" 
+          id="checkbox-{{ answer.id }}" 
+          class="hidden peer" 
+          onclick="handle_rank_select('{{ poll.id|safe }}', '{{ answer.id|safe }}')"
+        >
+        <input 
+          class="hidden" 
+          id="answer-id-{{ answer.id }}" 
+          name="answer_id" 
+          value="{{ answer.id }}"
+        >
+        <input 
+          class="hidden" 
+          id="rank-input-{{ answer.id }}" 
+          name="answer_rank" 
+          value=""
+        >
+        <span id="rank-num-{{ answer.id }}" class="hidden absolute size-fit z-10 rounded-full px-2 font-light bg-polll-blue text-nord-1"></span>
+        <label id="label-{{ answer.id }}" for="checkbox-{{ answer.id }}" 
+        class="relative flex p-4 min-w-lg rounded-lg cursor-default
+              border-2 border-gray-700 bg-gray-800 text-gray-400
+              hover:text-gray-300 hover:bg-gray-700">
+          <p class="font-light select-none">{{ answer.answer }}</p>
+        </label>
       </div>
+
     {% endfor %}
+
+    </div>
+ </div>
+
+  <!-- Reset -->
+  <div class="flex">
+    <div class=" grow"></div>
+    <button 
+      class="flex flex-row p-0.5 font-light bg-nord-11 border-2 border-nord-3 rounded-lg cursor-default" 
+      type="button" 
+      id="reset-btn-{{ poll.id }}" 
+      onclick="clear_ranking({{ poll.id|safe }})"
+    >
+      <i class="fa-solid p-2 fa-rotate-right"></i>
+      <p class="pt-1 pr-2">Reset</p>
+    </button>
   </div>
+
+</div>
+
 {% endblock %}

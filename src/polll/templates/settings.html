@@ -6,7 +6,7 @@
     <div class="flex flex-row mb-4">
       <a 
         href="{{ return_url }}" 
-        class="text-4xl cursor-pointer"
+        class="text-4xl cursor-default"
       >
         &times;
       </a>
@@ -39,7 +39,7 @@
     <div class="flex flex-row mt-auto">
       
       <!-- Log Out -->
-      <a class="flex justify-center items-center w-32 h-10 rounded-md bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0"
+      <a class="flex justify-center items-center w-32 h-10 rounded-md bg-nord-3 dark:bg-nord-4 text-nord-6 dark:text-nord-0 cursor-default"
          href="{{ url_for('auth.logout') }}"
          hx-boost="false">
         <span>Log Out</span>
@@ -47,7 +47,7 @@
       </a>
 
       <!-- Save Settings -->
-      <button class="flex justify-center items-center w-32 h-10 rounded-md ml-auto bg-nord-15 text-nord-0"
+      <button class="flex justify-center items-center w-32 h-10 rounded-md ml-auto bg-nord-15 text-nord-0 cursor-default"
         hx-get="{{ url_for('home.save_settings') }}"
         hx-include="[name='username']"
         hx-swap="none"

@@ -1,5 +1,5 @@
 <div class="flex flex-row space-x-3 grow pl-4 pb-4 cursor-default">
-  <input class="poll-create grow h-10 font-light rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-nord-0 dark:text-nord-6 hover:border-2 hover:border-nord-0 hover:dark:border-nord-4 placeholder:text-nord-3 placeholder:dark:text-nord-4"
+  <input class="poll-create grow h-10 font-light rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-nord-0 dark:text-nord-6 border-2 border-polll-blue placeholder:text-neutral-400 focus:outline-none focus:border-polll-green"
     placeholder="Answer"
     name="poll_answer"
     autocomplete="off"
@@ -7,7 +7,8 @@
   />
   <button 
     id="remove-ans-btn" 
-    class="px-2 cursor-default" 
+    class="px-2 cursor-default"
+    tabindex="-1"
     onclick="remove_poll_answer(this)"
   >
     <i class="fa fa-trash text-nord-11"></i>

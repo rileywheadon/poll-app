@@ -6,3 +6,5 @@ htmlcov/**
 .env
 .coverage
 dump.rdb
+cert.pem
+key.pem

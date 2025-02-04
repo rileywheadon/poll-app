@@ -2,6 +2,7 @@ from flask import request, session
 from datetime import datetime, timedelta
 from polll.db import get_db
 import base64
+import random
 
 import numpy as np
 from scipy.stats import gaussian_kde
@@ -12,8 +13,20 @@ from dateutil import tz
 # Gets some additional information about a poll without making database requests
 def query_poll_details(poll):
 
-    # If the poll has its answers attached, reformat them into a dictionary
-    poll["answers"] = {a["id"]: a for a in poll["answers"]}
+    if poll["poll_type"] == "NUMERIC_SCALE":
+
+        # Set the left and right endpoints (answers is already ordered by ID) 
+        if len(poll["answers"]) == 2:
+            poll["answers"] = {"left": poll["answers"][0], "right": poll["answers"][1]}
+
+        # Otherwise set the answers to an empty dictionary
+        else:
+            poll["answers"] = {}
+
+    # If the poll is not a scale, randomize the answer order
+    else:
+        answers = random.sample(poll["answers"], len(poll["answers"]))
+        poll["answers"] = {a["id"]: a for a in answers}
 
     # Get the template, custom URL, time string, and comment details
     poll["poll_template"] = poll_template(poll)
@@ -95,13 +108,6 @@ def url_to_id(code):
     return ((0x0000FFFF & hash) << 16) + ((0xFFFF0000 & hash) >> 16)
 
 
-# Helper function to get how "trendy" a poll is, in responses/second
-def popularity(poll):
-    timestamp = datetime.fromisoformat(poll["created_at"])
-    age = (datetime.now().astimezone() - timestamp).total_seconds()
-    return poll["response_count"] / age
-
-
 """
 INPUT:
   - data: the list of dictionaries created for the "scale" poll type
@@ -121,7 +127,7 @@ def smooth_hist(data, bandwidth):
     # Third parameter (must be above 101) helps with local
     # smoothing but anything above 150 casues a noticable
     # drop in performance
-    x_vals = np.linspace(0, 100, 101)
+    x_vals = np.linspace(0, 100, 501)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
 
@@ -134,10 +140,9 @@ def smooth_hist(data, bandwidth):
         adj_data.append(adj_data[0] + 1)
         bandwidth = 10
 
-    # If there is data, append one extra point (KDE fails with one point)
+    # If there are two points, increase the bandwidth to get a smoother graph
     if len(data) == 2:
-        adj_data.append(adj_data[0] + 1)
-        bandwidth = 0.5 
+        bandwidth = 0.5
 
     return [
         x_vals.tolist(),
@@ -152,3 +157,4 @@ def format_time(time_string):
         .astimezone()
         .strftime('%b %d, %Y at %I:%M%p')
     )
+

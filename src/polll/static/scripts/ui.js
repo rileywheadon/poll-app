@@ -3,6 +3,7 @@ function open_settings() {
   main.classList.add("blur-sm");
 }
 
+
 function toggle_admin_information(type, id) {
   const info = document.getElementById(`${type}-info-${id}`)
   const toggle = document.getElementById(`${type}-toggle-${id}`)
@@ -15,7 +16,6 @@ function toggle_admin_information(type, id) {
     toggle.classList.remove("fa-angle-down");
     toggle.classList.add("fa-angle-right");
   }
-
 }
 
 function update_poll_editor(pressed_id) {
@@ -23,6 +23,7 @@ function update_poll_editor(pressed_id) {
   answers.classList.remove("hidden");
   pressed_id == "scale-btn" ? answers.classList.add("hidden") : answers.classList.remove("hidden");
 }
+
 
 // Only allows removal of the answer if there are three or more answers
 function remove_poll_answer(button) {
@@ -35,16 +36,21 @@ function remove_poll_answer(button) {
 
 }
 
+
 function update_answer_editor(poll_type) {
 
   editor = document.getElementById("answer-editor");
+  var endpoint_editor = document.getElementById("endpoint-container");
+
   // Hack
   document.getElementById("question-lbl").innerHTML = poll_type.split("_").map((s) => s[0].toUpperCase() + s.substring(1)).toString().replace(",", " ");
 
   if (poll_type == "numeric_scale") {
+    endpoint_editor.classList.remove("hidden");
     editor.classList.add("hidden");
     document.getElementById("question-lbl").innerHTML = "Scale";
   } else {
+    endpoint_editor.classList.add("hidden");
     editor.classList.remove("hidden");
   }
 
@@ -136,3 +142,46 @@ function handle_tier_select(poll_id, tier) {
   } 
 
 }
+
+function toggle_custom_endpoints() {
+  document.getElementById("endpoint-editor").classList.toggle("hidden");
+  document.getElementById("endpoint-left").value = "";
+  document.getElementById("endpoint-right").value = "";
+}
+
+// TODO: Discuss in what format the data will be submitted and assign values to inputs accordingly
+function handle_rank_select(poll_id, ans_id) {
+
+  var opts = document.getElementById(`ans-container-${poll_id}`).querySelectorAll("input");
+  var rs = document.getElementById(`checkbox-${ans_id}`);
+
+  // count how many check box items are clicked AFTER the one that called this function was clicked
+  var checkCount = Array.from(opts).map((b) => b.checked ? 1 : 0).reduce((acc, curr) => acc + curr);
+
+  document.getElementById(`rank-num-${ans_id}`).innerHTML = checkCount.toString();
+  document.getElementById(`rank-num-${ans_id}`).classList.remove("hidden");
+
+  document.getElementById(`rank-input-${ans_id}`).value = checkCount.toString();
+
+  // Ensure the button cannot be clicked again
+  rs.disabled = true;
+
+}
+
+function clear_ranking(poll_id) {
+  document.getElementById(`ans-container-${ poll_id }`).querySelectorAll("input").forEach((e) => {
+
+    if (e.checked) {
+      // remove the ranking text from the label
+      var ans_id = e.parentNode.querySelector("input").id.toString();
+      var ans_id_num = ans_id.substring(ans_id.indexOf("-") + 1);
+      document.getElementById(`rank-num-${ans_id_num}`).classList.add("hidden");
+      document.getElementById(`rank-num-${ans_id_num}`).innerHTML = "";
+      document.getElementById(`rank-input-${ans_id_num}`).value = "";
+    }
+    // reset to default behaviour
+    e.checked = false;
+    e.disabled = false;
+  })
+}
+

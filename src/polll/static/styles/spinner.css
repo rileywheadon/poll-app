@@ -1,0 +1,16 @@
+.home-indicator {
+  display: none;
+  opacity: 0;
+  transition: opacity 500ms ease-in;
+}
+
+.htmx-request .home-indicator{
+  display: flex;
+  opacity: 1;
+}
+
+.htmx-request.home-indicator{
+  display: flex;
+  opacity:1;
+}
+
