@@ -1,3 +1,5 @@
+from dotenv import dotenv_values
+
 import os
 from flask import g, session
 from supabase.client import create_client, Client, ClientOptions
@@ -20,9 +22,9 @@ class FlaskSessionStorage(SyncSupportedStorage):
             self.storage.pop(key, None)
 
 
-url = os.environ.get("SUPABASE_URL", "")
-key = os.environ.get("SUPABASE_KEY", "")
-
+config = dotenv_values(".env")
+url = config["SUPABASE_URL"]
+key = config["SUPABASE_KEY"]
 
 def get_db():
     if "supabase" not in g:

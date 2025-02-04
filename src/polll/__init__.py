@@ -15,7 +15,6 @@ def create_app(test_config=None):
     # Create a new Flask application
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        SECRET_KEY=env.get("APP_SECRET_KEY"),
         SESSION_TYPE = 'redis',
         SESSION_COOKIE_SAMESITE = 'None',
         SESSION_COOKIE_SECURE = True,
