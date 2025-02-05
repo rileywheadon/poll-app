@@ -145,6 +145,15 @@ function choose_one_options(user_rs, rs, type="pie") {
     
             dataLabels: {
                 enabled: true,
+                dropShadow: {
+                    enabled: false
+                },
+                style: {
+                    fontSize: '16px',
+                    fontFamily: 'Helvetica, Arial, sans-serif',
+                    fontWeight: 'medium',
+                    colors: ["#171717"]
+                },
                 formatter: function (val) {
                     return Math.round(val) + "%"
                 },
@@ -295,7 +304,7 @@ function choose_many_options(user_rs, rs, type="bar") {
                 height: 250,
                 toolbar: {
                     show: false
-                }
+                },
             },
     
             plotOptions: {
@@ -309,8 +318,8 @@ function choose_many_options(user_rs, rs, type="bar") {
                 enabled: true,
                 formatter: function (val, opt) {
                     const i = opt.w.globals.labels[opt.dataPointIndex];
-                    const lbl = i + ": " + Math.round(val);
-                    return user_rs.includes(i) ? lbl + " (you)" : lbl; // colours might be enough?
+                    const label = i + ": " + Math.round(val);
+                    return user_rs.includes(i) ? lbl + " (you)" : label;
                   },
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
@@ -323,7 +332,7 @@ function choose_many_options(user_rs, rs, type="bar") {
                 enabled: true,
                 y: {
                     formatter: function(val, { series, seriesIndex, dataPointIndex, w }) {
-                        return val; // lbl w/ user_rs
+                        return val;
                       }
                 }
             },
@@ -411,9 +420,7 @@ function scale_graph_options(poll) {
     var average_rs = get_scale_average(rs, rs_kde[1].length);
 
     // This is a bit of a hack but if it works it works
-    if (answers) {
-      endpoints = [answers["left"], answers["right"]];
-    }
+    answers["left"] && answers["right"] ? endpoints = [answers["left"]["answer"], answers["right"]["answer"]] : endpoints = null;
 
     return  {
         grid: {
@@ -421,13 +428,16 @@ function scale_graph_options(poll) {
         },
         xaxis: {
             type: 'numeric',
+            tooltip: {
+                enabled: false
+            },
             labels: {
                 style: {
                     fontSize: "14px",
                     fontWeight: "bold"
                 },
                 formatter: function (val) {
-                    if (endpoints.length != 0) {
+                    if (endpoints) {
                         if (val == 0) return endpoints[0];
                         if (Math.round(val) == 100) return endpoints[1];
                        return "";
@@ -555,11 +565,4 @@ function get_scale_average(rs, nums) {
     var x = rs.map((e) => e["value"]).reduce((acc, curr, i) => acc + (curr * counts[i]), 0) / counts.reduce((acc, curr) => acc + curr);
     return [...Array(nums).keys()].reduce((prev, curr) => {
      return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
-}
-
-// A list of colours representing a gradient from "from_col" to "to_col" of length "num_col"
-function get_col_gradient(from_col, to_col, num_col) {
-    // TODO: implement
-    // return ['#F44336', '#E91E63', '#9C27B0'];
-    return [cols["polll-grad-1"], cols["polll-green"], cols["polll-grad-3"], cols["polll-grad-4"], cols["polll-grad-5"], cols["polll-blue"]] // I don't like this
 }

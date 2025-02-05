@@ -65,9 +65,30 @@
 
   </div>
 
-  <!-- Poll Graph -->
-  <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4">
 
+
+  <style>
+    .fade-in {
+      opacity: 1;
+      animation-name: fadeInOpacity;
+      animation-iteration-count: 1;
+      animation-timing-function: ease-in;
+      animation-duration: 1s;
+    }
+  
+  
+    @keyframes fadeInOpacity {
+      0% {
+          opacity: 0;
+      }
+      100% {
+          opacity: 1;
+      }
+    }
+  </style>
+
+  <!-- Poll Graph -->
+  <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4 fade-in">
     <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
@@ -88,7 +109,7 @@
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
-      hx-swap="innerHTML"
+      hx-swap="none"
     >
       <div class="whitespace-nowrap">
         <span id="comments-toggle-{{ poll.id }}">Show Comments</span> 

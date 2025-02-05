@@ -19,6 +19,32 @@
     </p>
   </div>
 
+
+  <style>
+    form.htmx-request {
+      opacity: 0;
+      transition: opacity 500ms linear;
+    }
+
+  .fade-in {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 1s;
+  }
+
+
+  @keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+  }
+  </style>
+
   <form
     class="p-2"
     hx-post="{{ url_for('poll.response', poll_id = poll.id) }}"
