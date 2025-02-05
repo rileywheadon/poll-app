@@ -1,6 +1,6 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card py-2 border-b-2 dark:border-nord-3 overflow-hidden"
+  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden"
 >    
 
   <!-- Include the poll question -->
@@ -27,7 +27,7 @@
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square text-polll-blue hover:text-polll-green">
+        <i class="ml-1 fa fa-share-from-square hover:text-polll-green">
         </i>
       </button>
 
@@ -58,7 +58,7 @@
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
           hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash text-nord-11"></i>
+        <i class="fa fa-trash hover:text-polll-red"></i>
       </button>
 
     {% endif %}
@@ -84,34 +84,29 @@
 
     <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
-      class="ml-auto px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none"
+      class="ml-auto px-4 h-8 rounded-xl text-sm py-1 bg-neutral-300 hover:bg-white flex items-center justify-center select-none text-neutral-900"
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
       hx-swap="innerHTML"
     >
-      <div class="text-black dark:text-nord-4 whitespace-nowrap">
+      <div class="whitespace-nowrap">
         <span id="comments-toggle-{{ poll.id }}">Show Comments</span> 
         <span id="comments-count-{{ poll.id }}">
           &nbsp({{ poll.comment_count }})
         </span>
       </div>
-      <i class="fa fa-comment pl-2 text-xl"></i>
+      <i class="fa fa-message pl-2 text-l"></i>
     </button>
 
     <!-- Show Results -->
     <button 
-      class="ml-2 px-4 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-polll-blue hover:text-polll-green flex items-center justify-center select-none"
+      class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
       hx-target="#poll-graph-{{ poll.id }}"
       hx-swap="none"
     >
-      <span
-        id="graph-toggle-{{ poll.id }}"
-        class="graph-toggle text-black dark:text-nord-4"
-      >
-        Show Results
-      </span>
+      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle">Show Results</span>
       <i class="fa fa-chart-simple pl-2 text-xl"></i>
     </button>
 

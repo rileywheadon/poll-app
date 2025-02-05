@@ -1,9 +1,9 @@
-<div class="poll-card border-b-2 overflow-hidden dark:border-nord-3 pt-2 pb-2 select-none">
+<div class="poll-card border-b overflow-hidden dark:border-neutral-700 pt-2 pb-2 select-none">
 
   <!-- Include the poll question -->
   <div class="flex flex-col p-2">
     <div class="flex flex-row">
-      <p class="font-light text-neutral-500">
+      <p class="font-light text-neutral-400">
         {% if poll.is_anonymous == 1 %}
           anonymous
         {% else %}
@@ -11,7 +11,7 @@
         {% endif %} ⋅ {{ poll.age }}
       </p>
       {% if poll.is_pinned == 1 %}
-        <i class="ml-auto fa fa-thumbtack text-2xl text-nord-15 rotate-45"></i>
+        <i class="ml-auto fa fa-thumbtack text-2xl text-polll-blue rotate-45"></i>
       {% endif %}
       </div>
     <p class="font-light text-neutral-200 text-2xl">
@@ -34,11 +34,11 @@
 
       <!-- Submit Button -->
       <button
-        class="mr-4 w-28 h-10 rounded-md border-2 dark:border-nord-4 dark:hover:bg-nord-0 py-1 text-nord-0 flex items-center justify-center text-polll-blue hover:text-polll-green"
+        class="mr-4 w-24 h-8 rounded-xl dark:bg-polll-blue dark:hover:bg-polll-green py-1 text-neutral-900 flex items-center justify-center"
         type="submit"
       >
-        <span class="hidden md:flex md:font-medium text-nord-4 md:mr-1">Submit</span>
-        <i class="ml-1 fa fa-paper-plane text-xl"></i>
+        <span class="hidden md:flex md:font-medium text-sm text-neutral-900 md:mr-1">Submit</span>
+        <i class="ml-1 fa fa-paper-plane text-l"></i>
       </button>
      
       <p class="grow">Votes:
@@ -47,7 +47,7 @@
 
       <!-- Share Button -->
       <button 
-        class="w-10 rounded-md py-1 select-none text-polll-blue hover:text-polll-green" 
+        class="w-10 rounded-md py-1 select-none hover:text-polll-green" 
         title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"
@@ -57,7 +57,7 @@
 
       <!-- Report Button -->
       <button
-        class="w-10 ml-2 h-10 rounded-md py-1 select-none text-polll-blue hover:text-nord-11"
+        class="w-10 ml-2 h-10 rounded-md py-1 select-none hover:text-polll-red"
         title="Report"
         hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
         hx-confirm="Are you sure you want to report this poll?"

@@ -6,7 +6,7 @@
 
   {% for id, answer in poll.answers.items() %}
 
-    <div class="space-y-4">
+    <div class="space-y-2">
       {{ macs.chooseInput("radio", answer.id, answer.answer) }}
     </div>
     

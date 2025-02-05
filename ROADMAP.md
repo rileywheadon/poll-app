@@ -4,14 +4,11 @@
 
 ### Merge
 
-Backend Changes:
-
-- Custom scale endpoints
-
 Frontend Changes:
 
 - Change enter event listener in `/create`
-- Rewrite some of the soup in `ui.js` and `graphs.js`
+- Left menu is not mobile compatible
+- Scale endpoints getting cut off
 
 ### Production
 

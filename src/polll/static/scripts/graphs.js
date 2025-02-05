@@ -412,9 +412,7 @@ function scale_graph_options(poll) {
 
     // This is a bit of a hack but if it works it works
     if (answers) {
-      left_index = 0;
-      if (answers[0]["id"] > answers[1]["id"]) left_index = 1
-      endpoints = [answers[left_index]["answer"], answers[Number(!left_index)]["answer"]];
+      endpoints = [answers["left"], answers["right"]];
     }
 
     return  {

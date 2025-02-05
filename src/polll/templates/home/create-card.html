@@ -6,19 +6,20 @@
   <!-- Image row -->
   <div class="flex flex-row justify space-x-4">
 
-    <label class="rounded-md dark:border-4 border-polll-blue m-1 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio" 
         name="poll_type" 
         value="CHOOSE_ONE"
         onclick="update_answer_editor('choose_one')"
+        autocomplete="off"
         checked
       >
       <img class="min-w-10" src="../../static/assets/choose-one.png"/>
     </label>
 
-    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -29,37 +30,40 @@
       <img class="min-w-10" src="../../static/assets/choose-many.png"/>
     </label>
 
-    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Scale">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
         name="poll_type" 
         value="NUMERIC_SCALE"
         onclick="update_answer_editor('numeric_scale')"
+        autocomplete="off"
       >
       <img class="min-w-10" src="../../static/assets/scale.png"/>
     </label>
 
 
-    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
         name="poll_type" 
         value="RANKED_POLL"
         onclick="update_answer_editor('ranked_poll')"
+        autocomplete="off"
       >
       <img class="min-w-10" src="../../static/assets/ranking.png"/>
     </label>
 
 
-    <label class="rounded-md border-4 border-polll-blue m-2 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
         name="poll_type" 
         value="TIER_LIST"
         onclick="update_answer_editor('tier_list')"
+        autocomplete="off"
       >
       <img class="min-w-10" src="../../static/assets/tier-list.png"/>
     </label>
@@ -67,7 +71,7 @@
   </div>
 
   <!-- Create input field -->
-  <div class="flex flex-col grow border-2 border-neutral-600 rounded-md">
+  <div class="flex flex-col grow border-2 border-neutral-700 rounded-md">
 
     <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
       Choose One
@@ -76,10 +80,11 @@
     <div class="px-10 pt-8 text-2xl"> 
       <input class="poll-create bg-transparent dark:text-white w-11/12 focus:outline-none font-light placeholder:text-neutral-400" 
         autocomplete="off"
+        autofocus
         name="poll_question"
         placeholder="Write your poll of the day..."
       />
-      <hr class="border border-neutral-600">
+      <hr class="border border-neutral-700">
     </div>
 
     <div class="grow p-8">
@@ -89,13 +94,15 @@
 
           <!-- Multiple Answers -->
           <div id="answer-editor" class="flex flex-row">
-            <button id="answer-add" 
+            <button 
+              id="answer-add" 
+              tabindex="-1"
               class="h-10 cursor-default" 
               hx-get="{{ url_for('home.create_answer') }}" 
               hx-swap="beforeend" 
               hx-target="#answer-list"
             >
-              <i class="fa fa-plus text-xl text-polll-blue hover:text-polll-green"></i>
+              <i class="fa fa-plus text-xl hover:text-polll-green"></i>
             </button>
 
             <div id="answer-list" class="flex flex-col grow">
@@ -113,24 +120,26 @@
       <div id="endpoint-container" class="hidden flex flex-col">
 
         <label class="inline-flex items-center cursor-default">
-          <input onclick="toggle_custom_endpoints()" id="endpoint-toggle" type="checkbox" class="sr-only peer">
-          <div class="
-          relative w-11 h-6 bg-polll-blue rounded-xl 
-          dark:border-gray-600 peer-checked:bg-polll-green
-          peer peer-focus:outline-none
-          peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+          <input 
+            onclick="toggle_custom_endpoints()" 
+            id="endpoint-toggle" 
+            type="checkbox" 
+            class="sr-only peer"
+            autocomplete="off"
+          >
+          <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
           <span class="ml-2 text-sm font-light">Custom Endpoints</span>
         </label>
 
         <div id="endpoint-editor" class="hidden flex flex-row p-4 space-x-3 justify-center items-center">
           <input id="endpoint-left"
-          class="poll-create w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-nord-0 dark:text-nord-6 border-2 border-polll-blue placeholder:text-neutral-400 focus:outline-none focus:border-polll-green"
+          class="poll-create w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-neutral-700 dark:text-nord-6 border-2 border-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-200"
           placeholder="From..."
           name="endpoint_left"
           autocomplete="off">
   
           <input id="endpoint-right"
-          class="poll-create w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-nord-0 dark:text-nord-6 border-2 border-polll-blue placeholder:text-neutral-400 focus:outline-none focus:border-polll-green"
+          class="poll-create w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-neutral-700 dark:text-nord-6 border-2 border-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-200"
           placeholder="To..."
           name="endpoint_right"
           autocomplete="off">
@@ -148,9 +157,8 @@
 
       {% for id, board in session.boards.items() %}
 
-        <label class="rounded-2xl px-3 mr-2 h-8 border-4 border-nord-4 hover:dark:bg-nord-0 has-[:checked]:border-nord-10 {% if board.name == 'All' %}border-nord-10{% endif %}">
+        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-800 bg-neutral-800 has-[:checked]:border-polll-blue {% if board.primary %}border-polll-blue{% endif %}">
           {{ board.name }}
-
           <!-- Very unfourtunate hack to prevent all from being unselected -->
           {% if board.primary %}
             <input class="poll-create hidden"
@@ -198,14 +206,14 @@
       </div>
     
       <!-- SUBMIT BUTTON -->
-      <button class="rounded-lg bg-nord-15 text-black py-2 px-4 ml-auto" 
+      <button class="rounded-xl bg-polll-blue hover:bg-polll-green text-black h-8 px-4 ml-auto" 
         hx-get="{{ url_for('home.create_poll') }}" 
         hx-target="#create-card" 
         hx-swap="innerHTML" 
         hx-include=".poll-create"             
         hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
       >
-        <p class="font-light">Publish</p>
+        <p class="font-regular text-sm">Publish</p>
       </button>
     </div>
 

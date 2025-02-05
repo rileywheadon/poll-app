@@ -149,7 +149,7 @@ function toggle_custom_endpoints() {
   document.getElementById("endpoint-right").value = "";
 }
 
-// TODO: Discuss in what format the data will be submitted and assign values to inputs accordingly
+
 function handle_rank_select(poll_id, ans_id) {
 
   var opts = document.getElementById(`ans-container-${poll_id}`).querySelectorAll("input");

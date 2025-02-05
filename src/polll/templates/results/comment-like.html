@@ -8,7 +8,7 @@
     hx-swap="outerHTML"
   >
     {% if comment.id in session.user.likes %}
-      <i class="fa fa-thumbs-up text-nord-14">
+      <i class="fa fa-thumbs-up text-polll-green">
     {% else %}
       <i class="fa fa-thumbs-up"></i>
     {% endif %}
@@ -24,7 +24,7 @@
     hx-swap="outerHTML"
   >
     {% if comment.id in session.user.dislikes %}
-      <i class="fa fa-thumbs-down text-nord-11"></i>
+      <i class="fa fa-thumbs-down text-polll-red"></i>
     {% else %}
       <i class="fa fa-thumbs-down"></i>
     {% endif %}
