@@ -168,6 +168,8 @@ def create_poll():
     creator_id = session["user"]["id"]
     question = request.args.get("poll_question")
     poll_type = request.args.get("poll_type")
+    endpoint_left = request.args.get("endpoint_left")
+    endpoint_right = request.args.get("endpoint_right")
     is_anonymous = 1 if request.args.get("poll_anonymous") else 0
 
     # Get request data for creating the answer and poll_board connections
@@ -211,6 +213,14 @@ def create_poll():
     if not numeric:
         answer_data = [{"poll_id": poll_id, "answer": a} for a in answers]
         res = db.table("answer").insert(answer_data).execute()
+
+    # If the poll is numeric, attempt to add the endpoints
+    if numeric and endpoint_left and endpoint_right:
+        endpoints = [
+            {"poll_id": poll_id, "answer": endpoint_left},
+            {"poll_id": poll_id, "answer": endpoint_right}
+        ]
+        res = db.table("answer").insert(endpoints).execute()
 
     # Update the last poll created time for the user
     user_id = session["user"]["id"]

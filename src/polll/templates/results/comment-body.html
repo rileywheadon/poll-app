@@ -2,11 +2,11 @@
 
   <!-- COMMENT HEADER -->
   <div>
-    <span class="font-bold">@{{ comment.user.username }}</span> ⋅ {{ comment.age }}
+    <span>@{{ comment.user.username }}</span> ⋅ {{ comment.age }}
   </div>
 
   <!-- COMMENT CONTENT -->
-  <div class="ml-2">{{ comment.comment }}</div>
+  <div class="font-light ml-2">{{ comment.comment }}</div>
 
   <!-- COMMENT TOOLBAR -->
   <div class="flex flex-row">
@@ -16,7 +16,7 @@
     <!-- REPLY BUTTON -->
     {% if comment.parent_id is none %}
       <button 
-        class="text-nord-7"
+        class="text-polll-blue font-light"
         onclick="show_reply_input({{ comment.id }})"
       >
         Reply
@@ -25,7 +25,7 @@
 
     <!-- REPORT BUTTON -->
     <button 
-      class="{% if comment.parent_id is none %}ml-2{% endif %} text-nord-7"
+      class="{% if comment.parent_id is none %}ml-2{% endif %} text-polll-blue font-light"
       hx-post="{{ url_for('comment.report', comment_id = comment.id) }}"
       hx-swap="none"
       hx-confirm="Are you sure you want to report this comment?"
@@ -36,7 +36,7 @@
     <!-- DELETE BUTTON -->
     {% if comment.user_id == session.user.id %}
       <button 
-        class="ml-2 text-nord-11"
+        class="ml-2 text-polll-red font-light"
         hx-post="{{ url_for('comment.delete', comment_id = comment.id) }}"
         hx-target="#comment-{{ comment.id }}"
         hx-swap="delete"

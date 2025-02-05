@@ -7,13 +7,13 @@
 <div id="tier-list-{{ poll.id }}">
 
   <!-- Tier list body -->
-  {{ macs.tierList('{{ poll.id }}', True, None) }}
+  {{ macs.tierList(poll.id , True, None) }}
 
   <!-- Options pool -->
   <div 
-  id="tier-ans-container-{{ poll.id }}" 
-  class="flex flex-wrap gap-2 w-fit h-fit mt-6"
->
+    id="tier-ans-container-{{ poll.id }}" 
+    class="flex flex-wrap gap-2 w-fit h-fit mt-6"
+  >
 
   {% for id, answer in poll.answers.items() %}
 
@@ -33,11 +33,10 @@
       <button 
         type="button"
         class="tier-answer 
-        flex items-center justify-center w-2/12 min-w-20 h-auto min-h-20 max-w-32
-        rounded-lg cursor-default p-4 min-w-16
-        border-2 border-gray-700 bg-gray-800 text-gray-400
-        hover:text-gray-300 hover:border-polll-blue
-        focus:border-polll-green peer-checked:text-gray-300"
+        flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32
+        rounded-lg cursor-default p-4
+        border-2 border-neutral-700 bg-neutral-800 text-neutral-400
+        hover:border-neutral-400 focus:border-polll-blue"
       >
         {{ answer.answer }}
       </button>

@@ -9,14 +9,14 @@
 
     <button 
       id="filter-dropdown-btn"
-      class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-md px-2 py-1 w-full"
+      class="relative rounded-xl text-nord-4 hover:bg-neutral-700 font-light text-md px-2 py-1 w-full"
       onclick="toggle_filter_dropdown()"
     >
       {{ session.state.order.capitalize() }} 
       <i class="px-1 fa fa-caret-down"></i>
     </button>
     
-    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-nord-2 overflow-hidden w-full">
+    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-neutral-700 overflow-hidden w-full">
       <a href="?board={{ session.state.board.id }}&order=hot">
         <button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button>
       </a>
@@ -37,7 +37,7 @@
 
       <button 
         id="filter-time-dropdown-btn"
-        class="relative rounded-xl text-nord-4 hover:bg-nord-2 font-light text-md px-2 py-1 w-full"
+        class="relative rounded-xl text-nord-4 hover:bg-neutral-700 font-light text-md px-2 py-1 w-full"
         onclick="toggle_filter_time_dropdown()"
       >
         {{ session.state.period.capitalize() }}
@@ -46,7 +46,7 @@
       
       <div 
         id="filter-time-dropdown" 
-        class="hidden absolute z-10 font-light rounded-lg shadow bg-nord-2 overflow-hidden"
+        class="hidden absolute z-10 font-light rounded-lg shadow bg-neutral-700 overflow-hidden"
       >
         <a href="?board={{ session.state.board.id }}&order=top&period=day">
           <button class="px-4 py-1 hover:bg-nord-3 w-full">Day</button>

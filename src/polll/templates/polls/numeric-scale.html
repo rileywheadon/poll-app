@@ -17,20 +17,18 @@
     min="0"
     max="100"
     autocomplete="off"
-    class=" w-3/4 accent-polll-blue hover:accent-polll-green"
-    oninput="this.nextElementSibling.innerHTML = this.value"
+    class=" w-3/4 accent-polll-blue"
+    {% if not poll.answers %}
+      oninput="this.nextElementSibling.innerHTML = this.value"
+    {% endif %}
   >
 
   {% if poll.answers %}
-
     <span class="px-4 justify-center items-center text-center">
       {{ poll.answers.right.answer }}
     </span>
-
   {% else %}
-
     <span class="range-slider__value pl-3 font-light">0</span>
-
   {% endif %}
 
 </div>

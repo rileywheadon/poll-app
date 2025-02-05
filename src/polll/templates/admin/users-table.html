@@ -21,7 +21,11 @@
         Last Poll Created
       </td>
       <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
-        {{ format_time(user.last_poll_created) }}
+        {% if user.last_poll_created %}
+          {{ format_time(user.last_poll_created) }}
+        {% else %}
+          None
+        {% endif %}
       </td>
     </tr>
     <tr>
@@ -29,7 +33,11 @@
         Next Poll Allowed
       </td>
       <td class="border border-nord-3 dark:border-nord-3 py-1 px-2">
-        {{ format_time(user.next_poll_allowed) }}
+        {% if user.last_poll_created %}
+          {{ format_time(user.next_poll_allowed) }}
+        {% else %}
+          None
+        {% endif %}
       </td>
     </tr>
     <tr>

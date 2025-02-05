@@ -4,7 +4,7 @@
   {% if swap==1 %}hx-swap-oob="true"{% endif %}
 >
   <button 
-    class="w-64 border-2 rounded-md border-nord-3 p-2 hover:bg-nord-2"
+    class="w-56 rounded-md bg-neutral-700 h-8"
     hx-get="{{ url_for('home.load_more', origin=state.tab, page=state.poll_page) }}"
     hx-target="#poll-container"
     hx-swap="beforeend"
