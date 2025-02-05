@@ -184,4 +184,3 @@ function clear_ranking(poll_id) {
     e.disabled = false;
   })
 }
-

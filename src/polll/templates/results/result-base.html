@@ -1,6 +1,6 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden"
+  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden accord"
 >    
 
   <!-- Include the poll question -->
@@ -67,25 +67,7 @@
 
 
 
-  <style>
-    .fade-in {
-      opacity: 1;
-      animation-name: fadeInOpacity;
-      animation-iteration-count: 1;
-      animation-timing-function: ease-in;
-      animation-duration: 1s;
-    }
-  
-  
-    @keyframes fadeInOpacity {
-      0% {
-          opacity: 0;
-      }
-      100% {
-          opacity: 1;
-      }
-    }
-  </style>
+ 
 
   <!-- Poll Graph -->
   <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4 fade-in">
@@ -98,7 +80,7 @@
 
   </div>
 
-  <div class="flex flex-row text-sm px-4 items-center my-4 select-none">
+  <div class="flex flex-row text-sm px-4 items-center my-4 select-none fade-in">
     <p class="font-light">
       Votes: {{ poll.response_count }}
     </p>
@@ -121,7 +103,7 @@
     </button>
 
     <!-- Show Results -->
-    <button 
+    <button
       class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
       hx-target="#poll-graph-{{ poll.id }}"

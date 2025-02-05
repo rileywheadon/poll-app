@@ -35,6 +35,7 @@ const bps =  {
   }
 
 const bp = 768;
+const graph_height = 300;
 
 // Global variable for the current chart
 var active_chart = null;
@@ -136,7 +137,7 @@ function choose_one_options(user_rs, rs, type="pie") {
                 type: "pie",
                 background: "null",
                 width: "100%",
-                height: 350,
+                height: graph_height,
             },
     
             theme: {
@@ -217,7 +218,7 @@ function choose_one_options(user_rs, rs, type="pie") {
                 type: 'bar',
                 background: 'null',
                 width: "100%",
-                height: 250,
+                height: graph_height,
                 toolbar: {
                     show: false
                 }
@@ -301,7 +302,7 @@ function choose_many_options(user_rs, rs, type="bar") {
                 type: 'bar',
                 background: 'null',
                 width: bp,
-                height: 250,
+                height: graph_height,
                 toolbar: {
                     show: false
                 },
@@ -365,7 +366,7 @@ function choose_many_options(user_rs, rs, type="bar") {
             type: "pie",
             background: "null",
             width: "100%",
-            height: 350,
+            height: graph_height,
         },
         theme: {
             mode: "dark",
@@ -458,7 +459,7 @@ function scale_graph_options(poll) {
             data: pts
         }],
         chart: {
-            height: 350,
+            height: graph_height,
             type: 'area',
             background: "null",
             toolbar: {

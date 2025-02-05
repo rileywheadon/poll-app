@@ -25,6 +25,8 @@ Frontend Changes:
 - [ ] Fix Tier list breakpoint issues
 - [ ] Add a loading bar to show graphs/comments
 - [ ] Improve the look and feel of **everything**
+- [ ] Fix choose many bar graph
+- [ ] Consider a choosing a constant width for the poll cards so we don't have to deal with a choppy screen size change or make animaiton for this (try latter first)
 
 # Roadmap
 

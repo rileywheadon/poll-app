@@ -1,0 +1,36 @@
+form.htmx-request {
+    opacity: 0;
+    transition: opacity 1s linear;
+  }
+
+
+.fade-in {
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-duration: 1.5s;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+
+.accord {
+    animation: accordion 2.5s cubic-bezier(0, 0.2, 0.5, 1);
+}
+
+@keyframes accordion {
+    0% {
+      max-height: 0;
+    }
+    100% {
+      max-height: 100vh;
+    }
+  }
+

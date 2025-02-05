@@ -2,44 +2,44 @@
 
 <div class="flex flex-row md:flex-col overflow-hidden md:items-start w-full h-full ml-2">
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light cursor-default hover:bg-neutral-800 rounded-lg"
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg"
     href="{{ url_for('home.feed') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="{% if session.state.tab == 'feed' %}text-polll-green{% endif %} cursor-default">
-      <i class="ml-2 text-xl text-base fa-solid fa-fire px-2"></i>
+    <span class="text-nord-6 {% if session.state.tab == 'feed' %}text-polll-green{% endif %}">
+      <i class="ml-2 text-xl  text-base fa-solid fa-fire px-2"></i>
       {% if show_icons %} Feed {% endif %}
     </span>
   </a>
 
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light cursor-default hover:bg-neutral-800 rounded-lg" 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg" 
     href="{{ url_for('home.history') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="{% if session.state.tab == 'history' %}text-polll-green{% endif %} cursor-default">
+    <span class="text-nord-6 {% if session.state.tab == 'history' %}text-polll-green{% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-book px-2"></i>
       {% if show_icons %} History {% endif %}
     </span>
   </a>
 
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light cursor-default hover:bg-neutral-800 rounded-lg" 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg" 
     href="{{ url_for('home.create') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="{% if session.state.tab == 'create' %} text-polll-green {% endif %} cursor-default">
+    <span class="text-nord-6 {% if session.state.tab == 'create' %} text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-pen underline px-2"></i>
       {% if show_icons %} Create {% endif %}
     </span>
   </a>
 
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light cursor-default hover:bg-neutral-800 rounded-lg"
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg"
     href="{{ url_for('home.mypolls') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="{% if session.state.tab == 'mypolls' %} text-polll-green {% endif %} cursor-default">
+    <span class="text-nord-6 {% if session.state.tab == 'mypolls' %} text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-user px-2"></i>
       {% if show_icons %} {{session.user.username}} {% endif %}
     </span>
