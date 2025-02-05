@@ -4,6 +4,7 @@ from functools import wraps
 from flask import Blueprint, url_for, session, redirect, render_template, request
 from polll.db import get_db
 from gotrue.errors import AuthApiError
+from dotenv import dotenv_values
 
 
 # Create a blueprint for the authentication endpoints
@@ -31,6 +32,8 @@ def authenticate(action):
 # Callback after email verification
 @auth.route('/auth/confirm')
 def callback():
+
+    session["state"] = {}
 
     # Verify the magic link request
     db = get_db()
@@ -111,6 +114,11 @@ def login():
 # Signup endpoint
 @auth.route("/auth/register", methods=["GET", "POST"])
 def register():
+
+    print("\n\n\n")
+    print(session["state"])
+
+    
 
     db = get_db()
     email = request.form.get("email")
@@ -200,7 +208,12 @@ def requires_admin(f):
             return redirect(url_for("auth.logout"))
 
         # If the user is not an administrator, redirect them to the feed
-        emails = env.get("ADMIN_EMAILS").split(" ")
+        print("\n\n\n")
+        config = dotenv_values("env")
+        print(config["ADMIN_EMAILS"])
+        emails = config["ADMIN_EMAILS"]
+        print(emails)
+        print("\n\n\n")
         if true_user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 

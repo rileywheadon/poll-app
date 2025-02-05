@@ -120,7 +120,7 @@ def feed():
     session["polls"] = {p["id"]: query_poll_details(p) for p in res.data}
     session["comments"] = {}
     session["replies"] = {}
-
+    
     session["state"].update({
         "admin": False,
         "tab": "feed",
@@ -163,14 +163,6 @@ def create_answer():
 @home.route("/create/poll")
 @requires_auth
 def create_poll():
-
-    # If the user is muted prevent them from creating the poll
-    if session["user"]["is_muted"]:
-        r = make_response("")
-        notification = '{"notification": "You have been muted!"}'
-        r.headers.set("HX-Trigger", notification)
-        r.headers.set("HX-Reswap", 'none')
-        return r
 
     # Get request data for creating the poll
     creator_id = session["user"]["id"]

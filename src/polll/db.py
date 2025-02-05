@@ -22,7 +22,7 @@ class FlaskSessionStorage(SyncSupportedStorage):
             self.storage.pop(key, None)
 
 
-config = dotenv_values(".env")
+config = dotenv_values("env")
 url = config["SUPABASE_URL"]
 key = config["SUPABASE_KEY"]
 
