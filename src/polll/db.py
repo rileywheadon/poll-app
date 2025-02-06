@@ -22,9 +22,8 @@ class FlaskSessionStorage(SyncSupportedStorage):
             self.storage.pop(key, None)
 
 
-config = dotenv_values(".env")
-url = config["SUPABASE_URL"]
-key = config["SUPABASE_KEY"]
+url = os.environ.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_KEY")
 
 def get_db():
     if "supabase" not in g:
