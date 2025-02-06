@@ -1,7 +1,6 @@
 from flask import redirect, url_for, session
 from datetime import datetime
-from polll.db import get_db
-import polll.results as result_handlers
+from .db import get_db
 
 # NOTE: Each handler in this file returns a response dictionary
 

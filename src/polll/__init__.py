@@ -1,6 +1,7 @@
 import json
 import os
 from urllib.parse import quote_plus, urlencode
+from dotenv import find_dotenv, load_dotenv
 from os import environ as env
 
 from flask import Flask, redirect, render_template, session, url_for, g
@@ -8,9 +9,12 @@ from redis import Redis
 from flask_session import Session
 from supabase import create_client, Client
 
-import polll.utils as utils
-
 def create_app(test_config=None):
+
+    # Load the .env file, if it exists
+    ENV_FILE = find_dotenv()
+    if ENV_FILE:
+        load_dotenv(ENV_FILE)
 
     # Create a new Flask application
     app = Flask(__name__, instance_relative_config=True)
@@ -38,16 +42,17 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
-    app.jinja_env.globals.update(format_time=utils.format_time)
+    from .utils import smooth_hist, format_time
+    app.jinja_env.globals.update(smooth_hist=smooth_hist)
+    app.jinja_env.globals.update(format_time=format_time)
     app.jinja_env.filters['zip'] = zip
 
     # Import the blueprints
-    from polll.auth import auth
-    from polll.home import home
-    from polll.admin import admin
-    from polll.poll import poll
-    from polll.comment import comment
+    from .auth import auth
+    from .home import home
+    from .admin import admin
+    from .poll import poll
+    from .comment import comment
 
     # Register the blueprints
     app.register_blueprint(auth)

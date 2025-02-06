@@ -1,7 +1,7 @@
 from flask import redirect, url_for, render_template, session
 from datetime import datetime
-from polll.db import get_db
-from polll.utils import smooth_hist
+from .db import get_db
+from .utils import smooth_hist
 
 # NOTE: These get the aggregate results of the poll (NOT the user's response)
 

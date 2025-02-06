@@ -5,12 +5,9 @@ import asyncio
 from flask import Blueprint, url_for, session, redirect
 from flask import render_template, request, make_response
 
-import polll.responses as response_handlers
-import polll.results as result_handlers
-
-from polll.auth import requires_auth, requires_admin
-from polll.utils import *
-from polll.db import get_db
+from .auth import requires_auth, requires_admin
+from .utils import *
+from .db import get_db
 
 
 # Create a blueprint for the poll endpoints

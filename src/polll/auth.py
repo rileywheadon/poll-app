@@ -2,7 +2,7 @@ from os import environ as env
 from datetime import datetime
 from functools import wraps
 from flask import Blueprint, url_for, session, redirect, render_template, request
-from polll.db import get_db
+from .db import get_db
 from gotrue.errors import AuthApiError
 
 

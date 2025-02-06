@@ -3,9 +3,9 @@ from flask import request, session, make_response
 from datetime import datetime, timedelta
 import requests
 
-from polll.auth import requires_auth, requires_admin
-from polll.db import get_db
-from polll.utils import *
+from .auth import requires_auth, requires_admin
+from .db import get_db
+from .utils import *
 
 admin = Blueprint('admin', __name__, template_folder='templates/admin')
 
