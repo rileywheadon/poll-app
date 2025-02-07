@@ -7,8 +7,7 @@ from flask import Flask, redirect, render_template, session, url_for, g
 from flask_session import Session
 from supabase import create_client, Client
 
-from werkzeug.middleware.proxy_fix import ProxyFix
-
+# Initialize the session
 sess = Session()
 
 def create_app():
@@ -33,16 +32,11 @@ def create_app():
         app.config.from_mapping(
             SECRET_KEY = os.environ.get("SECRET_KEY"),
             SESSION_TYPE = 'redis',
-            SERVER_NAME = 'polll.org',
-            SESSION_COOKIE_DOMAIN = None,
             SESSION_COOKIE_SAMESITE = 'None',
             SESSION_COOKIE_SECURE = True,
             SESSION_PERMANENT = True,
             SESSION_REDIS = from_url(redis_url)
         )
-
-        # I have no idea what this does but ChatGPT told me to add it
-        app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     # Add the server-side session
     sess.init_app(app)

@@ -11,12 +11,6 @@ from gotrue.errors import AuthApiError
 auth = Blueprint('auth', __name__, template_folder='templates')
 
 
-@auth.route('/test-session')
-def test_session():
-    session['test'] = 'hello'
-    return jsonify(message="Session set", session=dict(session))
-
-
 # Landing page for advertising to potential users
 @auth.route("/")
 def index():
@@ -51,10 +45,6 @@ def callback():
     refresh_token = res.session.refresh_token
     res = db.auth.set_session(access_token, refresh_token)
 
-    print("ACCESS", access_token)
-    print("REFRESH", refresh_token)
-    print("RESULTS", res)
-
     # Check if the user is in the database
     user = res.user.user_metadata
     res = db.table("user").select("*").eq("email", user["email"]).execute()
@@ -84,7 +74,6 @@ def callback():
     res = db.table("board").select("*").execute()
     session["boards"] = {b["id"] : b for b in res.data}
     session["state"] = {}
-    print("SESSION USER:", session.get("user"))
 
     # Render the home.feed template
     session.modified = True
@@ -103,9 +92,6 @@ def login():
 
     db = get_db()
 
-    print("DATABASE:", db)
-    print(request.form.get("email"))
-
     # Create the sign in request
     login_data = {
         "type": "email",
@@ -119,9 +105,7 @@ def login():
     # Catch invalid email address errors
     try:
         res = db.auth.sign_in_with_otp(login_data)
-        print("LOGIN RESULT:", res)
     except AuthApiError as e:
-        print("ERROR:", e)
         return invalid_login("login", "email")
 
     return render_template("auth/verify-email.html")
@@ -186,19 +170,15 @@ def requires_auth(f):
 
         db = get_db()
         user = session.get("user")
-
-        print("DATABASE:", db)
-        print("SESSION USER:", session.get("user"))
-        print("SESSION:", db.auth.get_session())
-        # true_user = db.auth.get_user().user
+        true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
-        # if not user:
-        #     return redirect(url_for("auth.index"))
+        if not user:
+            return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
-        # if true_user.user_metadata["email"] != user["email"]:
-        #     return redirect(url_for("auth.logout"))
+        if true_user.user_metadata["email"] != user["email"]:
+            return redirect(url_for("auth.logout"))
 
         return f(*args, **kwargs)
 
@@ -212,10 +192,6 @@ def requires_admin(f):
 
         db = get_db()
         user = session.get("user")
-
-        print("DATABASE:", db)
-        print("SESSION USER:", session.get("user"))
-        print("AUTH SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
