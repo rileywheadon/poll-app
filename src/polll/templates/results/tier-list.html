@@ -2,34 +2,28 @@
 
 <div id="poll-result-{{ poll.id }}" class="hidden">
 
-  <!-- Labels -->
-  <div class="flex flex-row justify-around font-light text-2xl pb-4">
-    <p class="{% if not poll.response %} hidden {% endif %}">You</p>
-    <p>Average</p>
-  </div>
-
   <!-- Tier lists -->
   <div class="flex flex-row space-x-4 justify-center items-start">
 
-    <label class="inline-flex items-center cursor-default">
-      <input 
-        onclick="toggle_tier_results()" 
-        id="endpoint-toggle" 
-        type="checkbox" 
-        class="sr-only peer"
-        autocomplete="off"
-      >
-      <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-      <span class="ml-2 text-sm font-light">Average</span>
-    </label>
+    {{ macs.toggleButton(poll.id, "toggle_tier_results", "Average") }}
 
     <!-- User -->
     {% set user_rs = poll.response %}
-    {{ macs.tierList('{{ poll.id }}', False, user_rs) }}
+    <div class="hidden w-full" id="tier-results-user-{{ poll.id }}">
+      <div class="flex flex-row justify-around font-light text-2xl pb-4">
+        <p class="{% if not poll.response %} hidden {% endif %}">You</p>
+      </div>
+      {{ macs.tierList('{{ poll.id }}', False, user_rs) }}
+    </div>
 
     <!-- Average -->
     {% set average_rs = poll.results %}
-    {{ macs.tierList('{{ poll.id }}', False, average_rs) }}
+     <div class="w-full" id="tier-results-average-{{ poll.id }}">
+      <div class="flex flex-row justify-around font-light text-2xl pb-4">
+        <p class="{% if not poll.response %} hidden {% endif %}">Average</p>
+      </div>
+      {{ macs.tierList('{{ poll.id }}', False, average_rs) }}
+     </div>
 
   </div>  
 

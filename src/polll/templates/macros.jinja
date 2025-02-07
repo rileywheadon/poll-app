@@ -65,6 +65,24 @@
 {% endmacro %}
 
 
+<!-- TOOD: use for all the toggles -->
+{% macro toggleButton(input_id, func, label) %}
+
+      <label class="flex items-center">
+      <input 
+        onclick="{{ func }}(this)" 
+        id="{{ input_id }}" 
+        type="checkbox" 
+        class="hidden peer"
+        autocomplete="off"
+      >
+      <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+      <span id="text-{{ input_id }}" class="ml-2 text-sm font-light">{{ label }}</span>
+    </label>
+
+{% endmacro %}
+
+
 {% macro tierList(poll_id, interactive=False, results=None) %}
 
 <div class="flex flex-col p-4 select-none">
@@ -109,7 +127,7 @@
 
       {% for r in results %}
         {% if r.tier == tier %} 
-          <div class="flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default border-2 bg-gray-800 text-gray-400">
+          <div class="flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default border bg-gray-800 text-gray-400">
             <p class="text-center">{{ r.answer }}</p>
           </div>  
         {% endif %}

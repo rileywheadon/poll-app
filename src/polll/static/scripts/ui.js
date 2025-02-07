@@ -143,17 +143,16 @@ function handle_tier_select(poll_id, tier) {
 
 }
 
-function toggle_custom_endpoints() {
+function toggle_custom_endpoints(toggle) {
   document.getElementById("endpoint-editor").classList.toggle("hidden");
   document.getElementById("endpoint-left").value = "";
   document.getElementById("endpoint-right").value = "";
 }
 
-// Try using htmx
-function toggle_tier_results() {
-  console.log("asdf");
+function toggle_tier_results(toggle) {
+  [document.getElementById(`tier-results-user-${toggle.id}`), document.getElementById(`tier-results-average-${toggle.id}`)].forEach((e) => e.classList.toggle("hidden"));
+  document.getElementById(`text-${toggle.id}`).innerHTML == "Average" ? document.getElementById(`text-${toggle.id}`).innerHTML = "You" : document.getElementById(`text-${toggle.id}`).innerHTML = "Average";
 }
-
 
 function handle_rank_select(poll_id, ans_id) {
 

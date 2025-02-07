@@ -322,7 +322,7 @@ function choose_many_options(user_rs, rs, type="bar") {
                 formatter: function (val, opt) {
                     const i = opt.w.globals.labels[opt.dataPointIndex];
                     const label = i + ": " + Math.round(val);
-                    return user_rs.includes(i) ? lbl + " (you)" : label;
+                    return user_rs.includes(i) ? label + " (you)" : label;
                   },
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
