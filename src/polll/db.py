@@ -25,6 +25,9 @@ class FlaskSessionStorage(SyncSupportedStorage):
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_KEY")
 
+print("URL:", url)
+print("KEY:", key)
+
 def get_db():
     if "supabase" not in g:
         g.supabase = Client(
