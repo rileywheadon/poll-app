@@ -167,6 +167,8 @@ def requires_auth(f):
 
         db = get_db()
         user = session.get("user")
+
+        print("SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
@@ -190,7 +192,7 @@ def requires_admin(f):
         db = get_db()
         user = session.get("user")
 
-        print(db.auth.get_session())
+        print("SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
