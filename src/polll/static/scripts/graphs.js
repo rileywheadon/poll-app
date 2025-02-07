@@ -1,40 +1,9 @@
-// I know I know
 const cols = {
-    'nord-0': '#2E3440',
-    'nord-1': '#3B4252',
-    'nord-2': '#434C5E',
-    'nord-3': '#4C566A',
-    'nord-4': '#D8DEE9',
-    'nord-5': '#E5E9F0',
-    'nord-6': '#ECEFF4',
-    'nord-7': '#8FBCBB',
-    'nord-8': '#88C0D0',
-    'nord-9': '#81A1C1',
-    'nord-10': '#5E81AC',
-    'nord-11': '#BF616A',
-    'nord-12': '#D08770',
-    'nord-13': '#EBCB8B',
-    'nord-14': '#A3BE8C',
-    'nord-15': '#B48EAD',
-    'grad-start': '#1f1f1f',
-    'grad-end': '#171717',
-    'polll-grad-1': '#D9EAD3',
     'polll-green': '#B6D7A8',
-    'polll-grad-3':'#A0CFB6',
-    'polll-grad-4':'#97D0BF',
-    'polll-grad-5':'#92D0D0',
+    'polll-dark-green': '#f783b6',
     'polll-blue':'#88bbd0',
     'polll-white': '#f3f3f3ff',
-    'polll-pink': '#f783b6'
 }
-
-const bps =  {
-    'xs': '520px',
-    'sm': '640px',
-    'md': '768px',
-    'lg': '1024px',
-    'xl': '1536px',
-  }
 
 const bp = 768;
 const graph_height = 300;
@@ -131,7 +100,7 @@ function choose_one_options(user_rs, rs, type="pie") {
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
-    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-pink"];
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
 
 
@@ -278,7 +247,7 @@ function choose_one_options(user_rs, rs, type="pie") {
 function choose_many_options(user_rs, rs, type="bar") {
 
     user_rs == {} ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
-    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-pink"];
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
     if (type == "bar") {
         return {
