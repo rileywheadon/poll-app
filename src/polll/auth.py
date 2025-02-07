@@ -81,6 +81,8 @@ def callback():
     print("SESSION USER:", session.get("user"))
 
     # Render the home.feed template
+    session.modified = True
+    session.permanent = True
     return redirect(url_for('home.feed'))
 
 

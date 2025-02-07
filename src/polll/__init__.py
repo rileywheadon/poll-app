@@ -21,6 +21,7 @@ def create_app():
             SESSION_TYPE = 'redis',
             SESSION_COOKIE_SAMESITE = 'None',
             SESSION_COOKIE_SECURE = True,
+            SESSION_PERMANENT = True,
             SESSION_REDIS = Redis(host='localhost', port=6379)
         )
 
@@ -33,6 +34,7 @@ def create_app():
             SESSION_TYPE = 'redis',
             SESSION_COOKIE_SAMESITE = 'None',
             SESSION_COOKIE_SECURE = True,
+            SESSION_PERMANENT = True,
             SESSION_REDIS = from_url(redis_url)
         )
 
