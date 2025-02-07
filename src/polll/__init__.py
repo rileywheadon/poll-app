@@ -7,11 +7,10 @@ from flask import Flask, redirect, render_template, session, url_for, g
 from flask_session import Session
 from supabase import create_client, Client
 
-def create_app(test_config=None):
+def create_app():
 
     # Create a new Flask application
-    app = Flask(__name__, instance_relative_config=True)
-    redis_url = f"{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none"
+    app = Flask(__name__)
 
     # Development configuration
     if os.environ.get("DEVELOPMENT"):
@@ -24,6 +23,8 @@ def create_app(test_config=None):
 
     # Production configuration
     else:
+        redis_url = f"{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none"
+        print(redis_url)
         app.config.from_mapping(
             SESSION_TYPE = 'redis',
             SESSION_COOKIE_SAMESITE = 'None',
@@ -34,20 +35,7 @@ def create_app(test_config=None):
     # Add the server-side session
     Session(app)
 
-    # Load the instance config, if it exists, when not testing
-    if test_config is None:
-        app.config.from_pyfile("config.py", silent=True)
-
-    # Load the test config if passed in
-    else:
-        app.config.update(test_config)
-
-    # Ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
+    # Import utilities
     from .utils import smooth_hist, format_time
     app.jinja_env.globals.update(smooth_hist=smooth_hist)
     app.jinja_env.globals.update(format_time=format_time)

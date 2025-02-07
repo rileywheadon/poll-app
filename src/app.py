@@ -1,5 +1,6 @@
+import os
+
 from polll import create_app
-from os import environ as env
 from dotenv import find_dotenv, load_dotenv
 
 # Load the .env file, if it exists
@@ -12,7 +13,7 @@ app = create_app()
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',
-        port=env.get("PORT", 3000),
+        port=os.environ.get("PORT", 3000),
         ssl_context=('cert.pem', 'key.pem'),
         debug=True
     )
