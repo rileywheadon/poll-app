@@ -7,6 +7,8 @@ from flask import Flask, redirect, render_template, session, url_for, g
 from flask_session import Session
 from supabase import create_client, Client
 
+sess = Session()
+
 def create_app():
 
     # Create a new Flask application
@@ -15,6 +17,7 @@ def create_app():
     # Development configuration
     if os.environ.get("DEVELOPMENT"):
         app.config.from_mapping(
+            SECRET_KEY = os.environ.get("SECRET_KEY"),
             SESSION_TYPE = 'redis',
             SESSION_COOKIE_SAMESITE = 'None',
             SESSION_COOKIE_SECURE = True,
@@ -26,6 +29,7 @@ def create_app():
         redis_url = f"{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none"
         print(redis_url)
         app.config.from_mapping(
+            SECRET_KEY = os.environ.get("SECRET_KEY"),
             SESSION_TYPE = 'redis',
             SESSION_COOKIE_SAMESITE = 'None',
             SESSION_COOKIE_SECURE = True,
@@ -33,7 +37,7 @@ def create_app():
         )
 
     # Add the server-side session
-    Session(app)
+    sess.init_app(app)
 
     # Import utilities
     from .utils import smooth_hist, format_time
