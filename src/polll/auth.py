@@ -1,4 +1,5 @@
-from os import environ as env
+import os
+
 from datetime import datetime
 from functools import wraps
 from flask import Blueprint, url_for, session, redirect, render_template, request
@@ -92,6 +93,9 @@ def invalid_login(action, error):
 def login():
 
     db = get_db()
+
+    print("DATABASE:", db)
+    print(request.form.get("email"))
 
     # Create the sign in request
     login_data = {
@@ -198,6 +202,7 @@ def requires_admin(f):
         db = get_db()
         user = session.get("user")
 
+        print("DATABASE:", db)
         print("SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
@@ -210,7 +215,7 @@ def requires_admin(f):
             return redirect(url_for("auth.logout"))
 
         # If the user is not an administrator, redirect them to the feed
-        emails = env.get("ADMIN_EMAILS").split(" ")
+        emails = os.environ.get("ADMIN_EMAILS").split(" ")
         if true_user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 
