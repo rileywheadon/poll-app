@@ -106,6 +106,7 @@ def login():
     # Catch invalid email address errors
     try:
         res = db.auth.sign_in_with_otp(login_data)
+        print("LOGIN RESULT:", res)
     except AuthApiError as e:
         return invalid_login("login", "email")
 
