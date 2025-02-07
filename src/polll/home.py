@@ -123,7 +123,7 @@ def feed():
         "tab": "feed",
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
-        "board": session["boards"][int(bid)],
+        "board": session["boards"].get(int(bid)) or {},
         "order": order,
         "period": period,
     })
