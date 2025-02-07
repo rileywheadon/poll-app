@@ -17,7 +17,8 @@ Step 1: Set up Heroku
 
 - Test gunicorn locally
 - Website seemed to break after switching to polll.org -- maybe DNS isn't set up properly?
-- Set up Redis on production
+- Set up HTTPS
+- Fix "internal server error" when clicking old links
 
 Step 2: Go through the production checklist on Supabase
 
