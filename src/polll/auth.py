@@ -179,13 +179,13 @@ def requires_auth(f):
         user = session.get("user")
 
         print("DATABASE:", db)
-        print("FLASK SESSION:", session)
+        print("SESSION USER:", session["user"])
         print("SESSION:", db.auth.get_session())
         # true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
-        if not user:
-            return redirect(url_for("auth.index"))
+        # if not user:
+        #     return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
         # if true_user.user_metadata["email"] != user["email"]:
@@ -205,7 +205,7 @@ def requires_admin(f):
         user = session.get("user")
 
         print("DATABASE:", db)
-        print("FLASK SESSION:", session)
+        print("SESSION USER:", session["user"])
         print("AUTH SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
