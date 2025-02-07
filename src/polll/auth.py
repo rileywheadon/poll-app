@@ -2,13 +2,19 @@ import os
 
 from datetime import datetime
 from functools import wraps
-from flask import Blueprint, url_for, session, redirect, render_template, request
+from flask import Blueprint, url_for, session, redirect, render_template, request, jsonify
 from .db import get_db
 from gotrue.errors import AuthApiError
 
 
 # Create a blueprint for the authentication endpoints
 auth = Blueprint('auth', __name__, template_folder='templates')
+
+
+@auth.route('/test-session')
+def test_session():
+    session['test'] = 'hello'
+    return jsonify(message="Session set", session=dict(session))
 
 
 # Landing page for advertising to potential users
