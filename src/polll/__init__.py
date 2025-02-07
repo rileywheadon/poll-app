@@ -1,30 +1,35 @@
 import json
 import os
 from urllib.parse import quote_plus, urlencode
-from dotenv import find_dotenv, load_dotenv
-from os import environ as env
-import redis 
 
+from redis import Redis, from_url
 from flask import Flask, redirect, render_template, session, url_for, g
 from flask_session import Session
 from supabase import create_client, Client
 
 def create_app(test_config=None):
 
-    # Load the .env file, if it exists
-    ENV_FILE = find_dotenv()
-    if ENV_FILE:
-        load_dotenv(ENV_FILE)
-
     # Create a new Flask application
     app = Flask(__name__, instance_relative_config=True)
     redis_url = f"{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none"
-    app.config.from_mapping(
-        SESSION_TYPE = 'redis',
-        SESSION_COOKIE_SAMESITE = 'None',
-        SESSION_COOKIE_SECURE = True,
-        SESSION_REDIS = redis.from_url(redis_url)
-    )
+
+    # Development configuration
+    if os.environ.get("DEVELOPMENT"):
+        app.config.from_mapping(
+            SESSION_TYPE = 'redis',
+            SESSION_COOKIE_SAMESITE = 'None',
+            SESSION_COOKIE_SECURE = True,
+            SESSION_REDIS = Redis(host='localhost', port=6379)
+        )
+
+    # Production configuration
+    else:
+        app.config.from_mapping(
+            SESSION_TYPE = 'redis',
+            SESSION_COOKIE_SAMESITE = 'None',
+            SESSION_COOKIE_SECURE = True,
+            SESSION_REDIS = from_url(redis_url)
+        )
 
     # Add the server-side session
     Session(app)
