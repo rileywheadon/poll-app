@@ -23,7 +23,9 @@ const cols = {
     'polll-grad-3':'#A0CFB6',
     'polll-grad-4':'#97D0BF',
     'polll-grad-5':'#92D0D0',
-    'polll-blue':'#88bbd0'
+    'polll-blue':'#88bbd0',
+    'polll-white': '#f3f3f3ff',
+    'polll-pink': '#f783b6'
 }
 
 const bps =  {
@@ -36,6 +38,7 @@ const bps =  {
 
 const bp = 768;
 const graph_height = 300;
+
 
 // Global variable for the current chart
 var active_chart = null;
@@ -128,6 +131,8 @@ function choose_one_options(user_rs, rs, type="pie") {
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-pink"];
+
 
 
     // PIE CHART (default)
@@ -163,11 +168,11 @@ function choose_one_options(user_rs, rs, type="pie") {
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
                 if (value == 0) return "#808080";
-                return w.globals.labels[seriesIndex].includes("(you)") ? cols["polll-green"] : cols["polll-blue"];
+                return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
               }],
               fill: {
                 colors: [function({ value, seriesIndex, w }) {
-                    return w.globals.labels[seriesIndex].includes("(you)") ? cols["polll-green"]: cols["polll-blue"];
+                    return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
                   }],
               },
               
@@ -239,7 +244,7 @@ function choose_one_options(user_rs, rs, type="pie") {
                   },
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-                return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? cols["polll-green"] : cols["polll-blue"];
+                return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? user_col : cols["polll-blue"];
               }],
             theme: {
                 mode: "dark",
@@ -273,6 +278,7 @@ function choose_one_options(user_rs, rs, type="pie") {
 function choose_many_options(user_rs, rs, type="bar") {
 
     user_rs == {} ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-pink"];
 
     if (type == "bar") {
         return {
@@ -328,7 +334,7 @@ function choose_many_options(user_rs, rs, type="bar") {
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
                 console.log(w.globals.labels[dataPointIndex]);
 
-                return user_rs.includes(w.globals.labels[dataPointIndex]) ? cols["polll-green"] : cols["polll-blue"];
+                return user_rs.includes(w.globals.labels[dataPointIndex]) ? user_col : cols["polll-blue"];
               }],
 
             tooltip: {
@@ -381,12 +387,12 @@ function choose_many_options(user_rs, rs, type="bar") {
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
             if (value == 0) return "#808080";
-            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return cols["polll-green"];
+            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return user_col;
             return cols["polll-blue"];
           }],
           fill: {
             colors: [function({ value, seriesIndex, w }) {
-                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return cols["polll-green"];
+                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return user_col;
                 return cols["polll-blue"];
               }],
           },
