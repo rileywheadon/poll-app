@@ -15,9 +15,9 @@ Frontend Changes:
 
 Step 1: Set up Heroku
 
-- Clone the supabase project so we have a development and production database
+- Test gunicorn locally
+- Website seemed to break after switching to polll.org -- maybe DNS isn't set up properly?
 - Set up Redis on production
-- Configure the `polll.org` URL
 
 Step 2: Go through the production checklist on Supabase
 
