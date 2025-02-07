@@ -44,6 +44,10 @@ def callback():
     refresh_token = res.session.refresh_token
     res = db.auth.set_session(access_token, refresh_token)
 
+    print("ACCESS", access_token)
+    print("REFRESH", refresh_token)
+    print("RESULTS", res)
+
     # Check if the user is in the database
     user = res.user.user_metadata
     res = db.table("user").select("*").eq("email", user["email"]).execute()
