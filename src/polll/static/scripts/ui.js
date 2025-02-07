@@ -149,6 +149,11 @@ function toggle_custom_endpoints() {
   document.getElementById("endpoint-right").value = "";
 }
 
+// Try using htmx
+function toggle_tier_results() {
+  console.log("asdf");
+}
+
 
 function handle_rank_select(poll_id, ans_id) {
 

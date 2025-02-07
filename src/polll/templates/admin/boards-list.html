@@ -17,7 +17,7 @@
     >
     <button class="rounded-md w-40 h-10 dark:bg-nord-11 dark:text-nord-0"
       hx-get="{{ url_for('admin.delete_board', board_id = board.id) }}"
-      hx-target="#boards-list"
+      hx-target="#-list"
       hx-swap="innerHTML"
       hx-confirm="Are you sure you want to delete board '{{ board.name }}'?"
     >

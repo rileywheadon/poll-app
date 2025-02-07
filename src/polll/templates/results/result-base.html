@@ -1,8 +1,7 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden accord"
+  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden accord-open"
 >    
-
   <!-- Include the poll question -->
   <div class="flex flex-row items-center p-2">
 
@@ -76,8 +75,7 @@
       {% include "results/ranked-poll.html" %}
     {% elif poll.poll_type == "TIER_LIST" %}
       {% include "results/tier-list.html" %}
-    {% endif %}
-
+    {% endif %} 
   </div>
 
   <div class="flex flex-row text-sm px-4 items-center my-4 select-none fade-in">
@@ -101,7 +99,6 @@
       </div>
       <i class="fa fa-message pl-2 text-l"></i>
     </button>
-
     <!-- Show Results -->
     <button
       class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"

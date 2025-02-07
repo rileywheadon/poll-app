@@ -11,6 +11,18 @@
   <!-- Tier lists -->
   <div class="flex flex-row space-x-4 justify-center items-start">
 
+    <label class="inline-flex items-center cursor-default">
+      <input 
+        onclick="toggle_tier_results()" 
+        id="endpoint-toggle" 
+        type="checkbox" 
+        class="sr-only peer"
+        autocomplete="off"
+      >
+      <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+      <span class="ml-2 text-sm font-light">Average</span>
+    </label>
+
     <!-- User -->
     {% set user_rs = poll.response %}
     {{ macs.tierList('{{ poll.id }}', False, user_rs) }}

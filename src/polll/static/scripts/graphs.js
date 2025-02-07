@@ -58,6 +58,8 @@ function graphToggle(poll) {
   // Get elements from the DOM
   var toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
   var graph = document.getElementById(`poll-graph-${poll["id"]}`);
+  var card = document.getElementById(`poll-card-${poll["id"]}`);
+
 
   // If we are hiding results, just hide the graph and return
   if (toggle.innerHTML == "Hide Results") {

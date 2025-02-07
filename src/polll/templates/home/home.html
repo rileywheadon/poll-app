@@ -51,7 +51,7 @@
             {% for id, board in session.boards.items() %}
         
               <a 
-                class="h-14 flex flex-row justify-center items-center w-full px-2 font-light cursor-default hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-green {% endif %}" 
+                class="h-14 flex flex-row justify-center items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-green {% endif %}" 
                 href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}"
               >
                 {{ board.name }}

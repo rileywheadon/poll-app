@@ -23,15 +23,17 @@ Frontend Changes:
 
 - [ ] Tier list results toggle between user and average response
 - [ ] Fix Tier list breakpoint issues
-- [ ] Add a loading bar to show graphs/comments
 - [ ] Improve the look and feel of **everything**
 - [ ] Fix choose many bar graph
-- [ ] Consider a choosing a constant width for the poll cards so we don't have to deal with a choppy screen size change or make animaiton for this (try latter first)
+- [ ] Add the accordion animation to the results/comments div on hide/show press
 
 # Roadmap
 
 ### New Features (front end):
-- [ ] Add banner on the feed, or something similar that signals more clearly what board the user is in (like in subreddits banners)
+- Feed
+    - [ ] Add banner on the feed with the given board name and colour/image?
+    - [ ] Utilise a horizontal scroll for promoted polls/polls in some sort of group (top last week idk) or premium advertising (would improve interactivty and visual) 
+    - [ ] Visual hint for the poll type to help fill empty space
 - [ ] †Image upload support
 - [ ] UI component that 'protects' premium views/actions
 - †Exposure boost
