@@ -115,9 +115,6 @@ def login():
 @auth.route("/auth/register", methods=["GET", "POST"])
 def register():
 
-    print("\n\n\n")
-    print(session["state"])
-
     
 
     db = get_db()
