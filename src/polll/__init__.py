@@ -18,11 +18,12 @@ def create_app(test_config=None):
 
     # Create a new Flask application
     app = Flask(__name__, instance_relative_config=True)
+    redis_url = f"{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none"
     app.config.from_mapping(
         SESSION_TYPE = 'redis',
         SESSION_COOKIE_SAMESITE = 'None',
         SESSION_COOKIE_SECURE = True,
-        SESSION_REDIS = redis.from_url(os.environ.get("REDIS_URL"))
+        SESSION_REDIS = redis.from_url(redis_url)
     )
 
     # Add the server-side session
