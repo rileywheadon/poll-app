@@ -30,7 +30,9 @@ module.exports = {
           'grad-end': '#171717',
 
           // background is neutral 900
-          // neutral 200
+          // text is neutral-200
+          'polll-white':'#f3f3f3ff',
+          'polll-pink':'##f783b6',
 
           'polll-grad-1': '#D9EAD3', //polll logo gradient follows these 6 colors
           'polll-grad-3':'#A0CFB6',
