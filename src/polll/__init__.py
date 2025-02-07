@@ -18,7 +18,7 @@ def create_app(test_config=None):
         SESSION_TYPE = 'redis',
         SESSION_COOKIE_SAMESITE = 'None',
         SESSION_COOKIE_SECURE = True,
-        SESSION_REDIS = Redis(host='localhost', port=3002)
+        SESSION_REDIS = Redis(host='localhost', port=4000)
     )
 
     # Add the server-side session

@@ -46,8 +46,11 @@ Frontend Changes:
         - [ ] †Badges/flairs for answering, creating, etc.
         - [ ] Maybe some sort of point system that encourages people to vote and create (snap score, reddit karma)
         - [ ] Move settings actions here and remove the modal from the navbar
+            - [ ] No, notice how instagram, reddit, etc have separete tabs, want the profile to look to you as it would to others
         - [ ] Follow count?
     - [ ] Section with the user's popular polls with the results already showing
+        - [ ] Worth thinking about, but what about the most popular/pinned posts unanswered, could also have this vary to their preference
+        - [ ] Maybe show results if the poll has been locked or if theyre a corporate account
     - [ ] Remove histroy tab from the side bar and create another section with the user's voting history akin to above
     - [ ] †Download your poll's data to a .csv/.xlsx file (Apexcharts supports this, kinda)
     - [ ] †Some level of data insight (not as important but could through something minor together in the mean time to beef up premium features)
