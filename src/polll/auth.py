@@ -108,6 +108,7 @@ def login():
         res = db.auth.sign_in_with_otp(login_data)
         print("LOGIN RESULT:", res)
     except AuthApiError as e:
+        print("ERROR:", e)
         return invalid_login("login", "email")
 
     return render_template("auth/verify-email.html")
