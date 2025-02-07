@@ -70,10 +70,11 @@ def callback():
     session["user"]["dislikes"] = [c["comment_id"] for c in res.data[0]["dislike"]]
 
     # Get a list of boards
-    db = get_db()
     res = db.table("board").select("*").execute()
     session["boards"] = {b["id"] : b for b in res.data}
     session["state"] = {}
+
+    print(dict(session))
 
     # Render the home.feed template
     return redirect(url_for('home.feed'))
