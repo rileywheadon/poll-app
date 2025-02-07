@@ -86,8 +86,7 @@ def query_feed(bid, order, period, page):
     db = get_db()
     uid = session["user"]["id"]
 
-    # NOTE: Change 0 to uid before going to production
-    args = {"bid": bid, "uid": 0, "page": page, "lim": POLL_LIMIT}
+    args = {"bid": bid, "uid": uid, "page": page, "lim": POLL_LIMIT}
 
     if order == "hot":
         res = db.rpc("feed_hot", args).execute()
