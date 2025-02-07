@@ -179,6 +179,7 @@ def requires_auth(f):
         user = session.get("user")
 
         print("DATABASE:", db)
+        print("FLASK SESSION:", session)
         print("SESSION:", db.auth.get_session())
         # true_user = db.auth.get_user().user
 
@@ -204,7 +205,8 @@ def requires_admin(f):
         user = session.get("user")
 
         print("DATABASE:", db)
-        print("SESSION:", db.auth.get_session())
+        print("FLASK SESSION:", session)
+        print("AUTH SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
