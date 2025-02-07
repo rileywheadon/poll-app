@@ -3,9 +3,9 @@ import os
 from urllib.parse import quote_plus, urlencode
 from dotenv import find_dotenv, load_dotenv
 from os import environ as env
+import redis 
 
 from flask import Flask, redirect, render_template, session, url_for, g
-from redis import Redis
 from flask_session import Session
 from supabase import create_client, Client
 
@@ -22,7 +22,7 @@ def create_app(test_config=None):
         SESSION_TYPE = 'redis',
         SESSION_COOKIE_SAMESITE = 'None',
         SESSION_COOKIE_SECURE = True,
-        SESSION_REDIS = Redis(host='localhost', port=6379)
+        SESSION_REDIS = redis.from_url(os.environ.get("REDIS_URL"))
     )
 
     # Add the server-side session

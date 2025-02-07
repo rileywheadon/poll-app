@@ -73,6 +73,7 @@ def callback():
     db = get_db()
     res = db.table("board").select("*").execute()
     session["boards"] = {b["id"] : b for b in res.data}
+    session["state"] = {}
 
     # Render the home.feed template
     return redirect(url_for('home.feed'))

@@ -15,22 +15,16 @@ Frontend Changes:
 
 Step 1: Set up Heroku
 
-- Sign up for a Heroku basic account (\$7/month)
-- Install the Heroku CLI and set up the app
-- Launch and put the app on rwheadon.dev
-- This is a **Staging Environment**
+- Clone the supabase project so we have a development and production database
+- Set up Redis on production
+- Configure the `polll.org` URL
 
 Step 2: Go through the production checklist on Supabase
 
-- Buy a pro account (\$25/month)
-- Set up the supabase CLI
-- Add RLS
 - Add SMTP
 - Add SSL enforcement
 - Enable network restrictions
 - Set the expiry on OTPs
-- Create a branch for development and a branch for production
-- Get the app onto polll.org, the **Production Environment**
 
 ## Matt
 
