@@ -178,16 +178,17 @@ def requires_auth(f):
         db = get_db()
         user = session.get("user")
 
+        print("DATABASE:", db)
         print("SESSION:", db.auth.get_session())
-        true_user = db.auth.get_user().user
+        # true_user = db.auth.get_user().user
 
         # If the user doesn't exist, redirect them to the index
-        if not true_user:
+        if not user:
             return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
-        if true_user.user_metadata["email"] != user["email"]:
-            return redirect(url_for("auth.logout"))
+        # if true_user.user_metadata["email"] != user["email"]:
+        #     return redirect(url_for("auth.logout"))
 
         return f(*args, **kwargs)
 
