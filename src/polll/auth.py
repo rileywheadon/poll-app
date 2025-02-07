@@ -78,6 +78,7 @@ def callback():
     res = db.table("board").select("*").execute()
     session["boards"] = {b["id"] : b for b in res.data}
     session["state"] = {}
+    print("SESSION USER:", session.get("user"))
 
     # Render the home.feed template
     return redirect(url_for('home.feed'))
@@ -179,7 +180,7 @@ def requires_auth(f):
         user = session.get("user")
 
         print("DATABASE:", db)
-        print("SESSION USER:", session["user"])
+        print("SESSION USER:", session.get("user"))
         print("SESSION:", db.auth.get_session())
         # true_user = db.auth.get_user().user
 
@@ -205,7 +206,7 @@ def requires_admin(f):
         user = session.get("user")
 
         print("DATABASE:", db)
-        print("SESSION USER:", session["user"])
+        print("SESSION USER:", session.get("user"))
         print("AUTH SESSION:", db.auth.get_session())
         true_user = db.auth.get_user().user
 
