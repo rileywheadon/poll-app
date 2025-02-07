@@ -33,6 +33,7 @@ def create_app():
         app.config.from_mapping(
             SECRET_KEY = os.environ.get("SECRET_KEY"),
             SESSION_TYPE = 'redis',
+            SERVER_NAME = 'polll.org',
             SESSION_COOKIE_DOMAIN = None,
             SESSION_COOKIE_SAMESITE = 'None',
             SESSION_COOKIE_SECURE = True,
