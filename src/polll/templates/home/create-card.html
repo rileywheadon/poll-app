@@ -150,48 +150,52 @@
     </div>
 
     <!-- Boards -->
-    <div class="flex flex-row items-center mt-auto px-10 pb-2">
+    <div class="flex flex-col md:flex-row md:items-center mt-auto px-10 pb-2">
 
       <!-- SELECT BOARD -->
-      <span class="mr-2">Select Boards:</span>
+      <div class="mb-4 md:mb-0"> 
+        <span class="mr-2">Select Boards:</span>
 
-      {% for id, board in session.boards.items() %}
+        {% for id, board in session.boards.items() %}
 
-        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-800 bg-neutral-800 has-[:checked]:border-polll-blue {% if board.primary %}border-polll-blue{% endif %}">
-          {{ board.name }}
-          <!-- Very unfourtunate hack to prevent all from being unselected -->
-          {% if board.primary %}
-            <input class="poll-create hidden"
-              name="poll_board"
-              value="{{ board.id }}" 
-            >
-            <input
-              class="hidden"
-              type="checkbox"
-              checked disabled
-            >
-          {% else %}
-            <input 
-              class="poll-create hidden" 
-              name="poll_board"
-              value="{{ board.id }}" 
-              type="checkbox"
-            >
-          {% endif %}
+          <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-800 bg-neutral-800 has-[:checked]:border-polll-blue {% if board.primary %}border-polll-blue{% endif %}">
+            {{ board.name }}
+            <!-- Very unfourtunate hack to prevent all from being unselected -->
+            {% if board.primary %}
+              <input class="poll-create hidden"
+                name="poll_board"
+                value="{{ board.id }}" 
+              >
+              <input
+                class="hidden"
+                type="checkbox"
+                checked disabled
+              >
+            {% else %}
+              <input 
+                class="poll-create hidden" 
+                name="poll_board"
+                value="{{ board.id }}" 
+                type="checkbox"
+              >
+            {% endif %}
 
-        </label>
+          </label>
 
-      {% endfor %}
+        {% endfor %}
+      </div>
 
       <!-- SET CREATION DATE (ADMIN ONLY)  -->
       {% if session.user.is_admin %}
 
-        <span class="ml-auto mr-2">Creation Date:</span>
+      <div class="mb-2 md:mb-0 md:ml-auto">
+        <span class="mr-2">Creation Date:</span>
         <input 
           class="poll-create h-8 rounded-md bg-neutral-300 dark:bg-neutral-800 px-2" 
           type="date" 
           name="created_at"
         >
+      </div>
 
       {% endif %}
 
