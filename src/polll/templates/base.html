@@ -2,6 +2,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta property="og:title" content="Polll" />
+  <meta property="og:description" content="Have a voice in your community" />
+  <meta property="og:image" content="../static/assets/logo-bars.svg" />
 
   <!-- Custom Styles -->
   <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet" />
@@ -67,7 +70,7 @@
 
 </head>
 
-<html class="overflow-hidden overscroll-none">
+<html class="overflow-hidden select-none overscroll-none">
 
   <body hx-boost="true" onload="add_notification_listener(); add_graph_listener();">
 

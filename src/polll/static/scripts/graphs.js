@@ -1,6 +1,6 @@
 const cols = {
     'polll-green': '#B6D7A8',
-    'polll-dark-green': '#f783b6',
+    'polll-dark-green': '#6aa84f',
     'polll-blue':'#88bbd0',
     'polll-white': '#f3f3f3ff',
 }
@@ -30,7 +30,6 @@ function graphToggle(poll) {
   // Get elements from the DOM
   var toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
   var graph = document.getElementById(`poll-graph-${poll["id"]}`);
-  var card = document.getElementById(`poll-card-${poll["id"]}`);
 
 
   // If we are hiding results, just hide the graph and return
@@ -47,6 +46,7 @@ function graphToggle(poll) {
     document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
     document.getElementById("poll-graph-" + id).classList.add("hidden");
   }
+  console.log(toggle.childElementCount);
 
   // Then update toggle and graph
   toggle.innerHTML = "Hide Results";
@@ -396,6 +396,7 @@ function scale_graph_options(poll) {
     user_rs ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
     // This is a bit of a hack but if it works it works
     answers["left"] && answers["right"] ? endpoints = [answers["left"]["answer"], answers["right"]["answer"]] : endpoints = null;
@@ -474,7 +475,7 @@ function scale_graph_options(poll) {
                 }, {
                     x: user_rs,
                     strokeDashArray: 0,
-                    borderColor: "#B6D7A8",
+                    borderColor: user_col,
                     borderWidth: 3,
                     label: {
                         show: false,   

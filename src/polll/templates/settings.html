@@ -13,19 +13,19 @@
     </div>
 
     <!-- Username Editor -->
-    <div class="flex flex-row items-center mb-4">
+    <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:items-center mb-4">
       <span class="mr-2">Edit Username: </span>
       <input 
         type="text" 
         value="{{ session.user.username }}"
         name="username"
         maxlength="20"
-        class="rounded-md h-8 px-2 dark:bg-neutral-700 dark:text-neutral-200"
+        class="rounded-md h-8 min-w-0 px-2 dark:bg-neutral-700 dark:text-neutral-200"
       >
     </div>
 
     <!-- Theme Switcher -->
-    <div class="flex flex-row items-center mb-4">
+    <div class="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center mb-4">
       <span class="mr-2">Toggle Theme: </span>
 
       <button class="bg-nord-3 text-nord-6 dark:bg-neutral-700 dark:text-neutral-200 rounded-lg w-32 h-8 flex justify-center items-center" onclick="toggle_colour_scheme()">
@@ -36,24 +36,24 @@
     </div>
 
     <!-- Bottom Bar -->
-    <div class="flex flex-row mt-auto">
+    <div class="flex flex-col space-y-2 md:space-y-0 md:flex-row mt-auto">
       
-      <!-- Log Out -->
-      <a class="flex justify-center items-center w-32 h-10 rounded-md bg-nord-3 dark:bg-polll-blue text-nord-6 dark:text-nord-0 cursor-default"
-         href="{{ url_for('auth.logout') }}"
-         hx-boost="false">
-        <span>Log Out</span>
-        <i class="ml-2 fa-solid fa-arrow-left"></i>
-      </a>
-
       <!-- Save Settings -->
-      <button class="flex justify-center items-center w-32 h-10 rounded-md ml-auto bg-polll-green text-nord-0 cursor-default"
+      <button class="flex justify-center items-center w-32 h-10 rounded-md bg-polll-green text-nord-0 cursor-default"
         hx-get="{{ url_for('home.save_settings') }}"
         hx-include="[name='username']"
         hx-swap="none"
       >
         <span>Save Changes</span>
       </button>
+
+      <!-- Log Out -->
+      <a class="flex justify-center items-center w-32 h-10 rounded-md bg-nord-3 ml-0 md:ml-auto dark:bg-polll-blue text-nord-6 dark:text-nord-0 cursor-default"
+         href="{{ url_for('auth.logout') }}"
+         hx-boost="false">
+        <span>Log Out</span>
+        <i class="ml-2 fa-solid fa-arrow-left"></i>
+      </a>
 
     </div>
 

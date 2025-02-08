@@ -57,6 +57,7 @@ function update_answer_editor(poll_type) {
 }
 
 function toggle_comments(poll_id) {
+  console.log("here")
   comments = document.getElementById("poll-comments-" + poll_id);
   toggle = document.getElementById("comments-toggle-" + poll_id);
 

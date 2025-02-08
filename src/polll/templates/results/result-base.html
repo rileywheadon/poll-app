@@ -85,16 +85,18 @@
 
     <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
-      class="ml-auto px-4 h-8 rounded-xl text-sm py-1 bg-neutral-300 hover:bg-white flex items-center justify-center select-none text-neutral-900"
+      class="ml-auto px-4 py-1 h-8 rounded-xl text-sm bg-neutral-300 hover:bg-white flex items-center justify-center select-none text-neutral-900"
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
       hx-swap="none"
     >
       <div class="whitespace-nowrap">
-        <span id="comments-toggle-{{ poll.id }}">Show Comments</span> 
+        <span id="comments-toggle-{{ poll.id }}">
+          <p class="hidden md:inline">Show Comments</p>
+        </span>
         <span id="comments-count-{{ poll.id }}">
-          &nbsp({{ poll.comment_count }})
+          &nbsp{{ poll.comment_count }}
         </span>
       </div>
       <i class="fa fa-message pl-2 text-l"></i>
@@ -106,8 +108,8 @@
       hx-target="#poll-graph-{{ poll.id }}"
       hx-swap="none"
     >
-      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle">Show Results</span>
-      <i class="fa fa-chart-simple pl-2 text-xl"></i>
+      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden md:inline">Show Results</span>
+      <i class="fa fa-chart-simple pl-2 pr-2 text-xl"></i>
     </button>
 
   </div>

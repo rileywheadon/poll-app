@@ -19,13 +19,8 @@ Frontend Changes:
 ## Matt
 
 
-- ### Important:
-
-- [ ] Tier list results toggle between user and average response
-- [ ] Fix Tier list breakpoint issues
-- [ ] Improve the look and feel of **everything**
-- [ ] Fix choose many bar graph
-- [ ] Add the accordion animation to the results/comments div on hide/show press
+- ### GET THIS SHIT DONE:
+- [ ] Add breakpoints to settings
 
 # Roadmap
 
@@ -63,7 +58,7 @@ Frontend Changes:
     - [ ] List current features offered and promised in the future
     - [ ] Stripe checkout implementation
 - [ ] Abstract the user profile code so that it can be resued for when the user clicks on another user's profile
-
+- [ ] Add a hint that shows how to pin to homescreen
 
 
 †premium feature - would be displayed as locked behind a subscription such that the locked icon leads to the payment page
