@@ -296,8 +296,16 @@ def result(poll_id):
         template = render_template("results/tier-list.html", poll=poll)
         reswap = "innerHTML"
 
+    
+    is_visible = True
+
     r = make_response(template)
-    graph = '{"graph": ' + json.dumps(poll) + '}'
+    graph = '{"graph": ' + json.dumps(poll) + ', "is_visible": ' + str(is_visible).lower() + '}'
+
+    print("\n\n\n")
+    print(graph)
+    print("\n\n\n")
+
     r.headers.set("HX-Trigger-After-Settle", graph)
     r.headers.set("HX-Reswap", reswap)
     return r

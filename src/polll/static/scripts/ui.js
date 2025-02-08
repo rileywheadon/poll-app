@@ -36,6 +36,18 @@ function remove_poll_answer(button) {
 
 }
 
+function toggle_home_menu() {
+  sidebar = document.getElementById("home-sidebar");
+  content = document.getElementById("home-content");
+
+  if (sidebar.classList.contains("hidden")) {
+    sidebar.classList.remove("hidden");
+    content.classList.add("hidden");
+  } else {
+    sidebar.classList.add("hidden");
+    content.classList.remove("hidden");
+  }
+}
 
 function update_answer_editor(poll_type) {
 
@@ -57,6 +69,7 @@ function update_answer_editor(poll_type) {
 }
 
 function toggle_comments(poll_id) {
+  console.log("here")
   comments = document.getElementById("poll-comments-" + poll_id);
   toggle = document.getElementById("comments-toggle-" + poll_id);
 
@@ -143,12 +156,16 @@ function handle_tier_select(poll_id, tier) {
 
 }
 
-function toggle_custom_endpoints() {
+function toggle_custom_endpoints(toggle) {
   document.getElementById("endpoint-editor").classList.toggle("hidden");
   document.getElementById("endpoint-left").value = "";
   document.getElementById("endpoint-right").value = "";
 }
 
+function toggle_tier_results(toggle) {
+  [document.getElementById(`tier-results-user-${toggle.id}`), document.getElementById(`tier-results-average-${toggle.id}`)].forEach((e) => e.classList.toggle("hidden"));
+  document.getElementById(`text-${toggle.id}`).innerHTML == "Average" ? document.getElementById(`text-${toggle.id}`).innerHTML = "You" : document.getElementById(`text-${toggle.id}`).innerHTML = "Average";
+}
 
 function handle_rank_select(poll_id, ans_id) {
 
@@ -184,4 +201,3 @@ function clear_ranking(poll_id) {
     e.disabled = false;
   })
 }
-

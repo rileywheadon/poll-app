@@ -21,7 +21,6 @@ class FlaskSessionStorage(SyncSupportedStorage):
         if key in self.storage:
             self.storage.pop(key, None)
 
-
 url = os.environ.get("SUPABASE_URL")
 key = os.environ.get("SUPABASE_KEY")
 

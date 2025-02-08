@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+Internal Server Error
+{% endblock %}
+
+{% block body %}
+
+<div class="w-full h-full min-h-screen text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200 p-10">
+  <h1 class="text-3xl mb-4">500 - Internal Server Error</h1>
+  <p class="mb-2">If you're attempting to log in, your link may be invalid.</p>
+  <p class="mb-2">Otherwise, it may be an issue with Polll. Sorry!</p>
+  <p class="mb-2">To return to the home page, click 
+    <a class="text-polll-blue" href="{{ url_for('home.feed') }}">here</a>.
+  </p>
+</div>
+
+{% endblock %}
+

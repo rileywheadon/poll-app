@@ -1,25 +1,26 @@
+{% import 'macros.jinja' as macs %}
 {% if not session.user.on_cooldown %}
 
 <!-- Image + create container -->
 <div class="flex flex-col h-full space-y-4 pb-2">
 
   <!-- Image row -->
-  <div class="flex flex-row justify space-x-4">
+  <div class="flex flex-row justify space-x-2 md:space-x-6">
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
-        type="radio" 
+        type="radio"
         name="poll_type" 
         value="CHOOSE_ONE"
         onclick="update_answer_editor('choose_one')"
         autocomplete="off"
         checked
       >
-      <img class="min-w-10" src="../../static/assets/choose-one.png"/>
+      <img id="logo-choose-one" class="min-w-10" src="../../static/assets/choose-one-dark.png"/>
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -27,10 +28,10 @@
         value="CHOOSE_MANY"
         onclick="update_answer_editor('choose_many')"
       >
-      <img class="min-w-10" src="../../static/assets/choose-many.png"/>
+      <img id="logo-choose-many" class="min-w-10" src="../../static/assets/choose-many-dark.png"/>
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Scale">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -39,11 +40,11 @@
         onclick="update_answer_editor('numeric_scale')"
         autocomplete="off"
       >
-      <img class="min-w-10" src="../../static/assets/scale.png"/>
+      <img id="logo-scale" class="min-w-10" src="../../static/assets/scale-dark.png"/>
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -52,11 +53,11 @@
         onclick="update_answer_editor('ranked_poll')"
         autocomplete="off"
       >
-      <img class="min-w-10" src="../../static/assets/ranking.png"/>
+      <img id="logo-ranking" class="min-w-10" src="../../static/assets/ranking-dark.png"/>
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-200 m-2 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -65,7 +66,7 @@
         onclick="update_answer_editor('tier_list')"
         autocomplete="off"
       >
-      <img class="min-w-10" src="../../static/assets/tier-list.png"/>
+      <img id="logo-tier-list" class="min-w-10" src="../../static/assets/tier-list-dark.png"/>
     </label>
     
   </div>
@@ -119,17 +120,7 @@
       <!-- Custom scale endpoints input -->
       <div id="endpoint-container" class="hidden flex flex-col">
 
-        <label class="inline-flex items-center cursor-default">
-          <input 
-            onclick="toggle_custom_endpoints()" 
-            id="endpoint-toggle" 
-            type="checkbox" 
-            class="sr-only peer"
-            autocomplete="off"
-          >
-          <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-          <span class="ml-2 text-sm font-light">Custom Endpoints</span>
-        </label>
+        {{ macs.toggleButton("endpoint-toggle", "toggle_custom_endpoints", "Custom Endpoints") }}
 
         <div id="endpoint-editor" class="hidden flex flex-row p-4 space-x-3 justify-center items-center">
           <input id="endpoint-left"
@@ -150,14 +141,15 @@
     </div>
 
     <!-- Boards -->
-    <div class="flex flex-row items-center mt-auto px-10 pb-2">
+    <div class="flex flex-col md:flex-row md:items-center mt-auto px-10 pb-2">
 
       <!-- SELECT BOARD -->
-      <span class="mr-2">Select Boards:</span>
+      <div class="mb-4 md:mb-0"> 
+        <span class="mr-2">Select Boards:</span>
 
-      {% for id, board in session.boards.items() %}
+        {% for id, board in session.boards.items() %}
 
-        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-800 bg-neutral-800 has-[:checked]:border-polll-blue {% if board.primary %}border-polll-blue{% endif %}">
+        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-200 bg-neutral-200 dark:bg-neutral-800 has-[:checked]:border-polll-blue dark:border-neutral-200 {% if board.primary %} border-polll-dgreen dark:border-polll-green {% endif %}">
           {{ board.name }}
           <!-- Very unfourtunate hack to prevent all from being unselected -->
           {% if board.primary %}
@@ -179,9 +171,25 @@
             >
           {% endif %}
 
-        </label>
+          </label>
 
-      {% endfor %}
+        {% endfor %}
+      </div>
+
+      <!-- SET CREATION DATE (ADMIN ONLY)  -->
+      {% if session.user.is_admin %}
+
+      <div class="mb-2 md:mb-0 md:ml-auto">
+        <span class="mr-2">Creation Date:</span>
+        <input 
+          class="poll-create h-8 rounded-md bg-neutral-300 dark:bg-neutral-800 px-2" 
+          type="date" 
+          name="created_at"
+        >
+      </div>
+
+      {% endif %}
+
 
     </div>
 
@@ -206,7 +214,7 @@
       </div>
     
       <!-- SUBMIT BUTTON -->
-      <button class="rounded-xl bg-polll-blue hover:bg-polll-green text-black h-8 px-4 ml-auto" 
+      <button class="rounded-xl bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green text-black h-8 px-4 ml-auto" 
         hx-get="{{ url_for('home.create_poll') }}" 
         hx-target="#create-card" 
         hx-swap="innerHTML" 

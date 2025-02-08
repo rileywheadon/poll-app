@@ -1,28 +1,30 @@
 # polll
 
-## Subscriptions
+## Paid Subscriptions
 
-| Subscription            | Expiry     | Price     |
-|-------------------------|------------|-----------|
-| [polll.org](polll.org)  | 11/24/2025 | $10/year  |
-| admin@polll.org         | 02/23/2025 | $2/month  |
+| Subscription           | Renews     | Price     |
+| ---------------------- | ---------- | --------- |
+| [polll.org](polll.org) | 11/24/2025 | \$10/year |
+| Heroku (Dyno)          | Monthly    | \$7/month |
+| Heroku (Redis)         | Monthly    | \$3/month |
 
 ## Technology Stack
 
-[Hatch](https://hatch.pypa.io/1.9/) for project management (i.e. publishing, versioning, etc.)
+[Flask](https://flask.palletsprojects.com/en/stable/) (Python) as a web server.
 
-[Flask](https://flask.palletsprojects.com/en/stable/) (Python) for handling HTTP requests and reading/writing to the database:
+[Flask-Session](https://flask-session.readthedocs.io/en/latest/) and [Redis](https://redis.io/) for Server-Side sessions.
 
-- [Pytest](https://docs.pytest.org/en/stable/) and [Coverage](https://coverage.readthedocs.io/en/7.6.9/) for testing
-- [Authlib](https://authlib.org/), [python-dotenv](https://pypi.org/project/python-dotenv/), and [requests](https://docs.python-requests.org/en/latest/index.html) for authentication with [Auth0](https://auth0.com/)
+[Supabase](https://supabase.com/) for all things backend and user authentication.
 
-[SQLite3](https://docs.python.org/3/library/sqlite3.html) as a database. [Here](https://www.sqlitetutorial.net/) is a good introduction to this technology.
+[HTMX](https://htmx.org/) for additional front-end functionality (more nuanced HTTP requests/responses).
 
-[HTMX](https://htmx.org/) for additional front-end functionality (more nuanced HTTP requests/responses)
+[TailwindCSS](https://tailwindcss.com/) as a CSS framework.
 
-[TailwindCSS](https://tailwindcss.com/) for front-end design
+[Heroku](https://www.heroku.com/) as an application platform.
 
-[Railway](https://railway.com/) for hosting the prototype, [Google Cloud](https://cloud.google.com/?hl=en) for hosting production
+[Cloudflare](https://www.cloudflare.com/) for DNS management and security.
+
+[Resend](https://resend.com/) as an SMTP provider (sending verification emails to users).
 
 ### Philosophy
 
@@ -38,23 +40,20 @@ If the answer to all three of the questions is "yes", add the new technology to 
 
 `/requirements.txt` contains dependencies (see [Setup Instructions](#setup-instructions)).
 
-`/tests` should contains unit tests (TBD).
-
-`/src/instance` and `/src/migrations` store database files and can be ignored.
-
 `/src/app.py` launches the app (see [Setup Instructions](#setup-instructions)).
 
 `/src/polll` contains the source code for the app:
 
-- `/templates` contains the [Jinja2](https://jinja.palletsprojects.com/en/stable/) templates used to generate the app
-- `/static` contains static files (i.e. images, the logo, etc.)
+- `__init__.py` contains the application factory that is responsible for creating the app
+- `/templates` contains [Jinja2](https://jinja.palletsprojects.com/en/stable/) templates
+- `/static` contains static files (i.e. images, the logo, scripts, stylesheets)
 - `/results` contains database queries for getting poll results
-- `auth.py` sets up the user authentication blueprint with Auth0
-- `poll.py` implements the main HTTP routes used by users
-- `admin.py` implements additional HTTP routes for the administrator
-- `db.py` creates a database connection with the SQLite3 database
+- `/queries` contains a list of SQL queries used by Supabase (NOTE: these are just for reference)
+- `auth.py`, `poll.py`, `home.py`, `comment.py`, `admin.py` contain HTTP endpoints
+- `db.py` creates a database connection with Supabase
 - `responses.py` updates the database when the user responds to a poll
 - `results.py` queries the database to get results when the user views a poll
+- `utils.py` contain various helper functions
 
 ## Setup Instructions
 
@@ -64,7 +63,6 @@ In order to run the app locally, you will need a [Virtual Environment](https://d
 - Run `python3 -m venv venv`. This will create a new virtual environment called `venv` within the root directory of the project.
 - Run `source venv/bin/activate` to enter the virtual environment.
 - Use `pip install -r requirements.txt` to install the packages listed in `requirements.txt` in the virtual environment.
-- If having id issues /logout on the url
 
 To run the app, type `python3 src/app.py` into a terminal from the root directory.
 
@@ -74,7 +72,15 @@ If you are making changes to the HTML using TailwindCSS, you will also need to e
 ./tailwindcss-macos -i input.css -o output.css --watch
 ```
 
-I made an effort to remove some of the unnecessary files (some of which were also a security risk) from the Github repository. Therefore, these instructions may not be 100% complete. Just let me know if you have an issue.
+Finally, you will have to install the [Redis](https://redis.io/) CLI and run a redis server in _another_ terminal using the following command:
+
+```
+redis-server
+```
+
+I made an effort to remove some of the unnecessary files (some of which were also a security risk) from the Github repository. Therefore, these instructions may not be 100% complete. Just let me know if you have an issue. In particular, you may require the `cert.pem`, `key.pem`, and `.env` files. I can provide these upon request.
+
+Note: run redis-server
 
 ## Git
 
@@ -87,7 +93,3 @@ If you would like to contribute code to the project, you must have a working und
 - How do I commit my changes to a branch and then create a pull request?
 
 Please write clear commit messages in the present tense (i.e. "Update response UI" instead of "Updated response UI"). Additionally, try to make a commit every time you make a signfiicant change. I am happy to get involved with the trickier parts of `git` (i.e. merge conflicts), but you should be able to handle most stuff (i.e. pulling changes, committing to a branch, opening a pull request) on your own.
-
-## Mail Setup
-
-See the instructions [here](https://www.namecheap.com/support/knowledgebase/article.aspx/9188/2175/gmail-fetcher-setup-for-namecheap-private-email/) to link the company email to your personal gmail account. Our company email address is admin@polll.org. Please set your name to "Admin" to retain anonymity. When choosing a port to send from, use SSL on port 465. Contact me for the email account password and the development account password (these are not the same).

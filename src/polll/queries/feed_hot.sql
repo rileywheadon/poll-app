@@ -54,7 +54,7 @@ RETURNS TABLE(
   GROUP BY poll.id, "user".username
   ORDER BY 
     poll.is_pinned DESC, 
-    COUNT(DISTINCT response.id)/EXTRACT(SECONDS from poll.created_at) DESC 
+    COUNT(DISTINCT response.id)/(EXTRACT(EPOCH from now()) - EXTRACT(EPOCH from poll.created_at)) DESC 
   LIMIT lim
   OFFSET lim * page;
 $$ LANGUAGE sql;

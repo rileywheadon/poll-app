@@ -7,9 +7,22 @@ from flask import Flask, redirect, render_template, session, url_for, g
 from flask_session import Session
 from supabase import create_client, Client
 
+
+# Error handler for 404 Not Found
+def error_404(e):
+    return render_template("404.html"), 404
+
+
+# Error handler for 500 Internal Server Error
+def error_500(e):
+    return render_template("500.html"), 500
+
+
 # Initialize the session
 sess = Session()
 
+
+# Application factory
 def create_app():
 
     # Create a new Flask application
@@ -41,10 +54,13 @@ def create_app():
     # Add the server-side session
     sess.init_app(app)
 
-    # Import utilities
-    from .utils import smooth_hist, format_time
-    app.jinja_env.globals.update(smooth_hist=smooth_hist)
-    app.jinja_env.globals.update(format_time=format_time)
+    # Register error handlers
+    app.register_error_handler(404, error_404)
+    app.register_error_handler(500, error_500)
+
+    # Import some formatting functions for use in Jinja templates 
+    app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
+    app.jinja_env.globals.update(format_time=utils.format_time)
     app.jinja_env.filters['zip'] = zip
 
     # Import the blueprints

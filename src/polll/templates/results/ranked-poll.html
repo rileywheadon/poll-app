@@ -20,8 +20,8 @@
 
       <!-- User box -->
       <div class="flex flex-row pt-10  {% if not poll.response %} hidden {% endif %}">
-        <div class="flex border-4 p-4 border-polll-green w-full justify-center items-center">
-          <p class="flex text-white font-light hover:cursor-default justify-center items-center">
+        <div class="flex border-4 p-4 border-polll-dgreen dark:border-polll-green w-full justify-center items-center">
+          <p class="flex text-neutral-700 dark:text-neutral-200 font-light hover:cursor-default justify-center items-center">
             {% if poll.response %}
               {{ poll.response[loop.index0].answer }}
             {% endif %}
@@ -32,7 +32,7 @@
       <!-- Average Box -->
       <div class="flex flex-row pt-10 justify-center items-center">
         <div class="border-4 border-polll-blue p-4 w-full justify-left items-center">
-          <p class="flex text-white font-light hover:cursor-default justify-center items-center">
+          <p class="flex text-neutral-700 dark:text-neutral-200 font-light hover:cursor-default justify-center items-center">
             {{ result.answer }}
           </p>
         </div>
