@@ -137,8 +137,6 @@ def login():
 @auth.route("/auth/register", methods=["GET", "POST"])
 def register():
 
-    
-
     db = get_db()
     email = request.form.get("email")
     username = request.form.get("username")
@@ -197,7 +195,7 @@ def requires_auth(f):
         true_user = db.auth.get_user()
 
         # If the user doesn't exist, redirect them to the index
-        if not user:
+        if not true_user:
             return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
