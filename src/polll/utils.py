@@ -76,7 +76,9 @@ def format_timestamp(string):
     timestamp = datetime.fromisoformat(string)
     age = datetime.now().astimezone() - timestamp
 
-    if age.days > 0:
+    if age.days > 7:
+        return f"{age.days // 7}w"
+    elif age.days > 0:
         return f"{age.days}d"
     elif age.seconds // 3600 > 0:
         return f"{age.seconds // 3600}h"

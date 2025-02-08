@@ -16,16 +16,30 @@ def index():
     return render_template("index.html")
 
 
-# Authentication page endpoint
-@auth.route('/<action>')
-def authenticate(action):
+# Login page endpoint
+@auth.route('/login')
+def login_page():
 
     # If the user is already logged in, go to the feed
-    if session.get("user"):
+    db = get_db()
+    if db.auth.get_user() and session.get("user"):
         return redirect(url_for("home.feed"))
 
     error = request.args.get("error")
-    return render_template("auth/authentication.html", action=action, error=error)
+    return render_template("auth/authentication.html", action="login", error=error)
+
+
+# Register page endpoint
+@auth.route('/register')
+def register_page():
+
+    # If the user is already logged in, go to the feed
+    db = get_db()
+    if db.auth.get_user() and session.get("user"):
+        return redirect(url_for("home.feed"))
+
+    error = request.args.get("error")
+    return render_template("auth/authentication.html", action="register", error=error)
 
 
 # Callback after email verification
@@ -79,8 +93,13 @@ def callback():
 
 
 # Helper function to throw a redirect with a given error
-def invalid_login(action, error):
-    return redirect(url_for("auth.authenticate", action=action, error=error))
+def invalid_auth(action, error):
+    if action == "login":
+        return redirect(url_for("auth.login_page", error=error))
+    if action == "register":
+        return redirect(url_for("auth.register_page", error=error))
+    
+    return ""
 
 
 # Login endpoint
@@ -103,7 +122,7 @@ def login():
     try:
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
-        return invalid_login("login", "email")
+        return invalid_auth("login", "email")
 
     return render_template("auth/verify-email.html")
 
@@ -118,17 +137,17 @@ def register():
 
     # If the username is empty, throw an error
     if not username:
-        return invalid_login("register", "name")
+        return invalid_auth("register", "name")
 
     # If the email is already in the users table, throw an error
     res = db.table("user").select("*").eq("email", email).execute()
     if res.data:
-        return invalid_login("register", "duplicate_email")
+        return invalid_auth("register", "duplicate_email")
 
     # If the username is already in the users table, throw an error
     res = db.table("user").select("*").eq("username", username).execute()
     if res.data:
-        return invalid_login("register", "duplicate_name")
+        return invalid_auth("register", "duplicate_name")
 
     # Create dictionary of data for the registration
     register_data = {
@@ -167,14 +186,14 @@ def requires_auth(f):
 
         db = get_db()
         user = session.get("user")
-        true_user = db.auth.get_user().user
+        true_user = db.auth.get_user()
 
         # If the user doesn't exist, redirect them to the index
         if not true_user:
             return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
-        if true_user.user_metadata["email"] != user["email"]:
+        if true_user.user.user_metadata["email"] != user["email"]:
             return redirect(url_for("auth.logout"))
 
         return f(*args, **kwargs)
@@ -184,24 +203,25 @@ def requires_auth(f):
 
 # Decorator for checking if a user is administrator
 def requires_admin(f):
+
     @wraps(f)
     def decorated(*args, **kwargs):
 
         db = get_db()
         user = session.get("user")
-        true_user = db.auth.get_user().user
+        true_user = db.auth.get_user()
 
         # If the user doesn't exist, redirect them to the index
         if not true_user:
             return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
-        if true_user.user_metadata["email"] != user["email"]:
+        if true_user.user.user_metadata["email"] != user["email"]:
             return redirect(url_for("auth.logout"))
 
         # If the user is not an administrator, redirect them to the feed
         emails = env.get("ADMIN_EMAILS").split(" ")
-        if true_user.user_metadata["email"] not in emails:
+        if true_user.user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 
         return f(*args, **kwargs)

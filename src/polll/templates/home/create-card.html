@@ -183,6 +183,19 @@
 
       {% endfor %}
 
+      <!-- SET CREATION DATE (ADMIN ONLY)  -->
+      {% if session.user.is_admin %}
+
+        <span class="ml-auto mr-2">Creation Date:</span>
+        <input 
+          class="poll-create h-8 rounded-md bg-neutral-300 dark:bg-neutral-800 px-2" 
+          type="date" 
+          name="created_at"
+        >
+
+      {% endif %}
+
+
     </div>
 
     <!-- Footer -->

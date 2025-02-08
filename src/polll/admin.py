@@ -65,7 +65,7 @@ def refresh():
     # Fetch the user so they can be rendered by the client
     user = session["users"][int(user_id)]
     user["next_poll_allowed"] = now
-    user["on_cooldown"] = on_cooldown(user)
+    user["on_cooldown"] = False
 
     # UI Changes are handled in Javascript
     session.modified = True

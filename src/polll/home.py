@@ -170,6 +170,7 @@ def create_poll():
     poll_type = request.args.get("poll_type")
     endpoint_left = request.args.get("endpoint_left")
     endpoint_right = request.args.get("endpoint_right")
+    created_at = request.args.get("created_at")
     is_anonymous = 1 if request.args.get("poll_anonymous") else 0
 
     # Get request data for creating the answer and poll_board connections
@@ -201,6 +202,10 @@ def create_poll():
         "is_anonymous": is_anonymous,
     }
 
+    # If the user is an administrator and they set the created_at field, add it
+    if created_at and session["user"]["is_admin"]:
+        poll_data["created_at"] = created_at
+
     db = get_db()
     res = db.table("poll").insert(poll_data).execute()
     poll_id = res.data[0]["id"]
@@ -227,13 +232,15 @@ def create_poll():
     last_poll_time = datetime.now()
     next_poll_time = last_poll_time
 
-    # If the user is not an administrator, increment next_poll_allowed by one day
+    # If the user is not an administrator, set next_poll_allowed to midnight
     if not session["user"]["is_admin"]:
+        next_poll_time = last_poll_time.replace(hour = 0, minute = 0, second = 0)
         next_poll_time += timedelta(days=1)
 
     # Update the current user's information in the database
     last_poll_created = last_poll_time.astimezone().isoformat()
     next_poll_allowed = next_poll_time.astimezone().isoformat()
+
     res = db.table("user").update({
         "last_poll_created": last_poll_created,
         "next_poll_allowed": next_poll_allowed

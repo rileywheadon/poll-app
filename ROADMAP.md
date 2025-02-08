@@ -1,21 +1,5 @@
 # Development Checklist
 
-## Riley
-
-### Merge
-
-Frontend Changes:
-
-- Change enter event listener in `/create`
-- Left menu is not mobile compatible
-- Scale endpoints getting cut off
-
-### Production
-
-- Integrate the supabase CLI with github and create a branch
-- https://makerkit.dev/docs/next-supabase-turbo/going-to-production/supabase
-- https://flask.palletsprojects.com/en/stable/deploying/
-
 ## Matt
 
 - [ ] Tier list results toggle between user and average response

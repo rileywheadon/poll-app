@@ -43,13 +43,13 @@
         <div class="flex flex-col md:flex-row">
           <a 
             class="bg-polll-green text-xl text-nord-0 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center drop-shadow-xl"
-            href="{{ url_for('auth.authenticate', action='register') }}"
+            href="{{ url_for('auth.register_page') }}"
           >
             Register
           </a>
           <a 
             class="bg-polll-blue text-xl text-nord-0 dark:text-nord-0 rounded-lg grow h-12 m-4 flex justify-center items-center drop-shadow-xl"
-            href="{{ url_for('auth.authenticate', action='login') }}"
+            href="{{ url_for('auth.login_page') }}"
           >
             Log In
           </a>
