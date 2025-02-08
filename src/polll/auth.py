@@ -2,7 +2,7 @@ import os
 
 from datetime import datetime
 from functools import wraps
-from flask import Blueprint, url_for, session, redirect, render_template, request, jsonify
+from flask import Blueprint, url_for, session, redirect, render_template, request
 from .db import get_db
 from gotrue.errors import AuthApiError
 from dotenv import dotenv_values
@@ -47,8 +47,6 @@ def register_page():
 # Callback after email verification
 @auth.route('/auth/confirm')
 def callback():
-
-    session["state"] = {}
 
     # Verify the magic link request
     db = get_db()
@@ -126,10 +124,8 @@ def login():
 
     # Catch invalid email address errors
     try:
-        print(login_data)
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
-        print(e.message)
         return invalid_auth("login", "email")
 
     return render_template("auth/verify-email.html")
@@ -172,7 +168,7 @@ def register():
     try:
         res = db.auth.sign_in_with_otp(register_data)
     except AuthApiError as e:
-        return redirect(url_for("auth.authenticate", action="register", error="email"))
+        return invalid_auth("register", "email")
 
     return render_template("auth/verify-email.html")
 
