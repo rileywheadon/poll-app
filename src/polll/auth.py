@@ -21,7 +21,10 @@ def index():
 # Login page endpoint
 @auth.route('/login')
 def login_page():
+
     print("IN LOGIN_PAGE", request.args.get("error"))
+    print("TRUE USER", db.auth.get_user())
+    print("SESSION USER", session.get("user"))
 
     # If the user is already logged in, go to the feed
     db = get_db()
@@ -35,7 +38,10 @@ def login_page():
 # Register page endpoint
 @auth.route('/register')
 def register_page():
+
     print("IN REGISTER_PAGE", request.args.get("error"))
+    print("TRUE USER", db.auth.get_user())
+    print("SESSION USER", session.get("user"))
 
     # If the user is already logged in, go to the feed
     db = get_db()
