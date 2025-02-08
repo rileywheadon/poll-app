@@ -21,6 +21,7 @@ def index():
 # Login page endpoint
 @auth.route('/login')
 def login_page():
+    print("IN LOGIN_PAGE", request.args.get("error"))
 
     # If the user is already logged in, go to the feed
     db = get_db()
@@ -34,6 +35,7 @@ def login_page():
 # Register page endpoint
 @auth.route('/register')
 def register_page():
+    print("IN REGISTER_PAGE", request.args.get("error"))
 
     # If the user is already logged in, go to the feed
     db = get_db()
@@ -90,14 +92,16 @@ def callback():
     session["boards"] = {b["id"] : b for b in res.data}
     session["state"] = {}
 
+    print("SESSION:", dict(session))
+
     # Render the home.feed template
     session.modified = True
-    session.permanent = True
     return redirect(url_for('home.feed'))
 
 
 # Helper function to throw a redirect with a given error
 def invalid_auth(action, error):
+    print("IN INVALID AUTH", action, error)
     if action == "login":
         return redirect(url_for("auth.login_page", error=error))
     if action == "register":
@@ -123,9 +127,11 @@ def login():
     }
 
     # Catch invalid email address errors
+    print("LOGIN_DATA": login_data)
     try:
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
+        print("ERROR": e.message)
         return invalid_auth("login", "email")
 
     return render_template("auth/verify-email.html")
@@ -165,9 +171,11 @@ def register():
     }
 
     # Catch invalid email address errors
+    print("REGISTER_DATA": register_data)
     try:
         res = db.auth.sign_in_with_otp(register_data)
     except AuthApiError as e:
+        print("ERROR": e.message)
         return invalid_auth("register", "email")
 
     return render_template("auth/verify-email.html")
