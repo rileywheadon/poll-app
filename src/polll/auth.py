@@ -26,7 +26,7 @@ def login_page():
     db = get_db()
     print("IN LOGIN_PAGE", request.args.get("error"))
     print("TRUE USER", db.auth.get_user())
-    print("SESSION USER", session.get("user"))
+    print("SESSION", dict(session))
 
     if db.auth.get_user() and session.get("user"):
         return redirect(url_for("home.feed"))
@@ -43,7 +43,7 @@ def register_page():
     db = get_db()
     print("IN REGISTER_PAGE", request.args.get("error"))
     print("TRUE USER", db.auth.get_user())
-    print("SESSION USER", session.get("user"))
+    print("SESSION", dict(session))
 
     if db.auth.get_user() and session.get("user"):
         return redirect(url_for("home.feed"))
@@ -102,6 +102,7 @@ def callback():
 
     # Render the home.feed template
     session.modified = True
+    session.permanent = True
     return redirect(url_for('home.feed'))
 
 
