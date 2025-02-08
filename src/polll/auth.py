@@ -22,12 +22,12 @@ def index():
 @auth.route('/login')
 def login_page():
 
+    # If the user is already logged in, go to the feed
+    db = get_db()
     print("IN LOGIN_PAGE", request.args.get("error"))
     print("TRUE USER", db.auth.get_user())
     print("SESSION USER", session.get("user"))
 
-    # If the user is already logged in, go to the feed
-    db = get_db()
     if db.auth.get_user() and session.get("user"):
         return redirect(url_for("home.feed"))
 
@@ -39,12 +39,12 @@ def login_page():
 @auth.route('/register')
 def register_page():
 
+    # If the user is already logged in, go to the feed
+    db = get_db()
     print("IN REGISTER_PAGE", request.args.get("error"))
     print("TRUE USER", db.auth.get_user())
     print("SESSION USER", session.get("user"))
 
-    # If the user is already logged in, go to the feed
-    db = get_db()
     if db.auth.get_user() and session.get("user"):
         return redirect(url_for("home.feed"))
 
