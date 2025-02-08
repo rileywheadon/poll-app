@@ -59,8 +59,9 @@ def create_app():
     app.register_error_handler(500, error_500)
 
     # Import some formatting functions for use in Jinja templates 
-    app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
-    app.jinja_env.globals.update(format_time=utils.format_time)
+    from .utils import smooth_hist, format_time
+    app.jinja_env.globals.update(smooth_hist=smooth_hist)
+    app.jinja_env.globals.update(format_time=format_time)
     app.jinja_env.filters['zip'] = zip
 
     # Import the blueprints
