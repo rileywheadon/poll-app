@@ -10,29 +10,28 @@
     />
   </a>
 
-  <!-- Settings menu (appears only when not in the administrator menu) -->
-  {% if not session.state.admin %}
-
-    <!-- A pesky Javascript function is also needed to set the blur on the main div -->
-    <button 
-      class="!ml-auto bg-neutral-700 rounded-lg w-9 h-9 flex justify-center items-center" 
-      hx-get="{{ url_for('home.open_settings') }}"
-      hx-target="#settings"
-      hx-swap="innerHTML"
-      hx-on::after-request="open_settings();"
-    >
-      <i id="settings-icon" class="fas fa-gear text-xl cursor-pointer"></i>
-    </button>
-  {% endif %}
+  <!-- Hamburger Menu -->
+  <a 
+    class="md:hidden !ml-auto bg-neutral-700 rounded-lg w-10 h-10 flex justify-center items-center" 
+    onclick="toggle_home_menu()"
+  >
+    <i class="fa-solid fa-bars text-xl"></i>
+  </a>
 
   <!-- Admin panel, if logged in as administrator -->
   {% if session.user.is_admin %} 
     {% if session.state.admin %}
-      <a class="!ml-auto bg-neutral-700 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('home.feed') }}">
+      <a 
+        class="!ml-auto bg-neutral-700 rounded-lg w-24 h-10 flex justify-center items-center" 
+        href="{{ url_for('home.feed') }}"
+      >
         Home
       </a>
     {% else %}
-      <a class="bg-neutral-700 rounded-lg w-24 h-10 flex justify-center items-center" href="{{ url_for('admin.users') }}">
+      <a 
+        class="md:!ml-auto bg-neutral-700 rounded-lg w-24 h-10 flex justify-center items-center" 
+        href="{{ url_for('admin.users') }}"
+      >
         Admin
       </a>
     {% endif %} 

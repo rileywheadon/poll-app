@@ -36,6 +36,18 @@ function remove_poll_answer(button) {
 
 }
 
+function toggle_home_menu() {
+  sidebar = document.getElementById("home-sidebar");
+  content = document.getElementById("home-content");
+
+  if (sidebar.classList.contains("hidden")) {
+    sidebar.classList.remove("hidden");
+    content.classList.add("hidden");
+  } else {
+    sidebar.classList.add("hidden");
+    content.classList.remove("hidden");
+  }
+}
 
 function update_answer_editor(poll_type) {
 
