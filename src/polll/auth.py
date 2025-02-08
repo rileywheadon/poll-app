@@ -233,7 +233,7 @@ def requires_admin(f):
 
         # If the user is not an administrator, redirect them to the feed
         emails = os.environ.get("ADMIN_EMAILS").split(" ")
-        if true_user.user_metadata["email"] not in emails:
+        if true_user.user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 
         return f(*args, **kwargs)
