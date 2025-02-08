@@ -2,44 +2,44 @@
 
 <div class="flex flex-row md:flex-col overflow-hidden md:items-start w-full h-full ml-2">
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg"
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
     href="{{ url_for('home.feed') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="text-nord-6 {% if session.state.tab == 'feed' %}text-polll-green{% endif %}">
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'feed' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl  text-base fa-solid fa-fire px-2"></i>
       {% if show_icons %} Feed {% endif %}
     </span>
   </a>
 
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg" 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg" 
     href="{{ url_for('home.history') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="text-nord-6 {% if session.state.tab == 'history' %}text-polll-green{% endif %}">
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'history' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-book px-2"></i>
       {% if show_icons %} History {% endif %}
     </span>
   </a>
 
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg" 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg" 
     href="{{ url_for('home.create') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="text-nord-6 {% if session.state.tab == 'create' %} text-polll-green {% endif %}">
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'create' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-pen underline px-2"></i>
       {% if show_icons %} Create {% endif %}
     </span>
   </a>
 
   <a 
-    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-neutral-800 rounded-lg"
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
     href="{{ url_for('home.mypolls') }}"
     hx-indicator="#home-spinner"
   >
-    <span class="text-nord-6 {% if session.state.tab == 'mypolls' %} text-polll-green {% endif %}">
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'mypolls' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-user px-2"></i>
       {% if show_icons %} {{session.user.username}} {% endif %}
     </span>
@@ -56,11 +56,12 @@
 <label 
   for="{{ answer_id }}"
   class="flex w-1/2 p-2 rounded-lg cursor-default 
-         border-2 border-neutral-700 bg-neutral-800 text-neutral-200
-         hover:text-gray-300 hover:border-neutral-400
+         border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200
+        hover:border-neutral-400 
          peer-checked:border-polll-blue">
   <p class="font-light select-none">{{ answer_content }}</p>
 </label>
+{# removed hover:text-gray-300 from this #}
 
 {% endmacro %}
 
@@ -89,26 +90,26 @@
     
 {% for tier in ["S", "A", "B", "C", "D", "F"] %}
 
-  <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-neutral-400 hover:border-b-2 hover:border-polll-blue {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
+  <div class="flex flex-row border-t-2 border-l-2 border-r-2 border-b border-neutral-700 dark:border-neutral-400 hover:border-b-2 hover:border-polll-blue {% if tier == 'S' %} rounded-t-xl {% elif tier == 'F' %} rounded-b-xl {% endif %}">
 
     <div
       id="{{ tier }}-label" 
-      class="flex flex-wrap min-w-20 w-20 h-auto min-h-20 border-r-2 border-neutral-400 justify-center items-center font-regular text-2xl"
+      class="flex flex-wrap min-w-20 w-20 h-auto min-h-20 border-r-2 border-neutral-700 dark:border-neutral-400 justify-center items-center font-regular text-2xl"
     >
 
       <!-- This if statement IS necessary -->
       {% if tier == "S" %}
-        <span class="text-2xl text-tier-S">{{ tier }}</span>
+        <span class="text-2xl text-tier-S-lm dark:text-tier-S">{{ tier }}</span>
       {% elif tier == "A" %}
-        <span class="text-2xl text-tier-A">{{ tier }}</span>
+        <span class="text-2xl text-tier-A-lm dark:text-tier-A">{{ tier }}</span>
       {% elif tier == "B" %}
-        <span class="text-2xl text-tier-B">{{ tier }}</span>
+        <span class="text-2xl text-tier-B-lm dark:text-tier-B">{{ tier }}</span>
       {% elif tier == "C" %}
-        <span class="text-2xl text-tier-C">{{ tier }}</span>
+        <span class="text-2xl text-tier-C-lm dark:text-tier-C">{{ tier }}</span>
       {% elif tier == "D" %}
-        <span class="text-2xl text-tier-D">{{ tier }}</span>
+        <span class="text-2xl text-tier-D-lm dark:text-tier-D">{{ tier }}</span>
       {% else %}
-        <span class="text-2xl text-tier-F">{{ tier }}</span>
+        <span class="text-2xl text-tier-F-lm dark:text-tier-F">{{ tier }}</span>
       {% endif %}
 
     </div>
@@ -127,14 +128,17 @@
 
       {% for r in results %}
         {% if r.tier == tier %} 
-          <div class="flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default border bg-gray-800 text-gray-400">
+          <div class="flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-400">
             <p class="text-center">{{ r.answer }}</p>
           </div>  
         {% endif %}
       {% endfor %}
 
     </div>
-
+        {#         flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32
+        rounded-lg cursor-default p-4
+        border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-400
+        hover:border-neutral-400 focus:border-polll-blue" #}
     {% endif %}
 
     </div>

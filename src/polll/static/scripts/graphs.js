@@ -117,7 +117,7 @@ function choose_one_options(user_rs, rs, type="pie") {
             },
     
             theme: {
-                mode: "dark",
+                mode: localStorage.getItem("theme")
             },
     
             dataLabels: {
@@ -216,7 +216,7 @@ function choose_one_options(user_rs, rs, type="pie") {
                 return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? user_col : cols["polll-blue"];
               }],
             theme: {
-                mode: "dark",
+                mode: localStorage.getItem("theme")
             },
             tooltip: {
                 enabled: true,
@@ -315,7 +315,7 @@ function choose_many_options(user_rs, rs, type="bar") {
                 }
             },
             theme: {
-                mode: "dark"
+                mode: localStorage.getItem("theme")
             },
             responsive: [{
                 breakpoint: bp,
@@ -346,7 +346,7 @@ function choose_many_options(user_rs, rs, type="bar") {
             height: graph_height,
         },
         theme: {
-            mode: "dark",
+            mode: localStorage.getItem("theme")
         },
         dataLabels: {
             enabled: true,
@@ -461,7 +461,7 @@ function scale_graph_options(poll) {
 
         },
         theme: {
-            mode: "dark"
+            mode: localStorage.getItem("theme")
         },
         annotations: {
             xaxis: [{

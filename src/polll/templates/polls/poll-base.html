@@ -14,7 +14,7 @@
         <i class="ml-auto fa fa-thumbtack text-2xl text-polll-blue rotate-45"></i>
       {% endif %}
       </div>
-    <p class="font-light text-neutral-200 text-2xl">
+    <p class="font-light text-neutral-700 dark:text-neutral-200 text-2xl">
       {{ poll.question }}
     </p>
   </div>
@@ -36,7 +36,7 @@
 
       <!-- Submit Button -->
       <button
-        class="w-fit h-8 mr-4 px-6 py-1 rounded-xl dark:bg-polll-blue dark:hover:bg-polll-green text-neutral-900 flex items-center justify-center"
+        class="mr-4 w-fit h-8 px-6 py-1 rounded-xl bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green text-neutral-900 flex items-center justify-center"
         type="submit"
       >
         <span class="hidden md:flex md:font-medium text-sm text-neutral-900 md:mr-1">Submit</span>
@@ -49,7 +49,7 @@
 
       <!-- Share Button -->
       <button 
-        class="w-10 rounded-md py-1 select-none hover:text-polll-green" 
+        class="w-10 rounded-md py-1 select-none hover:text-polll-dgreen dark:hover:text-polll-green" 
         title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"

@@ -13,7 +13,7 @@
           @{{ poll.creator }}
         {% endif %} ⋅ {{ poll.age }}
       </p>
-      <p class=" font-light text-neutral-200 text-2xl">{{ poll.question }}</p>
+      <p class=" font-light text-neutral-700 dark:text-neutral-200 text-2xl">{{ poll.question }}</p>
     </div>
 
     <!-- If the user created this poll, allow them to edit it -->
@@ -26,7 +26,7 @@
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square hover:text-polll-green">
+        <i class="ml-1 fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
         </i>
       </button>
 
@@ -85,7 +85,7 @@
 
     <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
-      class="ml-auto px-4 py-1 h-8 rounded-xl text-sm bg-neutral-300 hover:bg-white flex items-center justify-center select-none text-neutral-900"
+      class="ml-auto px-4 py-1 h-8 rounded-xl text-sm bg-polll-white hover:bg-neutral-200 dark:hover:bg-white flex items-center justify-center select-none text-neutral-900"
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
@@ -103,7 +103,7 @@
     </button>
     <!-- Show Results -->
     <button
-      class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+      class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
       hx-target="#poll-graph-{{ poll.id }}"
       hx-swap="none"

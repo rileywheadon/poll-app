@@ -7,7 +7,7 @@
   <!-- Image row -->
   <div class="flex flex-row justify space-x-4">
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-green" title="Choose One">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio"
@@ -17,10 +17,10 @@
         autocomplete="off"
         checked
       >
-      <img class="min-w-10" src="../../static/assets/choose-one.png"/>
+      <img id="logo-choose-one" class="min-w-10" src="../../static/assets/choose-one-dark.png"/>
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -28,10 +28,10 @@
         value="CHOOSE_MANY"
         onclick="update_answer_editor('choose_many')"
       >
-      <img class="min-w-10" src="../../static/assets/choose-many.png"/>
+      <img id="logo-choose-many" class="min-w-10" src="../../static/assets/choose-many-dark.png"/>
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-green" title="Scale">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -40,11 +40,11 @@
         onclick="update_answer_editor('numeric_scale')"
         autocomplete="off"
       >
-      <img class="min-w-10" src="../../static/assets/scale.png"/>
+      <img id="logo-scale" class="min-w-10" src="../../static/assets/scale-dark.png"/>
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-green" title="Ranking">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -53,11 +53,11 @@
         onclick="update_answer_editor('ranked_poll')"
         autocomplete="off"
       >
-      <img class="min-w-10" src="../../static/assets/ranking.png"/>
+      <img id="logo-ranking" class="min-w-10" src="../../static/assets/ranking-dark.png"/>
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-green" title="Tier List">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -66,7 +66,7 @@
         onclick="update_answer_editor('tier_list')"
         autocomplete="off"
       >
-      <img class="min-w-10" src="../../static/assets/tier-list.png"/>
+      <img id="logo-tier-list" class="min-w-10" src="../../static/assets/tier-list-dark.png"/>
     </label>
     
   </div>
@@ -148,7 +148,7 @@
 
       {% for id, board in session.boards.items() %}
 
-        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-800 bg-neutral-800 has-[:checked]:border-polll-blue {% if board.primary %}border-polll-blue{% endif %}">
+        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-200 bg-neutral-200 dark:bg-neutral-800 has-[:checked]:border-polll-blue dark:border-neutral-200 {% if board.primary %} border-polll-dgreen dark:border-polll-green {% endif %}">
           {{ board.name }}
           <!-- Very unfourtunate hack to prevent all from being unselected -->
           {% if board.primary %}
@@ -197,7 +197,7 @@
       </div>
     
       <!-- SUBMIT BUTTON -->
-      <button class="rounded-xl bg-polll-blue hover:bg-polll-green text-black h-8 px-4 ml-auto" 
+      <button class="rounded-xl bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green text-black h-8 px-4 ml-auto" 
         hx-get="{{ url_for('home.create_poll') }}" 
         hx-target="#create-card" 
         hx-swap="innerHTML" 
