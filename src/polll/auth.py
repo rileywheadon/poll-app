@@ -127,11 +127,11 @@ def login():
     }
 
     # Catch invalid email address errors
-    print("LOGIN_DATA": login_data)
+    print("LOGIN_DATA:", login_data)
     try:
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
-        print("ERROR": e.message)
+        print("ERROR:", e.message)
         return invalid_auth("login", "email")
 
     return render_template("auth/verify-email.html")
@@ -171,11 +171,11 @@ def register():
     }
 
     # Catch invalid email address errors
-    print("REGISTER_DATA": register_data)
+    print("REGISTER_DATA:", register_data)
     try:
         res = db.auth.sign_in_with_otp(register_data)
     except AuthApiError as e:
-        print("ERROR": e.message)
+        print("ERROR:", e.message)
         return invalid_auth("register", "email")
 
     return render_template("auth/verify-email.html")
