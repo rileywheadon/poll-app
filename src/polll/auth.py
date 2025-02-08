@@ -126,8 +126,10 @@ def login():
 
     # Catch invalid email address errors
     try:
+        print(login_data)
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
+        print(e.message)
         return invalid_auth("login", "email")
 
     return render_template("auth/verify-email.html")
