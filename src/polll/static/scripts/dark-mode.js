@@ -2,18 +2,17 @@
 function update_icons() {
     const themeIcon = document.getElementById("theme-icon");
     const themeText = document.getElementById("theme-text");
-  
+    const themes = localStorage.theme.toString();
     [
         document.getElementById("logo-icon-startup"), 
         document.getElementById("logo-icon-home")
     ].forEach(icon => {
         if (icon) {
-            path = "../static/assets/logo-name-" + localStorage.theme.toString() + ".svg"
+            path = `../static/assets/logo-name-${themes}.svg`
             icon.setAttribute("src", path)
         }
     });
 
-    const themes = localStorage.theme.toString();
     const icons = {
     "logo-choose-one": `../static/assets/choose-one-${themes}.png`,
     "logo-choose-many": `../static/assets/choose-many-${themes}.png`,
