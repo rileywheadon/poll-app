@@ -1,6 +1,6 @@
-{% macro sidebarButtons(show_icons=true) %}
+{% macro sidebarButtons() %}
 
-<div class="flex flex-row md:flex-col overflow-hidden md:items-start w-full h-full ml-2">
+<div class="flex flex-col overflow-hidden items-start w-full h-full ml-2 mt-4 md:mt-0">
   <a 
     class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
     href="{{ url_for('home.feed') }}"
@@ -8,7 +8,7 @@
   >
     <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'feed' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl  text-base fa-solid fa-fire px-2"></i>
-      {% if show_icons %} Feed {% endif %}
+      Feed
     </span>
   </a>
 
@@ -19,7 +19,7 @@
   >
     <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'history' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-book px-2"></i>
-      {% if show_icons %} History {% endif %}
+      History
     </span>
   </a>
 
@@ -30,7 +30,7 @@
   >
     <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'create' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-pen underline px-2"></i>
-      {% if show_icons %} Create {% endif %}
+      Create
     </span>
   </a>
 
@@ -41,9 +41,23 @@
   >
     <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'mypolls' %} text-polll-dgreen dark:text-polll-green {% endif %}">
       <i class="ml-2 text-xl text-base fa-solid fa-user px-2"></i>
-      {% if show_icons %} {{session.user.username}} {% endif %}
+      {{session.user.username}}
     </span>
   </a>
+
+  <a 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white cursor-default dark:hover:bg-neutral-800 rounded-lg"
+    hx-get="{{ url_for('home.open_settings') }}"
+    hx-target="#settings"
+    hx-swap="innerHTML"
+    hx-on::after-request="open_settings();"
+  >
+    <span class="cursor-default">
+      <i class="ml-2 text-xl text-base fas fa-gear px-2"></i>
+      Settings
+    </span>
+  </a>
+
 </div>
 
 
@@ -135,10 +149,7 @@
       {% endfor %}
 
     </div>
-        {#         flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32
-        rounded-lg cursor-default p-4
-        border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-400
-        hover:border-neutral-400 focus:border-polll-blue" #}
+
     {% endif %}
 
     </div>

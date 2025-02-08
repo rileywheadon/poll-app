@@ -5,9 +5,9 @@
 <div class="flex flex-col h-full space-y-4 pb-2">
 
   <!-- Image row -->
-  <div class="flex flex-row justify space-x-4">
+  <div class="flex flex-row justify space-x-2 md:space-x-6">
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose One">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose One">
       <input 
         class="poll-create hidden"
         type="radio"
@@ -20,7 +20,7 @@
       <img id="logo-choose-one" class="min-w-10" src="../../static/assets/choose-one-dark.png"/>
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose Many">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose Many">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -31,7 +31,7 @@
       <img id="logo-choose-many" class="min-w-10" src="../../static/assets/choose-many-dark.png"/>
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Scale">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Scale">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -44,7 +44,7 @@
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Ranking">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Ranking">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -57,7 +57,7 @@
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 m-2 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Tier List">
+    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Tier List">
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -141,12 +141,13 @@
     </div>
 
     <!-- Boards -->
-    <div class="flex flex-row items-center mt-auto px-10 pb-2">
+    <div class="flex flex-col md:flex-row md:items-center mt-auto px-10 pb-2">
 
       <!-- SELECT BOARD -->
-      <span class="mr-2">Select Boards:</span>
+      <div class="mb-4 md:mb-0"> 
+        <span class="mr-2">Select Boards:</span>
 
-      {% for id, board in session.boards.items() %}
+        {% for id, board in session.boards.items() %}
 
         <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-200 bg-neutral-200 dark:bg-neutral-800 has-[:checked]:border-polll-blue dark:border-neutral-200 {% if board.primary %} border-polll-dgreen dark:border-polll-green {% endif %}">
           {{ board.name }}
@@ -170,19 +171,22 @@
             >
           {% endif %}
 
-        </label>
+          </label>
 
-      {% endfor %}
+        {% endfor %}
+      </div>
 
       <!-- SET CREATION DATE (ADMIN ONLY)  -->
       {% if session.user.is_admin %}
 
-        <span class="ml-auto mr-2">Creation Date:</span>
+      <div class="mb-2 md:mb-0 md:ml-auto">
+        <span class="mr-2">Creation Date:</span>
         <input 
           class="poll-create h-8 rounded-md bg-neutral-300 dark:bg-neutral-800 px-2" 
           type="date" 
           name="created_at"
         >
+      </div>
 
       {% endif %}
 
