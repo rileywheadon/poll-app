@@ -21,7 +21,7 @@
     <div class="flex overflow-hidden flex-row grow md:pt-4">
 
       <!-- Left Sidebar -->
-      <div class="hidden px-2 md:flex md:justify-center md:gap-y-4 select-none md:min-w-52">
+      <div id="left-sidebar" class="hidden px-2 md:flex md:justify-center md:gap-y-4 select-none md:min-w-52">
         {{ macs.sidebarButtons() }}
 
       </div>
@@ -51,7 +51,7 @@
             {% for id, board in session.boards.items() %}
         
               <a 
-                class="h-14 flex flex-row justify-center items-center w-full px-2 font-light cursor-default hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-green {% endif %}" 
+                class="h-14 flex flex-row justify-center items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-dgreen dark:text-polll-green {% endif %}" 
                 href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}"
               >
                 {{ board.name }}

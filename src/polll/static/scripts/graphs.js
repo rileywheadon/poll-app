@@ -1,40 +1,13 @@
-// I know I know
 const cols = {
-    'nord-0': '#2E3440',
-    'nord-1': '#3B4252',
-    'nord-2': '#434C5E',
-    'nord-3': '#4C566A',
-    'nord-4': '#D8DEE9',
-    'nord-5': '#E5E9F0',
-    'nord-6': '#ECEFF4',
-    'nord-7': '#8FBCBB',
-    'nord-8': '#88C0D0',
-    'nord-9': '#81A1C1',
-    'nord-10': '#5E81AC',
-    'nord-11': '#BF616A',
-    'nord-12': '#D08770',
-    'nord-13': '#EBCB8B',
-    'nord-14': '#A3BE8C',
-    'nord-15': '#B48EAD',
-    'grad-start': '#1f1f1f',
-    'grad-end': '#171717',
-    'polll-grad-1': '#D9EAD3',
     'polll-green': '#B6D7A8',
-    'polll-grad-3':'#A0CFB6',
-    'polll-grad-4':'#97D0BF',
-    'polll-grad-5':'#92D0D0',
-    'polll-blue':'#88bbd0'
+    'polll-dark-green': '#6aa84f',
+    'polll-blue':'#88bbd0',
+    'polll-white': '#f3f3f3ff',
 }
 
-const bps =  {
-    'xs': '520px',
-    'sm': '640px',
-    'md': '768px',
-    'lg': '1024px',
-    'xl': '1536px',
-  }
-
 const bp = 768;
+const graph_height = 300;
+
 
 // Global variable for the current chart
 var active_chart = null;
@@ -58,6 +31,7 @@ function graphToggle(poll) {
   var toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
   var graph = document.getElementById(`poll-graph-${poll["id"]}`);
 
+
   // If we are hiding results, just hide the graph and return
   if (toggle.innerHTML == "Hide Results") {
     toggle.innerHTML = "Show Results";
@@ -72,6 +46,7 @@ function graphToggle(poll) {
     document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
     document.getElementById("poll-graph-" + id).classList.add("hidden");
   }
+  console.log(toggle.childElementCount);
 
   // Then update toggle and graph
   toggle.innerHTML = "Hide Results";
@@ -125,6 +100,8 @@ function choose_one_options(user_rs, rs, type="pie") {
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
+
 
 
     // PIE CHART (default)
@@ -136,26 +113,35 @@ function choose_one_options(user_rs, rs, type="pie") {
                 type: "pie",
                 background: "null",
                 width: "100%",
-                height: 350,
+                height: graph_height,
             },
     
             theme: {
-                mode: "dark",
+                mode: localStorage.getItem("theme")
             },
     
             dataLabels: {
                 enabled: true,
+                dropShadow: {
+                    enabled: false
+                },
+                style: {
+                    fontSize: '16px',
+                    fontFamily: 'Helvetica, Arial, sans-serif',
+                    fontWeight: 'medium',
+                    colors: ["#171717"]
+                },
                 formatter: function (val) {
                     return Math.round(val) + "%"
                 },
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
                 if (value == 0) return "#808080";
-                return w.globals.labels[seriesIndex].includes("(you)") ? cols["polll-green"] : cols["polll-blue"];
+                return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
               }],
               fill: {
                 colors: [function({ value, seriesIndex, w }) {
-                    return w.globals.labels[seriesIndex].includes("(you)") ? cols["polll-green"]: cols["polll-blue"];
+                    return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
                   }],
               },
               
@@ -208,7 +194,7 @@ function choose_one_options(user_rs, rs, type="pie") {
                 type: 'bar',
                 background: 'null',
                 width: "100%",
-                height: 250,
+                height: graph_height,
                 toolbar: {
                     show: false
                 }
@@ -227,10 +213,10 @@ function choose_one_options(user_rs, rs, type="pie") {
                   },
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-                return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? cols["polll-green"] : cols["polll-blue"];
+                return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? user_col : cols["polll-blue"];
               }],
             theme: {
-                mode: "dark",
+                mode: localStorage.getItem("theme")
             },
             tooltip: {
                 enabled: true,
@@ -261,6 +247,7 @@ function choose_one_options(user_rs, rs, type="pie") {
 function choose_many_options(user_rs, rs, type="bar") {
 
     user_rs == {} ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
     if (type == "bar") {
         return {
@@ -292,10 +279,10 @@ function choose_many_options(user_rs, rs, type="bar") {
                 type: 'bar',
                 background: 'null',
                 width: bp,
-                height: 250,
+                height: graph_height,
                 toolbar: {
                     show: false
-                }
+                },
             },
     
             plotOptions: {
@@ -309,26 +296,26 @@ function choose_many_options(user_rs, rs, type="bar") {
                 enabled: true,
                 formatter: function (val, opt) {
                     const i = opt.w.globals.labels[opt.dataPointIndex];
-                    const lbl = i + ": " + Math.round(val);
-                    return user_rs.includes(i) ? lbl + " (you)" : lbl; // colours might be enough?
+                    const label = i + ": " + Math.round(val);
+                    return user_rs.includes(i) ? label + " (you)" : label;
                   },
             },
             colors: [function({ value, seriesIndex, dataPointIndex, w }) {
                 console.log(w.globals.labels[dataPointIndex]);
 
-                return user_rs.includes(w.globals.labels[dataPointIndex]) ? cols["polll-green"] : cols["polll-blue"];
+                return user_rs.includes(w.globals.labels[dataPointIndex]) ? user_col : cols["polll-blue"];
               }],
 
             tooltip: {
                 enabled: true,
                 y: {
                     formatter: function(val, { series, seriesIndex, dataPointIndex, w }) {
-                        return val; // lbl w/ user_rs
+                        return val;
                       }
                 }
             },
             theme: {
-                mode: "dark"
+                mode: localStorage.getItem("theme")
             },
             responsive: [{
                 breakpoint: bp,
@@ -356,10 +343,10 @@ function choose_many_options(user_rs, rs, type="bar") {
             type: "pie",
             background: "null",
             width: "100%",
-            height: 350,
+            height: graph_height,
         },
         theme: {
-            mode: "dark",
+            mode: localStorage.getItem("theme")
         },
         dataLabels: {
             enabled: true,
@@ -369,12 +356,12 @@ function choose_many_options(user_rs, rs, type="bar") {
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
             if (value == 0) return "#808080";
-            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return cols["polll-green"];
+            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return user_col;
             return cols["polll-blue"];
           }],
           fill: {
             colors: [function({ value, seriesIndex, w }) {
-                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return cols["polll-green"];
+                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return user_col;
                 return cols["polll-blue"];
               }],
           },
@@ -409,11 +396,10 @@ function scale_graph_options(poll) {
     user_rs ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
     // This is a bit of a hack but if it works it works
-    if (answers) {
-      endpoints = [answers["left"], answers["right"]];
-    }
+    answers["left"] && answers["right"] ? endpoints = [answers["left"]["answer"], answers["right"]["answer"]] : endpoints = null;
 
     return  {
         grid: {
@@ -421,13 +407,16 @@ function scale_graph_options(poll) {
         },
         xaxis: {
             type: 'numeric',
+            tooltip: {
+                enabled: false
+            },
             labels: {
                 style: {
                     fontSize: "14px",
                     fontWeight: "bold"
                 },
                 formatter: function (val) {
-                    if (endpoints.length != 0) {
+                    if (endpoints) {
                         if (val == 0) return endpoints[0];
                         if (Math.round(val) == 100) return endpoints[1];
                        return "";
@@ -448,7 +437,7 @@ function scale_graph_options(poll) {
             data: pts
         }],
         chart: {
-            height: 350,
+            height: graph_height,
             type: 'area',
             background: "null",
             toolbar: {
@@ -472,7 +461,7 @@ function scale_graph_options(poll) {
 
         },
         theme: {
-            mode: "dark"
+            mode: localStorage.getItem("theme")
         },
         annotations: {
             xaxis: [{
@@ -486,7 +475,7 @@ function scale_graph_options(poll) {
                 }, {
                     x: user_rs,
                     strokeDashArray: 0,
-                    borderColor: "#B6D7A8",
+                    borderColor: user_col,
                     borderWidth: 3,
                     label: {
                         show: false,   
@@ -555,11 +544,4 @@ function get_scale_average(rs, nums) {
     var x = rs.map((e) => e["value"]).reduce((acc, curr, i) => acc + (curr * counts[i]), 0) / counts.reduce((acc, curr) => acc + curr);
     return [...Array(nums).keys()].reduce((prev, curr) => {
      return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
-}
-
-// A list of colours representing a gradient from "from_col" to "to_col" of length "num_col"
-function get_col_gradient(from_col, to_col, num_col) {
-    // TODO: implement
-    // return ['#F44336', '#E91E63', '#9C27B0'];
-    return [cols["polll-grad-1"], cols["polll-green"], cols["polll-grad-3"], cols["polll-grad-4"], cols["polll-grad-5"], cols["polll-blue"]] // I don't like this
 }

@@ -1,0 +1,4 @@
+SUPABASE_URL=https://ywodnuahttlngecjkwps.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3b2RudWFodHRsbmdlY2prd3BzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc4NTIyNDcsImV4cCI6MjA1MzQyODI0N30.vuRkJYs-UEMp53XZYB6AunPFxkxPzGrrUKkVm_IP6bc
+FLASK_APP=src/app.py
+ADMIN_EMAILS="rileywheadon@gmail.com mattdehaas28@gmail.com ignacio122003@gmail"

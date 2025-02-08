@@ -120,7 +120,7 @@ def feed():
     session["polls"] = {p["id"]: query_poll_details(p) for p in res.data}
     session["comments"] = {}
     session["replies"] = {}
-
+    
     session["state"].update({
         "admin": False,
         "tab": "feed",

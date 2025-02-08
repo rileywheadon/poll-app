@@ -1,8 +1,7 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden"
+  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden accord-open"
 >    
-
   <!-- Include the poll question -->
   <div class="flex flex-row items-center p-2">
 
@@ -14,7 +13,7 @@
           @{{ poll.creator }}
         {% endif %} ⋅ {{ poll.age }}
       </p>
-      <p class=" font-light text-neutral-200 text-2xl">{{ poll.question }}</p>
+      <p class=" font-light text-neutral-700 dark:text-neutral-200 text-2xl">{{ poll.question }}</p>
     </div>
 
     <!-- If the user created this poll, allow them to edit it -->
@@ -27,7 +26,7 @@
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square hover:text-polll-green">
+        <i class="ml-1 fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
         </i>
       </button>
 
@@ -65,49 +64,52 @@
 
   </div>
 
-  <!-- Poll Graph -->
-  <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4">
 
+
+ 
+
+  <!-- Poll Graph -->
+  <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4 fade-in">
     <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
     {% elif poll.poll_type == "TIER_LIST" %}
       {% include "results/tier-list.html" %}
-    {% endif %}
-
+    {% endif %} 
   </div>
 
-  <div class="flex flex-row text-sm px-4 items-center my-4 select-none">
+  <div class="flex flex-row text-sm px-4 items-center my-4 select-none fade-in">
     <p class="font-light">
       Votes: {{ poll.response_count }}
     </p>
 
     <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
-      class="ml-auto px-4 h-8 rounded-xl text-sm py-1 bg-neutral-300 hover:bg-white flex items-center justify-center select-none text-neutral-900"
+      class="ml-auto px-4 py-1 h-8 rounded-xl text-sm bg-polll-white hover:bg-neutral-200 dark:hover:bg-white flex items-center justify-center select-none text-neutral-900"
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
-      hx-swap="innerHTML"
+      hx-swap="none"
     >
       <div class="whitespace-nowrap">
-        <span id="comments-toggle-{{ poll.id }}">Show Comments</span> 
+        <span id="comments-toggle-{{ poll.id }}">
+          <p class="hidden md:inline">Show Comments</p>
+        </span>
         <span id="comments-count-{{ poll.id }}">
-          &nbsp({{ poll.comment_count }})
+          &nbsp{{ poll.comment_count }}
         </span>
       </div>
       <i class="fa fa-message pl-2 text-l"></i>
     </button>
-
     <!-- Show Results -->
-    <button 
-      class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+    <button
+      class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
       hx-target="#poll-graph-{{ poll.id }}"
       hx-swap="none"
     >
-      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle">Show Results</span>
-      <i class="fa fa-chart-simple pl-2 text-xl"></i>
+      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden md:inline">Show Results</span>
+      <i class="fa fa-chart-simple pl-2 pr-2 text-xl"></i>
     </button>
 
   </div>

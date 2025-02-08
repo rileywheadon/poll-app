@@ -9,22 +9,22 @@
 
     <button 
       id="filter-dropdown-btn"
-      class="relative rounded-xl text-nord-4 hover:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
       onclick="toggle_filter_dropdown()"
     >
       {{ session.state.order.capitalize() }} 
       <i class="px-1 fa fa-caret-down"></i>
     </button>
     
-    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-neutral-700 overflow-hidden w-full">
+    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden w-full">
       <a href="?board={{ session.state.board.id }}&order=hot">
-        <button class="px-4 py-1 hover:bg-nord-3 w-full">Hot</button>
+        <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Hot</button>
       </a>
       <a href="?board={{ session.state.board.id }}&order=top">
-        <button class="px-4 py-1 hover:bg-nord-3 w-full">Top</button>
+        <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Top</button>
       </a>
       <a href="?board={{ session.state.board.id }}&order=new">
-        <button class="px-4 py-1 hover:bg-nord-3 w-full">New</button>
+        <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">New</button>
       </a>
     </div>
 
@@ -37,7 +37,7 @@
 
       <button 
         id="filter-time-dropdown-btn"
-        class="relative rounded-xl text-nord-4 hover:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+        class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
         onclick="toggle_filter_time_dropdown()"
       >
         {{ session.state.period.capitalize() }}
@@ -46,22 +46,22 @@
       
       <div 
         id="filter-time-dropdown" 
-        class="hidden absolute z-10 font-light rounded-lg shadow bg-neutral-700 overflow-hidden"
+        class="hidden absolute z-10 font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden"
       >
         <a href="?board={{ session.state.board.id }}&order=top&period=day">
-          <button class="px-4 py-1 hover:bg-nord-3 w-full">Day</button>
+          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Day</button>
         </a>
         <a href="?board={{ session.state.board.id }}&order=top&period=week">
-          <button class="px-4 py-1 hover:bg-nord-3 w-full">Week</button>
+          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Week</button>
         </a>
         <a href="?board={{ session.state.board.id }}&order=top&period=month">
-          <button class="px-4 py-1 hover:bg-nord-3 w-full">Month</button>
+          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Month</button>
         </a>
         <a href="?board={{ session.state.board.id }}&order=top&period=year">
-          <button class="px-4 py-1 hover:bg-nord-3 w-full">Year</button>
+          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Year</button>
         </a>
         <a href="?board={{ session.state.board.id }}&order=top&period=all">
-          <button class="px-4 py-1 hover:bg-nord-3 w-full">All</button>
+          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">All</button>
         </a>
       </div>
 

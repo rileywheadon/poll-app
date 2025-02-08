@@ -4,6 +4,7 @@ from functools import wraps
 from flask import Blueprint, url_for, session, redirect, render_template, request
 from polll.db import get_db
 from gotrue.errors import AuthApiError
+from dotenv import dotenv_values
 
 
 # Create a blueprint for the authentication endpoints
@@ -45,6 +46,8 @@ def register_page():
 # Callback after email verification
 @auth.route('/auth/confirm')
 def callback():
+
+    session["state"] = {}
 
     # Verify the magic link request
     db = get_db()
@@ -130,6 +133,8 @@ def login():
 # Signup endpoint
 @auth.route("/auth/register", methods=["GET", "POST"])
 def register():
+
+    
 
     db = get_db()
     email = request.form.get("email")

@@ -1,30 +1,45 @@
 // TODO: update graphs + everything else built specifically for dark mode
 function update_icons() {
+    const themeIcon = document.getElementById("theme-icon");
+    const themeText = document.getElementById("theme-text");
+    const themes = localStorage.theme.toString();
+    [
+        document.getElementById("logo-icon-startup"), 
+        document.getElementById("logo-icon-home")
+    ].forEach(icon => {
+        if (icon) {
+            path = `../static/assets/logo-name-${themes}.svg`
+            icon.setAttribute("src", path)
+        }
+    });
 
-  const themeIcon = document.getElementById("theme-icon");
-  const themeText = document.getElementById("theme-text");
-  
-  [
-    document.getElementById("logo-icon-startup"), 
-    document.getElementById("logo-icon-home")
-  ].forEach(icon => {
-    if (icon) {
-      path = "../static/assets/logo-name-" + localStorage.theme.toString() + ".svg"
-      icon.setAttribute("src", path)
-    }
-  });
+    const icons = {
+    "logo-choose-one": `../static/assets/choose-one-${themes}.png`,
+    "logo-choose-many": `../static/assets/choose-many-${themes}.png`,
+    "logo-scale": `../static/assets/scale-${themes}.png`,
+    "logo-ranking": `../static/assets/ranking-${themes}.png`,
+    "logo-tier-list": `../static/assets/tier-list-${themes}.png`
+    };
 
-  if (themeIcon) {
-    if (localStorage.theme == "light") {
-      themeIcon.classList.remove("fa-sun");
-      themeIcon.classList.add("fa-moon");
-      themeText.innerHTML = "Dark";
-    } else {
-      themeIcon.classList.remove("fa-moon");
-      themeIcon.classList.add("fa-sun");
-      themeText.innerHTML = "Light";
+    Object.entries(icons).forEach(([id, path]) => {
+        const icon = document.getElementById(id);
+        if (icon) {
+            icon.setAttribute("src", path);
+        }
+    });
+
+
+    if (themeIcon) {
+        if (localStorage.theme == "light") {
+            themeIcon.classList.remove("fa-sun");
+            themeIcon.classList.add("fa-moon");
+            themeText.innerHTML = "Dark";
+        } else {
+            themeIcon.classList.remove("fa-moon");
+            themeIcon.classList.add("fa-sun");
+            themeText.innerHTML = "Light";
+        }
     }
-  }
 
 }
 

@@ -80,6 +80,8 @@ redis-server
 
 I made an effort to remove some of the unnecessary files (some of which were also a security risk) from the Github repository. Therefore, these instructions may not be 100% complete. Just let me know if you have an issue. In particular, you may require the `cert.pem`, `key.pem`, and `.env` files. I can provide these upon request.
 
+Note: run redis-server
+
 ## Git
 
 If you would like to contribute code to the project, you must have a working understanding of [git](https://git-scm.com/) and [GitHub](https://github.com/). _This is not negotiable_. To get a big picture idea of how `git` works, I recommend you read [this](https://missing.csail.mit.edu/2020/version-control/) guide. After doing this, you should be able to answer the following questions:
