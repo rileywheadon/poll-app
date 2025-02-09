@@ -1,14 +1,13 @@
 import json
 import os
+import redis
+from dotenv import find_dotenv, load_dotenv
 from urllib.parse import quote_plus, urlencode
-from os import environ as env
 
 from flask import Flask, redirect, render_template, session, url_for, g
-from redis import Redis
 from flask_session import Session
 from supabase import create_client, Client
 
-import polll.utils as utils
 
 # Error handler for 404 Not Found
 def error_404(e):
@@ -24,13 +23,19 @@ def error_500(e):
 def create_app():
 
     # Create a new Flask application
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SESSION_TYPE = 'redis',
-        SESSION_COOKIE_SAMESITE = 'None',
-        SESSION_COOKIE_SECURE = True,
-        SESSION_REDIS = Redis(host='localhost', port=4000)
-    )
+    app = Flask(__name__)
+
+    # Configure the Flask application
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+    app.config["SESSION_TYPE"] = "redis"
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
+    app.config["SESSION_COOKIE_SECURE"] = True
+
+    # Connect to the correct server-side session
+    if os.environ.get("ENVIRONMENT") == "development":
+        app.config["SESSION_REDIS"] = redis.Redis(host='localhost', port=6379)
+    else:
+        app.config["SESSION_REDIS"] = redis.from_url(redis_url)
 
     # Add the server-side session
     Session(app)
@@ -39,17 +44,12 @@ def create_app():
     app.register_error_handler(404, error_404)
     app.register_error_handler(500, error_500)
 
-    # Import some formatting functions for use in Jinja templates 
-    app.jinja_env.globals.update(smooth_hist=utils.smooth_hist)
-    app.jinja_env.globals.update(format_time=utils.format_time)
-    app.jinja_env.filters['zip'] = zip
-
     # Import the blueprints
-    from polll.auth import auth
-    from polll.home import home
-    from polll.admin import admin
-    from polll.poll import poll
-    from polll.comment import comment
+    from .auth import auth
+    from .home import home
+    from .admin import admin
+    from .poll import poll
+    from .comment import comment
 
     # Register the blueprints
     app.register_blueprint(auth)

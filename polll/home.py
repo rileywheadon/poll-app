@@ -5,12 +5,9 @@ import asyncio
 from flask import Blueprint, url_for, session, redirect
 from flask import render_template, request, make_response
 
-import polll.responses as response_handlers
-import polll.results as result_handlers
-
-from polll.auth import requires_auth, requires_admin
-from polll.utils import *
-from polll.db import get_db
+from .auth import requires_auth, requires_admin
+from .utils import *
+from .db import get_db
 
 
 # Create a blueprint for the poll endpoints
@@ -89,8 +86,7 @@ def query_feed(bid, order, period, page):
     db = get_db()
     uid = session["user"]["id"]
 
-    # NOTE: Change 0 to uid before going to production
-    args = {"bid": bid, "uid": 0, "page": page, "lim": POLL_LIMIT}
+    args = {"bid": bid, "uid": uid, "page": page, "lim": POLL_LIMIT}
 
     if order == "hot":
         res = db.rpc("feed_hot", args).execute()
@@ -126,7 +122,7 @@ def feed():
         "tab": "feed",
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
-        "board": session["boards"][int(bid)],
+        "board": session["boards"].get(int(bid)) or {},
         "order": order,
         "period": period,
     })

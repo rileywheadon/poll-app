@@ -1,8 +1,9 @@
-from os import environ as env
+import os
+
 from datetime import datetime
 from functools import wraps
 from flask import Blueprint, url_for, session, redirect, render_template, request
-from polll.db import get_db
+from .db import get_db
 from gotrue.errors import AuthApiError
 from dotenv import dotenv_values
 
@@ -47,8 +48,6 @@ def register_page():
 @auth.route('/auth/confirm')
 def callback():
 
-    session["state"] = {}
-
     # Verify the magic link request
     db = get_db()
     res = db.auth.verify_otp({
@@ -87,11 +86,13 @@ def callback():
     session["user"]["dislikes"] = [c["comment_id"] for c in res.data[0]["dislike"]]
 
     # Get a list of boards
-    db = get_db()
     res = db.table("board").select("*").execute()
     session["boards"] = {b["id"] : b for b in res.data}
+    session["state"] = {}
 
     # Render the home.feed template
+    session.modified = True
+    session.permanent = True
     return redirect(url_for('home.feed'))
 
 
@@ -134,8 +135,6 @@ def login():
 @auth.route("/auth/register", methods=["GET", "POST"])
 def register():
 
-    
-
     db = get_db()
     email = request.form.get("email")
     username = request.form.get("username")
@@ -169,7 +168,7 @@ def register():
     try:
         res = db.auth.sign_in_with_otp(register_data)
     except AuthApiError as e:
-        return redirect(url_for("auth.authenticate", action="register", error="email"))
+        return invalid_auth("register", "email")
 
     return render_template("auth/verify-email.html")
 
@@ -225,7 +224,7 @@ def requires_admin(f):
             return redirect(url_for("auth.logout"))
 
         # If the user is not an administrator, redirect them to the feed
-        emails = env.get("ADMIN_EMAILS").split(" ")
+        emails = os.environ.get("ADMIN_EMAILS").split(" ")
         if true_user.user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 

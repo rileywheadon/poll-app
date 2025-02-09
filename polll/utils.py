@@ -1,6 +1,6 @@
 from flask import request, session
 from datetime import datetime, timedelta
-from polll.db import get_db
+from .db import get_db
 import base64
 import random
 

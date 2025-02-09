@@ -6,12 +6,12 @@ import json
 from flask import Blueprint, url_for, session, redirect
 from flask import make_response, render_template, request
 
-from polll.responses import query_response, create_response
-from polll.results import query_results
+from .responses import query_response, create_response
+from .results import query_results
 
-from polll.auth import requires_auth, requires_admin
-from polll.db import get_db
-from polll.utils import *
+from .auth import requires_auth, requires_admin
+from .db import get_db
+from .utils import *
 
 
 # Create a blueprint for answering anonymous polls
