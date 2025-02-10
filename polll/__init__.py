@@ -26,6 +26,7 @@ def create_app():
     app = Flask(__name__)
 
     # Configure the Flask application
+    app.config['DEBUG'] = os.environ.get('DEBUG', False)
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
     app.config["SESSION_TYPE"] = "redis"
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
@@ -39,6 +40,11 @@ def create_app():
 
     # Add the server-side session
     Session(app)
+
+    # Import some formatting functions for use in Jinja templates 
+    from .utils import smooth_hist, format_time
+    app.jinja_env.globals.update(smooth_hist=smooth_hist)
+    app.jinja_env.globals.update(format_time=format_time)
 
     # Register error handlers
     app.register_error_handler(404, error_404)

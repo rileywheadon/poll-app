@@ -1575,6 +1575,10 @@ video {
   accent-color: #88bbd0;
 }
 
+.accent-polll-green {
+  accent-color: #B6D7A8;
+}
+
 .opacity-0 {
   opacity: 0;
 }
@@ -1726,11 +1730,6 @@ video {
 .hover\:bg-neutral-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(229 229 229 / var(--tw-bg-opacity, 1));
-}
-
-.hover\:bg-neutral-800:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(38 38 38 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:bg-polll-dgreen:hover {
@@ -2171,11 +2170,6 @@ video {
 .hover\:dark\:bg-neutral-700:where(.dark, .dark *):hover {
   --tw-bg-opacity: 1;
   background-color: rgb(64 64 64 / var(--tw-bg-opacity, 1));
-}
-
-.hover\:dark\:bg-neutral-800:where(.dark, .dark *):hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(38 38 38 / var(--tw-bg-opacity, 1));
 }
 
 .dark\:hover\:text-polll-green:hover:where(.dark, .dark *) {

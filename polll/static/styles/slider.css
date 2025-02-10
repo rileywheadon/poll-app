@@ -1,0 +1,27 @@
+/* Chrome, Edge, Safari */
+.range-slider-light::-webkit-slider-runnable-track {
+  background: #3498db; 
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Firefox */
+.range-slider-light::-moz-range-track {
+  background: #3498db;
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Chrome, Edge, Safari */
+.range-slider-dark::-webkit-slider-runnable-track {
+  background: #3498db; 
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Firefox */
+.range-slider-dark::-moz-range-track {
+  background: #3498db;
+  height: 8px;
+  border-radius: 4px;
+}
