@@ -24,6 +24,8 @@
 
 [gunicorn](https://gunicorn.org/) as a production web server.
 
+[ngrok](https://ngrok.com/) for creating a mobile-accessible development environment.
+
 [Cloudflare](https://www.cloudflare.com/) for DNS management and security.
 
 [Resend](https://resend.com/) as an SMTP provider (sending verification emails to users).
@@ -66,7 +68,9 @@ In order to run the app locally, you will need a [Virtual Environment](https://d
 - Run `source .venv/bin/activate` to enter the virtual environment.
 - Use `pip install -r requirements.txt` to install the packages listed in `requirements.txt`.
 
-**Note:** In order to better simulate a production environment, we are now running both the development _and_ production versions of the app using Heroku and gunicorn. In order to run the app, you will need to install [Heroku CLI](https://devcenter.heroku.com/categories/command-line). To double check that installation was successful, make sure that the command `heroku --version` does not return an error. Then, use `heroku local` to run the app from the root directory.
+**Launch Options:** In order to better simulate a production environment, you can run the development version of the app using the production web server. To do this, you will need to install the [Heroku CLI](https://devcenter.heroku.com/categories/command-line). To double check that installation was successful, make sure that the command `heroku --version` does not return an error. Then, use `heroku local` to run the app from the root directory.
+
+If you would like to use the Flask web server, you can call the `launch.py` script from the root directory using `python3 launch.py`. This is essentially identical to the `src/app.py` script we were using to launch the app before.
 
 **TailwindCSS**: If you are making changes to the UI using TailwindCSS, you will also need to activate a Tailwind CSS watcher. To do this, open another terminal window (separate from the one that is running the app), `cd` to `src/polll/static` and type in the following command:
 
@@ -76,7 +80,21 @@ In order to run the app locally, you will need a [Virtual Environment](https://d
 
 **Redis**: The app now uses server-side sessions. To simulate a server-side session in a development environment, you will have to install the [Redis](https://redis.io/) CLI and run a redis server using the `redis-server` command in _another_ terminal.
 
-**Files**: For security reasons, certain sensitive files cannot be stored in the Github repository. In particular, you will require the `cert.pem`, `key.pem`, and `.env` files. Please contact me so I can provide you with these files.
+**Environment File**: Launching the app requires a `.env` with the Supabase API key. For security reasons, I cannot check this file into version control, so I will need to send it to you via email (or some other method).
+
+### Generating an SSL Certificate
+
+You will need an SSL certificate and key, stored in a `cert.pem` and `key.pem` file in the root directory. To generate these files, install the `mkcert` utility with `brew install mkcert`. Then, run the following command from the root directory of the project.
+
+```
+mkcert -key-file key.pem -cert-file cert.pem https://127.0.0.1:3000
+```
+
+Even after doing this, you may still get a "This website is insecure" message when accessing the localhost URL from your browser. This is normal and can be ignored.
+
+### Mobile Development
+
+To access the app on your mobile device, you will have to install [ngrok](https://ngrok.com/). I tried really hard to do this without introducing more accounts/build steps, but it just wasn't working due to the fact that UBC wifi assigns dynamic IP addresses, making it extremely difficult to connect to anything hosted locally on our laptops. After you install `ngrok`, simply follow the instructions on their website to run the app on a static URL.
 
 ## Git
 

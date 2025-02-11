@@ -118,7 +118,7 @@ def login():
         "email": request.form.get("email"),
         "options": {
             "should_create_user": False,
-            "email_redirect_to": f"{request.url_root}confirm",
+            "email_redirect_to": f"{request.url_root}auth/confirm",
         }
     }
 
@@ -159,8 +159,7 @@ def register():
         "email": email,
         "options": {
             "should_create_user": True,
-            "email_redirect_to": f"{request.url_root}confirm",
-            "data": {"username": request.form.get("username")}
+            "email_redirect_to": f"{request.url_root}auth/confirm",
         }
     }
 

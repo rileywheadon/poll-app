@@ -1,6 +1,7 @@
 # Gunicorn configuration file:
 # https://docs.gunicorn.org/en/stable/configure.html
 # https://docs.gunicorn.org/en/stable/settings.html
+
 import os
 
 # Note: When changing the number of dynos/workers/threads you will want to make sure you
@@ -41,9 +42,9 @@ if os.environ.get("ENVIRONMENT") == "development":
     reload = True
 
     # Fix the port so that the supabase auth callback works on development
-    bind = "127.0.01:3000"
+    bind = "127.0.0.1:3000"
 
-    # Set the certfile and keyfile to enable an HTTPS connection (required for auth)
+    # Add the certfile and keyfile
     certfile = "cert.pem"
     keyfile = "key.pem"
 

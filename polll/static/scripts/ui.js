@@ -143,6 +143,8 @@ function toggle_filter_time_dropdown() {
 
 function handle_tier_select(poll_id, tier) {
 
+  console.log(document.activeElement);
+
   if (document.activeElement.classList.contains("tier-answer")) {
     item = document.activeElement.parentNode;
 

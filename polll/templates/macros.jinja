@@ -133,6 +133,7 @@
       {% if interactive %} 
         id="{{ tier }}-content-{{ poll_id }}" 
         onmousedown="handle_tier_select('{{ poll_id }}', '{{ tier }}')" 
+        ontouchstart="handle_tier_select('{{ poll_id }}', '{{ tier }}')" 
       {% endif %}
     >
 
