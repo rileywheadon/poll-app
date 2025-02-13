@@ -36,6 +36,7 @@ def create_app():
     if os.environ.get("ENVIRONMENT") == "development":
         app.config["SESSION_REDIS"] = redis.Redis(host='localhost', port=6379)
     else:
+        redis_url = os.environ.get("REDIS_URL")
         app.config["SESSION_REDIS"] = redis.from_url(redis_url)
 
     # Add the server-side session
