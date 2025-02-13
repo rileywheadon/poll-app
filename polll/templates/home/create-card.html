@@ -7,7 +7,11 @@
   <!-- Image row -->
   <div class="flex flex-row justify space-x-2 md:space-x-6">
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose One">
+    <!-- NOTE: The grow and max-w-1/5 classes prevent flashes on load. -->
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Choose One"
+    >
       <input 
         class="poll-create hidden"
         type="radio"
@@ -17,10 +21,17 @@
         autocomplete="off"
         checked
       >
-      <img id="logo-choose-one" class="min-w-10" src="../../static/assets/choose-one-dark.png"/>
+      <img 
+        id="logo-choose-one" 
+        class="aspect-square" 
+        src="../../static/assets/choose-one-dark.png"
+      />
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Choose Many">
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Choose Many"
+    >
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -28,10 +39,17 @@
         value="CHOOSE_MANY"
         onclick="update_answer_editor('choose_many')"
       >
-      <img id="logo-choose-many" class="min-w-10" src="../../static/assets/choose-many-dark.png"/>
+      <img 
+        id="logo-choose-many" 
+        class="aspect-square" 
+        src="../../static/assets/choose-many-dark.png"
+      />
     </label>
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Scale">
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Scale"
+    >
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -40,11 +58,18 @@
         onclick="update_answer_editor('numeric_scale')"
         autocomplete="off"
       >
-      <img id="logo-scale" class="min-w-10" src="../../static/assets/scale-dark.png"/>
+      <img 
+        id="logo-scale" 
+        class="aspect-square" 
+        src="../../static/assets/scale-dark.png"
+      />
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Ranking">
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Ranking"
+    >
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -53,11 +78,18 @@
         onclick="update_answer_editor('ranked_poll')"
         autocomplete="off"
       >
-      <img id="logo-ranking" class="min-w-10" src="../../static/assets/ranking-dark.png"/>
+      <img 
+        id="logo-ranking" 
+        class="aspect-square" 
+        src="../../static/assets/ranking-dark.png"
+      />
     </label>
 
 
-    <label class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green" title="Tier List">
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Tier List"
+    >
       <input 
         class="poll-create hidden"
         type="radio" 
@@ -66,7 +98,11 @@
         onclick="update_answer_editor('tier_list')"
         autocomplete="off"
       >
-      <img id="logo-tier-list" class="min-w-10" src="../../static/assets/tier-list-dark.png"/>
+      <img 
+        id="logo-tier-list" 
+        class="aspect-square" 
+        src="../../static/assets/tier-list-dark.png"
+      />
     </label>
     
   </div>
@@ -145,7 +181,7 @@
 
       <!-- SELECT BOARD -->
       <div class="mb-4 md:mb-0"> 
-        <span class="mr-2">Select Boards:</span>
+        <span class="mr-2">Boards:</span>
 
         {% for id, board in session.boards.items() %}
 
@@ -179,7 +215,7 @@
       <!-- SET CREATION DATE (ADMIN ONLY)  -->
       {% if session.user.is_admin %}
 
-      <div class="mb-2 md:mb-0 md:ml-auto">
+      <div class="mb-2 md:mb-0 md:ml-auto flex flex-row items-center">
         <span class="mr-2">Creation Date:</span>
         <input 
           class="poll-create h-8 rounded-md bg-neutral-300 dark:bg-neutral-800 px-2" 

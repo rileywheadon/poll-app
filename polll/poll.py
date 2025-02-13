@@ -26,7 +26,6 @@ def anonymous(poll_code):
     # Get the poll details
     db = get_db()
     poll_id = url_to_id(poll_code)
-    print(poll_id)
     res = db.rpc("poll", {"pid": poll_id}).execute()
     poll = query_poll_details(res.data[0])
 
@@ -301,10 +300,6 @@ def result(poll_id):
 
     r = make_response(template)
     graph = '{"graph": ' + json.dumps(poll) + ', "is_visible": ' + str(is_visible).lower() + '}'
-
-    print("\n\n\n")
-    print(graph)
-    print("\n\n\n")
 
     r.headers.set("HX-Trigger-After-Settle", graph)
     r.headers.set("HX-Reswap", reswap)

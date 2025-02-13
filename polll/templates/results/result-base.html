@@ -2,33 +2,30 @@
   id="poll-card-{{ poll.id }}"
   class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden accord-open"
 >    
-  <!-- Include the poll question -->
-  <div class="flex flex-row items-center p-2">
+  <!-- Include the creator's username and the poll age -->
+  <div class="flex flex-row items-center px-4">
 
-    <div class="flex flex-col p-2 select-none">
-      <p class="font-light text-neutral-500">
-        {% if poll.is_anonymous == 1 %}
-          anonymous
-        {% else %}
-          @{{ poll.creator }}
-        {% endif %} ⋅ {{ poll.age }}
-      </p>
-      <p class=" font-light text-neutral-700 dark:text-neutral-200 text-2xl">{{ poll.question }}</p>
-    </div>
+    <p class="font-light text-neutral-500 dark:text-neutral-400">
+      {% if poll.is_anonymous == 1 %}
+        anonymous
+      {% else %}
+        @{{ poll.creator }}
+      {% endif %} ⋅ {{ poll.age }}
+    </p>
+
+    <!-- Share Button -->
+    <button 
+      class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
+      title="Share"
+      onclick="copy_link('{{ poll.url }}')"
+      type="button"
+    >
+      <i class="ml-1 fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
+      </i>
+    </button>
 
     <!-- If the user created this poll, allow them to edit it -->
     {% if session.user.id == poll.creator_id %} 
-
-      <!-- Share Button -->
-      <button 
-        class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
-        title="Share"
-        onclick="copy_link('{{ poll.url }}')"
-        type="button"
-      >
-        <i class="ml-1 fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
-        </i>
-      </button>
 
       <!-- Toggle Lock -->
       {% with %}
@@ -50,7 +47,7 @@
       
       <!-- Delete Poll -->
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
+      <button class="md:ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
           title="Delete"
           hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
@@ -60,13 +57,31 @@
         <i class="fa fa-trash hover:text-polll-red"></i>
       </button>
 
+    <!-- If the user didn't create this poll, allow them to report it -->
+    {% else %}
+
+      <button
+        class="md:ml-2 text-xl w-10 h-10 rounded-md py-1 hover:text-polll-red"
+        title="Report"
+        hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
+        hx-confirm="Are you sure you want to report this poll?"
+        hx-swap="none"
+        type="button"
+      >
+        <i class="ml-1 fa fa-triangle-exclamation"></i>
+      </button>
+
     {% endif %}
 
   </div>
 
-
-
- 
+  <!-- Include the poll question -->
+  <!-- NOTE: We put this in a separate row because it displays better on mobile -->
+  <div class="flex flex-row w-full px-4">
+    <p class="font-light text-neutral-700 dark:text-neutral-200 text-2xl">
+      {{ poll.question }}
+    </p>
+  </div>
 
   <!-- Poll Graph -->
   <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4 fade-in">
@@ -89,11 +104,11 @@
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
-      hx-swap="none"
+      hx-swap="innerHTML"
     >
       <div class="whitespace-nowrap">
-        <span id="comments-toggle-{{ poll.id }}">
-          <p class="hidden md:inline">Show Comments</p>
+        <span class="hidden md:inline" id="comments-toggle-{{ poll.id }}">
+          Show Comments
         </span>
         <span id="comments-count-{{ poll.id }}">
           &nbsp{{ poll.comment_count }}

@@ -61,12 +61,6 @@
     href="{{ url_for('static', filename='styles/transitions.css') }}">
   </link>
 
-  <!-- Custom slider design -->
-  <link 
-    rel="stylesheet" 
-    href="{{ url_for('static', filename='styles/slider.css') }}">
-  </link>
-
   <!-- Title + Favicon -->
   <title>{% block title %}{% endblock %}</title>
   <link rel="icon" href="../static/assets/logo-bars.svg">
@@ -76,9 +70,12 @@
 
 </head>
 
-<html class="overflow-hidden select-none overscroll-none">
+<html class="overflow-hidden select-none fixed">
 
-  <body hx-boost="true" onload="add_notification_listener(); add_graph_listener();">
+  <body 
+    hx-boost="true" 
+    onload="add_notification_listener(); add_graph_listener();"
+  >
 
     {% block body %} 
 

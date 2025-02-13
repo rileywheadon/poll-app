@@ -17,15 +17,13 @@
     </button>
     
     <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden w-full">
-      <a href="?board={{ session.state.board.id }}&order=hot">
-        <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Hot</button>
-      </a>
-      <a href="?board={{ session.state.board.id }}&order=top">
-        <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Top</button>
-      </a>
-      <a href="?board={{ session.state.board.id }}&order=new">
-        <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">New</button>
-      </a>
+
+      {% with route = "?board=" + session.state.board.id|string %}
+        {{ macs.dropdownItem(route + "&order=hot", "Hot") }}
+        {{ macs.dropdownItem(route + "&order=top", "Top") }}
+        {{ macs.dropdownItem(route + "&order=new", "New") }}
+      {% endwith %}
+
     </div>
 
   </div>
@@ -33,40 +31,60 @@
   <!-- Filter Time Dropdown -->
   {% if session.state.order == "top" %}
 
-    <div class="relative select-none w-24">
+  <div class="relative select-none w-24">
 
-      <button 
-        id="filter-time-dropdown-btn"
-        class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
-        onclick="toggle_filter_time_dropdown()"
-      >
-        {{ session.state.period.capitalize() }}
-        <i class="px-1 fa fa-caret-down"></i>
-      </button>
-      
-      <div 
-        id="filter-time-dropdown" 
-        class="hidden absolute z-10 font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden"
-      >
-        <a href="?board={{ session.state.board.id }}&order=top&period=day">
-          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Day</button>
-        </a>
-        <a href="?board={{ session.state.board.id }}&order=top&period=week">
-          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Week</button>
-        </a>
-        <a href="?board={{ session.state.board.id }}&order=top&period=month">
-          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Month</button>
-        </a>
-        <a href="?board={{ session.state.board.id }}&order=top&period=year">
-          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">Year</button>
-        </a>
-        <a href="?board={{ session.state.board.id }}&order=top&period=all">
-          <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">All</button>
-        </a>
-      </div>
+    <button 
+      id="filter-time-dropdown-btn"
+      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+      onclick="toggle_filter_time_dropdown()"
+    >
+      {{ session.state.period.capitalize() }}
+      <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+    <div 
+      id="filter-time-dropdown" 
+      class="hidden absolute z-10 font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden"
+    >
+
+      {% with route = "?board=" + session.state.board.id|string + "&order=top" %}
+        {{ macs.dropdownItem(route + "&period=day", "Day") }}
+        {{ macs.dropdownItem(route + "&period=week", "Week") }}
+        {{ macs.dropdownItem(route + "&period=month", "Month") }}
+        {{ macs.dropdownItem(route + "&period=year", "Year") }}
+        {{ macs.dropdownItem(route + "&period=all", "All Time") }}
+      {% endwith %}
 
     </div>
+
+  </div>
+
   {% endif %}
+
+  <!-- Board Dropdown (mobile only) -->
+  <div class="md:hidden relative select-none w-20 ml-auto">
+
+    <button 
+      id="board-dropdown-btn"
+      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+      onclick="toggle_board_dropdown()"
+    >
+      {{ session.state.board.name }} 
+      <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+    <div id="board-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden w-full">
+
+    {% for id, board in session.boards.items() %}
+      {% with route="?board="+board.id|string+"&order="+session.state.order %}
+        {{ macs.dropdownItem(route + "&name=" + board.name, board.name) }}
+      {% endwith %}
+    {% endfor %}
+
+    </div>
+
+  </div>
+
 
 </div>
 

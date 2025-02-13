@@ -13,7 +13,7 @@
 
   <!-- Background -->
   <!-- NOTE: Add extra padding to account for the footer on small screens -->
-  <div class="w-screen h-screen flex flex-col dark:text-neutral-200 dark:bg-neutral-900 pb-10 md:pb-0">
+  <div class="w-screen h-dvh md:h-screen flex flex-col text-neutral-900 dark:text-neutral-200 dark:bg-neutral-900">
 
     {% include "navbar.html" %}
 
@@ -23,7 +23,7 @@
       <!-- Left Sidebar -->
       <div 
         id="home-sidebar" 
-        class="hidden px-2 md:flex md:justify-center md:gap-y-4 select-none md:min-w-52"
+        class="hidden px-2 mr-4 md:mr-0 md:flex md:justify-center md:gap-y-4 select-none md:min-w-52"
       >
         {{ macs.sidebarButtons() }}
 
@@ -32,7 +32,7 @@
       <!-- Main Column (Polls) -->
       <div 
         id="home-content"
-        class="w-full overflow-auto p-2 no-scrollbar select-none shrink"
+        class="w-full overflow-auto p-2 select-none shrink overscroll-contain"
       >
 
         <div id="home-spinner" class="peer home-indicator w-full flex flex-row grow justify-center items-center size-fit">

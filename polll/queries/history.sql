@@ -34,7 +34,11 @@ RETURNS TABLE(
   LEFT JOIN answer ON answer.poll_id = poll.id
   LEFT JOIN response ON response.poll_id = poll.id
   LEFT JOIN comment ON comment.poll_id = poll.id
-  WHERE response.user_id = uid
+  WHERE poll.id IN (
+    SELECT poll_id
+    FROM response
+    WHERE response.user_id = uid
+  )
   GROUP BY poll.id, "user".username
   ORDER BY poll.created_at DESC
   LIMIT lim

@@ -101,6 +101,12 @@ def query_feed(bid, order, period, page):
     return res
 
 
+@home.route("/changelog")
+@requires_auth
+def changelog():
+    return render_template("changelog.html")
+
+
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
@@ -189,6 +195,15 @@ def create_poll():
         r.headers.set("HX-Trigger", notification)
         r.headers.set("HX-Reswap", 'none')
         return r
+
+    # If the poll is ranked, check that there are more than three options
+    if len(answers) < 3 and poll_type == "RANKED_POLL":
+        r = make_response("")
+        notification = '{"notification": "Rankings must have at least 3 option!"}'
+        r.headers.set("HX-Trigger", notification)
+        r.headers.set("HX-Reswap", 'none')
+        return r
+
 
     # Add the poll to the database
     poll_data = {

@@ -2,35 +2,38 @@
 
 {% block poll_content %}
 
-<div class="my-2 flex flex-row justify-center items-center">
+<!-- This container reduces the size of the scale on web -->
+<div class="w-full flex flex-row justify-center">
+  <div class="my-2 flex flex-row justify-center items-center w-full md:w-5/6">
 
-  {% if poll.answers %}
-    <span class="px-4 justify-center items-center text-center">
-      {{ poll.answers.left.answer }}
-    </span>
-  {% endif %}
-
-  <input 
-    type="range"
-    name="slider_rating"
-    value="0"
-    min="0"
-    max="100"
-    autocomplete="off"
-    class="w-3/4 accent-polll-green"
-    {% if not poll.answers %}
-      oninput="this.nextElementSibling.innerHTML = this.value"
+    {% if poll.answers %}
+      <span class="px-4 justify-center items-center text-center">
+        {{ poll.answers.left.answer }}
+      </span>
     {% endif %}
-  >
 
-  {% if poll.answers %}
-    <span class="px-4 justify-center items-center text-center">
-      {{ poll.answers.right.answer }}
-    </span>
-  {% else %}
-    <span class="range-slider__value pl-3 font-light">0</span>
-  {% endif %}
+    <input 
+      type="range"
+      name="slider_rating"
+      value="0"
+      min="0"
+      max="100"
+      autocomplete="off"
+      class="grow range-slider"
+      {% if not poll.answers %}
+        oninput="this.nextElementSibling.innerHTML = this.value"
+      {% endif %}
+    >
 
+    {% if poll.answers %}
+      <span class="px-4 justify-center items-center text-center">
+        {{ poll.answers.right.answer }}
+      </span>
+    {% else %}
+      <span class="range-slider__value pl-3 font-light">0</span>
+    {% endif %}
+
+  </div>
 </div>
 
 {% endblock %}

@@ -41,7 +41,7 @@ RETURNS TABLE(
     intersect
     SELECT id
     FROM poll
-    WHERE creator_id != uid AND is_active = true AND created_at > cutoff
+    WHERE is_active = true AND created_at > cutoff
     except
     SELECT poll_id
     FROM poll_report

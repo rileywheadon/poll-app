@@ -2,7 +2,7 @@
 <div class="w-100% flex space-x-2 md:space-x-4 items-center border-b border-nord-4 dark:border-neutral-700 dark:bg-neutral-900 p-3 select-none">
 
   <!-- Logo image, also redirects to home -->
-  <a href="/">
+  <a href="{{ url_for('home.feed') }}">
     <img 
       id="logo-icon-home" 
       class="h-9 cursor-default"
@@ -10,13 +10,19 @@
     />
   </a>
 
-  <!-- Hamburger Menu -->
-  <a 
-    class="md:hidden !ml-auto bg-polll-white dark:bg-neutral-700 rounded-lg w-10 h-10 flex justify-center items-center" 
-    onclick="toggle_home_menu()"
-  >
-    <i class="fa-solid fa-bars text-xl cursor-pointer"></i>
+  <a class="font-light" href="{{ url_for('home.changelog') }}">
+    v0.1.1
   </a>
+
+  <!-- Hamburger Menu -->
+  {% if not session.state.admin %}
+    <a 
+      class="md:hidden !ml-auto bg-polll-white dark:bg-neutral-700 rounded-lg w-10 h-10 flex justify-center items-center" 
+      onclick="toggle_home_menu()"
+    >
+      <i class="fa-solid fa-bars text-xl cursor-pointer"></i>
+    </a>
+  {% endif %}
 
   <!-- Admin panel, if logged in as administrator -->
   {% if session.user.is_admin %} 

@@ -42,9 +42,11 @@ function toggle_home_menu() {
 
   if (sidebar.classList.contains("hidden")) {
     sidebar.classList.remove("hidden");
+    sidebar.classList.add("w-full");
     content.classList.add("hidden");
   } else {
     sidebar.classList.add("hidden");
+    sidebar.classList.remove("w-full");
     content.classList.remove("hidden");
   }
 }
@@ -69,7 +71,6 @@ function update_answer_editor(poll_type) {
 }
 
 function toggle_comments(poll_id) {
-  console.log("here")
   comments = document.getElementById("poll-comments-" + poll_id);
   toggle = document.getElementById("comments-toggle-" + poll_id);
 
@@ -141,20 +142,35 @@ function toggle_filter_time_dropdown() {
   document.getElementById("filter-time-dropdown").classList.toggle("hidden");
 }
 
+
+function toggle_board_dropdown() {
+  document.getElementById("board-dropdown").classList.toggle("hidden");
+}
+
+
+// sinful global variable
+var activeTierItem = {}
+
+function tier_select(element, poll_id) {
+  activeTierItem["poll_id"] = poll_id;
+  activeTierItem["element"] = element.parentNode;
+}
+
 function handle_tier_select(poll_id, tier) {
 
-  console.log(document.activeElement);
+  if (activeTierItem["poll_id"] == poll_id) {
 
-  if (document.activeElement.classList.contains("tier-answer")) {
-    item = document.activeElement.parentNode;
-
+    item = activeTierItem["element"];
     input = item.querySelector("input[name='answer_tier']");
     input.value = tier;
 
     container = document.getElementById(`${tier}-content-${poll_id}`);
     item.parentNode.removeChild(item);
     container.appendChild(item);
-  } 
+
+  }
+
+  activeTierItem = {};
 
 }
 
@@ -179,7 +195,6 @@ function handle_rank_select(poll_id, ans_id) {
 
   document.getElementById(`rank-num-${ans_id}`).innerHTML = checkCount.toString();
   document.getElementById(`rank-num-${ans_id}`).classList.remove("hidden");
-
   document.getElementById(`rank-input-${ans_id}`).value = checkCount.toString();
 
   // Ensure the button cannot be clicked again

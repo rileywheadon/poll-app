@@ -25,9 +25,6 @@ module.exports = {
           'nord-13': '#EBCB8B',
           'nord-14': '#A3BE8C',
           'nord-15': '#B48EAD',
-          
-          'grad-start': '#1f1f1f',
-          'grad-end': '#171717',
 
           // background is neutral 900
           // text is neutral-200
@@ -61,7 +58,7 @@ module.exports = {
         'xs': '520px',
         'sm': '640px',
         'md': '768px',
-        'lg': '1024px',
+        'lg': '960px',
         'xl': '1536px',
       },
   },

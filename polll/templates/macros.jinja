@@ -7,7 +7,7 @@
     hx-indicator="#home-spinner"
   >
     <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'feed' %} text-polll-dgreen dark:text-polll-green {% endif %}">
-      <i class="ml-2 text-xl  text-base fa-solid fa-fire px-2"></i>
+      <i class="ml-2 text-xl text-base fa-solid fa-fire px-2"></i>
       Feed
     </span>
   </a>
@@ -63,16 +63,13 @@
 
 {% endmacro %}
 
-
 {% macro chooseInput(input_type, answer_id, answer_content) %}
     
 <input type="{{ input_type }}" id="{{ answer_id }}" name="answer_id" value="{{ answer_id }}" class="hidden peer">
 <label 
   for="{{ answer_id }}"
-  class="flex w-1/2 p-2 rounded-lg cursor-default 
-         border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200
-        hover:border-neutral-400 
-         peer-checked:border-polll-blue">
+  class="flex w-1/2 p-2 rounded-lg cursor-default border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-neutral-400 peer-checked:border-polll-blue"
+>
   <p class="font-light select-none">{{ answer_content }}</p>
 </label>
 {# removed hover:text-gray-300 from this #}
@@ -160,4 +157,13 @@
 
 </div>
 
+{% endmacro %}
+
+<!-- For creating dropdowns in the feed -->
+{% macro dropdownItem(route, name) %}
+<a href="{{ route }}">
+  <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">
+    {{ name }}
+  </button>
+</a>
 {% endmacro %}
