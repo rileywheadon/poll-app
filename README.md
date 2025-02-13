@@ -96,6 +96,11 @@ Even after doing this, you may still get a "This website is insecure" message wh
 
 To access the app on your mobile device, you will have to install [ngrok](https://ngrok.com/). I tried really hard to do this without introducing more accounts/build steps, but it just wasn't working due to the fact that UBC wifi assigns dynamic IP addresses, making it extremely difficult to connect to anything hosted locally on our laptops. After you install `ngrok`, simply follow the instructions on their website to run the app on a static URL.
 
+## Production
+
+- Sometimes, the tailwind compiler does weird things in the production environment. To fix styling issues, use `heroku run bash` and run the tailwind compiler manually from the command line.
+- Make sure all the queries in the `queries/` folder are up to date in Supabase.
+
 ## Git
 
 If you would like to contribute code to the project, you must have a working understanding of [git](https://git-scm.com/) and [GitHub](https://github.com/). _This is not negotiable_. To get a big picture idea of how `git` works, I recommend you read [this](https://missing.csail.mit.edu/2020/version-control/) guide. After doing this, you should be able to answer the following questions:
