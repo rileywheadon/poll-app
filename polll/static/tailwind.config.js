@@ -1,8 +1,9 @@
 module.exports = {
+  mode: 'jit',
   darkMode: 'selector',
   content: [
-    "./templates/**", 
-    "./static/scripts/**"
+    "../templates/**", 
+    "./scripts/**"
   ],
   blocklist: [
     /* Ensure Plotly's classes are not purged */
