@@ -276,6 +276,12 @@ def mypolls():
     session["replies"] = {}
     session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
 
+    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("history", data).execute()
+
+    session["hist_polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+    data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
+
     session["state"] = {
         "admin": False,
         "tab": "mypolls",

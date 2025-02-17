@@ -4,6 +4,9 @@ from dotenv import find_dotenv, load_dotenv
 
 # Load the .env file, if it exists
 ENV_FILE = find_dotenv()
+print("\n\n\n")
+print(ENV_FILE)
+print("\n\n\n")
 if ENV_FILE:
     load_dotenv(ENV_FILE)
 

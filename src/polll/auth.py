@@ -225,7 +225,8 @@ def requires_admin(f):
             return redirect(url_for("auth.logout"))
 
         # If the user is not an administrator, redirect them to the feed
-        emails = env.get("ADMIN_EMAILS").split(" ")
+        # emails = env.get("ADMIN_EMAILS").split(" ")
+        emails = ["rileywheadon@gmail.com", "mattdehaas28@gmail.com", "ignacio122003@gmail"]
         if true_user.user.user_metadata["email"] not in emails:
             return redirect(url_for("home.feed"))
 

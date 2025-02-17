@@ -1,10 +1,10 @@
 # Development Checklist
 
-## Matt
 
 
-- ### GET THIS SHIT DONE:
-- [ ] Add breakpoints to settings
+## TODO:
+
+
 
 # Roadmap
 

@@ -167,6 +167,13 @@ function toggle_tier_results(toggle) {
   document.getElementById(`text-${toggle.id}`).innerHTML == "Average" ? document.getElementById(`text-${toggle.id}`).innerHTML = "You" : document.getElementById(`text-${toggle.id}`).innerHTML = "Average";
 }
 
+function toggle_poll_results(toggle, url) {
+  
+  [document.getElementById("my-polls"), document.getElementById("history-polls")].forEach((e) => e.classList.toggle("hidden"));
+
+
+}
+
 function handle_rank_select(poll_id, ans_id) {
 
   var opts = document.getElementById(`ans-container-${poll_id}`).querySelectorAll("input");
