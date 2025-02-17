@@ -46,7 +46,6 @@ function graphToggle(poll) {
     document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
     document.getElementById("poll-graph-" + id).classList.add("hidden");
   }
-  console.log(toggle.childElementCount);
 
   // Then update toggle and graph
   toggle.innerHTML = "Hide Results";
@@ -97,290 +96,127 @@ function graphInitRewritten(poll) {
 
 function choose_one_options(user_rs, rs, type="pie") {
 
-    user_rs ? user_rs = user_rs["answer"] : user_rs = "";
-    
+    user_rs == null? user_rs = user_rs["answer"] : user_rs = "";
     var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
 
-
     // PIE CHART (default)
-    if (type == "pie") {
-        return {
-            series: rs.map((e) => e["count"]),
-            labels: rs.map((e) => e["answer"] == user_rs ? e["answer"] + " (you)" : e["answer"]),
-            chart: {
-                type: "pie",
-                background: "null",
-                width: "100%",
-                height: graph_height,
-            },
-    
-            theme: {
-                mode: localStorage.getItem("theme")
-            },
-    
-            dataLabels: {
-                enabled: true,
-                dropShadow: {
-                    enabled: false
-                },
-                style: {
-                    fontSize: '16px',
-                    fontFamily: 'Helvetica, Arial, sans-serif',
-                    fontWeight: 'medium',
-                    colors: ["#171717"]
-                },
-                formatter: function (val) {
-                    return Math.round(val) + "%"
-                },
-            },
-            colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-                if (value == 0) return "#808080";
-                return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
-              }],
-              fill: {
-                colors: [function({ value, seriesIndex, w }) {
-                    return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
-                  }],
-              },
-              
-    
-            responsive: [{
-                breakpoint: bp,
-                options: {
-                    chart: {
-                        chart: {
-                            type: "pie",
-                            background: "null",
-                            width: bp,
-                            height: bp,
-                        },
-                    },
-                },
-            }],
-    
-        }
-    }
-
-
-    // BAR CHART
-    else {
-        return {
-            grid: {
-                show: false,
-            },
-            xaxis: {
-                categories: rs.map((e) => e["answer"]),
-                labels: {
-                    formatter: function (val) {
-                        return val;
-                    }
-                },
-                max: 100,
-            },
-            yaxis: {
-                labels: {
-                    formatter: function (val) {
-                        return "";
-                    }
-                },
-            },
-            series: [{
-                name: "",
-                data: rs.map((e) => e["count"] / total_answers * 100)
-            }],
-            chart: {
-                type: 'bar',
-                background: 'null',
-                width: "100%",
-                height: graph_height,
-                toolbar: {
-                    show: false
-                }
-            },
-            plotOptions: {
-                bar: {
-                    borderRadius: 4,
-                    borderRadiusApplication: 'end',
-                    horizontal: true,
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val, opt) {
-                    return opt.w.globals.labels[opt.dataPointIndex] + ":  " + Math.round(val) + "%";
-                  },
-            },
-            colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-                return dataPointIndex == rs.map((e) => e["answer"]).indexOf(user_rs) ? user_col : cols["polll-blue"];
-              }],
-            theme: {
-                mode: localStorage.getItem("theme")
-            },
-            tooltip: {
-                enabled: true,
-                y: {
-                    formatter: (val) => {
-                        return Math.round(val * total_answers / 100);
-                    }
-                }
-            },
-            responsive: [{
-                breakpoint: bp,
-                options: {
-                    chart: {
-                        chart: {
-                            type: "bar",
-                            background: "null",
-                            width: bp,
-                            height: bp,
-                        },
-                    },
-                },
-            }],
-        };
-    }
-
-}
-
-function choose_many_options(user_rs, rs, type="bar") {
-
-    user_rs == {} ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
-    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
-
-    if (type == "bar") {
-        return {
-
-            grid: {
-                show: false,
-            },
-            xaxis: {
-                categories: rs.map((e) => e["answer"]),
-                labels: {
-                    formatter: function (val) {
-                        return val;
-                    }
-                },
-                
-            },
-            yaxis: {
-                labels: {
-                    formatter: function (val) {
-                        return "";
-                    }
-                },
-            },
-            series: [{
-                name: "",
-                data: rs.map((e) => e["count"])
-            }],
-            chart: {
-                type: 'bar',
-                background: 'null',
-                width: bp,
-                height: graph_height,
-                toolbar: {
-                    show: false
-                },
-            },
-    
-            plotOptions: {
-                bar: {
-                    borderRadius: 4,
-                    borderRadiusApplication: 'end',
-                    horizontal: true,
-                }
-            },
-            dataLabels: {
-                enabled: true,
-                formatter: function (val, opt) {
-                    const i = opt.w.globals.labels[opt.dataPointIndex];
-                    const label = i + ": " + Math.round(val);
-                    return user_rs.includes(i) ? label + " (you)" : label;
-                  },
-            },
-            colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-                console.log(w.globals.labels[dataPointIndex]);
-
-                return user_rs.includes(w.globals.labels[dataPointIndex]) ? user_col : cols["polll-blue"];
-              }],
-
-            tooltip: {
-                enabled: true,
-                y: {
-                    formatter: function(val, { series, seriesIndex, dataPointIndex, w }) {
-                        return val;
-                      }
-                }
-            },
-            theme: {
-                mode: localStorage.getItem("theme")
-            },
-            responsive: [{
-                breakpoint: bp,
-                options: {
-                    chart: {
-                        chart: {
-                            type: "bar",
-                            background: "null",
-                            width: bp,
-                            height: bp,
-                        },
-                    },
-                },
-            }],
-    
-        }
-    }
-
-    else {
-
     return {
         series: rs.map((e) => e["count"]),
-        labels: rs.map((e) => e["answer"]),
+        labels: rs.map((e) => e["answer"] == user_rs ? e["answer"] + " (you)" : e["answer"]),
         chart: {
             type: "pie",
             background: "null",
             width: "100%",
             height: graph_height,
         },
+
         theme: {
             mode: localStorage.getItem("theme")
         },
+
         dataLabels: {
             enabled: true,
+            dropShadow: {
+                enabled: false
+            },
+            style: {
+                fontSize: '16px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 'medium',
+                colors: ["#171717"]
+            },
             formatter: function (val) {
                 return Math.round(val) + "%"
             },
         },
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
             if (value == 0) return "#808080";
-            for (i = 0; i < user_rs.length; i++) if (dataPointIndex == w.globals.labels.indexOf(user_rs[i])) return user_col;
-            return cols["polll-blue"];
+            return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
           }],
           fill: {
             colors: [function({ value, seriesIndex, w }) {
-                for (i = 0; i < user_rs.length; i++) if (seriesIndex == w.globals.labels.indexOf(user_rs[i])) return user_col;
-                return cols["polll-blue"];
+                return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
               }],
           },
-          responsive: [{
-            breakpoint: bp,
-            options: {
-                chart: {
-                    chart: {
-                        type: "pie",
-                        background: "null",
-                        width: bp,
-                        height: bp,
-                    },
-                },
-            },
-        }],
+          
     }
-    }
+}
 
+function choose_many_options(user_rs, rs, type="bar") {
+
+    user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
+    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
+
+    return {
+
+        grid: {
+            show: false,
+            padding: { left: -5 }
+        },
+        xaxis: {
+            categories: rs.map((e) => e["answer"]),
+            labels: {
+                formatter: function (val) {
+                    return val;
+                }
+            },
+            
+        },
+        yaxis: {
+            labels: {
+                formatter: function (val) {
+                    return "";
+                }
+            },
+        },
+        series: [{
+            name: "",
+            data: rs.map((e) => e["count"])
+        }],
+        chart: {
+            type: "bar",
+            background: "null",
+            width: "100%",
+            height: graph_height,
+            toolbar: {
+                show: false
+            },
+        },
+
+        plotOptions: {
+            bar: {
+                borderRadius: 4,
+                borderRadiusApplication: 'end',
+                horizontal: true,
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opt) {
+                const i = opt.w.globals.labels[opt.dataPointIndex];
+                const label = i + ": " + Math.round(val);
+                return user_rs.includes(i) ? label + " (you)" : label;
+              },
+        },
+        colors: [function({ value, seriesIndex, dataPointIndex, w }) {
+            return user_rs.includes(w.globals.labels[dataPointIndex]) ? user_col : cols["polll-blue"];
+          }],
+
+        tooltip: {
+            enabled: true,
+            y: {
+                formatter: function(val, { series, seriesIndex, dataPointIndex, w }) {
+                    return val;
+                  }
+            }
+        },
+        theme: {
+            mode: localStorage.getItem("theme")
+        },
+
+    }
 }
 
 // I'm just passing in the entire poll because there's too many arguments
@@ -393,7 +229,7 @@ function scale_graph_options(poll) {
     answers = poll["answers"]
 
     // Rest of the function should be untouched
-    user_rs ? user_rs = user_rs["value"] : user_rs = -1;
+    user_rs == null ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
@@ -404,6 +240,7 @@ function scale_graph_options(poll) {
     return  {
         grid: {
             show: false,
+            padding: { left: -5 }
         },
         xaxis: {
             type: 'numeric',
@@ -438,6 +275,7 @@ function scale_graph_options(poll) {
         }],
         chart: {
             height: graph_height,
+            width: "100%",
             type: 'area',
             background: "null",
             toolbar: {

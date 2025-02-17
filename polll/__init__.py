@@ -11,12 +11,12 @@ from supabase import create_client, Client
 
 # Error handler for 404 Not Found
 def error_404(e):
-    return render_template("404.html"), 404
+    return render_template("misc/404.html"), 404
 
 
 # Error handler for 500 Internal Server Error
 def error_500(e):
-    return render_template("500.html"), 500
+    return render_template("misc/500.html"), 500
 
 
 # Application factory

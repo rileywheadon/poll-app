@@ -2,7 +2,7 @@
 
 {% block home_content %}
 
-<div class="flex flex-row">
+<div class="flex flex-row mb-2 md:mb-4">
 
   <!-- Filter Dropdown -->
   <div class="relative select-none w-20 mr-2">
@@ -88,33 +88,54 @@
 
 </div>
 
-  {% if session.polls %}
+{% if session.polls %}
 
-    <div id="poll-container">
-      {% for id, poll in session.polls.items() %}
-        {% include poll["poll_template"] %}
-      {% endfor %}  
-    </div>
+  <div id="poll-container">
+    {% for id, poll in session.polls.items() %}
+      {% include poll["poll_template"] %}
+    {% endfor %}  
+  </div>
 
-    {% with state=session.state %}
-      {% include "home/load-polls.html" %}
-    {% endwith %}
+  {% with state=session.state %}
+    {% include "home/load-polls.html" %}
+  {% endwith %}
 
-  {% else %}
+{% else %}
 
-    <div class="flex flex-row text-center items-center justify-center py-16 select-none">
-      <p class="text-xl font-light">
-        {% if session.state.board.name == "All" %}
-        You've answered every poll!
-        {% else %}
-        You've answered every poll in {{ session.state.board.name }}!
-        {% endif %}
-        <br />
-        <br />
-        Login later for more...
-      </p>
-    </div>
+  <div class="flex flex-row text-center items-center justify-center py-16 select-none">
+    <p class="text-xl font-light">
+      {% if session.state.board.name == "All" %}
+      You've answered every poll!
+      {% else %}
+      You've answered every poll in {{ session.state.board.name }}!
+      {% endif %}
+      <br />
+      <br />
+      Login later for more...
+    </p>
+  </div>
 
-  {% endif %}
+{% endif %}
+
+{% endblock %}
+
+{% block right_sidebar %}
+
+<div class="rounded-xl h-max w-full text-center">
+
+  <p class="my-2 font-regular underline text-l">Boards</p>
+
+  {% for id, board in session.boards.items() %}
+
+    <a 
+      class="h-14 flex flex-row justify-center items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-dgreen dark:text-polll-green {% endif %}" 
+      href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}"
+    >
+      {{ board.name }}
+    </a>
+
+  {% endfor %}
+
+</div>
 
 {% endblock %}

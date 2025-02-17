@@ -1,0 +1,53 @@
+{% extends "misc/menu.html" %}
+
+{% block title %}
+Changelog
+{% endblock %}
+
+{% block misc_content %}
+
+<!-- v0.1.2 -->
+<div class="my-2">
+  <h1 class="text-2xl mb-2">v0.1.2</h1>
+  <h2 class="text-xl mb-2">February 17th, 2025</h2>
+  <ul class="list-disc list-inside pl-2">
+    <li>Fix various display and mobile compatibility issues.</li>
+    <li>Fix bug where your response was showing up incorrectly on ranked polls.</li>
+    <li>Allow users to click the authentication link multiple times without error.</li>
+    <li>Hard scroll up on feed/history/my polls to refresh the page.</li>
+    <li>Fix bug where the wrong timezone was being displayed in create.</li>
+    <li>Add "About" and "Help" pages.</li>
+  </ul>
+</div>
+
+<!-- v0.1.1 -->
+<div class="my-2">
+  <h1 class="text-2xl mb-2">v0.1.1</h1>
+  <h2 class="text-xl mb-2">February 12th, 2025</h2>
+  <ul class="list-disc list-inside pl-2">
+    <li>Fix various mobile compatibility bugs.</li>
+    <li>Fix bug preventing comments from loading.</li>
+    <li>Fix bug causing incorrect vote counts on history page.</li>
+    <li>Fix bug where "share" and "report" buttons were hidden on history page.</li>
+    <li>Embed icons directly in the source code to reduce load times.</li>
+    <li>Ensure ranked polls have at least three options.</li>
+    <li>Clicking the Polll logo now redirects to the feed.</li>
+    <li>Various small UI changes.</li>
+    <li>Add the changelog.</li>
+  </ul>
+</div>
+
+<!-- v0.1.0 -->
+<div class="my-2">
+  <h1 class="text-2xl mb-2">v0.1.0</h1>
+  <h2 class="text-xl mb-2">February 9th, 2025</h2>
+  <ul class="list-disc list-inside pl-2">
+    <li><b>Initial Release!</b></li>
+    <li>Make polls (choose one, choose many, scale, ranked, tier list).</li>
+    <li>Respond, view results, and leave comments on polls.</li>
+    <li>View polls by new/hot/top. Sort by board.</li>
+  </ul>
+</div>
+
+{% endblock %}
+

@@ -5,7 +5,7 @@
 >
   <button 
     class="w-56 rounded-md bg-polll-white dark:bg-neutral-700 h-8"
-    hx-get="{{ url_for('home.load_more', origin=state.tab, page=state.poll_page) }}"
+    hx-get="{{ url_for('home.load_more') }}"
     hx-target="#poll-container"
     hx-swap="beforeend"
   >

@@ -1,18 +1,18 @@
-<div class="flex flex-row">
+<div class="flex flex-row items-center">
   <input class="grow text-l p-2 bg-transparent border-b border-neutral-700 dark:text-white focus:outline-none font-light" 
     autocomplete="off"
     name="comment"
     placeholder="Add a comment..."
     id="comment-input-{{ poll.id }}"
   />
-  <button class="ml-2 px-4 h-8 rounded-xl text-neutral-900 bg-neutral-300 hover:bg-white"
+  <button class="ml-2 px-4 h-6 md:h-8 rounded-xl text-neutral-900 bg-neutral-300 hover:bg-white"
     hx-include="previous input"
     hx-post="{{ url_for('poll.create_comment', poll_id = poll.id) }}"
     hx-target="#comments-list-{{ poll.id }}"
     hx-swap="afterbegin"
   >
-    <span class="text-sm">Send</span>
-    <i class="fa fa-paper-plane ml-1"></i>
+    <span class="hidden text-sm md:inline mr-1">Send</span>
+    <i class="fa fa-paper-plane"></i>
   </button>
 </div>
 

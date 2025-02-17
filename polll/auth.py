@@ -48,8 +48,12 @@ def register_page():
 @auth.route('/auth/confirm')
 def callback():
 
-    # Verify the magic link request
+    # If the user is already logged in, go to the feed
     db = get_db()
+    if db.auth.get_user() and session.get("user"):
+        return redirect(url_for("home.feed"))
+
+    # Verify the magic link request
     res = db.auth.verify_otp({
         "token_hash": request.args.get("token_hash"),
         "type": "email"

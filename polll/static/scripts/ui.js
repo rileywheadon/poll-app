@@ -1,6 +1,17 @@
 function open_settings() {
+  const settings = document.getElementById("settings");
+  settings.classList.remove("hidden");
+
   const main = document.getElementById("main");
   main.classList.add("blur-sm");
+}
+
+function close_settings() {
+  const settings = document.getElementById("settings");
+  settings.classList.add("hidden");
+
+  const main = document.getElementById("main");
+  main.classList.remove("blur-sm");
 }
 
 
@@ -37,7 +48,7 @@ function remove_poll_answer(button) {
 }
 
 function toggle_home_menu() {
-  sidebar = document.getElementById("home-sidebar");
+  sidebar = document.getElementById("left-sidebar");
   content = document.getElementById("home-content");
 
   if (sidebar.classList.contains("hidden")) {
@@ -48,6 +59,13 @@ function toggle_home_menu() {
     sidebar.classList.add("hidden");
     sidebar.classList.remove("w-full");
     content.classList.remove("hidden");
+  }
+}
+
+
+function trigger_reload(div) {
+  if (div.scrollTop === 0) {
+    htmx.ajax('GET', '/reload');
   }
 }
 

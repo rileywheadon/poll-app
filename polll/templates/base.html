@@ -9,9 +9,6 @@
   <!-- Custom Styles -->
   <link href="{{ url_for('static', filename='output.css') }}" rel="stylesheet" />
 
-  <!-- NOTE: Keep this commented out unless we bring back the star selector. -->
-  <!-- <link href="../static/styles/star-selector.css" rel="stylesheet" /> -->
-
   <!-- Import ApexCharts -->
   <link href="https://cdn.jsdelivr.net/npm/apexcharts@4.3.0/dist/apexcharts.min.css" rel="stylesheet">
 
@@ -56,10 +53,18 @@
   </link>
 
   <!-- Custom submit/show/hide animations -->
-  <link 
-    rel="stylesheet" 
-    href="{{ url_for('static', filename='styles/transitions.css') }}">
-  </link>
+  <!-- <link  -->
+  <!--   rel="stylesheet"  -->
+  <!--   href="{{ url_for('static', filename='styles/transitions.css') }}"> -->
+  <!-- </link> -->
+
+  <!-- Set the user's timezone if it hasn't already been set -->
+  {% if 'timezone' not in session %}
+  <script type="text/javascript">
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    fetch("/set_timezone", {method: 'POST', body: timezone});
+  </script> 
+  {% endif %}
 
   <!-- Title + Favicon -->
   <title>{% block title %}{% endblock %}</title>

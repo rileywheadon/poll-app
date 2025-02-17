@@ -26,6 +26,14 @@ CUTOFF_PERIODS = {
 }
 
 
+# Set timezone endpoint
+@home.route('/set_timezone', methods=['POST'])
+def set_timezone():
+    timezone = request.data.decode('utf-8')
+    session['timezone'] = timezone
+    return ""
+
+
 # Route for opening the settings window
 @home.route("/settings/open")
 @requires_auth
@@ -104,7 +112,33 @@ def query_feed(bid, order, period, page):
 @home.route("/changelog")
 @requires_auth
 def changelog():
-    return render_template("changelog.html")
+    return render_template("misc/changelog.html")
+
+
+@home.route("/about")
+@requires_auth
+def about():
+    return render_template("misc/about.html")
+
+
+@home.route("/help")
+@requires_auth
+def help():
+    return render_template("misc/help.html")
+
+
+# Reloads the current page, used for the scroll loader
+@home.route("/reload")
+@requires_auth
+def reload():
+    url = session["state"]["url"]
+
+    if session["state"]["tab"] != "create":
+        return redirect(url)
+    else:
+        r = make_response("")
+        r.headers.set("HX-Reswap", "none")
+        return r
 
 
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
@@ -131,8 +165,10 @@ def feed():
         "board": session["boards"].get(int(bid)) or {},
         "order": order,
         "period": period,
+        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     })
 
+    session.modified = True
     return render_template("home/feed.html", session=session)
 
 
@@ -148,10 +184,16 @@ def create():
 
     # Update the session state variable and render the feed
     session["user"]["on_cooldown"] = on_cooldown(session["user"])
-    session["state"] = {"admin": False, "tab": "create"}
+    session["state"] = {
+        "admin": False, 
+        "tab": "create",
+        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
+    }
 
-    # Render the HTML template
-    return render_template("home/create.html", session=session)
+    # Render the HTML template with caching (since /create doesn't change)
+    r = make_response(render_template("home/create.html", session=session))
+    r.headers["Cache-Control"] = "public, max-age=3600" 
+    return r
 
 
 # Create a new poll answer entry box. This is simpler than writing javascript.
@@ -291,7 +333,8 @@ def mypolls():
         "admin": False,
         "tab": "mypolls",
         "poll_page": 0,
-        "poll_full": len(res.data) < POLL_LIMIT
+        "poll_full": len(res.data) < POLL_LIMIT,
+        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     }
 
     # Render the HTML template
@@ -319,7 +362,8 @@ def history():
         "admin": False, 
         "tab": "history",
         "poll_page": 0,
-        "poll_full": len(res.data) < POLL_LIMIT
+        "poll_full": len(res.data) < POLL_LIMIT,
+        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     }
 
     # Render the HTML template
@@ -328,14 +372,15 @@ def history():
 
 
 # Render more polls in the history tab
-@home.route("/load/<origin>/<page>")
+@home.route("/load")
 @requires_auth
-def load_more(origin, page):
+def load_more():
 
     # Query the database with the correct offset given by page + 1
     db = get_db()
     user = session["user"]
-    page = int(page) + 1
+    origin = session["state"]["tab"]
+    page = session["state"]["poll_page"] + 1
 
     # Modify the RPC call depending on the origin
     res = None

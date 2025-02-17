@@ -1,9 +1,9 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card py-2 border-b dark:border-neutral-700 overflow-hidden accord-open"
+  class="poll-card rounded-xl border mb-2 md:mb-4 dark:border-neutral-700 overflow-hidden accord-open"
 >    
   <!-- Include the creator's username and the poll age -->
-  <div class="flex flex-row items-center px-4">
+  <div class="flex flex-row justify-center items-center pt-4 px-4 h-10">
 
     <p class="font-light text-neutral-500 dark:text-neutral-400">
       {% if poll.is_anonymous == 1 %}
@@ -15,12 +15,12 @@
 
     <!-- Share Button -->
     <button 
-      class="ml-auto text-xl w-10 ml-2 h-10 rounded-md py-1 hover:cursor-default"
+      class="ml-auto text-l md:text-xl rounded-md hover:cursor-default text-right"
       title="Share"
       onclick="copy_link('{{ poll.url }}')"
       type="button"
     >
-      <i class="ml-1 fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
+      <i class="fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
       </i>
     </button>
 
@@ -47,7 +47,7 @@
       
       <!-- Delete Poll -->
       <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="md:ml-2 text-xl w-10 h-10 rounded-md py-1 hover:cursor-default"
+      <button class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:cursor-default text-right"
           title="Delete"
           hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
           hx-include="previous input"
@@ -61,14 +61,14 @@
     {% else %}
 
       <button
-        class="md:ml-2 text-xl w-10 h-10 rounded-md py-1 hover:text-polll-red"
+        class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-red text-right"
         title="Report"
         hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="none"
         type="button"
       >
-        <i class="ml-1 fa fa-triangle-exclamation"></i>
+        <i class="fa fa-triangle-exclamation"></i>
       </button>
 
     {% endif %}
@@ -84,7 +84,7 @@
   </div>
 
   <!-- Poll Graph -->
-  <div id="poll-graph-{{ poll.id }}" class="md:px-8 md:py-4 fade-in">
+  <div id="poll-graph-{{ poll.id }}" class="p-2 md:px-8 md:py-4 fade-in">
     <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
@@ -100,7 +100,7 @@
 
     <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
-      class="ml-auto px-4 py-1 h-8 rounded-xl text-sm bg-polll-white hover:bg-neutral-200 dark:hover:bg-white flex items-center justify-center select-none text-neutral-900"
+      class="ml-auto px-4 h-6 md:h-8 rounded-xl text-sm bg-polll-white hover:bg-neutral-200 dark:hover:bg-white flex items-center justify-center select-none text-neutral-900"
       hx-on::after-request="toggle_comments({{ poll.id }})"
       hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
       hx-target="#poll-comments-{{ poll.id }}"
@@ -116,15 +116,16 @@
       </div>
       <i class="fa fa-message pl-2 text-l"></i>
     </button>
+
     <!-- Show Results -->
     <button
-      class="ml-4 px-4 h-8 rounded-xl text-sm py-1 bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+      class="ml-3 px-4 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
       hx-target="#poll-graph-{{ poll.id }}"
       hx-swap="none"
     >
       <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden md:inline">Show Results</span>
-      <i class="fa fa-chart-simple pl-2 pr-2 text-xl"></i>
+      <i class="fa fa-chart-simple pl-2 pr-2 text-l"></i>
     </button>
 
   </div>

@@ -22,9 +22,10 @@
 
       <!-- Left Sidebar -->
       <div 
-        id="home-sidebar" 
+        id="left-sidebar" 
         class="hidden px-2 mr-4 md:mr-0 md:flex md:justify-center md:gap-y-4 select-none md:min-w-52"
       >
+
         {{ macs.sidebarButtons() }}
 
       </div>
@@ -33,10 +34,11 @@
       <div 
         id="home-content"
         class="w-full overflow-auto p-2 select-none shrink overscroll-contain"
+        onscroll="trigger_reload(this)"
       >
 
-        <div id="home-spinner" class="peer home-indicator w-full flex flex-row grow justify-center items-center size-fit">
-          <i class="fa-solid fa-spinner animate-spin text-base md:text-2xl text-polll-green p-4"></i> 
+        <div id="loading-spinner" class="peer home-indicator w-full flex flex-row grow justify-center items-center size-fit pb-4">
+          <i class="fa-solid fa-spinner animate-spin text-base md:text-2xl text-white"></i> 
         </div>
 
         <div class="peer-[.htmx-request]:hidden">
@@ -46,28 +48,12 @@
       </div>
 
       <!--Right Sidebar-->
-      <div class="hidden md:flex md:justify-center h-full px-4 select-none md:min-w-52">
+      <div 
+        id="right-sidebar"
+        class="hidden md:flex md:justify-center h-full px-4 select-none md:min-w-52"
+      >
 
-        {% if session.state.tab == "feed" %}
-
-          <div class="rounded-xl h-max w-full text-center">
-
-            <p class="my-2 font-regular underline text-l">Boards</p>
-
-            {% for id, board in session.boards.items() %}
-        
-              <a 
-                class="h-14 flex flex-row justify-center items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-dgreen dark:text-polll-green {% endif %}" 
-                href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}"
-              >
-                {{ board.name }}
-              </a>
-
-            {% endfor %}
-
-          </div>
-           
-        {% endif %}
+        {% block right_sidebar %}{% endblock %}
 
       </div>
 

@@ -1,38 +1,40 @@
-<div class="poll-card border-b  overflow-hidden dark:border-neutral-700 pt-2 pb-2 select-none fade-in accord-open">
+<div class="poll-card rounded-xl border overflow-hidden dark:border-neutral-700 select-none fade-in accord-open mb-2 md:mb-4">
 
   <!-- Include the poll question -->
-  <div class="flex flex-col p-2">
-    <div class="flex flex-row">
-      <p class="font-light text-neutral-500 dark:text-neutral-400">
-        {% if poll.is_anonymous == 1 %}
-          anonymous
-        {% else %}
-          @{{ poll.creator }}
-        {% endif %} ⋅ {{ poll.age }}
-      </p>
-      {% if poll.is_pinned == 1 %}
-        <i class="ml-auto fa fa-thumbtack text-2xl text-polll-blue rotate-45"></i>
-      {% endif %}
-      </div>
+  <div class="flex flex-row pt-4 px-4 h-10">
+    <p class="font-light text-neutral-500 dark:text-neutral-400">
+      {% if poll.is_anonymous == 1 %}
+        anonymous
+      {% else %}
+        @{{ poll.creator }}
+      {% endif %} ⋅ {{ poll.age }}
+    </p>
+    {% if poll.is_pinned == 1 %}
+      <i class="ml-auto fa fa-thumbtack text-2xl text-polll-blue rotate-45"></i>
+    {% endif %}
+  </div>
+
+  <div class="flex flex-row px-4">
     <p class="font-light text-neutral-700 dark:text-neutral-200 text-2xl">
       {{ poll.question }}
     </p>
   </div>
 
-
-
   <form
-    class="p-2"
+    class="pb-4 px-4"
     hx-post="{{ url_for('poll.response', poll_id = poll.id) }}"
     hx-target="closest .poll-card"
     hx-trigger="submit"
     hx-swap="outerHTML"
   >
 
-    {% block poll_content %} {% endblock %}
+    <!-- Additional padding for the poll content -->
+    <div class="py-2 md:px-4">
+      {% block poll_content %} {% endblock %}
+    </div>
 
     <!-- Include the submit button, share button, and report button -->
-    <div class="flex flex-row text-sm justify-end items-center mt-4 font-light">
+    <div class="flex flex-row text-sm justify-end items-center mt-2 font-light h-10">
 
       <!-- Submit Button -->
       <button
@@ -49,24 +51,24 @@
 
       <!-- Share Button -->
       <button 
-        class="w-10 rounded-md py-1 select-none hover:text-polll-dgreen dark:hover:text-polll-green" 
+        class="rounded-md select-none hover:text-polll-dgreen dark:hover:text-polll-green" 
         title="Share"
         onclick="copy_link('{{ poll.url }}')"
         type="button"
       >
-        <i class="ml-1 fa fa-share-from-square text-xl"></i>
+        <i class="fa fa-share-from-square text-xl"></i>
       </button>
 
       <!-- Report Button -->
       <button
-        class="w-10 ml-2 h-10 rounded-md py-1 select-none hover:text-polll-red"
+        class="ml-3 md:ml-6 rounded-md select-none hover:text-polll-red"
         title="Report"
         hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
         hx-confirm="Are you sure you want to report this poll?"
         hx-swap="none"
         type="button"
       >
-        <i class="ml-1 fa fa-triangle-exclamation text-xl"></i>
+        <i class="fa fa-triangle-exclamation text-xl"></i>
       </button>
 
 

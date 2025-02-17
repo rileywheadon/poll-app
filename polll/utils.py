@@ -7,8 +7,7 @@ import random
 import numpy as np
 from scipy.stats import gaussian_kde
 from datetime import datetime
-from dateutil import tz
-
+from pytz import timezone
 
 # Gets some additional information about a poll without making database requests
 def query_poll_details(poll):
@@ -129,7 +128,7 @@ def smooth_hist(data, bandwidth):
     # Third parameter (must be above 101) helps with local
     # smoothing but anything above 150 casues a noticable
     # drop in performance
-    x_vals = np.linspace(0, 100, 501)
+    x_vals = np.linspace(0, 100, 101)
     adj_data = [[i["value"]] * i["count"] for i in data]
     adj_data = [i for j in adj_data for i in j]
 
@@ -154,9 +153,10 @@ def smooth_hist(data, bandwidth):
 
 # Formats the given timestamp to be more readable. Also includes the time zone
 def format_time(time_string):
+    time_zone = session.get("timezone") or "Etc/UTC"
     return (datetime
         .fromisoformat(time_string)
-        .astimezone()
+        .astimezone(timezone(time_zone))
         .strftime('%b %d, %Y at %I:%M%p')
     )
 

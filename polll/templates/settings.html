@@ -6,6 +6,8 @@
     <div class="flex flex-row mb-4">
       <a 
         href="{{ return_url }}" 
+        hx-indicator="#loading-spinner"
+        onclick="close_settings()"
         class="text-4xl cursor-default"
       >
         &times;

@@ -223,20 +223,24 @@ def respond_ranked_poll(form, poll, response_id):
 
     # Create all of the new row objects 
     db = get_db()
-    answer_ids = [int(id) for id in form.get("answer_id")]
+    ids = [int(id) for id in form.get("answer_id")]
+    ranks = [int(rank) for rank in form.get("answer_rank")]
+
+    # Create the new rows for the database
     data = []
-    for rank, id in enumerate(answer_ids):
-        data.append({"answer_id": id, "response_id": response_id, "rank": rank + 1})
+    for id, rank in zip(ids, ranks):
+        data.append({"answer_id": id, "response_id": response_id, "rank": rank})
 
     # Submit all of the new row objects
     res = db.table("ranked_response").insert(data).execute()
     response = res.data
 
-    # Assign the answer strings to the responses
-    for answer, id in zip(response, answer_ids):
-        answer["answer"] = poll["answers"][id]["answer"]
+    # Assign the answer strings to the responses and sort by rank
+    for row in response:
+        id = row["answer_id"]
+        row["answer"] = poll["answers"][id]["answer"]
 
-    return response
+    return sorted(response, key = lambda r: r["rank"])
 
 
 # Insert a list of tiered responses into the database

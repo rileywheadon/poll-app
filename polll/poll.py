@@ -282,27 +282,18 @@ def result(poll_id):
     if poll["poll_type"] == "NUMERIC_SCALE":
         poll["kde"] = smooth_hist(poll["results"], 0.25)
 
-    session.modified = True
-
     # If the poll is ranked or tier list, get the HTML template
-    template = ""
-    reswap = "none"
-
+    r = make_response("")
     if poll["poll_type"] == "RANKED_POLL":
-        template = render_template("results/ranked-poll.html", poll=poll)
-        reswap = "innerHTML"
+        r.data = render_template("results/ranked-poll.html", poll=poll)
+        r.headers.set("HX-Reswap", "innerHTML")
     if poll["poll_type"] == "TIER_LIST":
-        template = render_template("results/tier-list.html", poll=poll)
-        reswap = "innerHTML"
+        r.data = render_template("results/tier-list.html", poll=poll)
+        r.headers.set("HX-Reswap", "innerHTML")
 
-    
-    is_visible = True
-
-    r = make_response(template)
-    graph = '{"graph": ' + json.dumps(poll) + ', "is_visible": ' + str(is_visible).lower() + '}'
-
+    graph = '{"graph": ' + json.dumps(poll) + '}'
     r.headers.set("HX-Trigger-After-Settle", graph)
-    r.headers.set("HX-Reswap", reswap)
+    session.modified = True
     return r
 
 

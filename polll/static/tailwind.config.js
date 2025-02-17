@@ -5,10 +5,6 @@ module.exports = {
     "../templates/**", 
     "./scripts/**"
   ],
-  blocklist: [
-    /* Ensure Plotly's classes are not purged */
-    'main-svg', 
-  ],
   theme: {
     extend: {
       colors: theme => ({

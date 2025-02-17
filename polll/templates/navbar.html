@@ -2,7 +2,10 @@
 <div class="w-100% flex space-x-2 md:space-x-4 items-center border-b border-nord-4 dark:border-neutral-700 dark:bg-neutral-900 p-3 select-none">
 
   <!-- Logo image, also redirects to home -->
-  <a href="{{ url_for('home.feed') }}">
+  <a 
+    href="{{ url_for('home.feed') }}"
+    hx-indicator="#loading-spinner"
+  >
     <img 
       id="logo-icon-home" 
       class="h-9 cursor-default"
@@ -10,8 +13,11 @@
     />
   </a>
 
-  <a class="font-light" href="{{ url_for('home.changelog') }}">
-    v0.1.1
+  <a 
+    class="font-light hover:underline" 
+    href="{{ url_for('home.changelog') }}"
+  >
+    v0.1.2
   </a>
 
   <!-- Hamburger Menu -->

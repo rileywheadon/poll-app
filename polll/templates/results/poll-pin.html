@@ -1,5 +1,5 @@
 <button 
-  class="md:ml-2 text-xl w-10 h-10 rounded-md py-1 hover:text-polll-dgreen dark:hover:text-polll-green hover:cursor-default"
+  class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-dgreen dark:hover:text-polll-green hover:cursor-default text-right"
   title="{% if is_pinned %}Unpin Poll{% else %}Pin Poll{% endif %}"
   hx-get="/poll/pin/{{ id }}/{{ is_pinned }}"
   hx-swap="outerHTML"
