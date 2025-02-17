@@ -1,0 +1,280 @@
+{% import 'macros.jinja' as macs %}
+{% if not session.user.on_cooldown %}
+
+<!-- Image + create container -->
+<div class="flex flex-col h-full space-y-4 pb-2">
+
+  <!-- Image row -->
+  <div class="flex flex-row justify space-x-2 md:space-x-6">
+
+    <!-- NOTE: The grow and max-w-1/5 classes prevent flashes on load. -->
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Choose One"
+    >
+      <input 
+        class="poll-create hidden"
+        type="radio"
+        name="poll_type" 
+        value="CHOOSE_ONE"
+        onclick="update_answer_editor('choose_one')"
+        autocomplete="off"
+        checked
+      >
+      <img 
+        id="logo-choose-one" 
+        class="aspect-square" 
+        src="../../static/assets/choose-one-dark.png"
+      />
+    </label>
+
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Choose Many"
+    >
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="CHOOSE_MANY"
+        onclick="update_answer_editor('choose_many')"
+      >
+      <img 
+        id="logo-choose-many" 
+        class="aspect-square" 
+        src="../../static/assets/choose-many-dark.png"
+      />
+    </label>
+
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Scale"
+    >
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="NUMERIC_SCALE"
+        onclick="update_answer_editor('numeric_scale')"
+        autocomplete="off"
+      >
+      <img 
+        id="logo-scale" 
+        class="aspect-square" 
+        src="../../static/assets/scale-dark.png"
+      />
+    </label>
+
+
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Ranking"
+    >
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="RANKED_POLL"
+        onclick="update_answer_editor('ranked_poll')"
+        autocomplete="off"
+      >
+      <img 
+        id="logo-ranking" 
+        class="aspect-square" 
+        src="../../static/assets/ranking-dark.png"
+      />
+    </label>
+
+
+    <label 
+      class="overflow-hidden rounded-md border-2 border-neutral-700 has-[:checked]:border-polll-dgreen dark:has-[:checked]:border-polll-green grow max-w-1/5" 
+      title="Tier List"
+    >
+      <input 
+        class="poll-create hidden"
+        type="radio" 
+        name="poll_type" 
+        value="TIER_LIST"
+        onclick="update_answer_editor('tier_list')"
+        autocomplete="off"
+      >
+      <img 
+        id="logo-tier-list" 
+        class="aspect-square" 
+        src="../../static/assets/tier-list-dark.png"
+      />
+    </label>
+    
+  </div>
+
+  <!-- Create input field -->
+  <div class="flex flex-col grow border-2 border-neutral-700 rounded-md">
+
+    <div id="question-lbl" class="px-4 pt-4 text-3xl"> 
+      Choose One
+    </div>
+
+    <div class="px-10 pt-8 text-2xl"> 
+      <input class="poll-create bg-transparent dark:text-white w-11/12 focus:outline-none font-light placeholder:text-neutral-400" 
+        autocomplete="off"
+        autofocus
+        name="poll_question"
+        placeholder="Write your poll of the day..."
+      />
+      <hr class="border border-neutral-700">
+    </div>
+
+    <div class="grow p-8">
+      <div id="multiple-ans" class="flex flex-col justify-center">
+
+        <div id="ans-types" class="unhidden">
+
+          <!-- Multiple Answers -->
+          <div id="answer-editor" class="flex flex-row">
+            <button 
+              id="answer-add" 
+              tabindex="-1"
+              class="h-10 cursor-default" 
+              hx-get="{{ url_for('home.create_answer') }}" 
+              hx-swap="beforeend" 
+              hx-target="#answer-list"
+            >
+              <i class="fa fa-plus text-xl hover:text-polll-green"></i>
+            </button>
+
+            <div id="answer-list" class="flex flex-col grow">
+              {% include "home/create-answer.html" %}
+              {% include "home/create-answer.html" %}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Custom scale endpoints input -->
+      <div id="endpoint-container" class="hidden flex flex-col">
+
+        {{ macs.toggleButton("endpoint-toggle", "toggle_custom_endpoints", "Custom Endpoints") }}
+
+        <div id="endpoint-editor" class="hidden flex flex-row p-4 space-x-3 justify-center items-center">
+          <input id="endpoint-left"
+          class="poll-create w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-neutral-700 dark:text-nord-6 border-2 border-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-200"
+          placeholder="From..."
+          name="endpoint_left"
+          autocomplete="off">
+  
+          <input id="endpoint-right"
+          class="poll-create w-0 font-light grow rounded-lg py-2 px-4 bg-nord-4 text-nord-0 dark:bg-neutral-700 dark:text-nord-6 border-2 border-neutral-700 placeholder:text-neutral-400 focus:outline-none focus:border-neutral-200"
+          placeholder="To..."
+          name="endpoint_right"
+          autocomplete="off">
+        </div>
+
+      </div>
+    
+    </div>
+
+    <!-- Boards -->
+    <div class="flex flex-col md:flex-row md:items-center mt-auto px-10 pb-2">
+
+      <!-- SELECT BOARD -->
+      <div class="mb-4 md:mb-0"> 
+        <span class="mr-2">Boards:</span>
+
+        {% for id, board in session.boards.items() %}
+
+        <label class="rounded-md px-3 py-1 text-sm h-8 mr-2 border-2 border-neutral-200 bg-neutral-200 dark:bg-neutral-800 has-[:checked]:border-polll-blue dark:border-neutral-200 {% if board.primary %} border-polll-dgreen dark:border-polll-green {% endif %}">
+          {{ board.name }}
+          <!-- Very unfourtunate hack to prevent all from being unselected -->
+          {% if board.primary %}
+            <input class="poll-create hidden"
+              name="poll_board"
+              value="{{ board.id }}" 
+            >
+            <input
+              class="hidden"
+              type="checkbox"
+              checked disabled
+            >
+          {% else %}
+            <input 
+              class="poll-create hidden" 
+              name="poll_board"
+              value="{{ board.id }}" 
+              type="checkbox"
+            >
+          {% endif %}
+
+          </label>
+
+        {% endfor %}
+      </div>
+
+      <!-- SET CREATION DATE (ADMIN ONLY)  -->
+      {% if session.user.is_admin %}
+
+      <div class="mb-2 md:mb-0 md:ml-auto flex flex-row items-center">
+        <span class="mr-2">Creation Date:</span>
+        <input 
+          class="poll-create h-8 rounded-md bg-neutral-300 dark:bg-neutral-800 px-2" 
+          type="date" 
+          name="created_at"
+        >
+      </div>
+
+      {% endif %}
+
+
+    </div>
+
+    <!-- Footer -->
+    <div class="flex flex-row items-center px-10 pb-6">
+
+      <!-- HIDE USERNAME (hack?)--> 
+      <div class="w-10 h-10 relative">
+        <input 
+          id="anon-toggle" 
+          class="poll-create peer opacity-0 absolute w-10 h-10 left-0 top-0 z-10" 
+          name="poll_anonymous" 
+          type="checkbox"
+          title="Hide Username"
+        >
+        <div class="w-10 h-10 opacity-100 peer-checked:opacity-0 absolute left-0 top-0 flex flex-row justify-center items-center">
+          <i class="text-2xl fa-solid fa-eye"></i>
+        </div>
+        <div class="w-10 h-10 opacity-0 peer-checked:opacity-100 absolute left-0 top-0 flex flex-row justify-center items-center">
+          <i class="text-2xl fa-solid fa-eye-slash"></i>
+        </div>
+      </div>
+    
+      <!-- SUBMIT BUTTON -->
+      <button class="rounded-xl bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green text-black h-8 px-4 ml-auto" 
+        hx-get="{{ url_for('home.create_poll') }}" 
+        hx-target="#create-card" 
+        hx-swap="innerHTML" 
+        hx-include=".poll-create"             
+        hx-confirm="Once you create a poll, you won't be able to change it. Continue?"
+      >
+        <p class="font-regular text-sm">Publish</p>
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+{% else %}
+
+<div class="flex flex-row text-center items-center justify-center py-16 select-none">
+  <p class="text-2xl font-light">
+    Thanks for making a poll today!
+    <br />
+    <br />
+    Come back at {{ format_time(session.user.next_poll_allowed)}} to make another one.
+  </p>
+</div>
+
+{% endif %} 
+

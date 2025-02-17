@@ -10,7 +10,7 @@
 
 ## Technology Stack
 
-[Flask](https://flask.palletsprojects.com/en/stable/) (Python) as a web server.
+[Flask](https://flask.palletsprojects.com/en/stable/) (Python) as an application framework.
 
 [Flask-Session](https://flask-session.readthedocs.io/en/latest/) and [Redis](https://redis.io/) for Server-Side sessions.
 
@@ -21,6 +21,10 @@
 [TailwindCSS](https://tailwindcss.com/) as a CSS framework.
 
 [Heroku](https://www.heroku.com/) as an application platform.
+
+[gunicorn](https://gunicorn.org/) as a production web server.
+
+[ngrok](https://ngrok.com/) for creating a mobile-accessible development environment.
 
 [Cloudflare](https://www.cloudflare.com/) for DNS management and security.
 
@@ -57,30 +61,45 @@ If the answer to all three of the questions is "yes", add the new technology to 
 
 ## Setup Instructions
 
-In order to run the app locally, you will need a [Virtual Environment](https://docs.python.org/3/library/venv.html), which can be created using the `venv` library provided with the base installation of Python3. To create a new virtual environment from the `requirements.txt` file following these steps:
+In order to run the app locally, you will need a [Virtual Environment](https://docs.python.org/3/library/venv.html), which can be created using the `venv` library provided with the base installation of Python3. To create a new virtual environment follow these steps:
 
-- Open a terminal and `cd` to the root directory of the project
-- Run `python3 -m venv venv`. This will create a new virtual environment called `venv` within the root directory of the project.
-- Run `source venv/bin/activate` to enter the virtual environment.
-- Use `pip install -r requirements.txt` to install the packages listed in `requirements.txt` in the virtual environment.
+- Open a terminal and `cd` to the root directory of the project.
+- Run `python3 -m venv .venv` from the root directory.
+- Run `source .venv/bin/activate` to enter the virtual environment.
+- Use `pip install -r requirements.txt` to install the packages listed in `requirements.txt`.
 
-To run the app, type `python3 src/app.py` into a terminal from the root directory.
+**Launch Options:** In order to better simulate a production environment, you can run the development version of the app using the production web server. To do this, you will need to install the [Heroku CLI](https://devcenter.heroku.com/categories/command-line). To double check that installation was successful, make sure that the command `heroku --version` does not return an error. Then, use `heroku local` to run the app from the root directory.
 
-If you are making changes to the HTML using TailwindCSS, you will also need to enable the Tailwind watcher. To do this, open another terminal window (separate from the one that is running the app), `cd` to `src/polll/static` and type in the following command:
+If you would like to use the Flask web server, you can call the `launch.py` script from the root directory using `python3 launch.py`. This is essentially identical to the `src/app.py` script we were using to launch the app before.
+
+**TailwindCSS**: If you are making changes to the UI using TailwindCSS, you will also need to activate a Tailwind CSS watcher. To do this, open another terminal window (separate from the one that is running the app), `cd` to `src/polll/static` and type in the following command:
 
 ```
 ./tailwindcss-macos -i input.css -o output.css --watch
 ```
 
-Finally, you will have to install the [Redis](https://redis.io/) CLI and run a redis server in _another_ terminal using the following command:
+**Redis**: The app now uses server-side sessions. To simulate a server-side session in a development environment, you will have to install the [Redis](https://redis.io/) CLI and run a redis server using the `redis-server` command in _another_ terminal.
+
+**Environment File**: Launching the app requires a `.env` with the Supabase API key. For security reasons, I cannot check this file into version control, so I will need to send it to you via email (or some other method).
+
+### Generating an SSL Certificate
+
+You will need an SSL certificate and key, stored in a `cert.pem` and `key.pem` file in the root directory. To generate these files, install the `mkcert` utility with `brew install mkcert`. Then, run the following command from the root directory of the project.
 
 ```
-redis-server
+mkcert -key-file key.pem -cert-file cert.pem https://127.0.0.1:3000
 ```
 
-I made an effort to remove some of the unnecessary files (some of which were also a security risk) from the Github repository. Therefore, these instructions may not be 100% complete. Just let me know if you have an issue. In particular, you may require the `cert.pem`, `key.pem`, and `.env` files. I can provide these upon request.
+Even after doing this, you may still get a "This website is insecure" message when accessing the localhost URL from your browser. This is normal and can be ignored.
 
-Note: run redis-server
+### Mobile Development
+
+To access the app on your mobile device, you will have to install [ngrok](https://ngrok.com/). I tried really hard to do this without introducing more accounts/build steps, but it just wasn't working due to the fact that UBC wifi assigns dynamic IP addresses, making it extremely difficult to connect to anything hosted locally on our laptops. After you install `ngrok`, simply follow the instructions on their website to run the app on a static URL.
+
+## Production
+
+- Sometimes, the tailwind compiler does weird things in the production environment. To fix styling issues, use `heroku run bash` and run the tailwind compiler manually from the command line.
+- Make sure all the queries in the `queries/` folder are up to date in Supabase.
 
 ## Git
 

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="w-screen h-dvh md:h-screen text-neutral-900 p-10 text-neutral-900 dark:text-neutral-200 dark:bg-neutral-900 overflow-auto overscroll-contain">
+
+  <!-- Menu Options -->
+  <div class="flex flex-row mb-4">
+    <div>
+      <i class="fa fa-arrow-left"></i>
+      <a href="{{ url_for('home.feed') }}">Return Home</a>
+    </div>
+  </div>
+
+  <div class="flex flex-row text-polll-blue underline mb-6">
+    <a class="mr-2" href="{{ url_for('home.changelog') }}">Changelog</a>
+    <a class="mr-2" href="{{ url_for('home.about') }}">About</a>
+    <a href="{{ url_for('home.help') }}">Help</a>
+  </div>
+
+  {% block misc_content %}
+
+  {% endblock %}
+
+</div>
+
+{% endblock %}

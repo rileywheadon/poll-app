@@ -1,0 +1,49 @@
+{% extends "polls/poll-base.html" %}
+
+{% import 'macros.jinja' as macs %}
+
+{% block poll_content %}
+
+<div id="tier-list-{{ poll.id }}">
+
+  <!-- Tier list body -->
+  {{ macs.tierList(poll.id , True, None) }}
+
+  <!-- Options pool -->
+  <div 
+    id="tier-ans-container-{{ poll.id }}" 
+    class="flex flex-wrap gap-2 w-fit h-fit mt-2"
+  >
+
+  {% for id, answer in poll.answers.items() %}
+
+    <div class="flex">
+      <input
+        class="hidden"
+        type="text"
+        name="answer_id"
+        value="{{ answer.id }}"
+      />
+      <input
+        class="hidden"
+        type="text"
+        name="answer_tier"
+        value="X"
+      />
+      <button 
+        type="button"
+        onclick="tier_select(this, {{ poll.id }})"
+        class="tier-answer 
+        flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default p-4 border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-400 hover:border-neutral-400 focus:border-polll-blue"
+      >
+        {{ answer.answer }}
+      </button>
+    </div>
+
+  {% endfor %}
+
+  </div>
+
+</div>
+
+{% endblock %} 

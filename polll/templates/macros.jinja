@@ -1,0 +1,170 @@
+{% macro sidebarButtons() %}
+
+<div class="flex flex-col overflow-hidden items-start w-full h-full ml-2 mt-4 md:mt-0">
+  <a 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
+    href="{{ url_for('home.feed') }}"
+    hx-indicator="#loading-spinner"
+  >
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'feed' %} text-polll-dgreen dark:text-polll-green {% endif %}">
+      <i class="ml-2 text-xl text-base fa-solid fa-fire px-2"></i>
+      Feed
+    </span>
+  </a>
+
+  <a 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg" 
+    href="{{ url_for('home.history') }}"
+    hx-indicator="#loading-spinner"
+  >
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'history' %} text-polll-dgreen dark:text-polll-green {% endif %}">
+      <i class="ml-2 text-xl text-base fa-solid fa-book px-2"></i>
+      History
+    </span>
+  </a>
+
+  <a 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg" 
+    href="{{ url_for('home.create') }}"
+    hx-indicator="#loading-spinner"
+  >
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'create' %} text-polll-dgreen dark:text-polll-green {% endif %}">
+      <i class="ml-2 text-xl text-base fa-solid fa-pen underline px-2"></i>
+      Create
+    </span>
+  </a>
+
+  <a 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
+    href="{{ url_for('home.mypolls') }}"
+    hx-indicator="#loading-spinner"
+  >
+    <span class="text-neutral-700 dark:text-neutral-200 {% if session.state.tab == 'mypolls' %} text-polll-dgreen dark:text-polll-green {% endif %}">
+      <i class="ml-2 text-xl text-base fa-solid fa-user px-2"></i>
+      {{session.user.username}}
+    </span>
+  </a>
+
+  <a 
+    class="h-14 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
+    hx-get="{{ url_for('home.open_settings') }}"
+    hx-target="#settings"
+    hx-indicator="#loading-spinner"
+    hx-swap="innerHTML"
+    hx-on::after-request="open_settings();"
+  >
+    <span class="">
+      <i class="ml-2 text-xl text-base fas fa-gear px-2"></i>
+      Settings
+    </span>
+  </a>
+
+</div>
+
+
+{% endmacro %}
+
+{% macro chooseInput(input_type, answer_id, answer_content) %}
+    
+<input type="{{ input_type }}" id="{{ answer_id }}" name="answer_id" value="{{ answer_id }}" class="hidden peer">
+<label 
+  for="{{ answer_id }}"
+  class="flex w-1/2 p-2 rounded-lg cursor-default border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-neutral-400 peer-checked:border-polll-blue"
+>
+  <p class="font-light select-none">{{ answer_content }}</p>
+</label>
+{# removed hover:text-gray-300 from this #}
+
+{% endmacro %}
+
+
+<!-- TOOD: Add a label_left and label_right -->
+{% macro toggleButton(input_id, func, label) %}
+
+  <label class="flex items-center">
+    <input 
+      onclick="{{ func }}(this)" 
+      id="{{ input_id }}" 
+      type="checkbox" 
+      class="hidden peer"
+      autocomplete="off"
+    >
+    <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+    <span id="text-{{ input_id }}" class="ml-2 text-sm font-light">{{ label }}</span>
+  </label>
+
+{% endmacro %}
+
+
+{% macro tierList(poll_id, interactive=False, results=None) %}
+
+<div class="flex flex-col py-4 select-none">
+    
+{% for tier in ["S", "A", "B", "C", "D", "F"] %}
+
+  <div class="flex flex-row border-[2px] border-neutral-700 dark:border-neutral-400 hover:z-10 hover:border-polll-blue -my-[0.75px] {% if tier == 'S' %}rounded-t-xl{% elif tier == 'F' %}rounded-b-xl{% endif %}">
+
+    <div
+      id="{{ tier }}-label" 
+      class="flex flex-wrap min-w-20 w-20 h-auto min-h-20 border-r-2 border-neutral-700 dark:border-neutral-400 justify-center items-center font-regular text-2xl"
+    >
+
+      <!-- This if statement IS necessary -->
+      {% if tier == "S" %}
+        <span class="text-2xl text-tier-S-lm dark:text-tier-S">{{ tier }}</span>
+      {% elif tier == "A" %}
+        <span class="text-2xl text-tier-A-lm dark:text-tier-A">{{ tier }}</span>
+      {% elif tier == "B" %}
+        <span class="text-2xl text-tier-B-lm dark:text-tier-B">{{ tier }}</span>
+      {% elif tier == "C" %}
+        <span class="text-2xl text-tier-C-lm dark:text-tier-C">{{ tier }}</span>
+      {% elif tier == "D" %}
+        <span class="text-2xl text-tier-D-lm dark:text-tier-D">{{ tier }}</span>
+      {% else %}
+        <span class="text-2xl text-tier-F-lm dark:text-tier-F">{{ tier }}</span>
+      {% endif %}
+
+    </div>
+
+    <div  
+      class="flex flex-wrap grow"
+      {% if interactive %} 
+        id="{{ tier }}-content-{{ poll_id }}" 
+        onmousedown="handle_tier_select('{{ poll_id }}', '{{ tier }}')" 
+        ontouchstart="handle_tier_select('{{ poll_id }}', '{{ tier }}')" 
+      {% endif %}
+    >
+
+    {% if not interactive %}
+    
+    <div id="{{ tier }}-content-{{ poll_id }}" class="flex flex-wrap w-fit h-fit justify-left items-start tier-{{ tier }}">
+
+      {% for r in results %}
+        {% if r.tier == tier %} 
+          <div class="flex items-center justify-center min-w-20 h-auto min-h-20 max-w-32 rounded-lg cursor-default border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-400">
+            <p class="text-center">{{ r.answer }}</p>
+          </div>  
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+    </div>
+  </div>
+
+{% endfor %}
+
+</div>
+
+{% endmacro %}
+
+<!-- For creating dropdowns in the feed -->
+{% macro dropdownItem(route, name) %}
+<a href="{{ route }}">
+  <button class="px-4 py-1 hover:bg-neutral-200 hover:dark:bg-neutral-600 w-full">
+    {{ name }}
+  </button>
+</a>
+{% endmacro %}

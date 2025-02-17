@@ -1,0 +1,141 @@
+{% extends "home/home.html" %}
+
+{% block home_content %}
+
+<div class="flex flex-row mb-2 md:mb-4">
+
+  <!-- Filter Dropdown -->
+  <div class="relative select-none w-20 mr-2">
+
+    <button 
+      id="filter-dropdown-btn"
+      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+      onclick="toggle_filter_dropdown()"
+    >
+      {{ session.state.order.capitalize() }} 
+      <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden w-full">
+
+      {% with route = "?board=" + session.state.board.id|string %}
+        {{ macs.dropdownItem(route + "&order=hot", "Hot") }}
+        {{ macs.dropdownItem(route + "&order=top", "Top") }}
+        {{ macs.dropdownItem(route + "&order=new", "New") }}
+      {% endwith %}
+
+    </div>
+
+  </div>
+
+  <!-- Filter Time Dropdown -->
+  {% if session.state.order == "top" %}
+
+  <div class="relative select-none w-24">
+
+    <button 
+      id="filter-time-dropdown-btn"
+      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+      onclick="toggle_filter_time_dropdown()"
+    >
+      {{ session.state.period.capitalize() }}
+      <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+    <div 
+      id="filter-time-dropdown" 
+      class="hidden absolute z-10 font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden"
+    >
+
+      {% with route = "?board=" + session.state.board.id|string + "&order=top" %}
+        {{ macs.dropdownItem(route + "&period=day", "Day") }}
+        {{ macs.dropdownItem(route + "&period=week", "Week") }}
+        {{ macs.dropdownItem(route + "&period=month", "Month") }}
+        {{ macs.dropdownItem(route + "&period=year", "Year") }}
+        {{ macs.dropdownItem(route + "&period=all", "All Time") }}
+      {% endwith %}
+
+    </div>
+
+  </div>
+
+  {% endif %}
+
+  <!-- Board Dropdown (mobile only) -->
+  <div class="md:hidden relative select-none w-20 ml-auto">
+
+    <button 
+      id="board-dropdown-btn"
+      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
+      onclick="toggle_board_dropdown()"
+    >
+      {{ session.state.board.name }} 
+      <i class="px-1 fa fa-caret-down"></i>
+    </button>
+    
+    <div id="board-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden w-full">
+
+    {% for id, board in session.boards.items() %}
+      {% with route="?board="+board.id|string+"&order="+session.state.order %}
+        {{ macs.dropdownItem(route + "&name=" + board.name, board.name) }}
+      {% endwith %}
+    {% endfor %}
+
+    </div>
+
+  </div>
+
+
+</div>
+
+{% if session.polls %}
+
+  <div id="poll-container">
+    {% for id, poll in session.polls.items() %}
+      {% include poll["poll_template"] %}
+    {% endfor %}  
+  </div>
+
+  {% with state=session.state %}
+    {% include "home/load-polls.html" %}
+  {% endwith %}
+
+{% else %}
+
+  <div class="flex flex-row text-center items-center justify-center py-16 select-none">
+    <p class="text-xl font-light">
+      {% if session.state.board.name == "All" %}
+      You've answered every poll!
+      {% else %}
+      You've answered every poll in {{ session.state.board.name }}!
+      {% endif %}
+      <br />
+      <br />
+      Login later for more...
+    </p>
+  </div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block right_sidebar %}
+
+<div class="rounded-xl h-max w-full text-center">
+
+  <p class="my-2 font-regular underline text-l">Boards</p>
+
+  {% for id, board in session.boards.items() %}
+
+    <a 
+      class="h-14 flex flex-row justify-center items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg {% if session.state.board.id == board.id %} text-polll-dgreen dark:text-polll-green {% endif %}" 
+      href="{{ url_for('home.feed', board = board.id, order = session.state.order or 'hot') }}"
+    >
+      {{ board.name }}
+    </a>
+
+  {% endfor %}
+
+</div>
+
+{% endblock %}

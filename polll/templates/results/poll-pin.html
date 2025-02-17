@@ -1,0 +1,13 @@
+<button 
+  class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-dgreen dark:hover:text-polll-green hover:cursor-default text-right"
+  title="{% if is_pinned %}Unpin Poll{% else %}Pin Poll{% endif %}"
+  hx-get="/poll/pin/{{ id }}/{{ is_pinned }}"
+  hx-swap="outerHTML"
+>
+  {% if is_pinned %}
+    <i class="fa fa-thumbtack"></i>
+  {% else %}
+    <i class="fa fa-thumbtack-slash"></i>
+  {% endif %}
+</button>
+
