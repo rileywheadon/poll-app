@@ -96,7 +96,7 @@ function graphInitRewritten(poll) {
 
 function choose_one_options(user_rs, rs) {
 
-    user_rs == null ? user_rs = "" : user_rs = user_rs["answer"];
+    user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
 
@@ -228,7 +228,7 @@ function scale_graph_options(poll) {
     answers = poll["answers"]
 
     // Rest of the function should be untouched
-    user_rs == null ? user_rs = -1 : user_rs = user_rs["value"];
+    user_rs ? user_rs = user_rs["value"] : user_rs = -1;
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
