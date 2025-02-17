@@ -94,10 +94,9 @@ function graphInitRewritten(poll) {
 
 }
 
-function choose_one_options(user_rs, rs, type="pie") {
+function choose_one_options(user_rs, rs) {
 
     user_rs == null ? user_rs = "" : user_rs = user_rs["answer"];
-    var total_answers = rs.map((e) => e["count"]).reduce((acc, i) => acc + i, 0);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
 
@@ -144,7 +143,7 @@ function choose_one_options(user_rs, rs, type="pie") {
     }
 }
 
-function choose_many_options(user_rs, rs, type="bar") {
+function choose_many_options(user_rs, rs) {
 
     user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
