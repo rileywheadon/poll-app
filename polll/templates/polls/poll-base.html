@@ -6,7 +6,13 @@
       {% if poll.is_anonymous == 1 %}
         anonymous
       {% else %}
-        @{{ poll.creator }}
+
+        <a 
+        class="" 
+        href="{{ url_for('home.profile', username = poll.creator) }}"
+        hx-indicator="#loading-spinner"
+        > @{{ poll.creator }}
+        </a>
       {% endif %} ⋅ {{ poll.age }}
     </p>
     {% if poll.is_pinned == 1 %}

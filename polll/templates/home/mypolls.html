@@ -3,176 +3,18 @@
 
 {% block home_content %}
 
-<div class="flex flex-col font-light overscroll-y-contain"
-     >
+<div class="flex flex-col font-light overscroll-y-contain">
 
+  <!-- User Profile/data-->
   <div class="flex flex-row">
-    <!-- User Profile
-    TODO: 
-    - add more data to the session
-    - Format that data on the screen
-     
-    -->
-    <div class="w-1/4 p-2 border border-neutral-700">
-      User Profile
-    </div>
-    <!-- Most Popular Carousel/Horizontal Slider -->
-    <div class="w-3/4 p-2 border border-neutral-700">
-      <p class="text-3xl">Your most popular polls</p>
-
-      <!-- Makes a dictionary where the key is id of the poll and value the number of votes that poll got -->
-      {% if session.polls %}
-      {% set scores = dict() %}
-        {% for id, poll in session.polls.items() %}
-          {% set rs = poll.response_count %}
-          {% set scores=scores.__setitem__(id, rs) %}
-        {% endfor %}
-
-        <!-- Sorts dictionary in descending order. Result is a list of tuples of the form (key, value) -->
-        {% set scores = scores.items()|sort(attribute='1', reverse=True) %}
-
-        <!-- Shows top three most popular polls  -->
-         <!-- TODO:
-          - handle horizontal scroll behaviour
-           -->
-        <div class="flex flex-row mb-2">
-        {% for i in [0, 1, 2] %}
-          {% set id = scores[loop.index0][0] %}
-          {% set poll = session.polls[id] %}
-          <div class="min-w-full"> 
-            {% include "results/result-base.html" %}
-          </div>
-        {% endfor %}
-        </div>
-      {% endif %}
-        <!-- Next polls -->
-        <div class="flex flex-row justify-right items-end w-full">
-          <button class="flex flex-row px-2 py-1 border border-neutral-700 hover:bg-neutral-600"
-                  onclick=""
-                  >
-            <p class="pb-1">Next</p>
-            &nbsp;<i class="fa fa-arrow-right pl-1 pt-0.5 text-xl"></i>
-          </button>
-        </div>
-    </div>
-  </div>
-
-  <div class="flex flex-row border-b border-neutral-700">
 
   </div>
 
-  <!-- polls and user response data -->
-  <div class="grid grid-cols-2">
-
-    <!-- Your Polls + History toggle -->
-    <div class="inline p-2 border-l border-r border-b border-neutral-700 items-center">
-      <!-- {{ macs.toggleButton("toggle-poll-results", "toggle_poll_results", "Your Polls") }} -->
-      <label class="flex items-center">
-        <input 
-          onclick="toggle_poll_results(this, '/history')" 
-          id="toggle-poll-results" 
-          type="checkbox" 
-          class="hidden peer"
-          autocomplete="off"
-          
-        >
-        <span id="text-toggle-poll-results-left" class="mr-2 font-light">Your Polls</span>
-        <div class="relative w-11 h-6 bg-polll-blue rounded-xl dark:border-gray-600 peer-checked:bg-polll-green peer peer-focus:outline-none peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-        <span id="text-toggle-poll-results-right" class="ml-2 font-light">History</span>
-      </label>
-    </div>
-
-    <!-- Results Label -->
-    <div class="1/2 p-2 border-b border-r border-neutral-700 text-center justify-center items-center">
-      Results (Premium)
-    </div>
-
-
-
-    <!-- Your/History Polls -->
-     <!-- TODO: 
-      - Turn the loop into a macro and condition on that macro  
-      - Clean up the code in 'home.py' adding that adds the 'history' polls to the session
-      -->
-    <div class="">
-      <!-- Yours -->
-      <div id="my-polls" class="border-l border-r border-neutral-700">
-        <div id="poll-container">
-
-          {% if session.polls %}
-            {% for id, poll in session.polls.items() %}
-              {% include "results/result-base.html" %}
-            {% endfor %}
-          {% else %}
-            <div class="flex flex-row text-center items-center justify-center py-16 select-none">
-              <p class="text-2xl font-light">
-                You haven't answered any polls yet...
-                <br />
-                <br />
-                Get out there and vote!
-              </p>
-            </div>
-          {% endif %}  
-
-        </div>
-        {% with state=session.state %}
-          {% include "home/load-polls.html" %}
-        {% endwith %}
-      </div>
-
-      <!-- History -->
-      <div id="history-polls" class="hidden border-l border-r border-neutral-700">
-        <div id="poll-container">
-
-          {% if session.polls %}
-            {% for id, poll in session.hist_polls.items() %}
-              {% include "results/result-base.html" %}
-            {% endfor %}
-          {% else %}
-            <div class="flex flex-row text-center items-center justify-center py-16 select-none">
-              <p class="text-2xl font-light">
-                You haven't answered any polls yet...
-                <br />
-                <br />
-                Get out there and vote!
-              </p>
-            </div>
-          {% endif %}  
-
-        </div>
-        {% with state=session.state %}
-          {% include "home/load-polls.html" %}
-        {% endwith %}
-      </div>
+  <!-- Pinned polls -->
+  <div>
 
   </div>
 
-
-  <div class="flex flex-col">
-    
-    <!-- TODO: 
-    - Add user data to the session object of the poll that was clicked on (wherever the show/hide graphs endpoint updates the session)
-    - Loop over users in session (macro if necessary) and update the value every time a new 'show graph' event is fired
-    -->
-
-    <!-- Voter response label -->
-    <div class="border-b m-2 border-neutral-500 text-center justify-center items-center">
-      <p class="mt-4 text-2xl">
-        {% if session.polls %}
-          {{ session.hist_polls[39].question }}
-        {% endif %} 
-      </p>
-    </div>
-
-    <!-- Voter responses -->
-    <div class="flex flex-col">
-      
-    </div>
-
-  </div>
-
-  
- 
 
 </div>
 

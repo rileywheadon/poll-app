@@ -313,6 +313,43 @@ def create_poll():
     return r
 
 
+@home.route("/user/<username>")
+@requires_auth
+def profile(username):    
+
+    # Query the database for all polls made by the user
+    db = get_db()
+    user = db.table("user").select("*").eq("username", username).execute().data[0]
+    data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("mypolls", data).execute()
+
+    # Update the session object with the new state
+    session["comments"] = {}
+    session["replies"] = {}
+    session["polls_created"] = {p["id"]:query_poll_details(p) for p in res.data}
+    
+    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("history", data).execute()
+    
+    session["polls_answered"] = {p["id"]:query_poll_details(p) for p in res.data}
+
+    session["viewed_user"] = user
+    tab = ""
+    if (session["user"]["username"] == username):
+        tab = "mypolls"
+    session["state"] = {
+        "admin": False,
+        "tab": tab,
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT,
+    }
+
+    # Render the HTML template
+    session.modified = True
+    return render_template("home/profile.html", session=session)
+
+
+
 # Home page (user's polls)
 @home.route("/mypolls")
 @requires_auth
@@ -327,12 +364,12 @@ def mypolls():
     # Update the session object with the new state
     session["comments"] = {}
     session["replies"] = {}
-    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+    session["polls_created"] = {p["id"]:query_poll_details(p) for p in res.data}
 
     data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
     res = db.rpc("history", data).execute()
 
-    session["hist_polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+    session["polls_hist"] = {p["id"]:query_poll_details(p) for p in res.data}
     data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
 
     session["state"] = {

@@ -1,7 +1,7 @@
 {% extends "home/home.html" %}
 
 {% block home_content %}
-<div id="poll-container">
+<div class="poll-container">
 
   {% if session.polls %}
     {% for id, poll in session.polls.items() %}

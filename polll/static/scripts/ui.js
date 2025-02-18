@@ -99,16 +99,16 @@ function toggle_comments(poll_id) {
     for (var i = 0; i < dropdowns.length; i++) {
       id = dropdowns[i].getAttribute("id").substr(14);
       document.getElementById("poll-comments-" + id).classList.add("hidden");
-      document.getElementById("comments-toggle-" + id).innerHTML = "Show Comments";
+      // document.getElementById("comments-toggle-" + id).innerHTML = "Show Comments";
     }
 
     // Open the current dropdown
     comments.classList.remove("hidden")
-    toggle.innerHTML = "Hide Comments"
+    // toggle.innerHTML = "Hide Comments"
 
   } else {
     comments.classList.add("hidden")
-    toggle.innerHTML = "Show Comments"
+    // toggle.innerHTML = "Show Comments"
   }
 
 }
@@ -203,10 +203,12 @@ function toggle_tier_results(toggle) {
   document.getElementById(`text-${toggle.id}`).innerHTML == "Average" ? document.getElementById(`text-${toggle.id}`).innerHTML = "You" : document.getElementById(`text-${toggle.id}`).innerHTML = "Average";
 }
 
+
+
+// Might still need this for mobile
 function toggle_poll_results(toggle, url) {
   
   [document.getElementById("my-polls"), document.getElementById("history-polls")].forEach((e) => e.classList.toggle("hidden"));
-
 
 }
 
