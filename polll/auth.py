@@ -164,6 +164,7 @@ def register():
         "options": {
             "should_create_user": True,
             "email_redirect_to": f"{request.url_root}auth/confirm",
+            "data": {"username": username},
         }
     }
 
