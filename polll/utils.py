@@ -14,11 +14,6 @@ def query_poll_details(poll):
 
     if poll["poll_type"] == "NUMERIC_SCALE":
 
-        # Set the left and right endpoints (answers is already ordered by ID) 
-        # print("\n\n\nSTART")
-        # print(poll["answers"])
-        # print("END\n\n\n")
-
         if len(poll["answers"]) == 2:
             poll["answers"] = {"left": poll["answers"][0], "right": poll["answers"][1]}
 

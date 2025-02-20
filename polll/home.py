@@ -36,15 +36,11 @@ def set_timezone():
 
 
 # Route for opening the settings window
-@home.route("/settings/open")
+@home.route("/settings/open_settings/user/<username>")
 @requires_auth
-def open_settings():
-    current_url = request.headers.get("HX-Current-Url")
-    root_url = request.url_root
-
-    # Remove the url (i.e. polll.org), and the query params
-    return_endpoint = current_url.replace(root_url, "").split("?")[0]
-    return_url = url_for(f"home.{return_endpoint}")
+def open_settings(username):
+    return_url = url_for(f"home.profile", username=username)
+    
     return render_template("settings.html", session=session, return_url=return_url)
 
 
@@ -316,13 +312,16 @@ def create_poll():
 
 @home.route("/user/<username>")
 @requires_auth
-def profile(username):    
+def profile(username):
 
     # Query the database for all polls made by the user
     db = get_db()
+    current_user = db.table("user").select("*").eq("username", session["user"]["username"]).execute().data[0]
     user = db.table("user").select("*").eq("username", username).execute().data[0]
     data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
-    favourite_ids = list(map(lambda p: p["poll_id"], db.table("poll_favourite").select("*").eq("user_id", user["id"]).execute().data))
+    
+    favourites = db.table("poll_favourite").select("*").eq("user_id", user["id"]).execute().data
+    favourite_ids = list(map(lambda p: p["poll_id"], favourites))
 
     res = db.rpc("mypolls", data).execute()
 
@@ -333,9 +332,12 @@ def profile(username):
     
     data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
     res = db.rpc("history", data).execute()
-    
+
     session["polls_answered"] = {p["id"]:query_poll_details(p) for p in res.data}
-    session["polls_favourited"] = {p["id"]:query_poll_details(p) for p in db.rpc("history", data).execute().data if p["id"] in favourite_ids}
+    session["polls_favourited"] = {id:val for id, val in session["polls_answered"].items() if id in favourite_ids}
+    
+    for id in list(session["polls_answered"].keys()):
+        session["polls_answered"][id]["is_favourited"] = id in list(session["polls_favourited"].keys())
 
     session["viewed_user"] = user
     tab = ""
@@ -346,16 +348,13 @@ def profile(username):
         "tab": tab,
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
-        "url": f"url_for(request.endpoint)",
-        # "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
+        "url": f"url_for(request.endpoint)"
     }
 
     # Render the HTML template
     session.modified = True
 
     r = make_response(render_template("home/profile.html", session=session))
-    for poll in session["polls_favourited"].values():
-        r.headers.set("HX-Trigger-After-Settle", '{"graph": ' + json.dumps(poll) + '}')
     return r
 
 
