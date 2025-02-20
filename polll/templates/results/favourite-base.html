@@ -1,0 +1,20 @@
+<div class="w-full">
+
+    <!-- Include the poll question -->
+    <div class="flex flex-row w-full px-4">
+        <p class="font-light text-neutral-700 dark:text-neutral-200 text-2xl">
+          {{ poll.question }}
+        </p>
+    </div>
+
+    <!-- Poll Graph -->
+    <div id="poll-graph-{{ poll.id }}" class="p-2 md:px-8 md:py-4 fade-in">
+        <!-- Separate Interfaces for Ranked Poll / Tier List -->
+        {% if poll.poll_type == "RANKED_POLL" %}
+            {% include "results/ranked-poll.html" %}
+        {% elif poll.poll_type == "TIER_LIST" %}
+            {% include "results/tier-list.html" %}
+        {% endif %} 
+    </div>
+
+</div>

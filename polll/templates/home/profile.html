@@ -2,6 +2,9 @@
 {% extends "home/home.html" %}
 
 {% block home_content %}
+
+{% set myAccount = session.user.username == session.viewed_user.username %}
+
 <div class="flex flex-col font-light overscroll-y-contain space-y-2">
 
   <!-- User Profile/data-->
@@ -12,7 +15,7 @@
         <p>{{ session.viewed_user.username }}</p>
     </div>
     <!-- User info -->
-    <div class="flex flex-row space-x-10 pl-10">
+    <div class="flex flex-row space-x-10 pl-10 w-full justify-around">
         <div class="flex flex-col justify-center items-center space-y-4">
             <p class="font-bold">Followers</p>
             <p class="font-black">...</p>
@@ -30,19 +33,40 @@
             <p class="font-black">{{session.polls_answered|length}}</p>
         </div>
     </div>
+    
+    <div class="flex flex-row {% if not myAccount %} hidden {% endif %}">
+        <a 
+        class="h-10 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
+        hx-get="{{ url_for('home.open_settings') }}"
+        hx-target="#settings"
+        hx-indicator="#loading-spinner"
+        hx-swap="innerHTML"
+        hx-on::after-request="open_settings();"
+      >
+        <span class="flex flex-row justify-center">
+          <i class="text-xl fas fa-gear px-2"></i>
+          
+        </span>
+      </a>
+    </div>
+
   </div>
 
-  <!-- Pinned polls -->
-  <div class="w-full h-64 border border-neutral-500 hover:border-neutral-200 rounded-xl p-2 transition-all duration-500 ease-in-out">
-    <p class="">Pinned Responses</p>
+  <!-- Pinned polls (remove h-64 when polls are there)-->
+  <div class="border border-neutral-500 hover:border-neutral-200 rounded-xl p-2 transition-all duration-500 ease-in-out">
+    <p class="text-2xl font-bold text-center">Favourited Responses</p>
+        <div class="flex flex-row">
+            {% for id, poll in session.polls_favourited.items() %}
+                {% include "results/favourite-base.html" %}
+            {% endfor %}      
+        </div>
   </div>
 
-  <!-- User polls + history -->
-  <div class="flex flex-row  w-full space-x-2">
+  <div class="flex flex-row w-full space-x-2">
 
-    <!-- Your/their polls -->
+    <!-- User created polls -->
     <div class="overflow-contain w-1/2 border border-neutral-500 rounded-xl p-2">
-        <p>{{ session.viewed_user.username }}'s Polls</p>
+        <p class="text-2xl font-bold text-center">{{ session.viewed_user.username }}'s Polls</p>
 
         <div class="poll-container">
 
@@ -53,10 +77,10 @@
             {% else %}
               <div class="flex flex-row text-center items-center justify-center py-16 select-none">
                 <p class="text-2xl font-light">
-                  You haven't answered any polls yet...
+                  You haven't created any polls yet...
                   <br />
                   <br />
-                  Get out there and vote!
+                  Create your first poll now!
                 </p>
               </div>
             {% endif %}
@@ -70,7 +94,8 @@
 
     <!-- History -->
     <div class="overflow-contain w-1/2 border border-neutral-500 rounded-xl p-2">
-        <p>{{ session.viewed_user.username }}'s Responses</p>
+        
+        <p class="text-2xl font-bold text-center">{{ session.viewed_user.username }}'s Responses</p>
         
         <div class="poll-container">
 

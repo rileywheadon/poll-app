@@ -92,6 +92,28 @@ def pin(poll_id, pinned_str):
     return r
 
 
+@poll.route("/poll/favourite/<poll_id>/user/<user_id>")
+def favourite(poll_id, user_id):
+
+    db = get_db()
+    favourite = len(db.table("poll_favourite").select("*").eq("user_id", user_id).eq("poll_id", poll_id).execute().data) == 0
+    if favourite:
+        favourite_data = [{"user_id": int(user_id), "poll_id": int(poll_id)}]
+        db.table("poll_favourite").insert(favourite_data).execute()
+    else:
+        db.table("poll_favourite").delete().eq("poll_id", poll_id).execute()
+
+    session.modified = True
+    message = '"Poll Added to Profile!"' if favourite else '"Poll Removed From Your Profile!"'
+    notification = f'{{"notification": {message}}}'
+    t = render_template("results/poll-favourite.html", session=session)
+    r = make_response(t)
+    r.headers.set("HX-Trigger", notification)
+    return r
+
+
+
+
 # Helper function to query comments given a page and an count
 def query_comments(poll_id, page, count):
     db = get_db()

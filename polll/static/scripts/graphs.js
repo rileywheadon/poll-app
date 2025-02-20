@@ -99,7 +99,7 @@ function choose_one_options(user_rs, rs) {
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
-
+    
     // PIE CHART (default)
     return {
         series: rs.map((e) => e["count"]),
