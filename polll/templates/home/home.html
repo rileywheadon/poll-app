@@ -13,12 +13,17 @@
 
   <!-- Background -->
   <!-- NOTE: Add extra padding to account for the footer on small screens -->
-  <div class="w-screen h-dvh md:h-screen flex flex-col text-neutral-900 dark:text-neutral-200 dark:bg-neutral-900">
+  <div 
+    class="w-screen h-dvh md:h-screen flex flex-col text-neutral-900 dark:text-neutral-200 dark:bg-neutral-900 overflow-hidden"
+  >
 
     {% include "navbar.html" %}
 
     <!-- Document Body -->
-    <div class="flex overflow-hidden flex-row grow md:pt-4">
+    <div 
+      class="flex overflow-auto flex-row grow md:pt-4"
+      onscroll="trigger_reload(this)"
+    >
 
       <!-- Left Sidebar -->
       <div 
@@ -33,8 +38,9 @@
       <!-- Main Column (Polls) -->
       <div 
         id="home-content"
-        class="w-full overflow-auto p-2 select-none shrink overscroll-contain"
-        onscroll="trigger_reload(this)"
+        class="w-full overflow-auto p-2 select-none shrink overscroll-auto"
+        onwheel="trigger_reload(this)"
+        onscroll="set_scroll(this)"
       >
 
         <div id="loading-spinner" class="peer home-indicator w-full flex flex-row grow justify-center items-center size-fit pb-4">

@@ -131,14 +131,15 @@ def help():
 @home.route("/reload")
 @requires_auth
 def reload():
-    url = session["state"]["url"]
 
-    if session["state"]["tab"] != "create":
-        return redirect(url)
-    else:
+    url = f"{request.headers.get("HX-Current-Url")}?v={int(time.time())}"
+    if "create" in url:
         r = make_response("")
         r.headers.set("HX-Reswap", "none")
         return r
+
+    r = make_response(redirect(url, code=302))
+    return r
 
 
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
@@ -165,11 +166,12 @@ def feed():
         "board": session["boards"].get(int(bid)) or {},
         "order": order,
         "period": period,
-        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     })
 
     session.modified = True
-    return render_template("home/feed.html", session=session)
+    r = make_response(render_template("home/feed.html", session=session))
+    r.headers["Cache-Control"] = "public, max-age=600" 
+    return r
 
 
 # Home page (create poll)
@@ -184,15 +186,11 @@ def create():
 
     # Update the session state variable and render the feed
     session["user"]["on_cooldown"] = on_cooldown(session["user"])
-    session["state"] = {
-        "admin": False, 
-        "tab": "create",
-        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
-    }
+    session["state"] = {"admin": False, "tab": "create"}
 
     # Render the HTML template with caching (since /create doesn't change)
     r = make_response(render_template("home/create.html", session=session))
-    r.headers["Cache-Control"] = "public, max-age=3600" 
+    r.headers["Cache-Control"] = "public, max-age=86400" 
     return r
 
 
@@ -334,12 +332,13 @@ def mypolls():
         "tab": "mypolls",
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
-        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     }
 
     # Render the HTML template
     session.modified = True
-    return render_template("home/mypolls.html", session=session)
+    r = make_response(render_template("home/mypolls.html", session=session))
+    r.headers["Cache-Control"] = "public, max-age=600" 
+    return r
 
 
 # Home page (response history)
@@ -363,12 +362,13 @@ def history():
         "tab": "history",
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
-        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     }
 
     # Render the HTML template
     session.modified = True
-    return render_template("home/history.html", session=session)
+    r = make_response(render_template("home/history.html", session=session))
+    r.headers["Cache-Control"] = "public, max-age=600" 
+    return r
 
 
 # Render more polls in the history tab
