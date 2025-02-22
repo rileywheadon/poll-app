@@ -1,10 +1,10 @@
 <button 
   class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-dgreen dark:hover:text-polll-green hover:cursor-default text-right"
   title="Favourite"
-  hx-get="/poll/favourite/{{ is_favourited }}/{{ poll_id }}/user/{{ user_id }}"
+  hx-get="/poll/favourite/{{ False }}/{{ poll_id }}/user/{{ user_id }}"
   hx-swap="outerHTML"
 >
-  {% if is_favourited %}
+  {% if True %}
     <i class="fa-solid fa-star"></i>
   {% else %}
     <i class="fa-regular fa-star"></i>

@@ -2377,6 +2377,11 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
+.dark\:text-neutral-900:where(.dark, .dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(23 23 23 / var(--tw-text-opacity, 1));
+}
+
 .dark\:hover\:border-neutral-200:hover:where(.dark, .dark *) {
   --tw-border-opacity: 1;
   border-color: rgb(229 229 229 / var(--tw-border-opacity, 1));
@@ -2405,6 +2410,11 @@ video {
 .hover\:dark\:bg-neutral-700:where(.dark, .dark *):hover {
   --tw-bg-opacity: 1;
   background-color: rgb(64 64 64 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:dark\:bg-neutral-800:where(.dark, .dark *):hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(38 38 38 / var(--tw-bg-opacity, 1));
 }
 
 .dark\:hover\:text-polll-green:hover:where(.dark, .dark *) {

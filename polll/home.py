@@ -40,7 +40,6 @@ def set_timezone():
 @requires_auth
 def open_settings(username):
     return_url = url_for(f"home.profile", username=username)
-    
     return render_template("settings.html", session=session, return_url=return_url)
 
 
@@ -315,6 +314,7 @@ def create_poll():
 def profile(username):
 
     # Query the database for all polls made by the user
+    # TODO: rename the two differnt users so that they are meaningful different
     db = get_db()
     current_user = db.table("user").select("*").eq("username", session["user"]["username"]).execute().data[0]
     user = db.table("user").select("*").eq("username", username).execute().data[0]
@@ -340,7 +340,22 @@ def profile(username):
         session["polls_answered"][id]["is_favourited"] = id in list(session["polls_favourited"].keys())
 
     session["viewed_user"] = user
-    tab = ""
+
+    following = db.table("follow").select("*").eq("follower", user["id"]).execute()
+    followers = db.table("follow").select("*").eq("followed", user["id"]).execute()
+
+    session["viewed_user"]["following"] = following.data
+    session["viewed_user"]["followers"] = followers.data
+
+    # Checks whether the logged in user has followed
+    session["viewed_user"]["is_following"] = True if session["user"]["id"] in [e["follower"] for e in session["viewed_user"]["followers"]] else False
+
+
+    print("\n\n\n")
+    print(f'HERE!!! {session["viewed_user"]["is_following"]}')
+    print("\n\n\n")
+
+    tab = "theirpolls"
     if (session["user"]["username"] == username):
         tab = "mypolls"
     session["state"] = {
@@ -355,6 +370,34 @@ def profile(username):
     session.modified = True
 
     r = make_response(render_template("home/profile.html", session=session))
+    return r
+
+
+@home.route("/follow")
+@requires_auth
+def follow():
+    
+    db = get_db()
+
+    is_following = session["viewed_user"]["is_following"]
+    follower_id = int(session["user"]["id"])
+    followed_id = int(session["viewed_user"]["id"])
+
+    if not is_following:
+        data = [{"follower": follower_id, "followed": followed_id}]
+        db.table("follow").insert(data).execute()
+    else:
+        db.table("follow").delete().eq("follower", follower_id).eq("followed", followed_id).execute()
+
+
+    session["viewed_user"]["is_following"] = not is_following
+    
+    session.modified = True
+    message = '"Unfollowed"' if is_following else '"Followed"'
+    notification = f'{{"notification": {message}}}'
+    r_text = "Following" if session["viewed_user"]["is_following"] else "Follow"
+    r = make_response(r_text)
+    r.headers.set("HX-Trigger", notification)
     return r
 
 

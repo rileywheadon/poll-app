@@ -105,7 +105,7 @@ def favourite(is_favourited, poll_id, user_id):
     session["polls_answered"][int(poll_id)]["is_favourited"] = not is_favourited
 
     session.modified = True
-    message = '"Poll Added to Profile!"' if favourite else '"Poll Removed From Your Profile!"'
+    message = '"Poll Added to Profile!"' if is_favourited else '"Poll Removed From Your Profile!"'
     notification = f'{{"notification": {message}}}'
     r = make_response(render_template("results/poll-favourite.html", session=session))
     r.headers.set("HX-Trigger", notification)

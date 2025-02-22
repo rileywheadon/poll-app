@@ -10,6 +10,7 @@
       {% else %}
         @{{ poll.creator }}
       {% endif %} ⋅ {{ poll.age }}
+      , id: {{poll.id}}
     </p>
 
     <!-- Share Button -->
@@ -72,8 +73,17 @@
 
       {% with %}
         {% set user_id=session.user.id %}
-        {% set poll_id=poll.id %}
-        {% set is_favourited=session.polls_answered[poll.id].is_favourited %}
+        {% set poll_id=poll.id %}      
+        {#
+        PROBLEM: This is wrong because 'polls_answered' are the polls answered by the user currently
+        being viewed, but the favourite should be for all polls, and if the poll_id refers 
+        to a poll that the viewed user did not vote on, this will throw an error. 
+
+        SOLUTION: Since favouriting is for the personal user, index the polls that the logged in user has
+                  voted on, and not the viewed one (that is currently being use here, which is 'polls_answerd')
+
+        {% set is_favourited=session.polls_answered[poll_id].is_favourited %}
+        #}
         {% include "results/poll-favourite.html" %}
       {% endwith %}
 
