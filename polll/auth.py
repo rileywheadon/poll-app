@@ -18,13 +18,24 @@ def index():
     return render_template("index.html")
 
 
+# Helper function to validate the login
+def validate_auth():
+    try:
+        db = get_db()
+        true_user = db.auth.get_user()
+        session_user =  session.get("user")
+        return true_user and session_user
+    except:
+        pass
+    return False
+
+
 # Login page endpoint
 @auth.route('/login')
 def login_page():
 
     # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
+    if validate_auth():
         return redirect(url_for("home.feed"))
 
     error = request.args.get("error")
@@ -36,8 +47,7 @@ def login_page():
 def register_page():
 
     # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
+    if validate_auth():
         return redirect(url_for("home.feed"))
 
     error = request.args.get("error")
@@ -47,10 +57,10 @@ def register_page():
 # Callback after email verification
 @auth.route('/auth/confirm')
 def callback():
+    db = get_db()
 
     # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
+    if validate_auth():
         return redirect(url_for("home.feed"))
 
     # Verify the magic link request
@@ -115,11 +125,12 @@ def invalid_auth(action, error):
 def login():
 
     db = get_db()
+    email = request.form.get("email")
 
     # Create the sign in request
     login_data = {
         "type": "email",
-        "email": request.form.get("email"),
+        "email": email,
         "options": {
             "should_create_user": False,
             "email_redirect_to": f"{request.url_root}auth/confirm",
@@ -219,8 +230,8 @@ def requires_admin(f):
         user = session.get("user")
         true_user = db.auth.get_user()
 
-        # If the user doesn't exist, redirect them to the index
-        if not true_user:
+        # If the user doesn't exist, clear the session and return to the index
+        if not validate_auth:
             return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
