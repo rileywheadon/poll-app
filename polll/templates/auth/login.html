@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+  <div class="w-screen h-dvh md:h-screen flex flex-col bg-gradient-to-tr from-neutral-200 via-white to-neutral-200 dark:from-neutral-900 dark:via-gray-800 dark:to-neutral-900 select-none">
+
+    <div class="flex flex-col items-center justify-center h-full">
+
+      <h1 class="text-3xl font-bold mb-6 text-nord-1 dark:text-nord-6">
+        Welcome back to Polll!
+      </h1>
+
+      <form 
+        class="flex flex-col w-60"
+        action="{{ url_for('auth.login') }}"
+        method="post"
+      >
+        <input
+          class="rounded-md mb-4 p-2 bg-nord-6"
+          name="email"
+          placeholder="Email"
+        />
+        <button class="w-full bg-polll-blue text-xl text-black rounded-lg px-6 h-10 shadow-[0px_4px] shadow-polll-blue/50 ease-in-out duration-100 hover:translate-y-[2px] hover:shadow-[0px_2px] hover:shadow-polll-blue/50">
+          <span>Log In</span>
+        </button>
+      </form>
+
+      {% if error == "email" %}
+        <p class="mt-4 text-nord-11">Invalid email. Please try again.</p>
+      {% endif %}
+
+    </div>
+
+  </div>
+
+{% endblock %}

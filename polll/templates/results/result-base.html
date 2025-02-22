@@ -25,7 +25,7 @@
     </button>
 
     <!-- If the user created this poll, allow them to edit it -->
-    {% if session.user.id == poll.creator_id %} 
+    {% if session.user and session.user.id == poll.creator_id %} 
 
       <!-- Toggle Lock -->
       {% with %}

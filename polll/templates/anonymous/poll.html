@@ -7,35 +7,30 @@
 <main id="main">
 
 <!-- Background -->
-<div class="w-screen h-screen flex flex-col bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-neutral-900">
-
-  <!-- Document Body -->
-  <div class="overflow-hidden grow w-full flex flex-col sm:flex-row flex-wrap sm:flex-nowrap py-4 flex-grow">
-
-    <!-- Left Sidebar -->
-    <div class="w-fixed w-full flex-shrink flex-grow-0 px-4"></div>
+<div class="w-screen h-dvh md:h-screen flex flex-row justify-center bg-nord-6 text-nord-0 dark:text-nord-4 dark:bg-neutral-900">
 
     <!-- Main Column (Polls) -->
-    <div class="overflow-auto no-scrollbar w-full flex-grow pt-1 px-3">
+    <div class="overflow-auto no-scrollbar max-w-[768px] grow pt-1 px-3">
 
-      {% if session.user %}
-        <div class="overflow-hidden pt-2 pb-4 select-none">
-          <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
-            <i class="fa fa-arrow-left"></i>
-            <span class="font-light">Return Home</span>
-          </a>
-        </div>
+      <div class="overflow-hidden pt-2 pb-4 select-none">
+        <a class="ml-2 text-l text-nord-4" href="{{ url_for('home.feed') }}">
+          <i class="fa fa-arrow-left"></i>
+          <span class="font-light">Return Home</span>
+        </a>
+      </div>
+
+      <!-- The <span> tag has to be this way to avoid spacing issues.-->
+      {% if not session.user %}
+      <div class="pb-4 font-light px-4">
+        <span><b class="font-bold text-yellow-500">Warning:</b> Your responses will not be saved! To save your responses, please <a class="font-normal text-polll-blue hover:underline" href="{{ url_for('auth.register_page') }}">register</a>.
+        </span>
+      </div>
       {% endif %}
+
 
       {% include poll["poll_template"] %}
 
     </div>
-
-
-    <!--Right Sidebar-->
-    <div class="w-fixed w-full flex-shrink flex-grow-0 px-2"></div>
-
-  </div>
 
 </div>
 

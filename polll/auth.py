@@ -24,24 +24,14 @@ def login_page():
 
     # If the user is already logged in, go to the feed
     db = get_db()
-    if db.auth.get_user() and session.get("user"):
-        return redirect(url_for("home.feed"))
 
-    error = request.args.get("error")
-    return render_template("auth/authentication.html", action="login", error=error)
+    try:
+        if db.auth.get_user() and session.get("user"):
+            return redirect(url_for("home.feed"))
 
-
-# Register page endpoint
-@auth.route('/register')
-def register_page():
-
-    # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
-        return redirect(url_for("home.feed"))
-
-    error = request.args.get("error")
-    return render_template("auth/authentication.html", action="register", error=error)
+    except:
+        error = request.args.get("error")
+        return render_template("auth/login.html", error=error)
 
 
 # Callback after email verification
@@ -132,7 +122,7 @@ def login():
     except AuthApiError as e:
         return invalid_auth("login", "email")
 
-    return render_template("auth/verify-email.html")
+    return render_template("auth/email-notification.html")
 
 
 # Signup endpoint
@@ -141,7 +131,6 @@ def register():
 
     db = get_db()
     email = request.form.get("email")
-    username = request.form.get("username")
 
     # If the username is empty, throw an error
     if not username:

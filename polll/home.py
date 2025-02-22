@@ -127,21 +127,6 @@ def help():
     return render_template("misc/help.html")
 
 
-# Reloads the current page, used for the scroll loader
-@home.route("/reload")
-@requires_auth
-def reload():
-
-    url = f"{request.headers.get("HX-Current-Url")}?v={int(time.time())}"
-    if "create" in url:
-        r = make_response("")
-        r.headers.set("HX-Reswap", "none")
-        return r
-
-    r = make_response(redirect(url, code=302))
-    return r
-
-
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
@@ -169,9 +154,7 @@ def feed():
     })
 
     session.modified = True
-    r = make_response(render_template("home/feed.html", session=session))
-    r.headers["Cache-Control"] = "public, max-age=600" 
-    return r
+    return render_template("home/feed.html", session=session)
 
 
 # Home page (create poll)
@@ -189,9 +172,8 @@ def create():
     session["state"] = {"admin": False, "tab": "create"}
 
     # Render the HTML template with caching (since /create doesn't change)
-    r = make_response(render_template("home/create.html", session=session))
-    r.headers["Cache-Control"] = "public, max-age=86400" 
-    return r
+    session.modified = True
+    return render_template("home/create.html", session=session)
 
 
 # Create a new poll answer entry box. This is simpler than writing javascript.
@@ -336,9 +318,7 @@ def mypolls():
 
     # Render the HTML template
     session.modified = True
-    r = make_response(render_template("home/mypolls.html", session=session))
-    r.headers["Cache-Control"] = "public, max-age=600" 
-    return r
+    return render_template("home/mypolls.html", session=session)
 
 
 # Home page (response history)
@@ -366,9 +346,7 @@ def history():
 
     # Render the HTML template
     session.modified = True
-    r = make_response(render_template("home/history.html", session=session))
-    r.headers["Cache-Control"] = "public, max-age=600" 
-    return r
+    return render_template("home/history.html", session=session)
 
 
 # Render more polls in the history tab
