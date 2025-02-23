@@ -15,6 +15,11 @@ auth = Blueprint('auth', __name__, template_folder='templates')
 # Landing page for advertising to potential users
 @auth.route("/")
 def index():
+
+    # If the user is already logged in, go to the feed
+    if validate_auth():
+        return redirect(url_for("home.feed"))
+
     return render_template("index.html")
 
 
