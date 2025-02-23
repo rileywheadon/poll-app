@@ -316,11 +316,46 @@ def result(poll_id):
     session.modified = True
     return r
 
-# Report a poll
-@poll.route("/modal/poll/<poll_id>", methods=["GET", "POST"])
+# Results modal for a poll in a user's profile IGNORE
+@poll.route("/results/poll/<poll_id>/user/<username>")
 @requires_auth
-def results_modal(poll_id):
-    pass
+def open_results(poll_id, username):
+
+    db = get_db()
+    res = db.rpc("poll", {"pid": poll_id}).execute()
+    poll = query_poll_details(res.data[0])
+
+
+    print("\n\n\n")
+    for key, val in poll.items():
+        print(f'{key}: {val}')
+    print("\n\n\n")
+
+    session["viewed_poll"] = poll
+
+
+    user = session["viewed_user"]
+
+    if poll["response_count"] > 0:
+        poll["response"] = query_response(poll, user)
+        poll["results"] = query_results(poll)
+    else: 
+        poll["response"] = {}
+        poll["results"] = {}
+
+    # If the poll is a scale, add the KDE
+    if poll["poll_type"] == "NUMERIC_SCALE":
+        poll["kde"] = smooth_hist(poll["results"], 0.25)
+
+    # If the poll is ranked or tier list, get the HTML template
+    r = make_response("")
+    r.data = render_template("results/results-modal.html", poll=poll, return_url=url_for(f"home.profile", username=username))
+    r.headers.set("HX-Reswap", "innerHTML")
+
+    graph = '{"graph": ' + json.dumps(poll) + '}'
+    r.headers.set("HX-Trigger-After-Settle", graph)
+    session.modified = True
+    return r
 
 
 # Report a poll

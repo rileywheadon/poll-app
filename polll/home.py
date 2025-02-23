@@ -84,15 +84,6 @@ def save_settings():
     return r
 
 
-
-@home.route("/results/poll/<poll_id>/user/<username>")
-@requires_auth
-def open_results(poll_id, username):
-    return_url = url_for(f"home.profile", username=username)
-    return render_template("results/results-modal.html", return_url=return_url)
-
-
-
 # Helper function to call the correct feed RPC handler
 def query_feed(bid, order, period, page):
     res = None
@@ -358,11 +349,6 @@ def profile(username):
 
     # Checks whether the logged in user has followed
     session["viewed_user"]["is_following"] = True if session["user"]["id"] in [e["follower"] for e in session["viewed_user"]["followers"]] else False
-
-
-    print("\n\n\n")
-    print(f'HERE!!! {session["viewed_user"]["is_following"]}')
-    print("\n\n\n")
 
     tab = "theirpolls"
     if (session["user"]["username"] == username):

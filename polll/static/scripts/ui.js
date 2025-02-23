@@ -16,7 +16,7 @@ function close_settings() {
 
 function open_poll_results() {
   document.getElementById("poll-content").classList.remove("hidden");
-  document.getElementById("main").classList.add("blur-sm");
+  document.getElementById("main").classList.add("blur-sm");  
 }
 
 function close_poll_results() {
