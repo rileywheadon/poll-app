@@ -14,6 +14,16 @@ function close_settings() {
   main.classList.remove("blur-sm");
 }
 
+function open_poll_results() {
+  document.getElementById("poll-content").classList.remove("hidden");
+  document.getElementById("main").classList.add("blur-sm");
+}
+
+function close_poll_results() {
+  document.getElementById("poll-content").classList.add("hidden");
+  document.getElementById("main").classList.remove("blur-sm");
+}
+
 
 function toggle_admin_information(type, id) {
   const info = document.getElementById(`${type}-info-${id}`)

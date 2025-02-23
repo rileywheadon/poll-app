@@ -3,12 +3,9 @@
 
 {% block home_content %}
 
-
-
-
 {% set myAccount = session.user.username == session.viewed_user.username %}
 
-<div class="flex flex-col font-light overscroll-y-contain space-y-2">
+<div id="profile" class="flex flex-col font-light overscroll-y-contain space-y-2">
 
   <!-- User Profile/data-->
   <div class="flex flex-row border rounded-xl border-neutral-500 hover:border-neutral-200 px-10 py-6 transition-all duration-500 ease-in-out">
@@ -22,11 +19,11 @@
             hx-get="/follow"
             hx-swap="textContent"
             >
-                {% if session.viewed_user.is_following %}
-                    Following
-                {% else %}
-                    Follow
-                {% endif %}
+            {% if session.viewed_user.is_following %}
+                Following
+            {% else %}
+                Follow
+            {% endif %}
             </button>
         </div>
         
@@ -62,7 +59,6 @@
       >
         <span class="flex flex-row justify-center">
           <i class="text-xl fas fa-gear px-2"></i>
-          
         </span>
       </a>
     </div>
@@ -72,14 +68,31 @@
   <!-- Favourites polls -->
   <div class="border border-neutral-500 hover:border-neutral-200 rounded-xl p-2 transition-all duration-500 ease-in-out">
     <p class="text-2xl font-bold text-center">Favourited Responses</p>
-    <hr class="pb-2">
-        <div class="flex flex-row">
-            {% if session.polls_favourited %}
+    <hr class="pb-2">        
+        {% if session.polls_favourited %}
+            <div class="flex flex-row">
                 {% for id, poll in session.polls_favourited.items() %}
                     {% include "results/favourite-base.html" %}
                 {% endfor %}
+            </div>
+        {% else %}
+            {% if myAccount %}
+                <div class="flex flex-col w-full h-64 justify-center items-center space-y-10">
+                    <p class="text-xl font-light text-center">Add up to top three public responses to your profile for others to see!</p>
+                    <button 
+                    class=""
+                    
+                    >
+                        <i class="fa fa-plus text-xl p-1 border-4 rounded-full"></i>
+                    </button>
+                </div>
+            {% else %}
+            <div class="flex flex-col w-full h-64 justify-center items-center space-y-10">
+                <p class="text-xl font-light text-center">{{ session.viewed_user.username }} has not favourited any polls yet!</p>
+            </div>
             {% endif %}
-        </div>
+        {% endif %}
+        
   </div>
 
   <div class="flex flex-row w-full space-x-2">

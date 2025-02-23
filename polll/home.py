@@ -84,6 +84,15 @@ def save_settings():
     return r
 
 
+
+@home.route("/results/poll/<poll_id>/user/<username>")
+@requires_auth
+def open_results(poll_id, username):
+    return_url = url_for(f"home.profile", username=username)
+    return render_template("results/results-modal.html", return_url=return_url)
+
+
+
 # Helper function to call the correct feed RPC handler
 def query_feed(bid, order, period, page):
     res = None

@@ -316,6 +316,12 @@ def result(poll_id):
     session.modified = True
     return r
 
+# Report a poll
+@poll.route("/modal/poll/<poll_id>", methods=["GET", "POST"])
+@requires_auth
+def results_modal(poll_id):
+    pass
+
 
 # Report a poll
 @poll.route("/poll/report/<poll_id>", methods=["GET", "POST"])
