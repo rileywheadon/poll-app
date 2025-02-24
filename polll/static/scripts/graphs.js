@@ -99,6 +99,9 @@ function choose_one_options(user_rs, rs) {
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
+    var num_answers = rs.length;
+    var gradient = graphColors(num_answers);
+
 
     // PIE CHART (default)
     return {
@@ -113,6 +116,10 @@ function choose_one_options(user_rs, rs) {
 
         theme: {
             mode: localStorage.getItem("theme")
+        },
+
+        stroke: {
+            width: 0.75
         },
 
         dataLabels: {
@@ -130,15 +137,25 @@ function choose_one_options(user_rs, rs) {
                 return Math.round(val) + "%"
             },
         },
+
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
             if (value == 0) return "#808080";
-            return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
-          }],
-          fill: {
+            let labels = w.globals.labels;
+            let youIndex = labels.findIndex(label => label.includes("(you)")); // Find where "(you)" is
+            let newIndex = (seriesIndex - youIndex + gradient.length) % gradient.length; // Shift colors
+
+            return labels[seriesIndex].includes("(you)") ? user_col : gradient[newIndex];
+        }],
+
+        fill: {
             colors: [function({ value, seriesIndex, w }) {
-                return w.globals.labels[seriesIndex].includes("(you)") ? user_col : cols["polll-blue"];
-              }],
-          },
+                let labels = w.globals.labels;
+                let youIndex = labels.findIndex(label => label.includes("(you)")); // Find where "(you)" is
+                let newIndex = (seriesIndex - youIndex + gradient.length) % gradient.length; // Shift colors
+
+                return labels[seriesIndex].includes("(you)") ? user_col : gradient[newIndex];
+            }],
+        },
           
     }
 }
@@ -148,12 +165,16 @@ function choose_many_options(user_rs, rs) {
     user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
+    var cm_num_answers = rs.length+1;
+    var gradient = graphColors(cm_num_answers);
+
     return {
 
         grid: {
             show: false,
             padding: { left: -5 }
         },
+
         xaxis: {
             categories: rs.map((e) => e["answer"]),
             labels: {
@@ -163,6 +184,7 @@ function choose_many_options(user_rs, rs) {
             },
             
         },
+
         yaxis: {
             labels: {
                 formatter: function (val) {
@@ -170,10 +192,12 @@ function choose_many_options(user_rs, rs) {
                 }
             },
         },
+
         series: [{
             name: "",
             data: rs.map((e) => e["count"])
         }],
+
         chart: {
             type: "bar",
             background: "null",
@@ -191,6 +215,7 @@ function choose_many_options(user_rs, rs) {
                 horizontal: true,
             }
         },
+
         dataLabels: {
             enabled: true,
             formatter: function (val, opt) {
@@ -199,9 +224,10 @@ function choose_many_options(user_rs, rs) {
                 return user_rs.includes(i) ? label + " (you)" : label;
               },
         },
+
         colors: [function({ value, seriesIndex, dataPointIndex, w }) {
-            return user_rs.includes(w.globals.labels[dataPointIndex]) ? user_col : cols["polll-blue"];
-          }],
+            return user_rs.includes(w.globals.labels[dataPointIndex]) ? user_col : gradient[dataPointIndex];
+        }],
 
         tooltip: {
             enabled: true,
@@ -382,3 +408,87 @@ function get_scale_average(rs, nums) {
     return [...Array(nums).keys()].reduce((prev, curr) => {
      return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
 }
+
+// this finally fucking works
+function graphColors(num_answers) {
+
+    // creating list
+    rgb_list = [];
+
+    // defining the "hooks" of our gradient
+    const rgbPolll_Blue = [136, 187, 208];// Polll_Blue, Hex is #88bbd0
+    const rgbGrad_Blue = [100, 137, 255]; //Hex is #6489ff
+
+    // vars
+    div = num_answers-1;
+
+    // makes 1 less than total answers
+    for (i = 1; i < num_answers; i++) {
+        col = [];
+        cyc = i-1;
+        //fix cycle
+
+        col.push(rgbGenerator(rgbPolll_Blue[0], rgbGrad_Blue[0], div, cyc));
+        col.push(rgbGenerator(rgbPolll_Blue[1], rgbGrad_Blue[1], div, cyc));
+        col.push(rgbGenerator(rgbPolll_Blue[2], rgbGrad_Blue[2], div, cyc));
+        rgb_list.push(col);
+    }
+
+    // tests
+    console.log(rgb_list);
+    console.log(hexList(rgb_list));
+
+    // transfering the list into hex
+    return hexList(rgb_list);
+}
+
+// returns the in between value for any of r, g, b
+function rgbGenerator(startCol, endCol, divisor, cycle) {
+    diff = startCol - endCol;
+    return Math.round(startCol - ((diff / divisor) * cycle));
+}
+
+// creates a list of hex values from an rgb list
+function hexList(col_list) {
+    hex_list = [];
+    reps = col_list.length;
+    for (i = 0; i < reps; i++) {
+        hex_list.push(rgbToHex(col_list[i]));
+    }
+    return hex_list;
+}
+
+// ripped these out of StackOverFlow i cant lie
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+function rgbToHex(rgb) {
+    return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+}
+
+
+// unused iggy work
+// colors
+    // const rgbOldGrad_Blue = [72, 158, 255]; // Hex is, #489EFF
+    // const rgbGrad_Green = [55, 190, 51]; // Hex is, #37BE33
+    // const rgbPolll_Green = [182, 215, 168]; // Polll_Green, Hex is #B6D7A8
+// for loop gradient maker
+    // for (i = 1; i < amt; i++) {
+    //     col = [];
+    //     cyc = Math.ceil(i/3)-1
+    //     if ((i % 3) == 1) {
+    //         col.push(rgbGenerator(rgbPolll_Blue[0], rgbGrad_Blue[0], div, cyc));
+    //         col.push(rgbGenerator(rgbPolll_Blue[1], rgbGrad_Blue[1], div, cyc));
+    //         col.push(rgbGenerator(rgbPolll_Blue[2], rgbGrad_Blue[2], div, cyc));
+    //     } else if ((i % 3) == 2) {
+    //         col.push(rgbGenerator(rgbGrad_Blue[0], rgbGrad_Green[0], div, cyc));
+    //         col.push(rgbGenerator(rgbGrad_Blue[1], rgbGrad_Green[1], div, cyc));
+    //         col.push(rgbGenerator(rgbGrad_Blue[2], rgbGrad_Green[2], div, cyc));
+    //     } else if ((i % 3) == 0) {
+    //         col.push(rgbGenerator(rgbGrad_Green[0], rgbPolll_Green[0], div, cyc));
+    //         col.push(rgbGenerator(rgbGrad_Green[1], rgbPolll_Green[1], div, cyc));
+    //         col.push(rgbGenerator(rgbGrad_Green[2], rgbPolll_Green[2], div, cyc));
+    //     }
+    //     rgb_list.push(col);
+    // }
