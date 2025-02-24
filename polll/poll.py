@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, url_for, session, redirect
 from flask import make_response, render_template, request
 
-from .responses import query_response, create_response
+from .responses import query_response, create_response, create_anonymous_response
 from .results import query_results
 
 from .auth import requires_auth, requires_admin
@@ -29,14 +29,13 @@ def anonymous(poll_code):
     res = db.rpc("poll", {"pid": poll_id}).execute()
     poll = query_poll_details(res.data[0])
 
-    # Reset the comments and replies
-    del session["comments"]
-    del session["replies"]
+    # Reset the polls, comments, and replies
     session["comments"] = {}
     session["replies"] = {}
+    session["polls"] = {}
 
     # Add poll to session and render the poll
-    session["polls"][str(poll_id)] = poll
+    session["polls"][poll_id] = poll
     session.modified = True
     return render_template("anonymous/poll.html", session=session, poll=poll)
 
@@ -235,42 +234,40 @@ def response(poll_id):
         r.headers.set("HX-Reswap", "none")
         return r
 
+    # Get the form, poll and make an HTTP response (we'll need this later)
+    form = request.form.to_dict(flat=False)
+    poll = session["polls"][int(poll_id)]
+    r = make_response("")
+
     # If the user is not logged in, add their response to the session variable
     if not session.get("user"):
 
         # Create a list in the session variable if it doesn't already exist
-        if session.get("responses") is None:
-            session["responses"] = []
+        if not session.get("responses"):
+            session["responses"] = {} 
 
-        # If the poll isn't already in the responses, add the user's response
-        if not any([r["poll"] == poll_id for r in session["responses"]]):
-
-            response = {
-                "form": request.form.to_dict(flat=False),
-                "poll": poll_id
-            }
-            session["responses"].append(response)
-            session.modified = True
-
-        return render_template("anonymous/submit.html")
-
-    # Get the user and the poll from the session variable
-    poll = session["polls"][int(poll_id)]
-    user = session["user"]
-
-    # Get the user's response, either from a previous response or from the form
-    r = make_response("")
-    poll["response"] = query_response(poll, user)
-
-    if poll["response"] and not user["is_admin"]:
-        notification = '{"notification": "You\'ve already responded to this poll!"}'
-        r.headers.set("HX-Trigger", notification)
+        # Add the user's responses to the session and poll objects 
+        poll["response"] = create_anonymous_response(form, poll)
+        session["responses"][int(poll_id)] = poll["response"]
+    
+    # Otherwise add the user's response to the database
     else:
-        form = request.form.to_dict(flat=False)
-        poll["response"] = create_response(form, poll)
-        poll["response_count"] += 1
 
-    # Get the results and add the KDE if the poll is numeric
+        # Get the user's previous response if it exists
+        user = session["user"]
+        poll["response"] = query_response(poll, user)
+
+        # If the user responded previously (and is not an administrator), notify them
+        if poll["response"] and not user["is_admin"]:
+            notification = '{"notification": "You\'ve already responded to this poll!"}'
+            r.headers.set("HX-Trigger", notification)
+
+        # Otherwise add the user's current response to the database
+        else:
+            poll["response"] = create_response(form, poll)
+            poll["response_count"] += 1
+
+    # Get the results of the poll and add the KDE if the poll is numeric
     poll["results"] = query_results(poll)
     if poll["poll_type"] == "NUMERIC_SCALE":
         poll["kde"] = smooth_hist(poll["results"], 0.25)

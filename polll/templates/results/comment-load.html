@@ -1,14 +1,29 @@
+<!-- session.state is sometimes undefined if the user is a guest -->
+{% if session.state and session.state.comment_full %}
+  {% set hidden = 'hidden' %}
+{% else %}
+  {% set hidden = '' %}
+{% endif %}
+
+{% if session.state %}
+  {% set page = session.state.comment_page %}
+{% else %}
+  {% set page = 0 %}
+{% endif %}
+
+<!-- Render the button for loading comments -->
 <div 
   id="comment-load"
-  class="w-full flex flex-row p-2 {% if session.state.comment_full %}hidden{% endif %}"
+  class="w-full flex flex-row p-2 {{ hidden }}"
   {% if swap==1 %}hx-swap-oob="true"{% endif %}
 >
   <button 
     class="text-nord-7 font-bold"
-    hx-get="/poll/load_comments/{{ poll_id }}/{{ session.state.comment_page }}"
+    hx-get="/poll/load_comments/{{ poll_id }}/{{ page }}"
     hx-target="#comments-list-{{ poll_id }}"
     hx-swap="beforeend"
   >
     Load More Comments
   </button>
 </div>
+

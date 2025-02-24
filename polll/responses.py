@@ -268,3 +268,35 @@ def respond_tier_list(form, poll, response_id):
     return response
 
 
+# Creates an anonymous response object 
+def create_anonymous_response(form, poll):
+
+    # Handle scale polls
+    if poll["poll_type"] == "NUMERIC_SCALE":
+        return { "value" : form.get("slider_rating")[0] }
+            
+    # Handle choose one polls
+    if poll["poll_type"] == "CHOOSE_ONE":
+        answer_id = int(form.get("answer_id")[0])
+        answer = poll["answers"][answer_id]["answer"]
+        return { "answer_id": answer_id, "answer": answer }
+
+        
+    # Iterate through the list of answer IDs 
+    response = []
+    for i, id in enumerate(form.get("answer_id")):
+        data = { "answer_id": int(id) }
+        data["answer"] = poll["answers"][int(id)]["answer"]
+
+        # Add answer ranks (if necessary)
+        if poll["poll_type"] == "RANKED_POLL":
+            data["rank"] = form.get("answer_rank")[i]
+
+        # Add answer tiers (if necessary)
+        if poll["poll_type"] == "TIER_LIST":
+            data["tier"] = form.get("answer_tier")[i]
+
+        response.append(data)
+
+    return response
+
