@@ -25,6 +25,22 @@ function close_poll_results() {
 }
 
 
+// Toggles the comments and voting results in the modal in profiles 
+function toggle_comment_user_results(e) {
+
+  comments = document.getElementById(`poll-comments-modal-${e.id.substring(e.id.lastIndexOf("-") + 1)}`);
+  comments_input = document.getElementById(`poll-comments-input-modal-${e.id.substring(e.id.lastIndexOf("-") + 1)}`);
+  votes = document.getElementById(`voter-results-modal-${e.id.substring(e.id.lastIndexOf("-") + 1)}`);
+
+  document.getElementById(`text-comment-voter-results-toggle-${e.id.substring(e.id.lastIndexOf("-") + 1)}`).innerHTML == "Comments" ? document.getElementById(`text-comment-voter-results-toggle-${e.id.substring(e.id.lastIndexOf("-") + 1)}`).innerHTML = "Voting Results" : document.getElementById(`text-comment-voter-results-toggle-${e.id.substring(e.id.lastIndexOf("-") + 1)}`).innerHTML = "Comments";
+
+  comments.classList.toggle("hidden");
+  comments_input.classList.toggle("hidden");
+  votes.classList.toggle("hidden");
+
+}
+
+
 function toggle_admin_information(type, id) {
   const info = document.getElementById(`${type}-info-${id}`)
   const toggle = document.getElementById(`${type}-toggle-${id}`)

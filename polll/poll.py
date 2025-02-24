@@ -288,6 +288,11 @@ def result(poll_id):
     # Get the user's response and the results, if the poll has at least 1 vote
     poll = session["polls"][int(poll_id)]
     user = session["user"]
+    session["viewed_poll"] = poll
+
+    print("\n\n\n")
+    print(session["viewed_poll"])
+    print("\n\n\n")
 
     if poll["response_count"] > 0:
         poll["response"] = query_response(poll, user)

@@ -137,7 +137,7 @@ def create_reply(comment_id):
     session["replies"][int(reply["id"])] = reply
 
     # Update the poll's information and render it again
-    poll = session["polls"][int(poll_id)]
+    poll = session["viewed_poll"]
     poll["comment_count"] += 1
 
     # Slightly less sinful hack to move the new reply to the top of the replies dict

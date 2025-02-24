@@ -16,7 +16,7 @@
   </button>
 </div>
 
-<div id="comments-list-{{ poll.id }}" class="px-4 pt-4">
+<div id="comments-list-{{ poll.id }}" class="px-4 {% if not inModal %} pt-4 {% endif %}">
 
   {% for id, comment in session.comments.items() %}
     {% include "results/comment-body.html" %}
