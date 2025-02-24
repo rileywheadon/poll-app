@@ -138,7 +138,6 @@ def login():
     try:
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
-        print(e)
         message = '"Invalid email!"'
         return redirect(url_for('auth.login_page', notification = message))
 

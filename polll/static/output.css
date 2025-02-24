@@ -822,12 +822,16 @@ video {
   min-height: 5rem;
 }
 
-.min-h-dvh {
-  min-height: 100dvh;
-}
-
 .min-h-screen {
   min-height: 100vh;
+}
+
+.min-h-16 {
+  min-height: 4rem;
+}
+
+.min-h-24 {
+  min-height: 6rem;
 }
 
 .w-0 {
@@ -1062,6 +1066,10 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.overflow-scroll {
+  overflow: scroll;
 }
 
 .overscroll-auto {
@@ -2000,10 +2008,6 @@ video {
     height: 100vh;
   }
 
-  .md\:min-h-screen {
-    min-height: 100vh;
-  }
-
   .md\:w-2\/12 {
     width: 16.666667%;
   }
@@ -2018,10 +2022,6 @@ video {
 
   .md\:w-8\/12 {
     width: 66.666667%;
-  }
-
-  .md\:w-full {
-    width: 100%;
   }
 
   .md\:min-w-52 {
@@ -2060,11 +2060,6 @@ video {
     margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
   }
 
-  .md\:px-24 {
-    padding-left: 6rem;
-    padding-right: 6rem;
-  }
-
   .md\:px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -2075,14 +2070,19 @@ video {
     padding-right: 2rem;
   }
 
-  .md\:py-16 {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
-
   .md\:py-4 {
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .md\:px-32 {
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
+
+  .md\:px-0 {
+    padding-left: 0px;
+    padding-right: 0px;
   }
 
   .md\:pb-8 {
@@ -2120,10 +2120,6 @@ video {
 @media (min-width: 1080px) {
   .lg\:flex {
     display: flex;
-  }
-
-  .lg\:w-5\/6 {
-    width: 83.333333%;
   }
 
   .lg\:space-x-24 > :not([hidden]) ~ :not([hidden]) {
