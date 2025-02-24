@@ -66,6 +66,7 @@ def callback():
 
     # Check if the user is in the database
     user = res.user.user_metadata
+    
     res = db.table("user").select("*").eq("email", user["email"]).execute()
 
     # If the user does not exist, add them to the database

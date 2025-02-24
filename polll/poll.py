@@ -133,16 +133,17 @@ def comments(poll_id):
 
     # Get all of the comments for this poll, their likes and replies
     db = get_db()
-    user_id = session["user"]["id"]
+    res = db.rpc("poll", {"pid": poll_id}).execute()
+    poll = query_poll_details(res.data[0])
+    session["polls"] = poll
     res = query_comments(poll_id, 0, COMMENT_LIMIT)
 
     # Call query_comment_details to get information about the comments
     del session["comments"]
-    poll = session["polls"][int(poll_id)]
     session["comments"] = {c["id"]: query_comment_details(c) for c in res.data}
 
     # Set the full variable to True if less res is below the comment limit
-    session["state"]["comment_page"] = 0
+    session["state"]["comment_page"] = 0    
     session["state"]["comment_full"] = len(res.data) < COMMENT_LIMIT
 
     # Update the session 
@@ -184,7 +185,7 @@ def create_comment(poll_id):
     comment["reply_count"] = 0
 
     # Update the client-side poll object and render the comments again
-    poll = session["polls"][int(poll_id)]
+    poll = session["viewed_poll"]
     poll["comment_count"] += 1 
     session["comments"][int(comment["id"])] = comment
     session.modified = True
@@ -321,18 +322,28 @@ def result(poll_id):
 @requires_auth
 def open_results(poll_id, username):
 
+    # Get all of the comments for this poll, their likes and replies
     db = get_db()
     res = db.rpc("poll", {"pid": poll_id}).execute()
     poll = query_poll_details(res.data[0])
+    res = query_comments(poll_id, 0, COMMENT_LIMIT)
 
+    # Call query_comment_details to get information about the comments
+    del session["comments"]
+    session["comments"] = {c["id"]: query_comment_details(c) for c in res.data}
 
-    print("\n\n\n")
-    for key, val in poll.items():
-        print(f'{key}: {val}')
-    print("\n\n\n")
+    # Set the full variable to True if less res is below the comment limit
+    session["state"]["comment_page"] = 0
+    session["state"]["comment_full"] = len(res.data) < COMMENT_LIMIT
+
+    # Update the session 
+    del session["replies"]
+    session["replies"] = {}
+
+    res = db.rpc("poll", {"pid": poll_id}).execute()
+    poll = query_poll_details(res.data[0])
 
     session["viewed_poll"] = poll
-
 
     user = session["viewed_user"]
 
@@ -349,7 +360,7 @@ def open_results(poll_id, username):
 
     # If the poll is ranked or tier list, get the HTML template
     r = make_response("")
-    r.data = render_template("results/results-modal.html", poll=poll, return_url=url_for(f"home.profile", username=username))
+    r.data = render_template("results/result-modal.html", poll=poll, return_url=url_for(f"home.profile", username=username))
     r.headers.set("HX-Reswap", "innerHTML")
 
     graph = '{"graph": ' + json.dumps(poll) + '}'

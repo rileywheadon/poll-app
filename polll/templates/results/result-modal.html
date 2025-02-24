@@ -1,0 +1,112 @@
+<div class="flex flex-col fixed justify-center items-center w-screen h-dvh md:h-screen z-10 text-neutral-700 dark:text-neutral-200">
+
+    <div class="flex flex-col size-11/12 rounded-xl border-2 bg-polll-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 px-6 py-4">
+
+        <div class="flex flex-row grow size-full justify-center items-start p-2">
+
+            <!-- Results -->
+            <div class="flex flex-col w-3/5 h-full p-2">
+                <!-- Include the poll question -->
+                <div class="flex flex-row w-full px-4">
+                    <p class="font-light text-2xl text-neutral-700 dark:text-neutral-200">
+                      {{ session.viewed_poll.question }}
+                    </p>
+                    <div id="poll-graph-modal-{{ session.viewed_poll.id }}">
+                        {% if session.viewed_poll.poll_type == "RANKED_POLL" %}
+                            {% include "results/ranked-poll.html" %}
+                        {% elif session.viewed_poll.poll_type == "TIER_LIST" %}
+                            {% include "results/tier-list.html" %}
+                        {% endif %} 
+                    </div>
+                </div>
+                <div class="flex flex-row">
+
+                    <p class="font-light">
+                        Votes: {{ session.viewed_poll.response_count }}
+                    </p>
+
+                    <!-- Share Button -->
+                    <button 
+                    class="ml-auto text-l md:text-xl rounded-md hover:cursor-default text-right"
+                    title="Share"
+                    onclick="copy_link('{{ poll.url }}')"
+                    type="button"
+                    >
+                        <i class="fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green"></i>
+                    </button>
+                    
+                    <button
+                    class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-red text-right"
+                    title="Report"
+                    hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
+                    hx-confirm="Are you sure you want to report this poll?"
+                    hx-swap="none"
+                    type="button"
+                    >
+                        <i class="fa fa-triangle-exclamation"></i>
+                  </button>
+
+                </div>
+            </div>
+
+            <!-- Comments/User results -->
+            <div class="flex flex-col w-2/5 h-full">
+                <!-- Poll info -->
+                <div class="p-2 border border-neutral-500 rounded-xl">
+
+                    <!-- Include the creator's username and the poll age -->
+                    <div class="flex flex-row items-center px-4 h-10">
+                        <p class="font-light text-neutral-500 dark:text-neutral-400">
+                            {% if session.viewed_poll.is_anonymous == 1 %}
+                              anonymous
+                            {% else %}
+                              @{{ session.viewed_poll.creator }}
+                            {% endif %} ⋅ {{ session.viewed_poll.age }}
+                          </p>
+                    </div>
+
+                </div>
+                <!-- Comment section -->
+                <div class="p-2 grow border border-neutral-500 rounded-xl overflow-y-scroll">
+                    <div class="poll-comments px-4 py-4" id="poll-comments-modal-{{ poll.id }}">
+                        {% with %}
+                            {% set inModal = True %}
+                            {% include "results/poll-comments.html" %}
+                        {% endwith %}
+                    </div>
+                </div>
+                <!-- Comment input box -->
+                <div class="p-2 border border-neutral-500 rounded-xl">
+                    <div class="flex flex-row items-center {% if inModal %} hidden {% endif %}">
+                        <input class="grow text-l p-2 bg-transparent border-b border-neutral-700 dark:text-white focus:outline-none font-light" 
+                          autocomplete="off"
+                          name="comment"
+                          placeholder="Add a comment..."
+                          id="comment-input-{{ poll.id }}"
+                        />
+                        <button class="ml-2 px-4 h-6 md:h-8 rounded-xl text-neutral-900 bg-neutral-300 hover:bg-white"
+                          hx-include="previous input"
+                          hx-post="{{ url_for('poll.create_comment', poll_id = poll.id) }}"
+                          hx-target="#comments-list-{{ poll.id }}"
+                          hx-swap="afterbegin"
+                        >
+                          <span class="hidden text-sm md:inline mr-1">Send</span>
+                          <i class="fa fa-paper-plane"></i>
+                        </button>
+                      </div>
+                </div>
+            </div>
+
+    </div>
+
+    <div class="flex w-1/12 ">
+        <a
+        href="{{ return_url }}"
+        hx-indicator="#loading-spinner"
+        class="px-2 py-0.5 w-fit text-center text-2xl rounded-md hover:dark:bg-neutral-600"
+        >
+        &times;
+        </a>
+    </div>
+
+</div>
