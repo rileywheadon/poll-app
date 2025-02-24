@@ -5,24 +5,39 @@
 
 {% set myAccount = session.user.username == session.viewed_user.username %}
 
-<div class="flex flex-col font-light overscroll-y-contain space-y-2">
+
+<div id="profile" class="flex flex-col font-light overscroll-y-contain space-y-2">
 
   <!-- User Profile/data-->
   <div class="flex flex-row border rounded-xl border-neutral-500 hover:border-neutral-200 px-10 py-6 transition-all duration-500 ease-in-out">
     <!-- Profile pic -->
     <div class="flex flex-col justify-center items-center space-y-4">
         <i class="fa-regular fa-user text-6xl"></i>
-        <p>{{ session.viewed_user.username }}</p>
+        <div class="flex flex-col text-center items-start p-2 space-y-2">
+            <p class="text-2xl">{{ session.viewed_user.username }}</p>
+            <button 
+            class="px-2 py-1 rounded-md dark:bg-neutral-700 hover:dark:bg-neutral-600 {%if myAccount%} hidden {% endif %}"
+            hx-get="/follow"
+            hx-swap="textContent"
+            >
+            {% if session.viewed_user.is_following %}
+                Following
+            {% else %}
+                Follow
+            {% endif %}
+            </button>
+        </div>
+        
     </div>
     <!-- User info -->
     <div class="flex flex-row space-x-10 pl-10 w-full justify-around">
         <div class="flex flex-col justify-center items-center space-y-4">
             <p class="font-bold">Followers</p>
-            <p class="font-black">...</p>
+            <p class="font-black">{{ session.viewed_user.followers|length }}</p>
         </div>
         <div class="flex flex-col justify-center items-center space-y-4">
             <p class="font-bold">Following</p>
-            <p class="font-black">...</p>
+            <p class="font-black">{{ session.viewed_user.following|length }}</p>
         </div>
         <div class="flex flex-col justify-center items-center space-y-4">
             <p class="font-bold">Posts</p>
@@ -37,7 +52,7 @@
     <div class="flex flex-row {% if not myAccount %} hidden {% endif %}">
         <a 
         class="h-10 flex flex-row items-center w-full px-2 font-light hover:bg-polll-white dark:hover:bg-neutral-800 rounded-lg"
-        hx-get="{{ url_for('home.open_settings') }}"
+        hx-get="{{ url_for('home.open_settings', username=session.user.username)}}"
         hx-target="#settings"
         hx-indicator="#loading-spinner"
         hx-swap="innerHTML"
@@ -45,21 +60,40 @@
       >
         <span class="flex flex-row justify-center">
           <i class="text-xl fas fa-gear px-2"></i>
-          
         </span>
       </a>
     </div>
 
   </div>
 
-  <!-- Pinned polls (remove h-64 when polls are there)-->
+  <!-- Favourites polls -->
   <div class="border border-neutral-500 hover:border-neutral-200 rounded-xl p-2 transition-all duration-500 ease-in-out">
     <p class="text-2xl font-bold text-center">Favourited Responses</p>
-        <div class="flex flex-row">
-            {% for id, poll in session.polls_favourited.items() %}
-                {% include "results/favourite-base.html" %}
-            {% endfor %}      
-        </div>
+    <hr class="pb-2">        
+        {% if session.polls_favourited %}
+            <div class="flex flex-row">
+                {% for id, poll in session.polls_favourited.items() %}
+                    {% include "results/favourite-base.html" %}
+                {% endfor %}
+            </div>
+        {% else %}
+            {% if myAccount %}
+                <div class="flex flex-col w-full h-64 justify-center items-center space-y-10">
+                    <p class="text-xl font-light text-center">Add up to top three public responses to your profile for others to see!</p>
+                    <button 
+                    class=""
+                    
+                    >
+                        <i class="fa fa-plus text-xl p-1 border-4 rounded-full"></i>
+                    </button>
+                </div>
+            {% else %}
+            <div class="flex flex-col w-full h-64 justify-center items-center space-y-10">
+                <p class="text-xl font-light text-center">{{ session.viewed_user.username }} has not favourited any polls yet!</p>
+            </div>
+            {% endif %}
+        {% endif %}
+        
   </div>
 
   <div class="flex flex-row w-full space-x-2">
@@ -70,7 +104,7 @@
 
         <div class="poll-container">
 
-            {% if session.polls %}
+            {% if session.polls_created %}
               {% for id, poll in session.polls_created.items() %}
                 {% include "results/result-base.html" %}
               {% endfor %}
@@ -99,7 +133,7 @@
         
         <div class="poll-container">
 
-            {% if session.polls %}
+            {% if session.polls_answered %}
               {% for id, poll in session.polls_answered.items() %}
                 {% include "results/result-base.html" %}
               {% endfor %}

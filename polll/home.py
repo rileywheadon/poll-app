@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import time
 import asyncio
+import json
 
 from flask import Blueprint, url_for, session, redirect
 from flask import render_template, request, make_response
@@ -35,15 +36,10 @@ def set_timezone():
 
 
 # Route for opening the settings window
-@home.route("/settings/open")
+@home.route("/settings/open_settings/user/<username>")
 @requires_auth
-def open_settings():
-    current_url = request.headers.get("HX-Current-Url")
-    root_url = request.url_root
-
-    # Remove the url (i.e. polll.org), and the query params
-    return_endpoint = current_url.replace(root_url, "").split("?")[0]
-    return_url = url_for(f"home.{return_endpoint}")
+def open_settings(username):
+    return_url = url_for(f"home.profile", username=username)
     return render_template("settings.html", session=session, return_url=return_url)
 
 
@@ -127,6 +123,20 @@ def help():
     return render_template("misc/help.html")
 
 
+# Reloads the current page, used for the scroll loader
+@home.route("/reload")
+@requires_auth
+def reload():
+    url = session["state"]["url"]
+
+    if session["state"]["tab"] != "create":
+        return redirect(url)
+    else:
+        r = make_response("")
+        r.headers.set("HX-Reswap", "none")
+        return r
+
+
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
@@ -151,6 +161,7 @@ def feed():
         "board": session["boards"].get(int(bid)) or {},
         "order": order,
         "period": period,
+        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     })
 
     session.modified = True
@@ -169,11 +180,16 @@ def create():
 
     # Update the session state variable and render the feed
     session["user"]["on_cooldown"] = on_cooldown(session["user"])
-    session["state"] = {"admin": False, "tab": "create"}
+    session["state"] = {
+        "admin": False, 
+        "tab": "create",
+        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
+    }
 
     # Render the HTML template with caching (since /create doesn't change)
-    session.modified = True
-    return render_template("home/create.html", session=session)
+    r = make_response(render_template("home/create.html", session=session))
+    r.headers["Cache-Control"] = "public, max-age=3600" 
+    return r
 
 
 # Create a new poll answer entry box. This is simpler than writing javascript.
@@ -293,60 +309,91 @@ def create_poll():
     return r
 
 
-# Home page (user's polls)
-@home.route("/mypolls")
+@home.route("/user/<username>")
 @requires_auth
-def mypolls():
+def profile(username):
 
     # Query the database for all polls made by the user
+    # TODO: rename the two differnt users so that they are meaningful different
     db = get_db()
-    user = session["user"]
+    current_user = db.table("user").select("*").eq("username", session["user"]["username"]).execute().data[0]
+    user = db.table("user").select("*").eq("username", username).execute().data[0]
     data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    
+    favourites = db.table("poll_favourite").select("*").eq("user_id", user["id"]).execute().data
+    favourite_ids = list(map(lambda p: p["poll_id"], favourites))
+
     res = db.rpc("mypolls", data).execute()
 
     # Update the session object with the new state
     session["comments"] = {}
     session["replies"] = {}
-    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
-
-    session["state"] = {
-        "admin": False,
-        "tab": "mypolls",
-        "poll_page": 0,
-        "poll_full": len(res.data) < POLL_LIMIT,
-    }
-
-    # Render the HTML template
-    session.modified = True
-    return render_template("home/mypolls.html", session=session)
-
-
-# Home page (response history)
-@home.route("/history")
-@requires_auth
-def history():
-
-    # Query the database for all polls responded to by the user
-    db = get_db()
-    user = session["user"]
+    session["polls_created"] = {p["id"]:query_poll_details(p) for p in res.data}
+    
     data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
     res = db.rpc("history", data).execute()
 
-    # Set data on the session object
-    session["comments"] = {}
-    session["replies"] = {}
-    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+    session["polls_answered"] = {p["id"]:query_poll_details(p) for p in res.data}
+    session["polls_favourited"] = {id:val for id, val in session["polls_answered"].items() if id in favourite_ids}
+    
+    for id in list(session["polls_answered"].keys()):
+        session["polls_answered"][id]["is_favourited"] = id in list(session["polls_favourited"].keys())
 
+    session["viewed_user"] = user
+
+    following = db.table("follow").select("*").eq("follower", user["id"]).execute()
+    followers = db.table("follow").select("*").eq("followed", user["id"]).execute()
+
+    session["viewed_user"]["following"] = following.data
+    session["viewed_user"]["followers"] = followers.data
+
+    # Checks whether the logged in user has followed
+    session["viewed_user"]["is_following"] = True if session["user"]["id"] in [e["follower"] for e in session["viewed_user"]["followers"]] else False
+
+    tab = "theirpolls"
+    if (session["user"]["username"] == username):
+        tab = "mypolls"
     session["state"] = {
-        "admin": False, 
-        "tab": "history",
+        "admin": False,
+        "tab": tab,
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
+        "url": f"url_for(request.endpoint)"
     }
 
     # Render the HTML template
     session.modified = True
-    return render_template("home/history.html", session=session)
+
+    r = make_response(render_template("home/profile.html", session=session))
+    return r
+
+
+@home.route("/follow")
+@requires_auth
+def follow():
+    
+    db = get_db()
+
+    is_following = session["viewed_user"]["is_following"]
+    follower_id = int(session["user"]["id"])
+    followed_id = int(session["viewed_user"]["id"])
+
+    if not is_following:
+        data = [{"follower": follower_id, "followed": followed_id}]
+        db.table("follow").insert(data).execute()
+    else:
+        db.table("follow").delete().eq("follower", follower_id).eq("followed", followed_id).execute()
+
+
+    session["viewed_user"]["is_following"] = not is_following
+    
+    session.modified = True
+    message = '"Unfollowed"' if is_following else '"Followed"'
+    notification = f'{{"notification": {message}}}'
+    r_text = "Following" if session["viewed_user"]["is_following"] else "Follow"
+    r = make_response(r_text)
+    r.headers.set("HX-Trigger", notification)
+    return r
 
 
 # Render more polls in the history tab

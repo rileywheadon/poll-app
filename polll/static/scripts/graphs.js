@@ -15,41 +15,45 @@ var active_chart = null;
 // Global event listener for creating a new graph
 function add_graph_listener() {
   document.body.addEventListener("graph", function(evt) { 
-    graphToggle(evt.detail);
+    handleGraphEvent(evt.detail)
   });
 }
 
 // Results Toggling Function
-function graphToggle(poll) {
-  
-  // Destroy the active chart, if it exists
-  if (active_chart != null) {
-    active_chart.destroy();
-  }
+function handleGraphEvent(poll) {
 
-  // Get elements from the DOM
-  var toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
-  var graph = document.getElementById(`poll-graph-${poll["id"]}`);
+    modal_text = get_modal_text(poll)
 
+    graph = document.getElementById(`poll-graph${modal_text}-${poll["id"]}`);
 
-  // If we are hiding results, just hide the graph and return
-  if (toggle.innerHTML == "Hide Results") {
-    toggle.innerHTML = "Show Results";
-    graph.classList.add("hidden");
-    return;
-  } 
+    // If the modal is not being displayed
+    if (!poll.elt.classList.contains("modal")) {
+        // Destroy the active chart, if it exists
+        if (active_chart != null) {
+            active_chart.destroy();
+        }
 
-  // Hide all of the other graphs
-  graphs = document.getElementsByClassName("graph-toggle");
-  for (var i = 0; i < graphs.length; i++) {
-    id = graphs[i].getAttribute("id").substr(13);
-    document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
-    document.getElementById("poll-graph-" + id).classList.add("hidden");
-  }
+        toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
 
-  // Then update toggle and graph
-  toggle.innerHTML = "Hide Results";
-  graph.classList.remove("hidden");
+        // If we are hiding results, just hide the graph and return
+        if (toggle.innerHTML == "Hide Results") {
+            toggle.innerHTML = "Show Results";
+            graph.classList.add("hidden");
+            return;
+        } 
+
+        // Hide all of the other graphs
+        graphs = document.getElementsByClassName("graph-toggle");
+        for (var i = 0; i < graphs.length; i++) {
+            id = graphs[i].getAttribute("id").substr(13);
+            document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
+            document.getElementById("poll-graph-" + id).classList.add("hidden");
+        }
+
+        // Then update toggle and graph
+        toggle.innerHTML = "Hide Results";
+        graph.classList.remove("hidden");    
+    }
 
   // Create a "No votes yet!" message if the poll has no votes
   if (poll["response_count"] == 0) {
@@ -66,16 +70,16 @@ function graphToggle(poll) {
   }
 
   // Draw the graph if necessary
-  else {
-    graphInitRewritten(poll);
-  }
+  else graphInit(poll);
 
 }
 
-function graphInitRewritten(poll) {
+function graphInit(poll) {
 
   var options;
-  graph = document.getElementById(`poll-graph-${poll["id"]}`);
+  modal_text = get_modal_text(poll)
+
+  graph = document.getElementById(`poll-graph${modal_text}-${poll["id"]}`);
 
   switch (poll["poll_type"]) {
     case "CHOOSE_ONE": 
@@ -381,4 +385,8 @@ function get_scale_average(rs, nums) {
     var x = rs.map((e) => e["value"]).reduce((acc, curr, i) => acc + (curr * counts[i]), 0) / counts.reduce((acc, curr) => acc + curr);
     return [...Array(nums).keys()].reduce((prev, curr) => {
      return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
+}
+
+function get_modal_text(poll) {
+    return poll.elt.classList.contains("modal") ? "-modal" : "";
 }

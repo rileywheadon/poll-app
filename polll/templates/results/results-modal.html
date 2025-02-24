@@ -1,0 +1,64 @@
+<div class="flex fixed justify-center items-center w-screen h-dvh md:h-screen z-10 text-neutral-700 dark:text-neutral-200">
+
+    <div class="flex flex-col size-5/6 rounded-xl border-2 bg-polll-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 px-6 py-4">
+        
+        <div class="flex flex-row grow size-full justify-center items-start p-2">
+
+            <!-- Results -->
+            <div class="flex w-3/5 h-full p-2 border border-neutral-500 rounded-xl">
+                <!-- Include the poll question -->
+                <div class="flex flex-row w-full px-4">
+                    <p class="font-light text-2xl text-neutral-700 dark:text-neutral-200">
+                      {{ session.viewed_poll.question }}
+                    </p>
+                    <div id="poll-graph-modal-{{ session.viewed_poll.id }}">
+                        {% if session.viewed_poll.poll_type == "RANKED_POLL" %}
+                            {% include "results/ranked-poll.html" %}
+                        {% elif session.viewed_poll.poll_type == "TIER_LIST" %}
+                            {% include "results/tier-list.html" %}
+                        {% endif %} 
+                      </div>
+                </div>
+            </div>
+
+            <!-- Comments/User results -->
+            <div class="flex flex-col w-2/5 h-full">
+                <!-- Poll info -->
+                <div class="p-2 border border-neutral-500 rounded-xl">
+
+                    <!-- Include the creator's username and the poll age -->
+                    <div class="flex flex-row items-center px-4 h-10">
+                        <p class="font-light text-neutral-500 dark:text-neutral-400">
+                            {% if session.viewed_poll.is_anonymous == 1 %}
+                              anonymous
+                            {% else %}
+                              @{{ session.viewed_poll.creator }}
+                            {% endif %} ⋅ {{ session.viewed_poll.age }}
+                          </p>
+                    </div>
+
+                </div>
+                <!-- Comment section -->
+                <div class="p-2 grow border border-neutral-500 rounded-xl">
+                    <p>Comment section</p>
+                    
+                </div>
+                <!-- Comment input box -->
+                <div class="p-2 border border-neutral-500 rounded-xl">
+                    <p>Enter comment</p>
+                </div>
+            </div>
+
+    </div>
+
+    <div class="flex w-1/12">
+        <a
+        href="{{ return_url }}"
+        hx-indicator="#loading-spinner"
+        class="px-2 py-1 w-fit rounded-md dark:bg-neutral-700 hover:dark:bg-neutral-600"
+        >
+        Close
+        </a>
+    </div>
+
+</div>
