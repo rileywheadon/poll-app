@@ -15,7 +15,24 @@ auth = Blueprint('auth', __name__, template_folder='templates')
 # Landing page for advertising to potential users
 @auth.route("/")
 def index():
+
+    # If the user is already logged in, go to the feed
+    if validate_auth():
+        return redirect(url_for("home.feed"))
+
     return render_template("index.html")
+
+
+# Helper function to validate the login
+def validate_auth():
+    try:
+        db = get_db()
+        true_user = db.auth.get_user()
+        session_user =  session.get("user")
+        return true_user and session_user
+    except:
+        pass
+    return False
 
 
 # Login page endpoint
@@ -23,24 +40,32 @@ def index():
 def login_page():
 
     # If the user is already logged in, go to the feed
-    db = get_db()
+    if validate_auth():
+        return redirect(url_for("home.feed"))
 
-    try:
-        if db.auth.get_user() and session.get("user"):
-            return redirect(url_for("home.feed"))
+    error = request.args.get("error")
+    return render_template("auth/login.html", error=error)
 
-    except:
-        error = request.args.get("error")
-        return render_template("auth/login.html", error=error)
+
+# Register page endpoint
+@auth.route('/register')
+def register_page():
+
+    # If the user is already logged in, go to the feed
+    if validate_auth():
+        return redirect(url_for("home.feed"))
+
+    error = request.args.get("error")
+    return render_template("auth/authentication.html", action="register", error=error)
 
 
 # Callback after email verification
 @auth.route('/auth/confirm')
 def callback():
+    db = get_db()
 
     # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
+    if validate_auth():
         return redirect(url_for("home.feed"))
 
     # Verify the magic link request
@@ -105,11 +130,12 @@ def invalid_auth(action, error):
 def login():
 
     db = get_db()
+    email = request.form.get("email")
 
     # Create the sign in request
     login_data = {
         "type": "email",
-        "email": request.form.get("email"),
+        "email": email,
         "options": {
             "should_create_user": False,
             "email_redirect_to": f"{request.url_root}auth/confirm",
@@ -153,6 +179,7 @@ def register():
         "options": {
             "should_create_user": True,
             "email_redirect_to": f"{request.url_root}auth/confirm",
+            "data": {"username": username},
         }
     }
 
@@ -207,8 +234,8 @@ def requires_admin(f):
         user = session.get("user")
         true_user = db.auth.get_user()
 
-        # If the user doesn't exist, redirect them to the index
-        if not true_user:
+        # If the user doesn't exist, clear the session and return to the index
+        if not validate_auth:
             return redirect(url_for("auth.index"))
 
         # If the user does exist but doesn't match the session's user, log them out
