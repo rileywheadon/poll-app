@@ -63,11 +63,27 @@ function toggle_home_menu() {
 }
 
 
+// var reloaded = false;
+//
+// function set_reload_listener() {
+//   var reloaded = true;
+//   setTimeout(function() { reloaded = false; }, 1000);
+// }
+
+var previousScroll = 1;
+
+function set_scroll(div) {
+  console.log(div.scrollTop, previousScroll);
+  previousScroll = div.scrollTop;
+}
+
 function trigger_reload(div) {
-  if (div.scrollTop === 0) {
-    htmx.ajax('GET', '/reload');
+  if (div.scrollTop === 0 && previousScroll === 0) {
+    htmx.ajax("GET", "/reload");
+    previousScroll = 1;
   }
 }
+
 
 function update_answer_editor(poll_type) {
 

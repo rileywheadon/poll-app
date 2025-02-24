@@ -1,6 +1,6 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card rounded-xl border mb-2 md:mb-4 dark:border-neutral-700 dark:hover:border-neutral-200 overflow-hidden accord-open transition-all duration-500 ease-in-out"
+  class="poll-card rounded-xl border mb-2 md:mb-4 dark:border-neutral-700 overflow-hidden accord-open"
 >    
   <!-- Include the creator's username and the poll age -->
   <div class="flex flex-row justify-center items-center pt-4 px-4 h-10">
@@ -20,12 +20,12 @@
       onclick="copy_link('{{ poll.url }}')"
       type="button"
     >
-      <i class="fa fa-share-from-square text-xs hover:text-polll-dgreen dark:hover:text-polll-green">
+      <i class="fa fa-share-from-square hover:text-polll-dgreen dark:hover:text-polll-green">
       </i>
     </button>
 
     <!-- If the user created this poll, allow them to edit it -->
-    {% if session.user.id == poll.creator_id %}
+    {% if session.user and session.user.id == poll.creator_id %} 
 
       <!-- Toggle Lock -->
       {% with %}
@@ -54,7 +54,7 @@
           hx-target="#poll-card-{{ poll.id }}"
           hx-swap="delete"
           hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash text-xs hover:text-polll-red"></i>
+        <i class="fa fa-trash hover:text-polll-red"></i>
       </button>
 
     <!-- If the user didn't create this poll, allow them to report it -->
@@ -68,14 +68,8 @@
         hx-swap="none"
         type="button"
       >
-        <i class="fa fa-triangle-exclamation text-xs"></i>
+        <i class="fa fa-triangle-exclamation"></i>
       </button>
-
-      {% with %}
-        {% set user_id=session.user.id %}
-        {% set poll_id=poll.id %}
-        {% include "results/poll-favourite.html" %}
-      {% endwith %}
 
     {% endif %}
 
@@ -104,17 +98,34 @@
       Votes: {{ poll.response_count }}
     </p>
 
+    <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
+    <button 
+      class="ml-auto px-4 h-6 md:h-8 rounded-xl text-sm bg-polll-white hover:bg-neutral-200 dark:hover:bg-white flex items-center justify-center select-none text-neutral-900"
+      hx-on::after-request="toggle_comments({{ poll.id }})"
+      hx-get="{{ url_for('poll.comments', poll_id = poll.id) }}"
+      hx-target="#poll-comments-{{ poll.id }}"
+      hx-swap="innerHTML"
+    >
+      <div class="whitespace-nowrap">
+        <span class="hidden md:inline" id="comments-toggle-{{ poll.id }}">
+          Show Comments
+        </span>
+        <span id="comments-count-{{ poll.id }}">
+          &nbsp{{ poll.comment_count }}
+        </span>
+      </div>
+      <i class="fa fa-message pl-2 text-l"></i>
+    </button>
+
     <!-- Show Results -->
     <button
-      class="ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+      class="ml-3 px-4 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
       hx-target="#poll-graph-{{ poll.id }}"
       hx-swap="none"
     >
-      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden">
-        Show Results 
-      </span>
-      <i class="fa fa-chart-simple pl-2 pr-2 text-xs"></i>
+      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden md:inline">Show Results</span>
+      <i class="fa fa-chart-simple pl-2 pr-2 text-l"></i>
     </button>
 
   </div>

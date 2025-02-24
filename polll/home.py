@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import time
 import asyncio
-import json
 
 from flask import Blueprint, url_for, session, redirect
 from flask import render_template, request, make_response
@@ -128,20 +127,6 @@ def help():
     return render_template("misc/help.html")
 
 
-# Reloads the current page, used for the scroll loader
-@home.route("/reload")
-@requires_auth
-def reload():
-    url = session["state"]["url"]
-
-    if session["state"]["tab"] != "create":
-        return redirect(url)
-    else:
-        r = make_response("")
-        r.headers.set("HX-Reswap", "none")
-        return r
-
-
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
 @requires_auth
@@ -166,7 +151,6 @@ def feed():
         "board": session["boards"].get(int(bid)) or {},
         "order": order,
         "period": period,
-        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     })
 
     session.modified = True
@@ -185,16 +169,11 @@ def create():
 
     # Update the session state variable and render the feed
     session["user"]["on_cooldown"] = on_cooldown(session["user"])
-    session["state"] = {
-        "admin": False, 
-        "tab": "create",
-        "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
-    }
+    session["state"] = {"admin": False, "tab": "create"}
 
     # Render the HTML template with caching (since /create doesn't change)
-    r = make_response(render_template("home/create.html", session=session))
-    r.headers["Cache-Control"] = "public, max-age=3600" 
-    return r
+    session.modified = True
+    return render_template("home/create.html", session=session)
 
 
 # Create a new poll answer entry box. This is simpler than writing javascript.
@@ -314,49 +293,60 @@ def create_poll():
     return r
 
 
-@home.route("/user/<username>")
+# Home page (user's polls)
+@home.route("/mypolls")
 @requires_auth
-def profile(username):    
+def mypolls():
 
     # Query the database for all polls made by the user
     db = get_db()
-    user = db.table("user").select("*").eq("username", username).execute().data[0]
+    user = session["user"]
     data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
-    favourite_ids = list(map(lambda p: p["poll_id"], db.table("poll_favourite").select("*").eq("user_id", user["id"]).execute().data))
-
     res = db.rpc("mypolls", data).execute()
 
     # Update the session object with the new state
     session["comments"] = {}
     session["replies"] = {}
-    session["polls_created"] = {p["id"]:query_poll_details(p) for p in res.data}
-    
-    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
-    res = db.rpc("history", data).execute()
-    
-    session["polls_answered"] = {p["id"]:query_poll_details(p) for p in res.data}
-    session["polls_favourited"] = {p["id"]:query_poll_details(p) for p in db.rpc("history", data).execute().data if p["id"] in favourite_ids}
+    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
 
-    session["viewed_user"] = user
-    tab = ""
-    if (session["user"]["username"] == username):
-        tab = "mypolls"
     session["state"] = {
         "admin": False,
-        "tab": tab,
+        "tab": "mypolls",
         "poll_page": 0,
         "poll_full": len(res.data) < POLL_LIMIT,
-        "url": f"url_for(request.endpoint)",
-        # "url": f"{url_for(request.endpoint)}?{request.query_string.decode('utf-8')}"
     }
 
     # Render the HTML template
     session.modified = True
+    return render_template("home/mypolls.html", session=session)
 
-    r = make_response(render_template("home/profile.html", session=session))
-    for poll in session["polls_favourited"].values():
-        r.headers.set("HX-Trigger-After-Settle", '{"graph": ' + json.dumps(poll) + '}')
-    return r
+
+# Home page (response history)
+@home.route("/history")
+@requires_auth
+def history():
+
+    # Query the database for all polls responded to by the user
+    db = get_db()
+    user = session["user"]
+    data = {"uid": user["id"], "page": 0, "lim": POLL_LIMIT}
+    res = db.rpc("history", data).execute()
+
+    # Set data on the session object
+    session["comments"] = {}
+    session["replies"] = {}
+    session["polls"] = {p["id"]:query_poll_details(p) for p in res.data}
+
+    session["state"] = {
+        "admin": False, 
+        "tab": "history",
+        "poll_page": 0,
+        "poll_full": len(res.data) < POLL_LIMIT,
+    }
+
+    # Render the HTML template
+    session.modified = True
+    return render_template("home/history.html", session=session)
 
 
 # Render more polls in the history tab

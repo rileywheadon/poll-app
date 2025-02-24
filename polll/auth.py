@@ -2,7 +2,8 @@ import os
 
 from datetime import datetime
 from functools import wraps
-from flask import Blueprint, url_for, session, redirect, render_template, request
+from flask import Blueprint, url_for, session, redirect
+from flask import make_response, render_template, request
 from .db import get_db
 from gotrue.errors import AuthApiError
 from dotenv import dotenv_values
@@ -12,10 +13,33 @@ from dotenv import dotenv_values
 auth = Blueprint('auth', __name__, template_folder='templates')
 
 
+# Helper function to validate the login
+def validate_auth():
+    try:
+        db = get_db()
+        true_user = db.auth.get_user()
+        session_user =  session.get("user")
+        return true_user, session_user
+    except:
+        return None, None
+
+
 # Landing page for advertising to potential users
 @auth.route("/")
-def index():
-    return render_template("index.html")
+def landing():
+
+    # If the user is already logged in, go to the feed
+    true_user, session_user = validate_auth()
+    if true_user and session_user:
+        return redirect(url_for("home.feed"))
+
+    r = make_response(render_template("landing/landing.html"))
+    notification = request.args.get("notification")
+    if notification:
+        r.headers.set("HX-Trigger", '{"notification": ' + notification + '}')
+        r.headers.set("HX-Reswap", "none")
+
+    return r
 
 
 # Login page endpoint
@@ -23,25 +47,17 @@ def index():
 def login_page():
 
     # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
+    true_user, session_user = validate_auth()
+    if true_user and session_user:
         return redirect(url_for("home.feed"))
 
-    error = request.args.get("error")
-    return render_template("auth/authentication.html", action="login", error=error)
+    r = make_response(render_template("landing/login.html"))
+    notification = request.args.get("notification")
+    if notification:
+        r.headers.set("HX-Trigger", '{"notification": ' + notification + '}')
+        r.headers.set("HX-Reswap", "none")
 
-
-# Register page endpoint
-@auth.route('/register')
-def register_page():
-
-    # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
-        return redirect(url_for("home.feed"))
-
-    error = request.args.get("error")
-    return render_template("auth/authentication.html", action="register", error=error)
+    return r
 
 
 # Callback after email verification
@@ -49,11 +65,12 @@ def register_page():
 def callback():
 
     # If the user is already logged in, go to the feed
-    db = get_db()
-    if db.auth.get_user() and session.get("user"):
+    true_user, session_user = validate_auth()
+    if true_user and session_user:
         return redirect(url_for("home.feed"))
 
     # Verify the magic link request
+    db = get_db()
     res = db.auth.verify_otp({
         "token_hash": request.args.get("token_hash"),
         "type": "email"
@@ -100,26 +117,17 @@ def callback():
     return redirect(url_for('home.feed'))
 
 
-# Helper function to throw a redirect with a given error
-def invalid_auth(action, error):
-    if action == "login":
-        return redirect(url_for("auth.login_page", error=error))
-    if action == "register":
-        return redirect(url_for("auth.register_page", error=error))
-    
-    return ""
-
-
 # Login endpoint
 @auth.route("/auth/login", methods=["GET", "POST"])
 def login():
 
     db = get_db()
+    email = request.form.get("email")
 
     # Create the sign in request
     login_data = {
         "type": "email",
-        "email": request.form.get("email"),
+        "email": email,
         "options": {
             "should_create_user": False,
             "email_redirect_to": f"{request.url_root}auth/confirm",
@@ -130,9 +138,12 @@ def login():
     try:
         res = db.auth.sign_in_with_otp(login_data)
     except AuthApiError as e:
-        return invalid_auth("login", "email")
+        print(e)
+        message = '"Invalid email!"'
+        return redirect(url_for('auth.login_page', notification = message))
 
-    return render_template("auth/verify-email.html")
+    message = '"Account found! Check your email to log in."'
+    return redirect(url_for('auth.login_page', notification = message))
 
 
 # Signup endpoint
@@ -145,17 +156,20 @@ def register():
 
     # If the username is empty, throw an error
     if not username:
-        return invalid_auth("register", "name")
+        message = '"Username cannot be empty!"'
+        return redirect(url_for('auth.landing', notification = message))
 
     # If the email is already in the users table, throw an error
     res = db.table("user").select("*").eq("email", email).execute()
     if res.data:
-        return invalid_auth("register", "duplicate_email")
-
+        message = '"Email taken!"'
+        return redirect(url_for('auth.landing', notification = message))
+        
     # If the username is already in the users table, throw an error
     res = db.table("user").select("*").eq("username", username).execute()
     if res.data:
-        return invalid_auth("register", "duplicate_name")
+        message = '"Username taken!"'
+        return redirect(url_for('auth.landing', notification = message))
 
     # Create dictionary of data for the registration
     register_data = {
@@ -164,6 +178,7 @@ def register():
         "options": {
             "should_create_user": True,
             "email_redirect_to": f"{request.url_root}auth/confirm",
+            "data": {"username": username}
         }
     }
 
@@ -171,18 +186,22 @@ def register():
     try:
         res = db.auth.sign_in_with_otp(register_data)
     except AuthApiError as e:
-        return invalid_auth("register", "email")
+        print(e)
+        message = '"Invalid email!"'
+        return redirect(url_for('auth.landing', notification = message))
 
-    return render_template("auth/verify-email.html")
+    message = '"Success! Check your email to register!"'
+    return redirect(url_for('auth.landing', notification = message))
+
 
 
 # Log out the user and clear the endpoint
 @auth.route("/auth/logout", methods=["GET", "POST"])
 def logout():
     db = get_db()
-    res = db.auth.sign_out()
     session.pop("user")
-    return redirect(url_for("auth.index"))
+    res = db.auth.sign_out()
+    return redirect(url_for("auth.landing"))
 
 
 # Decorator for checking if a user is logged in
@@ -191,16 +210,13 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        db = get_db()
-        user = session.get("user")
-        true_user = db.auth.get_user()
-
-        # If the user doesn't exist, redirect them to the index
-        if not true_user:
-            return redirect(url_for("auth.index"))
+        # If the user doesn't exist, clear the session and return to the index
+        true_user, session_user = validate_auth()
+        if not (true_user and session_user):
+            return redirect(url_for("auth.landing"))
 
         # If the user does exist but doesn't match the session's user, log them out
-        if true_user.user.user_metadata["email"] != user["email"]:
+        if true_user.user.user_metadata["email"] != session_user["email"]:
             return redirect(url_for("auth.logout"))
 
         return f(*args, **kwargs)
@@ -214,16 +230,13 @@ def requires_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
 
-        db = get_db()
-        user = session.get("user")
-        true_user = db.auth.get_user()
-
-        # If the user doesn't exist, redirect them to the index
-        if not true_user:
-            return redirect(url_for("auth.index"))
+        # If the user doesn't exist, clear the session and return to the index
+        true_user, session_user = validate_auth()
+        if not (true_user and session_user):
+            return redirect(url_for("auth.landing"))
 
         # If the user does exist but doesn't match the session's user, log them out
-        if true_user.user.user_metadata["email"] != user["email"]:
+        if true_user.user.user_metadata["email"] != session_user["email"]:
             return redirect(url_for("auth.logout"))
 
         # If the user is not an administrator, redirect them to the feed
