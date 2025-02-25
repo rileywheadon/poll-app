@@ -114,7 +114,7 @@ def login():
 
     # Validate the turnstile token
     if not verify_turnstile_response():
-        message = '"Bot detection failed! Wait a moment and try again."'
+        message = '"Bot detection failed! Please refresh the page and try again."'
         return redirect(url_for('auth.login_page', notification = message))
 
     # Create the sign in request
@@ -145,11 +145,6 @@ def register():
     email = request.form.get("email")
     username = request.form.get("username")
 
-    # Validate the turnstile token
-    if not verify_turnstile_response():
-        message = '"Bot detection failed! Wait a moment and try again."'
-        return redirect(url_for('auth.landing', notification = message))
-
     # If the username is empty, throw an error
     if not username:
         message = '"Username cannot be empty!"'
@@ -165,6 +160,11 @@ def register():
     res = db.table("user").select("*").eq("username", username).execute()
     if res.data:
         message = '"Username taken!"'
+        return redirect(url_for('auth.landing', notification = message))
+
+    # Validate the turnstile token
+    if not verify_turnstile_response():
+        message = '"Bot detection failed! Please refresh the page and try again."'
         return redirect(url_for('auth.landing', notification = message))
 
     # Create dictionary of data for the registration
