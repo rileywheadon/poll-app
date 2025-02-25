@@ -441,11 +441,10 @@ def load_more():
 def TODO(poll_id):
     
     db = get_db()
-
-    response = db.table("response").select("*, user(username, email)").eq("poll_id", poll_id).execute().data
+    res = db.rpc("poll_responses", {"pid": poll_id}).execute()
 
     print("\n\n")
-    for key, val in enumerate(response):        
+    for key, val in enumerate(res.data):        
         print(f'{key}: {val}\n')
     print("\n\n")
 
