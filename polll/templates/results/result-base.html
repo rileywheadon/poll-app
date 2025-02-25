@@ -1,6 +1,6 @@
 <div 
   id="poll-card-{{ poll.id }}"
-  class="poll-card rounded-xl border mb-2 md:mb-4 dark:border-neutral-700 overflow-hidden accord-open"
+  class="poll-card rounded-xl border mb-2 md:mb-4 dark:border-neutral-700 accord-open"
 >    
   <!-- Include the creator's username and the poll age -->
   <div class="flex flex-row justify-center items-center pt-4 px-4 h-10">
@@ -24,52 +24,38 @@
       </i>
     </button>
 
-    <!-- If the user created this poll, allow them to edit it -->
+    <!-- Report Button -->
+    <button
+      class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-red text-right"
+      title="Report"
+      hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
+      hx-confirm="Are you sure you want to report this poll?"
+      hx-swap="none"
+      type="button"
+    >
+      <i class="fa fa-triangle-exclamation"></i>
+    </button>
+
+
+    <!-- Poll settings dropdown (for creator only) -->
     {% if session.user and session.user.id == poll.creator_id %} 
 
-      <!-- Toggle Lock -->
-      {% with %}
-        {% set id=poll.id %}
-        {% set is_active=poll.is_active %}
-        {% include "results/poll-lock.html" %}
-      {% endwith %}
+      <div class="relative">
 
-      <!-- If the user is an administrator, allow them to pin this poll -->
-      {% if session.user.is_admin %}
+        <button 
+          class="relative font-light rounded-md hover:bg-neutral-700 w-6 ml-2 md:ml-5 text-l md:text-xl peer"
+        >
+          <i class="fa fa-ellipsis-vertical text-xl"></i>
+        </button>
 
-        {% with %}
-          {% set id=poll.id %}
-          {% set is_pinned=poll.is_pinned %}
-          {% include "results/poll-pin.html" %}
-        {% endwith %}
+        <div 
+          id="poll-dropdown-{{ poll.id }}" 
+          class="hidden peer-focus:flex absolute z-10 mt-2 flex-col font-light rounded-lg shadow border border-neutral-600 bg-polll-white dark:bg-neutral-800 w-60 right-0 text-md overflow-hidden"
+        >
+          {% include "results/poll-settings.html" %}
+        </div>
 
-      {% endif %}
-      
-      <!-- Delete Poll -->
-      <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:cursor-default text-right"
-          title="Delete"
-          hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
-          hx-include="previous input"
-          hx-target="#poll-card-{{ poll.id }}"
-          hx-swap="delete"
-          hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash hover:text-polll-red"></i>
-      </button>
-
-    <!-- If the user didn't create this poll, allow them to report it -->
-    {% else %}
-
-      <button
-        class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-red text-right"
-        title="Report"
-        hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
-        hx-confirm="Are you sure you want to report this poll?"
-        hx-swap="none"
-        type="button"
-      >
-        <i class="fa fa-triangle-exclamation"></i>
-      </button>
+      </div>
 
     {% endif %}
 

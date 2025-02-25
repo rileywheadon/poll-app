@@ -9,9 +9,33 @@
         @{{ poll.creator }}
       {% endif %} ⋅ {{ poll.age }}
     </p>
+
+    <!-- Share Button -->
+    <button 
+      class="ml-auto rounded-md select-none hover:text-polll-dgreen dark:hover:text-polll-green" 
+      title="Share"
+      onclick="copy_link('{{ poll.url }}')"
+      type="button"
+    >
+      <i class="fa fa-share-from-square text-xl"></i>
+    </button>
+
+    <!-- Report Button -->
+    <button
+      class="ml-3 md:ml-6 rounded-md select-none hover:text-polll-red"
+      title="Report"
+      hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
+      hx-confirm="Are you sure you want to report this poll?"
+      hx-swap="none"
+      type="button"
+    >
+      <i class="fa fa-triangle-exclamation text-xl"></i>
+    </button>
+
     {% if poll.is_pinned == 1 %}
-      <i class="ml-auto fa fa-thumbtack text-2xl text-polll-blue rotate-45"></i>
+      <i class="ml-3 md:ml-6 fa fa-thumbtack text-2xl text-polll-blue rotate-45"></i>
     {% endif %}
+
   </div>
 
   <div class="flex flex-row px-4">
@@ -48,29 +72,6 @@
       <p class="grow">Votes:
         {{ poll.response_count }}
       </p>
-
-      <!-- Share Button -->
-      <button 
-        class="rounded-md select-none hover:text-polll-dgreen dark:hover:text-polll-green" 
-        title="Share"
-        onclick="copy_link('{{ poll.url }}')"
-        type="button"
-      >
-        <i class="fa fa-share-from-square text-xl"></i>
-      </button>
-
-      <!-- Report Button -->
-      <button
-        class="ml-3 md:ml-6 rounded-md select-none hover:text-polll-red"
-        title="Report"
-        hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
-        hx-confirm="Are you sure you want to report this poll?"
-        hx-swap="none"
-        type="button"
-      >
-        <i class="fa fa-triangle-exclamation text-xl"></i>
-      </button>
-
 
     </div>
   </form>

@@ -146,6 +146,10 @@ function toggle_replies(comment_id) {
 
 }
 
+function toggle_dropdown(id) {
+  document.getElementById(id).classList.toggle("hidden");
+}
+
 function toggle_filter_dropdown() {
   document.getElementById("filter-dropdown").classList.toggle("hidden");
 }

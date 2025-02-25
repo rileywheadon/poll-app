@@ -1,0 +1,73 @@
+<table>
+  <tr class="group hover:bg-neutral-700">
+
+    {% if poll.is_anonymous %}
+       <td class="py-2 pl-2 pr-1 text-center w-10">
+        <i class="fa fa-eye-slash group-hover:text-polll-blue"></i>
+      </td>
+      <td>Show Username</td>
+    {% else %}
+      <td class="py-2 pl-2 pr-1 text-center w-10">
+        <i class="fa fa-eye group-hover:text-polll-blue"></i>
+      </td>
+      <td>Hide Username</td>
+    {% endif %}
+
+  </tr>
+  <tr class="group hover:bg-neutral-700">
+
+    {% if poll.is_active %}
+      <td class="py-2 pl-2 pr-1 text-center w-10">
+        <i class="fa fa-lock-open mr-1 group-hover:text-polll-blue"></i>
+      </td>
+      <td>Lock Poll</td>
+    {% else %}
+      <td class="py-2 pl-2 pr-1 text-center w-10">
+        <i class="fa fa-lock mr-1 group-hover:text-polll-blue"></i>
+      </td>
+      <td>Unlock Poll</td>
+    {% endif %}
+
+  </tr>
+
+  {% if session.user.is_admin %}
+    <tr class="group hover:bg-neutral-700">
+
+      {% if poll.is_pinned %}
+        <td class="py-2 pl-2 pr-1 text-center w-10">
+          <i class="fa fa-thumbtack mr-1 group-hover:text-polll-blue"></i>
+        </td>
+        <td>Unpin Poll</td>
+      {% else %}
+        <td class="py-2 pl-2 pr-1 text-center w-10">
+          <i class="fa fa-thumbtack-slash mr-1 group-hover:text-polll-blue"></i>
+        </td>
+        <td>Pin Poll</td>
+      {% endif %}
+
+    </tr>
+    <tr class="group hover:bg-neutral-700">
+
+      {% if poll.is_strict %}
+        <td class="py-2 pl-2 pr-1 text-center w-10">
+          <i class="fa fa-square-xmark mr-1 group-hover:text-polll-blue"></i>
+        </td>
+        <td>Make Flexible</td>
+      {% else %}
+        <td class="py-2 pl-2 pr-1 text-center w-10">
+          <i class="fa fa-square-xmark mr-1 group-hover:text-polll-blue"></i>
+        </td>
+        <td>Make Strict</td>
+      {% endif %}
+
+    </tr>
+  {% endif %}
+
+  <tr class="group hover:bg-neutral-700">
+    <td class="py-2 pl-2 pr-1 text-center w-10">
+      <i class="fa fa-trash mr-1 group-hover:text-polll-red"></i>
+    </td>
+    <td>Delete Poll</td>
+  </tr>
+</table>
+
