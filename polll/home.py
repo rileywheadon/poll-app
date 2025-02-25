@@ -435,3 +435,19 @@ def load_more():
     return render_template("home/load-response.html", state=state, polls=polls)
 
 
+
+@home.route("/TODO/<poll_id>")
+@requires_auth
+def TODO(poll_id):
+    
+    db = get_db()
+
+    response = db.table("response").select("*, user(username, email)").eq("poll_id", poll_id).execute().data
+
+    print("\n\n")
+    for key, val in enumerate(response):        
+        print(f'{key}: {val}\n')
+    print("\n\n")
+
+    return ""
+

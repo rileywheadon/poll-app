@@ -7,7 +7,7 @@ const cols = {
 
 const bp = 768;
 // const graph_height = 300;
-const graph_height = "80%";
+const graph_height = "60%";
 // const graph_height = "auto";
 
 
