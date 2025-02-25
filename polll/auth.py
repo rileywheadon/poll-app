@@ -114,7 +114,7 @@ def login():
 
     # Validate the turnstile token
     if not verify_turnstile_response():
-        message = '"Bot detection failed! Please refresh the page and try again."'
+        message = '"Bot detection failed! Please refresh the page, wait a bit, and try again."'
         return redirect(url_for('auth.login_page', notification = message))
 
     # Create the sign in request
@@ -164,7 +164,7 @@ def register():
 
     # Validate the turnstile token
     if not verify_turnstile_response():
-        message = '"Bot detection failed! Please refresh the page and try again."'
+        message = '"Bot detection failed! Please refresh the page, wait a bit, and try again."'
         return redirect(url_for('auth.landing', notification = message))
 
     # Create dictionary of data for the registration
