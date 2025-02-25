@@ -54,7 +54,14 @@
     src="{{ url_for('static', filename='scripts/graphs.js') }}">
   </script>
 
-    <!-- Set the user's timezone if it hasn't already been set -->
+  <!-- Cloudflare turnstile  -->
+  <script 
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js" 
+    async 
+    defer>
+  </script>
+
+  <!-- Set the user's timezone if it hasn't already been set -->
   {% if 'timezone' not in session %}
   <script type="text/javascript">
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

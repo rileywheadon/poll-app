@@ -47,6 +47,7 @@
           action="{{ url_for('auth.register') }}"
           method="post"
         >
+
           <input 
             class="rounded-lg grow px-2 text-l text-black h-10 translate-y-[2px]"
             name="email"
@@ -67,7 +68,14 @@
             >
               Get Started
             </button>
+
           </div>
+
+          <!-- Invisible turnstile widget -->
+          <div
+            class="cf-turnstile"
+            data-sitekey="0x4AAAAAAA-V8zK5XXHjYka7"
+          ></div>
 
         </form>
  
@@ -78,7 +86,7 @@
         <div class="w-full flex flex-row justify-center">
           <a 
             class="text-xl text-polll-blue hover:underline h-12"
-            href="#"
+            href="{{ url_for('auth.guest') }}"
           >
             Continue as Guest
           </a>

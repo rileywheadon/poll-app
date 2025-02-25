@@ -1,4 +1,5 @@
 import os
+import requests
 
 from datetime import datetime
 from functools import wraps
@@ -60,6 +61,133 @@ def login_page():
     return r
 
 
+# Helper function to sign in
+def attempt_auth(data, origin):
+
+    # Attempt sign in
+    db = get_db()
+    try: res = db.auth.sign_in_with_otp(data)
+
+    # Handle error codes
+    except AuthApiError as e:
+        if e.code in ["email_address_invalid", "validation_failed", "otp_disabled"]:
+            message = '"Invalid email!"'
+            return redirect(url_for(origin, notification = message))
+        elif e.code in ["over_email_send_rate_limit", "over_request_rate_limit"]:
+            message = '"Too many requests! Please try again later."'
+            return redirect(url_for(origin, notification = message))
+        else:
+            message = '"An error occured. Please try again."'
+            return redirect(url_for(origin, notification = message))
+
+    # Success code to be picked up by the caller
+    return 200
+
+
+# Helper function to verify a response from cloudflare turnstile
+def verify_turnstile_response():
+
+    SECRET_KEY = os.environ.get("TURNSTILE_SECRET_KEY")
+    token = request.form.get("cf-turnstile-response")
+    ip = request.headers.get("CF-Connecting-IP");
+
+    VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+    data = { "secret": SECRET_KEY, "response": token }
+
+    if ip:
+        data["remoteip"] = ip
+
+    try:
+        response = requests.post(VERIFY_URL, data=data)
+        result = response.json()
+        return result.get("success", False)
+    except requests.RequestException as e:
+        return False
+
+
+# Login endpoint
+@auth.route("/auth/login", methods=["GET", "POST"])
+def login():
+
+    db = get_db()
+    email = request.form.get("email")
+
+    # Validate the turnstile token
+    if not verify_turnstile_response():
+        message = '"Bot detection failed! Wait a moment and try again."'
+        return redirect(url_for('auth.login_page', notification = message))
+
+    # Create the sign in request
+    login_data = {
+        "type": "email",
+        "email": email,
+        "options": {
+            "should_create_user": False,
+            "email_redirect_to": f"{request.url_root}auth/confirm",
+        }
+    }
+
+    # Catch invalid email address errors
+    res = attempt_auth(login_data, 'auth.login_page')
+    if res != 200: 
+        return res
+
+    # Emit a success notification
+    message = '"Account found! Check your email to log in."'
+    return redirect(url_for('auth.login_page', notification = message))
+
+
+# Signup endpoint
+@auth.route("/auth/register", methods=["GET", "POST"])
+def register():
+
+    db = get_db()
+    email = request.form.get("email")
+    username = request.form.get("username")
+
+    # Validate the turnstile token
+    if not verify_turnstile_response():
+        message = '"Bot detection failed! Wait a moment and try again."'
+        return redirect(url_for('auth.landing', notification = message))
+
+    # If the username is empty, throw an error
+    if not username:
+        message = '"Username cannot be empty!"'
+        return redirect(url_for('auth.landing', notification = message))
+
+    # If the email is already in the users table, throw an error
+    res = db.table("user").select("*").eq("email", email).execute()
+    if res.data:
+        message = '"Email taken!"'
+        return redirect(url_for('auth.landing', notification = message))
+        
+    # If the username is already in the users table, throw an error
+    res = db.table("user").select("*").eq("username", username).execute()
+    if res.data:
+        message = '"Username taken!"'
+        return redirect(url_for('auth.landing', notification = message))
+
+    # Create dictionary of data for the registration
+    register_data = {
+        "type": "email",
+        "email": email,
+        "options": {
+            "should_create_user": True,
+            "email_redirect_to": f"{request.url_root}auth/confirm",
+            "data": {"username": username}
+        }
+    }
+
+    # Catch a number of errors
+    res = attempt_auth(register_data, 'auth.landing')
+    if res != 200: 
+        return res
+
+    # Emit a success notification
+    message = '"Success! Check your email to register!"'
+    return redirect(url_for('auth.landing', notification = message))
+
+
 # Callback after email verification
 @auth.route('/auth/confirm')
 def callback():
@@ -113,85 +241,25 @@ def callback():
 
     # Render the home.feed template
     session.modified = True
-    session.permanent = True
     return redirect(url_for('home.feed'))
 
 
-# Login endpoint
-@auth.route("/auth/login", methods=["GET", "POST"])
-def login():
-
-    db = get_db()
-    email = request.form.get("email")
-
-    # Create the sign in request
-    login_data = {
-        "type": "email",
-        "email": email,
-        "options": {
-            "should_create_user": False,
-            "email_redirect_to": f"{request.url_root}auth/confirm",
-        }
-    }
-
-    # Catch invalid email address errors
-    try:
-        res = db.auth.sign_in_with_otp(login_data)
-    except AuthApiError as e:
-        message = '"Invalid email!"'
-        return redirect(url_for('auth.login_page', notification = message))
-
-    message = '"Account found! Check your email to log in."'
-    return redirect(url_for('auth.login_page', notification = message))
-
-
 # Signup endpoint
-@auth.route("/auth/register", methods=["GET", "POST"])
-def register():
+@auth.route("/auth/guest", methods=["GET", "POST"])
+def guest():
 
+    # Guests have user ID 0 and username guest
+    session["user"] = {"id": 0, "username": "guest"}
+
+    # Get a list of boards
     db = get_db()
-    email = request.form.get("email")
-    username = request.form.get("username")
+    res = db.table("board").select("*").execute()
+    session["boards"] = {b["id"] : b for b in res.data}
+    session["state"] = {}
 
-    # If the username is empty, throw an error
-    if not username:
-        message = '"Username cannot be empty!"'
-        return redirect(url_for('auth.landing', notification = message))
-
-    # If the email is already in the users table, throw an error
-    res = db.table("user").select("*").eq("email", email).execute()
-    if res.data:
-        message = '"Email taken!"'
-        return redirect(url_for('auth.landing', notification = message))
-        
-    # If the username is already in the users table, throw an error
-    res = db.table("user").select("*").eq("username", username).execute()
-    if res.data:
-        message = '"Username taken!"'
-        return redirect(url_for('auth.landing', notification = message))
-
-    # Create dictionary of data for the registration
-    register_data = {
-        "type": "email",
-        "email": email,
-        "options": {
-            "should_create_user": True,
-            "email_redirect_to": f"{request.url_root}auth/confirm",
-            "data": {"username": username}
-        }
-    }
-
-    # Catch invalid email address errors
-    try:
-        res = db.auth.sign_in_with_otp(register_data)
-    except AuthApiError as e:
-        print(e)
-        message = '"Invalid email!"'
-        return redirect(url_for('auth.landing', notification = message))
-
-    message = '"Success! Check your email to register!"'
-    return redirect(url_for('auth.landing', notification = message))
-
+    # Render the home.feed template
+    session.modified = True
+    return redirect(url_for('home.feed'))
 
 
 # Log out the user and clear the endpoint

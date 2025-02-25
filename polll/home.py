@@ -110,26 +110,22 @@ def query_feed(bid, order, period, page):
 
 
 @home.route("/changelog")
-@requires_auth
 def changelog():
     return render_template("misc/changelog.html")
 
 
 @home.route("/about")
-@requires_auth
 def about():
     return render_template("misc/about.html")
 
 
 @home.route("/help")
-@requires_auth
 def help():
     return render_template("misc/help.html")
 
 
 # Home page (poll feed). The board/order is optional (set to All/hot by default)
 @home.route("/feed")
-@requires_auth
 def feed():
 
     # Get the request arguments (board and order) and query the database
@@ -323,7 +319,6 @@ def mypolls():
 
 # Home page (response history)
 @home.route("/history")
-@requires_auth
 def history():
 
     # Query the database for all polls responded to by the user
@@ -349,9 +344,8 @@ def history():
     return render_template("home/history.html", session=session)
 
 
-# Render more polls in the history tab
+# Render more polls in any tab
 @home.route("/load")
-@requires_auth
 def load_more():
 
     # Query the database with the correct offset given by page + 1

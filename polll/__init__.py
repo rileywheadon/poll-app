@@ -1,7 +1,6 @@
 import json
 import os
 import redis
-from dotenv import find_dotenv, load_dotenv
 from urllib.parse import quote_plus, urlencode
 
 from flask import Flask, redirect, render_template, session, url_for, g
