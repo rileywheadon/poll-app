@@ -433,20 +433,3 @@ def load_more():
     session.modified = True
     state = session["state"]
     return render_template("home/load-response.html", state=state, polls=polls)
-
-
-
-@home.route("/TODO/<poll_id>")
-@requires_auth
-def TODO(poll_id):
-    
-    db = get_db()
-    res = db.rpc("poll_responses", {"pid": poll_id}).execute()
-
-    print("\n\n")
-    for key, val in enumerate(res.data):        
-        print(f'{key}: {val}\n')
-    print("\n\n")
-
-    return ""
-

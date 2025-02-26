@@ -341,19 +341,12 @@ def open_results(poll_id, username):
     res = db.rpc("poll", {"pid": poll_id}).execute()
     poll = query_poll_details(res.data[0])
 
-    session["viewed_poll"] = poll
-
     user = session["viewed_user"]
 
     session["votes"] = res = db.rpc("poll_responses", {"pid": poll_id}).execute().data
 
     for vote in session["votes"]:
         vote["age"] = format_timestamp(vote["created_at"])
-
-
-    print("\n\n")
-    print(session["votes"])
-    print("\n\n")
 
     if poll["response_count"] > 0:
         poll["response"] = query_response(poll, user)
@@ -369,10 +362,43 @@ def open_results(poll_id, username):
     # If the poll is ranked or tier list, get the HTML template
     r = make_response("")
     r.data = render_template("results/result-modal.html", poll=poll, return_url=url_for(f"home.profile", username=username))
-    r.headers.set("HX-Reswap", "innerHTML")
+    
+
+    session["viewed_poll"] = poll
+    poll["annotation"] = None
 
     graph = '{"graph": ' + json.dumps(poll) + '}'
     r.headers.set("HX-Trigger-After-Settle", graph)
+    session.modified = True
+    return r
+
+
+
+@poll.route("/response/user/<user_id>")
+@requires_auth
+def user_response(user_id):
+
+
+    # TODO: annotations are working as expected (scale only), but 'show poll' 
+    #       seems to bot be recieving the proper data
+
+    poll = session["viewed_poll"]
+    user = {"id": user_id}
+
+    poll["annotation"] = query_response(poll, user)
+
+    r = make_response("")
+    
+    r.headers.set("HX-Retarget", f"#poll-graph-modal-{poll["id"]}")
+    r.headers.set("HX-Reswap", "outerHMTL")
+
+    print("\n\n\n")
+    print(poll["poll_type"])
+    print("\n\n\n")
+
+    if poll["poll_type"] in ["CHOOSE_ONE", "CHOOSE_MANY", "NUMERIC_SCALE"]:
+        graph = '{"graph": ' + json.dumps(poll) + '}'
+        r.headers.set("HX-Trigger-After-Settle", graph)
     session.modified = True
     return r
 

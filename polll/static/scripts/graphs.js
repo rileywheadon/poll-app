@@ -6,10 +6,7 @@ const cols = {
 }
 
 const bp = 768;
-// const graph_height = 300;
 const graph_height = "60%";
-// const graph_height = "auto";
-
 
 // Global variable for the current chart
 var active_chart = null;
@@ -17,14 +14,14 @@ var active_chart = null;
 // Global event listener for creating a new graph
 function add_graph_listener() {
   document.body.addEventListener("graph", function(evt) { 
-    handleGraphEvent(evt.detail)
+    handleGraphEvent(evt.detail);
   });
 }
 
 // Results Toggling Function
 function handleGraphEvent(poll) {
 
-    modal_text = get_modal_text(poll)
+    modal_text = get_modal_text(poll);
 
     graph = document.getElementById(`poll-graph${modal_text}-${poll["id"]}`);
 
@@ -100,7 +97,10 @@ function graphInit(poll) {
 
 }
 
-function choose_one_options(user_rs, rs) {
+function choose_one_options(user_rs, rs, annotation=null) {
+
+
+    console.log(annotation)
 
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
@@ -149,7 +149,9 @@ function choose_one_options(user_rs, rs) {
     }
 }
 
-function choose_many_options(user_rs, rs) {
+function choose_many_options(user_rs, rs, annotation=null) {
+
+    console.log(annotation)
 
     user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
@@ -224,7 +226,7 @@ function choose_many_options(user_rs, rs) {
     }
 }
 
-// I'm just passing in the entire poll because there's too many arguments
+
 function scale_graph_options(poll) {
 
     // Unpack Arguments
@@ -241,6 +243,43 @@ function scale_graph_options(poll) {
 
     // This is a bit of a hack but if it works it works
     answers["left"] && answers["right"] ? endpoints = [answers["left"]["answer"], answers["right"]["answer"]] : endpoints = null;
+
+    poll["annotation"] ? annotation = poll["annotation"] : annotation = null;
+
+    if (annotation) {
+        voter_annotation = {
+            x: annotation["value"],
+            y: rs_kde[1][Math.round(annotation["value"] / 100 * rs_kde[1].length)],
+            marker: {
+                size: 8,
+                fillColor: "#ffffff",
+                strokeColor: "#000000",
+                radius: 2,
+                cssClass: 'apexcharts-custom-class'
+              },
+              label: {
+                style: {
+                  color: "#ffffff",
+                  background: "null",
+                },
+                text: "Other user!!!",
+              }
+          }
+          voter_line = {
+            x: annotation["value"],
+            strokeDashArray: 0,
+            borderColor: user_col,
+            borderWidth: 3,
+            label: {
+                show: false,
+            }
+        } 
+    } else {
+        voter_annotation = {}
+        voter_line = {}
+    }
+
+    console.log(voter_line)
 
     return  {
         grid: {
@@ -323,7 +362,9 @@ function scale_graph_options(poll) {
                     label: {
                         show: false,   
                     }
-                }],
+                },
+                voter_line
+            ],
                 points: 
                 [
                   {
@@ -362,7 +403,7 @@ function scale_graph_options(poll) {
                         text: "You",
                       }
                   },
-
+                  voter_annotation
                 ]
         },
     };

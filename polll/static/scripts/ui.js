@@ -99,7 +99,6 @@ function toggle_home_menu() {
 var previousScroll = 1;
 
 function set_scroll(div) {
-  console.log(div.scrollTop, previousScroll);
   previousScroll = div.scrollTop;
 }
 
@@ -290,36 +289,18 @@ function clear_ranking(poll_id) {
 
 function handleVoteSearch() {
     
+
+    // Get the necessary values for searching
     search_bar = document.getElementById("voting-search-bar");
     search_text = search_bar.value.toLowerCase();
     voter_list = document.getElementById("voter-list");
     voters = voter_list.getElementsByClassName("voter");
 
-    
+    // Hide/show the divs if they match the current search bar's text
     Array.from(voters).forEach((voter) => {
-      voter_id = voter.id
+      voter_id = voter.id;
       voter_name = voter_id.substring(0, voter_id.indexOf("-")).toLowerCase();
-      
       voter_name.includes(search_text) ? document.getElementById(voter_id).classList.remove("hidden") : document.getElementById(voter_id).classList.add("hidden");
-
     })
 
-
-    // for (let i = 0; i < voters.length; i++) {
-      
-    //   console.log(Array.from(voters)[i].id.substring)  
-
-    // }
-
-
-    // Loop through all list items, and hide those who don't match the search query
-    // for (i = 0; i < li.length; i++) {
-    //   a = li[i].getElementsByTagName("a")[0];
-    //   txtValue = a.textContent || a.innerText;
-    //   if (txtValue.toUpperCase().indexOf(filter) > -1) {
-    //     li[i].style.display = "";
-    //   } else {
-    //     li[i].style.display = "none";
-    //   }
-    // }
 }

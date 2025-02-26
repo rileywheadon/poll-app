@@ -17,15 +17,25 @@
     <div id="voter-list" class="flex flex-col space-y-4 overflow-y-scroll">
         {% for vote in session.votes %}
 
-            <!-- This needs to be wrapped in a div or you get cascading selection 
-             on a fucking radio button I don't know why -->
             <div id="{{ vote.username }}-{{ vote.user_id }}" class="voter">
-                {{ macs.chooseInput("radio", vote.user_id, vote.username ~ " ⋅ " ~ vote.age) }}
+
+                <input class="modal hidden peer"
+                type="radio" 
+                id="{{ vote.user_id }}" 
+                name="answer_id" 
+                value="{{ vote.user_id }}"
+                hx-get="{{ url_for('poll.user_response', user_id=vote.user_id) }}">
+                <label 
+                  for="{{ vote.user_id }}"
+                  class="flex w-full p-2 rounded-lg cursor-default border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-neutral-400 peer-checked:border-polll-blue"
+                >
+                  <p class="font-light select-none">{{ vote.username ~ " ⋅ " ~ vote.age }}</p>
+                </label>
+                
             </div>
         
         {% endfor %}
 
     </div>
-
 
 </div>
