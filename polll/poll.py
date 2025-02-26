@@ -290,10 +290,6 @@ def result(poll_id):
     user = session["user"]
     session["viewed_poll"] = poll
 
-    print("\n\n\n")
-    print(session["viewed_poll"])
-    print("\n\n\n")
-
     if poll["response_count"] > 0:
         poll["response"] = query_response(poll, user)
         poll["results"] = query_results(poll)
@@ -348,6 +344,16 @@ def open_results(poll_id, username):
     session["viewed_poll"] = poll
 
     user = session["viewed_user"]
+
+    session["votes"] = res = db.rpc("poll_responses", {"pid": poll_id}).execute().data
+
+    for vote in session["votes"]:
+        vote["age"] = format_timestamp(vote["created_at"])
+
+
+    print("\n\n")
+    print(session["votes"])
+    print("\n\n")
 
     if poll["response_count"] > 0:
         poll["response"] = query_response(poll, user)

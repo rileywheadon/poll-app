@@ -138,32 +138,37 @@
 
     {% set inFeed = session.state.tab == "feed" %}
 
-    <!-- Show Results -->
-    <button
-      class="{% if not inFeed %} hidden {% endif %}  ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
-      hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
-      hx-target="#poll-graph-{{ poll.id }}"
-      hx-swap="none"
-    >
-      <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden">
-        Show Results 
-      </span>
-      <i class="fa fa-chart-simple pl-2 pr-2 text-xs"></i>
-    </button>
+    {% if inFeed %}
 
-    <!-- Show Results - Modal -->
-      <a
-      class="{% if inFeed %} hidden {% endif %} modal ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
-      hx-get="{{ url_for('poll.open_results', poll_id=id, username=session.user.username) }}"
-      hx-target="#poll-content"
-      hx-indicator="#loading-spinner"
-      hx-swap="innerHTML"
-      hx-on::after-request="open_poll_results();"
+      <!-- Show Results -->
+      <button
+        class="ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+        hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
+        hx-target="#poll-graph-{{ poll.id }}"
+        hx-swap="none"
       >
-        Show Poll
-        <i class="fa fa-chart-simple px-2 text-xs"></i>
-      </a>
-     
+        <span id="graph-toggle-{{ poll.id }}" class="graph-toggle hidden">
+          Show Results 
+        </span>
+        <i class="fa fa-chart-simple pl-2 pr-2 text-xs"></i>
+      </button>
+
+    {% else %}
+
+        <!-- Show Results - Modal -->
+        <a
+        class="modal ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+        hx-get="{{ url_for('poll.open_results', poll_id=id, username=session.viewed_user.username) }}"
+        hx-target="#poll-content"
+        hx-indicator="#loading-spinner"
+        hx-swap="innerHTML"
+        hx-on::after-request="open_poll_results();"
+        >
+          Show Poll
+          <i class="fa fa-chart-simple px-2 text-xs"></i>
+        </a>
+
+      {% endif %}
 
   </div>
 
