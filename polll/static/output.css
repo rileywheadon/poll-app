@@ -903,8 +903,12 @@ video {
   width: 100vw;
 }
 
-.w-12 {
-  width: 3rem;
+.w-8 {
+  width: 2rem;
+}
+
+.w-28 {
+  width: 7rem;
 }
 
 .min-w-20 {
@@ -1054,6 +1058,12 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-x-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
 .overflow-auto {
@@ -1407,6 +1417,10 @@ video {
   padding-left: 1rem;
 }
 
+.pr-1 {
+  padding-right: 0.25rem;
+}
+
 .pr-2 {
   padding-right: 0.5rem;
 }
@@ -1429,10 +1443,6 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pr-1 {
-  padding-right: 0.25rem;
 }
 
 .text-center {
@@ -1788,8 +1798,20 @@ video {
   content: var(--tw-content);
 }
 
+.focus-within\:flex:focus-within {
+  display: flex;
+}
+
+.hover\:absolute:hover {
+  position: absolute;
+}
+
 .hover\:z-10:hover {
   z-index: 10;
+}
+
+.hover\:flex:hover {
+  display: flex;
 }
 
 .hover\:translate-y-\[2px\]:hover {
@@ -1890,11 +1912,6 @@ video {
   outline-offset: 2px;
 }
 
-.group:hover .group-hover\:text-polll-blue {
-  --tw-text-opacity: 1;
-  color: rgb(136 187 208 / var(--tw-text-opacity, 1));
-}
-
 .group:hover .group-hover\:text-polll-red {
   --tw-text-opacity: 1;
   color: rgb(242 113 113 / var(--tw-text-opacity, 1));
@@ -1930,6 +1947,10 @@ video {
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
 }
 
+.peer:focus ~ .peer-focus\:absolute {
+  position: absolute;
+}
+
 .peer:focus ~ .peer-focus\:flex {
   display: flex;
 }
@@ -1937,10 +1958,6 @@ video {
 .peer:focus ~ .peer-focus\:outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-.peer:active ~ .peer-active\:flex {
-  display: flex;
 }
 
 .peer.htmx-request ~ .peer-\[\.htmx-request\]\:hidden {
@@ -1992,8 +2009,8 @@ video {
     margin-left: 0.25rem;
   }
 
-  .md\:ml-4 {
-    margin-left: 1rem;
+  .md\:ml-5 {
+    margin-left: 1.25rem;
   }
 
   .md\:ml-6 {
@@ -2014,10 +2031,6 @@ video {
 
   .md\:mt-0 {
     margin-top: 0px;
-  }
-
-  .md\:ml-5 {
-    margin-left: 1.25rem;
   }
 
   .md\:inline {

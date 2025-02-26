@@ -7,16 +7,12 @@
   <!-- Filter Dropdown -->
   <div class="relative select-none w-20 mr-2">
 
-    <button 
-      id="filter-dropdown-btn"
-      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
-      onclick="toggle_filter_dropdown()"
-    >
+    <button class="relative peer rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full">
       {{ session.state.order.capitalize() }} 
       <i class="px-1 fa fa-caret-down"></i>
     </button>
     
-    <div id="filter-dropdown" class="hidden absolute z-10 flex flex-col font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden w-full">
+    <div class="hidden hover:flex focus-within:flex peer-focus:flex absolute z-10 mt-2 flex-col font-light rounded-lg shadow border border-neutral-600 bg-polll-white dark:bg-neutral-800 w-20 text-md overflow-hidden">
 
       {% with route = "?board=" + session.state.board.id|string %}
         {{ macs.dropdownItem(route + "&order=hot", "Hot") }}
@@ -33,19 +29,12 @@
 
   <div class="relative select-none w-24">
 
-    <button 
-      id="filter-time-dropdown-btn"
-      class="relative rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-full"
-      onclick="toggle_filter_time_dropdown()"
-    >
+    <button class="relative peer rounded-xl hover:bg-polll-white hover:dark:bg-neutral-700 font-light text-md px-2 py-1 w-28">
       {{ session.state.period.capitalize() }}
       <i class="px-1 fa fa-caret-down"></i>
     </button>
     
-    <div 
-      id="filter-time-dropdown" 
-      class="hidden absolute z-10 font-light rounded-lg shadow bg-polll-white dark:bg-neutral-700 overflow-hidden"
-    >
+    <div class="hidden hover:flex focus-within:flex peer-focus:flex absolute z-10 mt-2 flex-col font-light rounded-lg shadow border border-neutral-600 bg-polll-white dark:bg-neutral-800 w-28 text-md overflow-hidden">
 
       {% with route = "?board=" + session.state.board.id|string + "&order=top" %}
         {{ macs.dropdownItem(route + "&period=day", "Day") }}

@@ -55,41 +55,21 @@ def delete(poll_id):
     return r
 
 
-@poll.route("/poll/toggle/<poll_id>/<active_str>")
+@poll.route("/poll/toggle/<attribute>/<poll_id>/<state>")
 @requires_auth
-def toggle(poll_id, active_str):
+def toggle(attribute, poll_id, state):
 
     # Update the poll state
     db = get_db()
-    active = True if active_str == "True" else False
-    db.table("poll").update({"is_active": not active}).eq("id", poll_id).execute()
+    next_state = False if state == "True" else True
+    db.table("poll").update({attribute : next_state}).eq("id", poll_id).execute()
 
-    # Add a notification and send the response
-    message = '"Poll Closed!"' if active else '"Poll Opened!"'
-    notification = f'{{"notification": {message}}}'
-    t = render_template("results/poll-lock.html", id=poll_id, is_active=not active)
-    r = make_response(t)
-    r.headers.set("HX-Trigger", notification)
-    return r
-
-
-@poll.route("/poll/pin/<poll_id>/<pinned_str>")
-@requires_admin
-def pin(poll_id, pinned_str):
-
-    # Update the poll state
-    db = get_db()
-    pinned = True if pinned_str == "True" else False
-    db.table("poll").update({"is_pinned": not pinned}).eq("id", poll_id).execute()
-
-    # Add a notification and send the response
-    message = '"Poll Unpinned!"' if pinned else '"Poll Pinned!"'
-    notification = f'{{"notification": {message}}}'
-    t = render_template("results/poll-pin.html", id=poll_id, is_pinned=not pinned)
-    r = make_response(t)
-    r.headers.set("HX-Trigger", notification)
-    return r
-
+    # Update the session object
+    poll = session["polls"][int(poll_id)]
+    poll[attribute] = next_state
+    session.modified = True
+    return render_template("results/poll-settings.html", poll=poll)
+    
 
 # Helper function to query comments given a page and an count
 def query_comments(poll_id, page, count):

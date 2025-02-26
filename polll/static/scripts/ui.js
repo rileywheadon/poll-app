@@ -146,23 +146,6 @@ function toggle_replies(comment_id) {
 
 }
 
-function toggle_dropdown(id) {
-  document.getElementById(id).classList.toggle("hidden");
-}
-
-function toggle_filter_dropdown() {
-  document.getElementById("filter-dropdown").classList.toggle("hidden");
-}
-
-function toggle_filter_time_dropdown() {
-  document.getElementById("filter-time-dropdown").classList.toggle("hidden");
-}
-
-
-function toggle_board_dropdown() {
-  document.getElementById("board-dropdown").classList.toggle("hidden");
-}
-
 
 // sinful global variable
 var activeTierItem = {}
