@@ -36,8 +36,10 @@ def query_choose_one(poll, user):
         return None
     
     response = res.data
-    id = response["discrete_response"][0]["answer_id"]
-    response["answer"] = poll["answers"][id]["answer"]
+
+    response["answer"] = {"answer_id": 3, "answer": 1}
+    del response["discrete_response"]
+
     return response
 
 

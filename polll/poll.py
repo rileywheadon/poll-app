@@ -356,7 +356,16 @@ def open_results(poll_id, username):
 
         # Get the PROFILE OWNER'S response
         poll["annotation"] = query_response(poll, user)
-        poll["annotation"]["username"] = username
+
+        
+
+        if isinstance(poll["annotation"], dict):
+            poll["annotation"]["username"] = username
+        else:
+            for annotation in poll["annotation"]:
+                annotation["username"] = username
+
+
 
     else: 
         poll["response"] = {}
@@ -396,7 +405,21 @@ def user_response(username, user_id):
     poll = session["viewed_poll"]
     user = {"id": user_id}
     poll["annotation"] = query_response(poll, user)
-    poll["annotation"]["username"] = username
+
+    print("\n\n\n")
+    print(poll["annotation"])
+    print("\n\n\n")
+
+    if isinstance(poll["annotation"], dict):
+        poll["annotation"]["username"] = username
+    else:
+        for annotation in poll["annotation"]:
+            annotation["username"] = username
+
+
+    print("\n\n\n")
+    print(poll["annotation"])
+    print("\n\n\n")
 
     # Create the HTTP response
     r = make_response("")
