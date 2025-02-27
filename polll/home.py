@@ -124,17 +124,17 @@ def help():
 
 
 # Reloads the current page, used for the scroll loader
-@home.route("/reload")
-@requires_auth
-def reload():
-    url = session["state"]["url"]
-
-    if session["state"]["tab"] != "create":
-        return redirect(url)
-    else:
-        r = make_response("")
-        r.headers.set("HX-Reswap", "none")
-        return r
+# @home.route("/reload")
+# @requires_auth
+# def reload():
+#     url = session["state"]["url"]
+#
+#     if session["state"]["tab"] != "create":
+#         return redirect(url)
+#     else:
+#         r = make_response("")
+#         r.headers.set("HX-Reswap", "none")
+#         return r
 
 
 # Home page (poll feed). The board/order is optional (set to All/hot by default)

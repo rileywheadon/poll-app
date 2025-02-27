@@ -326,6 +326,8 @@ def open_results(poll_id, username):
     poll = query_poll_details(res.data[0])
     res = query_comments(poll_id, 0, COMMENT_LIMIT)
 
+    # print(f"\n RESULT: {poll}, {res} \n")
+
     # Call query_comment_details to get information about the comments
     del session["comments"]
     session["comments"] = {c["id"]: query_comment_details(c) for c in res.data}
@@ -340,17 +342,22 @@ def open_results(poll_id, username):
 
     res = db.rpc("poll", {"pid": poll_id}).execute()
     poll = query_poll_details(res.data[0])
-
     user = session["viewed_user"]
-
     session["votes"] = res = db.rpc("poll_responses", {"pid": poll_id}).execute().data
 
     for vote in session["votes"]:
         vote["age"] = format_timestamp(vote["created_at"])
 
     if poll["response_count"] > 0:
-        poll["response"] = query_response(poll, user)
         poll["results"] = query_results(poll)
+        
+        # Get the LOGGED IN user's response
+        poll["response"] = query_response(poll, session["user"])
+
+        # Get the PROFILE OWNER'S response
+        poll["annotation"] = query_response(poll, user)
+        poll["annotation"]["username"] = username
+
     else: 
         poll["response"] = {}
         poll["results"] = {}
@@ -359,42 +366,42 @@ def open_results(poll_id, username):
     if poll["poll_type"] == "NUMERIC_SCALE":
         poll["kde"] = smooth_hist(poll["results"], 0.25)
 
-    # If the poll is ranked or tier list, get the HTML template
-    r = make_response("")
-    r.data = render_template("results/result-modal.html", poll=poll, return_url=url_for(f"home.profile", username=username))
-    
 
+    # print(f"\n RESULT: {poll}, {url_for('home.profile', username=username)} \n")
     session["viewed_poll"] = poll
     poll["annotation"] = None
+    session.modified = True
 
+    # If the poll is ranked or tier list, get the HTML template
+    r = make_response("")
+    return_url = url_for(f"home.profile", username=username)
+    r.data = render_template(
+        "results/result-modal.html", 
+        session=session, # NOTE: This is needed to update session.viewed_poll
+        poll=poll, 
+        return_url=return_url
+    )
+    
     graph = '{"graph": ' + json.dumps(poll) + '}'
     r.headers.set("HX-Trigger-After-Settle", graph)
-    session.modified = True
     return r
 
 
 
-@poll.route("/response/user/<user_id>")
+@poll.route("/response/user/<username>/<user_id>")
 @requires_auth
-def user_response(user_id):
+def user_response(username, user_id):
 
-
-    # TODO: annotations are working as expected (scale only), but 'show poll' 
-    #       seems to bot be recieving the proper data
-
+    # Update the annotation
     poll = session["viewed_poll"]
     user = {"id": user_id}
-
     poll["annotation"] = query_response(poll, user)
+    poll["annotation"]["username"] = username
 
+    # Create the HTTP response
     r = make_response("")
-    
     r.headers.set("HX-Retarget", f"#poll-graph-modal-{poll["id"]}")
     r.headers.set("HX-Reswap", "outerHMTL")
-
-    print("\n\n\n")
-    print(poll["poll_type"])
-    print("\n\n\n")
 
     if poll["poll_type"] in ["CHOOSE_ONE", "CHOOSE_MANY", "NUMERIC_SCALE"]:
         graph = '{"graph": ' + json.dumps(poll) + '}'

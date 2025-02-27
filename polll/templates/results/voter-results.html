@@ -2,7 +2,7 @@
 
 <div class="flex flex-col space-y-6">
     
-    <!-- Serach Bar -->
+    <!-- Search Bar -->
      <div class="flex flex-row p-2 border-2 border-neutral-300 dark:border-neutral-500 rounded-xl font-light justify-center items-center">
         <input class="bg-transparent focus:outline-none grow"
         autocomplete="off"
@@ -24,7 +24,7 @@
                 id="{{ vote.user_id }}" 
                 name="answer_id" 
                 value="{{ vote.user_id }}"
-                hx-get="{{ url_for('poll.user_response', user_id=vote.user_id) }}">
+                hx-get="/response/user/{{ vote.username }}/{{ vote.user_id }}">
                 <label 
                   for="{{ vote.user_id }}"
                   class="flex w-full p-2 rounded-lg cursor-default border-2 border-neutral-700 bg-polll-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:border-neutral-400 peer-checked:border-polll-blue"

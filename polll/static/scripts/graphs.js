@@ -22,7 +22,6 @@ function add_graph_listener() {
 function handleGraphEvent(poll) {
 
     modal_text = get_modal_text(poll);
-
     graph = document.getElementById(`poll-graph${modal_text}-${poll["id"]}`);
 
     // If the modal is not being displayed
@@ -99,10 +98,10 @@ function graphInit(poll) {
 
 function choose_one_options(user_rs, rs, annotation=null) {
 
-
     console.log(annotation)
 
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
+    
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
     
@@ -235,17 +234,35 @@ function scale_graph_options(poll) {
     rs_kde = poll["kde"]
     answers = poll["answers"]
 
-    // Rest of the function should be untouched
-    user_rs ? user_rs = user_rs["value"] : user_rs = -1;
+    // If user_rs exists, set user_value and user_label
+    user_value = -1;
+    user_id = null;
+    if (user_rs) { 
+      user_value = user_rs["value"] 
+      user_id = user_rs["user_id"]
+    };  
+
+    // Get KDE results, scale average, and theme
     var pts = parse_kde_results(rs_kde);
     var average_rs = get_scale_average(rs, rs_kde[1].length);
-    var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
+    const theme = localStorage.getItem("theme");
+    var user_col = theme == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
-    // This is a bit of a hack but if it works it works
-    answers["left"] && answers["right"] ? endpoints = [answers["left"]["answer"], answers["right"]["answer"]] : endpoints = null;
+    // Get the endpoints, if they exist
+    endpoints = null;
+    if (answers) {
+      endpoints = [answers["left"]["answer"], answers["right"]["answer"]] 
+    }
 
-    poll["annotation"] ? annotation = poll["annotation"] : annotation = null;
+    // Check TWO conditions on the annotation 
+    //   1. Annotation is DIFFERENT from the logged in user
+    //   2. Annotation exists (i.e. we are in the voter list)
+    annotation = null;
+    if (poll["annotation"] && user_id && poll["annotation"]["user_id"] != user_id) {
+      annotation = poll["annotation"] 
+    }
 
+    // If the annotation object exists, create the voter_annotation graph element
     if (annotation) {
         voter_annotation = {
             x: annotation["value"],
@@ -262,7 +279,7 @@ function scale_graph_options(poll) {
                   color: "#ffffff",
                   background: "null",
                 },
-                text: "Other user!!!",
+                text: annotation["username"],
               }
           }
           voter_line = {
@@ -278,8 +295,6 @@ function scale_graph_options(poll) {
         voter_annotation = {}
         voter_line = {}
     }
-
-    console.log(voter_line)
 
     return  {
         grid: {
@@ -355,7 +370,7 @@ function scale_graph_options(poll) {
                         show: false,
                     }
                 }, {
-                    x: user_rs,
+                    x: user_value,
                     strokeDashArray: 0,
                     borderColor: user_col,
                     borderWidth: 3,
@@ -386,8 +401,8 @@ function scale_graph_options(poll) {
                       }
                   },
                   {
-                    x: user_rs,
-                    y: rs_kde[1][Math.round(user_rs / 100 * rs_kde[1].length)],
+                    x: user_value,
+                    y: rs_kde[1][Math.round(user_value / 100 * rs_kde[1].length)],
                     marker: {
                         size: 8,
                         fillColor: "#ffffff",

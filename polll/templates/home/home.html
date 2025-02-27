@@ -27,7 +27,6 @@
     <!-- Document Body -->
     <div 
       class="flex overflow-auto flex-row grow md:pt-4"
-      onscroll="trigger_reload(this)"
     >
 
       <!-- Left Sidebar -->
@@ -44,8 +43,6 @@
       <div 
         id="home-content"
         class="w-full overflow-auto p-2 select-none shrink overscroll-auto"
-        onwheel="trigger_reload(this)"
-        onscroll="set_scroll(this)"
       >
 
         <div id="loading-spinner" class="peer home-indicator w-full flex flex-row grow justify-center items-center size-fit pb-4">
