@@ -368,6 +368,12 @@ def profile(username):
     return r
 
 
+@home.route("/favourite_modal")
+@requires_auth
+def favourite_modal():
+    return render_template("results/favourite-modal.html")
+
+
 @home.route("/follow")
 @requires_auth
 def follow():

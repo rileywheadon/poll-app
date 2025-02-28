@@ -1,0 +1,23 @@
+{% import 'macros.jinja' as macs %}
+
+<div class="flex flex-col fixed justify-center items-center w-screen h-dvh md:h-screen z-10 text-neutral-700 dark:text-neutral-200">
+
+  <div class="flex flex-col size-11/12 rounded-xl border-2 bg-polll-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 px-6 py-4">
+
+    <!-- Close Modal -->
+    <div class="flex">
+      <a
+        href="{{ return_url }}"
+        hx-indicator="#loading-spinner"
+        class="px-2 py-0.5 w-fit text-center text-3xl rounded-md hover:dark:bg-neutral-600"
+      >
+        &times;
+      </a>
+    </div>
+
+    <!-- Modal Content -->
+    <div></div>
+
+  </div>
+
+</div>

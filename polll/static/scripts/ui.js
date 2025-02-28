@@ -15,15 +15,24 @@ function close_settings() {
 }
 
 function open_poll_results() {
-  document.getElementById("poll-content").classList.remove("hidden");
-  document.getElementById("main").classList.add("blur-sm");  
+  document.getElementById("poll-modal").classList.remove("hidden");
+  document.getElementById("main").classList.add("blur-sm");
 }
 
 function close_poll_results() {
-  document.getElementById("poll-content").classList.add("hidden");
+  document.getElementById("poll-modal").classList.add("hidden");
   document.getElementById("main").classList.remove("blur-sm");
 }
 
+function open_favourite_modal() {
+  document.getElementById("favourite-modal").classList.remove("hidden");
+  document.getElementById("main").classList.add("blur-sm");
+}
+
+function close_favourite_modal() {
+  document.getElementById("favourite-modal").classList.add("hidden");
+  document.getElementById("main").classList.remove("blur-sm");
+}
 
 // Toggles the comments and voting results in the modal in profiles 
 function toggle_comment_user_results(e) {

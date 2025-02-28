@@ -114,6 +114,10 @@
       Votes: {{ poll.response_count }}
     </p>
 
+    {% set inFeed = session.state.tab == "feed" %}
+
+    {% if inFeed %}
+
      <!-- Toggle Comments. Shows comment entry box and loads comments from database -->
     <button 
     class="ml-auto px-4 h-6 md:h-8 rounded-xl text-sm bg-polll-white hover:bg-neutral-200 dark:hover:bg-white flex items-center justify-center select-none text-neutral-900"
@@ -135,14 +139,9 @@
       <i class="fa fa-message pl-2 text-xs"></i>
     </button>
 
-
-    {% set inFeed = session.state.tab == "feed" %}
-
-    {% if inFeed %}
-
       <!-- Show Results -->
       <button
-        class="ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+        class="{% if not inFeed %} ml-auto {% endif %} px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
         hx-get="{{ url_for('poll.result', poll_id = poll.id) }}"
         hx-target="#poll-graph-{{ poll.id }}"
         hx-swap="none"
@@ -153,13 +152,20 @@
         <i class="fa fa-chart-simple pl-2 pr-2 text-xs"></i>
       </button>
 
+      <div class="poll-comments px-4 py-4 hidden" id="poll-comments-{{ poll.id }}">
+        {% with %}
+          {% set inModal = False %}
+          {% include "results/poll-comments.html" %}
+        {% endwith %}
+      </div>
+
     {% else %}
 
       <!-- Show Results - Modal -->
       <a
       class="modal ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
       hx-get="{{ url_for('poll.open_results', poll_id=id, username=session.viewed_user.username) }}"
-      hx-target="#poll-content"
+      hx-target="#poll-modal"
       hx-indicator="#loading-spinner"
       hx-swap="innerHTML"
       hx-on::after-request="open_poll_results();"
@@ -172,11 +178,5 @@
 
   </div>
 
-  <div class="poll-comments px-4 py-4 hidden" id="poll-comments-{{ poll.id }}">
-    {% with %}
-      {% set inModal = False %}
-      {% include "results/poll-comments.html" %}
-    {% endwith %}
-  </div>
 
 </div>

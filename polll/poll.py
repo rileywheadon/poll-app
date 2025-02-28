@@ -358,7 +358,7 @@ def open_results(poll_id, username):
         poll["annotation"] = query_response(poll, user)
 
         
-
+        # Handles the different return types from 'query_response()'
         if isinstance(poll["annotation"], dict):
             poll["annotation"]["username"] = username
         else:
@@ -410,6 +410,8 @@ def user_response(username, user_id):
     print(poll["annotation"])
     print("\n\n\n")
 
+
+    # Handles the different return types from 'query_response()'
     if isinstance(poll["annotation"], dict):
         poll["annotation"]["username"] = username
     else:

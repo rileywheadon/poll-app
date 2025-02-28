@@ -98,7 +98,6 @@ function graphInit(poll) {
 
 function choose_one_options(user_rs, rs, annotation=null) {
 
-    console.log(annotation)
 
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";
     
