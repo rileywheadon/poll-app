@@ -326,8 +326,6 @@ def open_results(poll_id, username):
     poll = query_poll_details(res.data[0])
     res = query_comments(poll_id, 0, COMMENT_LIMIT)
 
-    # print(f"\n RESULT: {poll}, {res} \n")
-
     # Call query_comment_details to get information about the comments
     del session["comments"]
     session["comments"] = {c["id"]: query_comment_details(c) for c in res.data}

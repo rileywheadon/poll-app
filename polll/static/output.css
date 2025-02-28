@@ -795,6 +795,11 @@ video {
   height: 1.5rem;
 }
 
+.size-8\/12 {
+  width: 66.666667%;
+  height: 66.666667%;
+}
+
 .h-10 {
   height: 2.5rem;
 }
@@ -1401,6 +1406,16 @@ video {
 
 .bg-transparent {
   background-color: transparent;
+}
+
+.bg-neutral-100 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(245 245 245 / var(--tw-bg-opacity, 1));
+}
+
+.bg-neutral-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(115 115 115 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-tr {

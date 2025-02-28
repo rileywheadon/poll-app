@@ -296,14 +296,15 @@ function clear_ranking(poll_id) {
   })
 }
 
-function handleVoteSearch() {
+
+function handleSearchBar(search_bar_id, container_id, item_className) {
     
 
     // Get the necessary values for searching
-    search_bar = document.getElementById("voting-search-bar");
+    search_bar = document.getElementById(search_bar_id);
     search_text = search_bar.value.toLowerCase();
-    voter_list = document.getElementById("voter-list");
-    voters = voter_list.getElementsByClassName("voter");
+    voter_list = document.getElementById(container_id);
+    voters = voter_list.getElementsByClassName(item_className);
 
     // Hide/show the divs if they match the current search bar's text
     Array.from(voters).forEach((voter) => {

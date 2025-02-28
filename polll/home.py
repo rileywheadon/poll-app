@@ -371,7 +371,9 @@ def profile(username):
 @home.route("/favourite_modal")
 @requires_auth
 def favourite_modal():
-    return render_template("results/favourite-modal.html")
+    # Render the HTML template
+    session.modified = True
+    return render_template("results/favourite-modal.html", session=session)
 
 
 @home.route("/follow")

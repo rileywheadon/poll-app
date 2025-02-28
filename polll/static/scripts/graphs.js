@@ -149,8 +149,6 @@ function choose_one_options(user_rs, rs, annotation=null) {
 
 function choose_many_options(user_rs, rs, annotation=null) {
 
-    console.log(annotation)
-
     user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 

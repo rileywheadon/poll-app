@@ -2,7 +2,7 @@
 
 <div class="flex flex-col fixed justify-center items-center w-screen h-dvh md:h-screen z-10 text-neutral-700 dark:text-neutral-200">
 
-  <div class="flex flex-col size-11/12 rounded-xl border-2 bg-polll-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 px-6 py-4">
+  <div class="flex flex-col size-8/12 rounded-xl border-2 bg-polll-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 px-6 py-4 space-y-4">
 
     <!-- Close Modal -->
     <div class="flex">
@@ -16,7 +16,57 @@
     </div>
 
     <!-- Modal Content -->
-    <div></div>
+    <div class="flex flex-col space-y-6 overflow-y-scroll">
+
+        <div class="flex">
+            <p class="text-2xl">Favourite up to 3 polls</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex flex-row p-2 border-2 border-neutral-300 dark:border-neutral-500 rounded-xl font-light justify-center items-center">
+            <input class="bg-transparent focus:outline-none grow"
+            autocomplete="off"
+            placeholder="Search..."
+            id="favourite-search-bar"
+            onkeyup="handleSearchBar('favourite-search-bar', 'poll-list', 'poll')"
+            />
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+
+
+        <!-- Poll List -->
+        <div id="poll-list" class="flex flex-col justify-center items-center space-y-2">
+
+            <div class="w-full border border-neutral-500 rounded-xl p-2">
+                
+                <div class="poll">
+
+                    {% if session.polls_answered %}
+
+                    {% for id, poll in session.polls_answered.items() %}
+                    <!-- TODO: Modify to adhere to the mockup -->
+                        {% include "results/result-base.html" %}
+
+                    {% endfor %}
+
+                    {% else %}
+
+                    <div class="flex flex-row text-center items-center justify-center py-16 select-none">
+                        <p class="text-2xl font-light">You haven't answered any polls yet!</p>
+                    </div>
+
+                    {% endif %}
+                
+                </div>
+                
+                {% with state=session.state %}
+                    {% include "home/load-polls.html" %}
+                {% endwith %}
+            </div>
+        </div>
+        
+
+    </div>
 
   </div>
 
