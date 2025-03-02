@@ -632,6 +632,10 @@ video {
   z-index: 10;
 }
 
+.z-20 {
+  z-index: 20;
+}
+
 .m-2 {
   margin: 0.5rem;
 }
@@ -798,6 +802,11 @@ video {
 .size-8\/12 {
   width: 66.666667%;
   height: 66.666667%;
+}
+
+.size-4\/12 {
+  width: 33.333333%;
+  height: 33.333333%;
 }
 
 .h-10 {

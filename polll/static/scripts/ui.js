@@ -9,7 +9,6 @@ function open_settings() {
 function close_settings() {
   const settings = document.getElementById("settings");
   settings.classList.add("hidden");
-
   const main = document.getElementById("main");
   main.classList.remove("blur-sm");
 }
@@ -21,7 +20,9 @@ function open_poll_results() {
 
 function close_poll_results() {
   document.getElementById("poll-modal").classList.add("hidden");
+  if (!(document.getElementById("poll-modal").classList.contains("hidden")))
   document.getElementById("main").classList.remove("blur-sm");
+
 }
 
 function open_favourite_modal() {
@@ -29,7 +30,7 @@ function open_favourite_modal() {
   document.getElementById("main").classList.add("blur-sm");
 }
 
-function close_favourite_modal() {
+function close_favourite_modal() {  
   document.getElementById("favourite-modal").classList.add("hidden");
   document.getElementById("main").classList.remove("blur-sm");
 }

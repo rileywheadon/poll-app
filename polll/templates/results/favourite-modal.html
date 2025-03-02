@@ -4,10 +4,11 @@
 
   <div class="flex flex-col size-8/12 rounded-xl border-2 bg-polll-white dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 px-6 py-4 space-y-4">
 
+    <!-- href="{{ return_url }}" -->
     <!-- Close Modal -->
     <div class="flex">
       <a
-        href="{{ return_url }}"
+        onclick="close_favourite_modal()"
         hx-indicator="#loading-spinner"
         class="px-2 py-0.5 w-fit text-center text-3xl rounded-md hover:dark:bg-neutral-600"
       >
@@ -44,7 +45,8 @@
                     {% if session.polls_answered %}
 
                     {% for id, poll in session.polls_answered.items() %}
-                    <!-- TODO: Modify to adhere to the mockup -->
+                    <!-- TODO: Modify to adhere to the -->
+                        {% set inFavourite = True %}
                         {% include "results/result-base.html" %}
 
                     {% endfor %}
