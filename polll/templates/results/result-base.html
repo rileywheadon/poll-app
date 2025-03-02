@@ -3,7 +3,7 @@
   class="poll-card rounded-xl border mb-2 md:mb-4 dark:border-neutral-700 dark:hover:border-neutral-200 overflow-hidden accord-open transition-all duration-500 ease-in-out"
 >    
   <!-- Include the creator's username and the poll age -->
-  <div class="flex flex-row justify-center items-center pt-4 px-4 h-10">
+  <div class="flex flex-row items-center pt-4 px-4 h-10">
     <p class="font-light text-neutral-500 dark:text-neutral-400">
       {% if poll.is_anonymous == 1 %}
         anonymous
@@ -12,82 +12,68 @@
       {% endif %} ⋅ {{ poll.age }}
     </p>
 
-    <!-- Share Button -->
-    <button 
-      class="ml-auto text-l md:text-xl rounded-md hover:cursor-default text-right"
-      title="Share"
-      onclick="copy_link('{{ poll.url }}')"
-      type="button"
-    >
-      <i class="fa fa-share-from-square text-xs hover:text-polll-dgreen dark:hover:text-polll-green">
-      </i>
-    </button>
+      {% if not inFavouriteModal %}  
 
-    <!-- If the user created this poll, allow them to edit it -->
-    {% if session.user.id == poll.creator_id %}
+        <!-- Share Button -->
+        <button 
+          class="ml-auto text-l md:text-xl rounded-md hover:cursor-default text-right"
+          title="Share"
+          onclick="copy_link('{{ poll.url }}')"
+          type="button"
+        >
+          <i class="fa fa-share-from-square text-xs hover:text-polll-dgreen dark:hover:text-polll-green">
+          </i>
+        </button>
 
-      <!-- Toggle Lock -->
-      {% with %}
-        {% set id=poll.id %}
-        {% set is_active=poll.is_active %}
-        {% include "results/poll-lock.html" %}
-      {% endwith %}
+        <!-- If the user created this poll, allow them to edit it -->
+        {% if session.user.id == poll.creator_id %}
 
-      <!-- If the user is an administrator, allow them to pin this poll -->
-      {% if session.user.is_admin %}
+          <!-- Toggle Lock -->
+          {% with %}
+            {% set id=poll.id %}
+            {% set is_active=poll.is_active %}
+            {% include "results/poll-lock.html" %}
+          {% endwith %}
 
-        {% with %}
-          {% set id=poll.id %}
-          {% set is_pinned=poll.is_pinned %}
-          {% include "results/poll-pin.html" %}
-        {% endwith %}
+          <!-- If the user is an administrator, allow them to pin this poll -->
+          {% if session.user.is_admin %}
+
+            {% with %}
+              {% set id=poll.id %}
+              {% set is_pinned=poll.is_pinned %}
+              {% include "results/poll-pin.html" %}
+            {% endwith %}
+
+          {% endif %}
+          
+          <!-- Delete Poll -->
+          <input class="hidden" name="poll_id" value="{{ poll.id }}">
+          <button class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:cursor-default text-right"
+              title="Delete"
+              hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
+              hx-include="previous input"
+              hx-target="#poll-card-{{ poll.id }}"
+              hx-swap="delete"
+              hx-confirm="Are you sure you want to delete this poll?">
+            <i class="fa fa-trash text-xs hover:text-polll-red"></i>
+          </button>
+
+        <!-- If the user didn't create this poll, allow them to report it -->
+        {% else %}
+
+          <button
+            class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-red text-right"
+            title="Report"
+            hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
+            hx-confirm="Are you sure you want to report this poll?"
+            hx-swap="none"
+            type="button"
+          >
+            <i class="fa fa-triangle-exclamation text-xs"></i>
+          </button>
+        {% endif %}
 
       {% endif %}
-      
-      <!-- Delete Poll -->
-      <input class="hidden" name="poll_id" value="{{ poll.id }}">
-      <button class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:cursor-default text-right"
-          title="Delete"
-          hx-get="{{ url_for('poll.delete', poll_id = poll.id) }}"
-          hx-include="previous input"
-          hx-target="#poll-card-{{ poll.id }}"
-          hx-swap="delete"
-          hx-confirm="Are you sure you want to delete this poll?">
-        <i class="fa fa-trash text-xs hover:text-polll-red"></i>
-      </button>
-
-    <!-- If the user didn't create this poll, allow them to report it -->
-    {% else %}
-
-      <button
-        class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-red text-right"
-        title="Report"
-        hx-post="{{ url_for('poll.report', poll_id = poll.id) }}"
-        hx-confirm="Are you sure you want to report this poll?"
-        hx-swap="none"
-        type="button"
-      >
-        <i class="fa fa-triangle-exclamation text-xs"></i>
-      </button>
-
-      {% with %}
-        {% set user_id=session.user.id %}
-        {% set poll_id=poll.id %}      
-        {#
-        PROBLEM: This is wrong because 'polls_answered' are the polls answered by the user currently
-        being viewed, but the favourite should be for all polls, and if the poll_id refers 
-        to a poll that the viewed user did not vote on, this will throw an error. 
-
-        SOLUTION: Since favouriting is for the personal user, index the polls that the logged in user has
-                  voted on, and not the viewed one (that is currently being use here, which is 'polls_answerd')
-
-        {% set is_favourited=session.polls_answered[poll_id].is_favourited %}
-        #}
-        {% include "results/poll-favourite.html" %}
-      {% endwith %}
-
-    {% endif %}
-
   </div>
 
   <!-- Include the poll question -->
@@ -99,7 +85,7 @@
   </div>
 
   <!-- Poll Graph -->
-  <div id="poll-graph-{{ poll.id }}" class="p-2 md:px-8 md:py-4 fade-in">
+  <div id="poll-graph-{{ poll.id }}" class="p-2 md:px-8 md:py-4 fade-in {% if inFavouriteModal %} hidden {% endif %} ">
     <!-- Separate Interfaces for Ranked Poll / Tier List -->
     {% if poll.poll_type == "RANKED_POLL" %}
       {% include "results/ranked-poll.html" %}
@@ -162,17 +148,23 @@
     {% else %}
 
       <!-- Show Results - Modal -->
-      <a
-      class="modal ml-auto px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
-      hx-get="{{ url_for('poll.open_results', poll_id=id, username=session.viewed_user.username) }}"
-      hx-target="#poll-modal"
-      hx-indicator="#loading-spinner"
-      hx-swap="innerHTML"
-      hx-on::after-request="open_poll_results();"
-      >
-        Show Poll
-        <i class="fa fa-chart-simple px-2 text-xs"></i>
-      </a>
+       <div class="flex flex-row ml-auto">
+          <button
+          class="modal px-2 h-6 md:h-8 rounded-xl text-sm bg-polll-blue hover:bg-polll-dgreen dark:hover:bg-polll-green flex items-center justify-center select-none text-neutral-900"
+          hx-get="{{ url_for('poll.open_results', poll_id=id, username=session.viewed_user.username) }}"
+          hx-target="#poll-modal"
+          hx-indicator="#loading-spinner"
+          hx-swap="innerHTML"
+          hx-on::after-request="open_poll_results();"
+          >
+            Show Poll
+            <i class="fa fa-chart-simple px-2 text-xs"></i>
+          </button>
+          {% if inFavouriteModal %}
+            {% include "results/poll-favourite.html" %}
+          {% endif  %}
+       </div>
+
 
     {% endif %}
 

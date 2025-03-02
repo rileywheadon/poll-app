@@ -20,9 +20,13 @@ function open_poll_results() {
 
 function close_poll_results() {
   document.getElementById("poll-modal").classList.add("hidden");
-  if (!(document.getElementById("poll-modal").classList.contains("hidden")))
-  document.getElementById("main").classList.remove("blur-sm");
-
+  // Coming from the favourites modal
+  if (!(document.getElementById("favourite-modal").classList.contains("hidden"))) {
+    document.getElementById("favourite-modal").classList.remove("hidden");
+    document.getElementById("main").classList.add("blur-sm");
+  } else {
+    document.getElementById("main").classList.remove("blur-sm");
+  }
 }
 
 function open_favourite_modal() {
