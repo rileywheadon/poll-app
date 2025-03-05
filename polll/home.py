@@ -338,6 +338,7 @@ def profile(username):
     
     for id in list(session["polls_answered"].keys()):
         session["polls_answered"][id]["is_favourited"] = id in list(session["polls_favourited"].keys())
+        session["polls_answered"][id]["poll_type_formatted"] = format_poll_type(session["polls_answered"][id]["poll_type"])
 
     session["viewed_user"] = user
 
@@ -349,6 +350,8 @@ def profile(username):
 
     # Checks whether the logged in user has followed
     session["viewed_user"]["is_following"] = True if session["user"]["id"] in [e["follower"] for e in session["viewed_user"]["followers"]] else False
+
+    session["favourite_count"] = sum(list(map(lambda p: int(bool(p["is_favourited"])), list(session["polls_answered"].values()))))
 
     tab = "theirpolls"
     if (session["user"]["username"] == username):

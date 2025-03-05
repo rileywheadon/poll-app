@@ -92,21 +92,30 @@ def pin(poll_id, pinned_str):
 
 
 @poll.route("/poll/favourite/<is_favourited>/<poll_id>/user/<user_id>")
+@requires_admin
 def favourite(is_favourited, poll_id, user_id):
     db = get_db()
     is_favourited = True if is_favourited == "True" else False
-    if not is_favourited:
-        favourite_data = [{"user_id": int(user_id), "poll_id": int(poll_id)}]
-        db.table("poll_favourite").insert(favourite_data).execute()
-    else:
-        db.table("poll_favourite").delete().eq("poll_id", poll_id).execute()
+    message = ""
+    if session["favourite_count"] < 3 or is_favourited:
+        if not is_favourited:
+            favourite_data = [{"user_id": int(user_id), "poll_id": int(poll_id)}]
+            session["favourite_count"] += 1
+            db.table("poll_favourite").insert(favourite_data).execute()
+            message = '"Poll Added to Profile!"'
+        else:
+            session["favourite_count"] -= 1
+            db.table("poll_favourite").delete().eq("poll_id", poll_id).execute()
+            message = '"Poll Removed From Your Profile!"'
 
-    session["polls_answered"][int(poll_id)]["is_favourited"] = not is_favourited
+        session["polls_answered"][int(poll_id)]["is_favourited"] = not is_favourited
+
+    else:
+        message = '"You can only favourite 3 polls!"'
 
     session.modified = True
-    message = '"Poll Added to Profile!"' if is_favourited else '"Poll Removed From Your Profile!"'
     notification = f'{{"notification": {message}}}'
-    r = make_response(render_template("results/poll-favourite.html", session=session))
+    r = make_response(render_template("results/favourite-count.html", session=session, poll_id=poll_id, user_id=user_id, is_favourited=not is_favourited, count=session["favourite_count"]))
     r.headers.set("HX-Trigger", notification)
     return r
 
@@ -363,8 +372,6 @@ def open_results(poll_id, username):
             for annotation in poll["annotation"]:
                 annotation["username"] = username
 
-
-
     else: 
         poll["response"] = {}
         poll["results"] = {}
@@ -404,10 +411,6 @@ def user_response(username, user_id):
     user = {"id": user_id}
     poll["annotation"] = query_response(poll, user)
 
-    print("\n\n\n")
-    print(poll["annotation"])
-    print("\n\n\n")
-
 
     # Handles the different return types from 'query_response()'
     if isinstance(poll["annotation"], dict):
@@ -415,11 +418,6 @@ def user_response(username, user_id):
     else:
         for annotation in poll["annotation"]:
             annotation["username"] = username
-
-
-    print("\n\n\n")
-    print(poll["annotation"])
-    print("\n\n\n")
 
     # Create the HTTP response
     r = make_response("")

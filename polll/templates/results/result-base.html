@@ -96,9 +96,12 @@
   </div>
 
   <div class="flex flex-row text-sm px-4 items-center my-4 select-none fade-in">
-    <p class="font-light">
-      Votes: {{ poll.response_count }}
-    </p>
+
+    {% if inFavouriteModal %}  
+      <p class="font-light">{{ poll.poll_type_formatted }}</p>
+    {% else %}
+      <p class="font-light">Votes: {{ poll.response_count }}</p>
+    {% endif %}
 
     {% set inFeed = session.state.tab == "feed" %}
 
@@ -161,7 +164,16 @@
             <i class="fa fa-chart-simple px-2 text-xs"></i>
           </button>
           {% if inFavouriteModal %}
-            {% include "results/poll-favourite.html" %}
+
+            {% with %}
+            
+              {% set poll_id = poll.id %}
+              {% set user_id = session.user.id %}
+              {% set is_favourited = poll.is_favourited %}
+              {% include "results/poll-favourite.html" %}
+
+            {% endwith %}
+
           {% endif  %}
        </div>
 
@@ -169,6 +181,5 @@
     {% endif %}
 
   </div>
-
 
 </div>

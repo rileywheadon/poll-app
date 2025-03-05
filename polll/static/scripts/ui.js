@@ -102,14 +102,6 @@ function toggle_home_menu() {
   }
 }
 
-
-// var reloaded = false;
-//
-// function set_reload_listener() {
-//   var reloaded = true;
-//   setTimeout(function() { reloaded = false; }, 1000);
-// }
-
 var previousScroll = 1;
 
 function set_scroll(div) {
@@ -122,7 +114,6 @@ function trigger_reload(div) {
     previousScroll = 1;
   }
 }
-
 
 function update_answer_editor(poll_type) {
 

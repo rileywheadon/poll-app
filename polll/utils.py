@@ -159,3 +159,6 @@ def format_time(time_string):
         .strftime('%b %d, %Y at %I:%M%p')
     )
 
+# Converts the poll type text from 'POLL_TYPE' to 'Poll Type' formatting
+def format_poll_type(poll_type):
+    return " ".join(map(lambda s: s.capitalize(), poll_type.split("_")))

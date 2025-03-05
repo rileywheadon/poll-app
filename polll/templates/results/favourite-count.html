@@ -1,0 +1,29 @@
+<!-- Poll List -->
+<div id="poll-list" class="poll flex flex-col relative p-2 space-y-2 w-full">
+
+    {% if session.polls_answered %}
+
+        {% for id, poll in session.polls_answered.items() %}
+
+            {% set inFavouriteModal = True %}
+            {% include "results/result-base.html" %}
+            
+        {% endfor %}
+
+    {% else %}
+
+        <div class="flex flex-row text-center items-center justify-center py-16 select-none">
+            <p class="text-2xl font-light">You haven't answered any polls yet!</p>
+        </div>
+
+    {% endif %}
+
+    {% with state=session.state %}
+        {% include "home/load-polls.html" %}
+    {% endwith %}
+
+</div>
+
+<div class="flex w-fit p-2 text-right sticky bottom-0 bg-neutral-900 border border-neutral-500 rounded-xl">
+    <p class="font-light text-2xl">{{ count if count else session.favourite_count }}/3</p>
+</div>

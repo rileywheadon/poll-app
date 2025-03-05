@@ -1,13 +1,13 @@
 <button 
-  class="ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-dgreen dark:hover:text-polll-green text-right"
+  class="fav ml-3 md:ml-6 text-l md:text-xl rounded-md hover:text-polll-dgreen dark:hover:text-polll-green text-right"
   title="Favourite"
-  hx-get="/poll/favourite/{{ False }}/{{ poll_id }}/user/{{ user_id }}"
-  hx-swap="outerHTML"
+  hx-get="/poll/favourite/{{ is_favourited }}/{{ poll_id }}/user/{{ user_id }}"
+  hx-swap="innerHTML"
+  hx-target="#favourite-container"
 >
-  {% if False %}
-    <i class="fa-solid fa-star"></i>
-  {% else %}
-    <i class="fa-regular fa-star"></i>
-  {% endif %}
+    {% if is_favourited %}
+      <i class="fa-solid fa-star"></i>
+    {% else %}
+      <i class="fa-regular fa-star"></i>
+    {% endif %}
 </button>
-
