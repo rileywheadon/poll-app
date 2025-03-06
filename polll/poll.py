@@ -302,7 +302,7 @@ def result(poll_id):
     if poll["response_count"] > 0:
         poll["response"] = query_response(poll, user)
         poll["results"] = query_results(poll)
-    else: 
+    else:
         poll["response"] = {}
         poll["results"] = {}
 
@@ -319,7 +319,7 @@ def result(poll_id):
         r.data = render_template("results/tier-list.html", poll=poll)
         r.headers.set("HX-Reswap", "innerHTML")
 
-    graph = '{"graph": ' + json.dumps(poll) + '}'
+    graph = '{"graph": [' + json.dumps(poll) + ']}'
     r.headers.set("HX-Trigger-After-Settle", graph)
     session.modified = True
     return r
@@ -383,6 +383,7 @@ def open_results(poll_id, username):
 
     # print(f"\n RESULT: {poll}, {url_for('home.profile', username=username)} \n")
     session["viewed_poll"] = poll
+    session["viewed_poll"]["in_modal"] = True
     poll["annotation"] = None
     session.modified = True
 
@@ -396,7 +397,7 @@ def open_results(poll_id, username):
         return_url=return_url
     )
     
-    graph = '{"graph": ' + json.dumps(poll) + '}'
+    graph = '{"graph": [' + json.dumps(poll) + ']}'
     r.headers.set("HX-Trigger-After-Settle", graph)
     return r
 

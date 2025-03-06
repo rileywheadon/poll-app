@@ -8,13 +8,14 @@
     </div>
 
     <!-- Poll Graph -->
-    <!-- <div id="poll-graph-{{ poll.id }}" class="p-2 md:px-8 md:py-4 fade-in">
+    <div id="favourite-poll-graph-{{ poll.id }}" class="p-2 md:px-8 md:py-4 fade-in">
         
         {% if poll.poll_type == "RANKED_POLL" %}
             {% include "results/ranked-poll.html" %}
         {% elif poll.poll_type == "TIER_LIST" %}
             {% include "results/tier-list.html" %}
         {% endif %} 
-    </div> -->
+        
+    </div>
 
 </div>

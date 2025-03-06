@@ -9,6 +9,8 @@ from flask import render_template, request, make_response
 from .auth import requires_auth, requires_admin
 from .utils import *
 from .db import get_db
+from .results import query_results
+from .responses import query_response
 
 
 # Create a blueprint for the poll endpoints
@@ -152,6 +154,10 @@ def feed():
     session["polls"] = {p["id"]: query_poll_details(p) for p in res.data}
     session["comments"] = {}
     session["replies"] = {}
+
+
+    for id in session["polls"].keys():
+        session["polls"][id]["in_modal"] = True
     
     session["state"].update({
         "admin": False,
@@ -314,9 +320,7 @@ def create_poll():
 def profile(username):
 
     # Query the database for all polls made by the user
-    # TODO: rename the two differnt users so that they are meaningful different
     db = get_db()
-    current_user = db.table("user").select("*").eq("username", session["user"]["username"]).execute().data[0]
     user = db.table("user").select("*").eq("username", username).execute().data[0]
     data = {"cid": user["id"], "page": 0, "lim": POLL_LIMIT}
     
@@ -367,7 +371,27 @@ def profile(username):
     # Render the HTML template
     session.modified = True
 
-    r = make_response(render_template("home/profile.html", session=session))
+    r = make_response("")
+    r.data = render_template("home/profile.html", session=session)
+
+    # Query information about for the favourite polls
+    for id, poll in session["polls_favourited"].items():
+        if len(session["polls_favourited"]) > 0:
+            session["polls_favourited"][id]["in_modal"] = True
+            session["polls_favourited"][id]["results"] = query_results(poll)
+            session["polls_favourited"][id]["response"] = query_response(poll, user)
+            if session["polls_favourited"][id]["poll_type"] == "NUMERIC_SCALE":
+                poll["kde"] = smooth_hist(poll["results"], 0.25)
+        else:
+            session["polls_favourited"][id]["results"] = {}
+            session["polls_favourited"][id]["response"] = {}
+
+    favourite_polls = list(session["polls_favourited"].values())
+    print("\n\n\n")
+    print(str(favourite_polls))
+    print("\n\n\n")
+    graph = '{"graph": ' + json.dumps(favourite_polls) + '}'
+    r.headers.set("HX-Trigger-After-Settle", graph)
     return r
 
 

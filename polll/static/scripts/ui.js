@@ -294,10 +294,8 @@ function clear_ranking(poll_id) {
 
 
 function handleSearchBar(search_bar_id, item_className) {
-  
     // Hide/show the divs if they match the current search bar's text
     Array.from(document.getElementsByClassName(item_className)).forEach((item) => {
       item.textContent.replace(/\s/g,'').toString().replace(/,/g,'').toLowerCase().includes(document.getElementById(search_bar_id).value.toLowerCase()) ? document.getElementById(item.id).classList.remove("hidden") : document.getElementById(item.id).classList.add("hidden");
     })
-
 }

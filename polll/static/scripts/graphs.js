@@ -6,82 +6,89 @@ const cols = {
 }
 
 const bp = 768;
-const graph_height = "60%";
+var graph_height = "300px";
 
 // Global variable for the current chart
-var active_chart = null;
+var active_charts = [];
 
-// Global event listener for creating a new graph
+// Global event listener for creating new graphs
 function add_graph_listener() {
-  document.body.addEventListener("graph", function(evt) { 
-    handleGraphEvent(evt.detail);
+  document.body.addEventListener("graph", function(evt) {
+    handleGraphEvent(evt.detail.value);
   });
 }
 
 // Results Toggling Function
-function handleGraphEvent(poll) {
+function handleGraphEvent(polls) {
 
-    modal_text = get_modal_text(poll);
-    graph = document.getElementById(`poll-graph${modal_text}-${poll["id"]}`);
+    // console.log(polls);
 
-    // If the modal is not being displayed
-    if (!poll.elt.classList.contains("modal")) {
-        // Destroy the active chart, if it exists
-        if (active_chart != null) {
-            active_chart.destroy();
+    polls.forEach((poll) => {
+        fav = polls.length > 1;
+        graph_text = get_graph_text(poll, fav);
+        graph = document.getElementById(graph_text);
+
+        // If the modal is not being displayed
+        if (!poll["in_modal"] && polls.length < 2) {
+            // Destroy the active charts, if they exists
+            if (active_charts.length != 0) {
+                active_charts.forEach((chart) => {
+                    chart.destroy()
+                });
+            }
+    
+            toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
+    
+            // If we are hiding results, just hide the graph and return
+            if (toggle.innerHTML == "Hide Results") {
+                toggle.innerHTML = "Show Results";
+                graph.classList.add("hidden");
+                return;
+            } 
+    
+            // Hide all of the other graphs
+            graphs = document.getElementsByClassName("graph-toggle");            
+            for (var i = 0; i < graphs.length; i++) {
+                id = graphs[i].getAttribute("id").substr(13);
+                document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
+                document.getElementById("poll-graph-" + id).classList.add("hidden");
+            }
+            
+            // Then update toggle and graph
+            toggle.innerHTML = "Hide Results";
+            graph.classList.remove("hidden");
         }
-
-        toggle = document.getElementById(`graph-toggle-${poll["id"]}`);
-
-        // If we are hiding results, just hide the graph and return
-        if (toggle.innerHTML == "Hide Results") {
-            toggle.innerHTML = "Show Results";
-            graph.classList.add("hidden");
-            return;
-        } 
-
-        // Hide all of the other graphs
-        graphs = document.getElementsByClassName("graph-toggle");
-        for (var i = 0; i < graphs.length; i++) {
-            id = graphs[i].getAttribute("id").substr(13);
-            document.getElementById("graph-toggle-" + id).innerHTML = "Show Results";
-            document.getElementById("poll-graph-" + id).classList.add("hidden");
-        }
-
-        // Then update toggle and graph
-        toggle.innerHTML = "Hide Results";
-        graph.classList.remove("hidden");    
-    }
-
-  // Create a "No votes yet!" message if the poll has no votes
-  if (poll["response_count"] == 0) {
-    var votes = document.createElement("p");
-    const votes_message = document.createTextNode("No votes yet!");
-    votes.appendChild(votes_message);
-    graph.appendChild(votes);
-  } 
-
-  // Unhide the results if the poll is ranked or tier list
-  else if (["RANKED_POLL", "TIER_LIST"].includes(poll["poll_type"])) {
-    result = document.getElementById("poll-result-" + poll["id"]);
-    result.classList.remove("hidden");
-  }
-
-  // Draw the graph if necessary
-  else graphInit(poll);
-
+    
+      // Create a "No votes yet!" message if the poll has no votes
+      if (poll["response_count"] == 0) {
+        var votes = document.createElement("p");
+        const votes_message = document.createTextNode("No votes yet!");
+        votes.appendChild(votes_message);
+        graph.appendChild(votes);
+      } 
+    
+      // Unhide the results if the poll is ranked or tier list
+      else if (["RANKED_POLL", "TIER_LIST"].includes(poll["poll_type"])) {
+        result = document.getElementById("poll-result-" + poll["id"]);
+        result.classList.remove("hidden");
+      }
+    
+      // Draw the graph if necessary
+      else graphInit(poll, graph);
+      
+    })
 }
 
-function graphInit(poll) {
+function graphInit(poll, graph) {
 
   var options;
-  modal_text = get_modal_text(poll)
 
-  graph = document.getElementById(`poll-graph${modal_text}-${poll["id"]}`);
+  fav = graph.id.includes("favourite");
+  
 
   switch (poll["poll_type"]) {
     case "CHOOSE_ONE": 
-      options = choose_one_options(poll["response"], poll["results"]);
+      options = choose_one_options(poll["response"], poll["results"], fav);
       break;
     case "CHOOSE_MANY":
       options = choose_many_options(poll["response"], poll["results"]);
@@ -93,18 +100,18 @@ function graphInit(poll) {
 
   active_chart = new ApexCharts(graph, options);
   active_chart.render();
+  active_charts.push(active_chart);
 
 }
 
-function choose_one_options(user_rs, rs, annotation=null) {
+function choose_one_options(user_rs, rs, fav, annotation=null) {
 
-
-    user_rs ? user_rs = user_rs["answer"] : user_rs = "";
-    
+    user_rs ? user_rs = user_rs["answer"] : user_rs = "";    
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
 
-    
-    // PIE CHART (default)
+    graph_height = fav ? "300px" : "75%";
+
+    // PIE CHART
     return {
         series: rs.map((e) => e["count"]),
         labels: rs.map((e) => e["answer"] == user_rs ? e["answer"] + " (you)" : e["answer"]),
@@ -147,10 +154,12 @@ function choose_one_options(user_rs, rs, annotation=null) {
     }
 }
 
-function choose_many_options(user_rs, rs, annotation=null) {
+function choose_many_options(user_rs, rs, fav, annotation=null) {
 
     user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
+
+    graph_height = fav ? "300px" : "75%";
 
     return {
 
@@ -223,7 +232,9 @@ function choose_many_options(user_rs, rs, annotation=null) {
 }
 
 
-function scale_graph_options(poll) {
+function scale_graph_options(poll, fav) {
+
+    graph_height = fav ? "300px" : "75%";
 
     // Unpack Arguments
     user_rs = poll["response"]
@@ -442,6 +453,9 @@ function get_scale_average(rs, nums) {
      return (Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev)});
 }
 
-function get_modal_text(poll) {
-    return poll.elt.classList.contains("modal") ? "-modal" : "";
+function get_graph_text(poll, favourite) {
+    favourite_text = favourite ? "favourite-" : ""
+    modal_text = ""
+    if (favourite_text == "") modal_text = "-modal"
+    return `${favourite_text}poll-graph${modal_text}-${poll["id"]}`
 }

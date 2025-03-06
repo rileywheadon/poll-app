@@ -94,7 +94,7 @@
         {% if session.polls_favourited %}
         
             <!-- Publicly Displayed Polls -->
-            <div class="flex flex-row">
+            <div class="flex flex-row h-full">
               {% for id, poll in session.polls_favourited.items() %}
                   {% include "results/favourite-base.html" %}
               {% endfor %}
@@ -104,7 +104,7 @@
 
             {% if myAccount %}
 
-                <div class="flex flex-col w-full h-64 justify-center items-center space-y-10">
+                <div class="flex flex-col w-full justify-center items-center space-y-10">
                     <p class="text-xl font-light text-center">Add up to top three public responses to your profile for others to see!</p>
                 </div>
 
