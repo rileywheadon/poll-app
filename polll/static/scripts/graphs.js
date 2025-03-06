@@ -21,15 +21,13 @@ function add_graph_listener() {
 // Results Toggling Function
 function handleGraphEvent(polls) {
 
-    // console.log(polls);
-
     polls.forEach((poll) => {
-        fav = polls.length > 1;
-        graph_text = get_graph_text(poll, fav);
-        graph = document.getElementById(graph_text);
+        in_favourites = poll.in_favourites;
+        in_modal = poll.in_modal;
+        graph = document.getElementById(get_graph_text(poll, in_favourites));
 
-        // If the modal is not being displayed
-        if (!poll["in_modal"] && polls.length < 2) {
+        // If we are in the feed
+        if (!in_favourites && !in_modal) {
             // Destroy the active charts, if they exists
             if (active_charts.length != 0) {
                 active_charts.forEach((chart) => {
@@ -83,12 +81,11 @@ function graphInit(poll, graph) {
 
   var options;
 
-  fav = graph.id.includes("favourite");
+  graph_height = graph.id.includes("favourite") ? "300px" : "75%";
   
-
   switch (poll["poll_type"]) {
     case "CHOOSE_ONE": 
-      options = choose_one_options(poll["response"], poll["results"], fav);
+      options = choose_one_options(poll["response"], poll["results"]);
       break;
     case "CHOOSE_MANY":
       options = choose_many_options(poll["response"], poll["results"]);
@@ -104,12 +101,10 @@ function graphInit(poll, graph) {
 
 }
 
-function choose_one_options(user_rs, rs, fav, annotation=null) {
+function choose_one_options(user_rs, rs, annotation=null) {
 
     user_rs ? user_rs = user_rs["answer"] : user_rs = "";    
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
-
-    graph_height = fav ? "300px" : "75%";
 
     // PIE CHART
     return {
@@ -154,12 +149,10 @@ function choose_one_options(user_rs, rs, fav, annotation=null) {
     }
 }
 
-function choose_many_options(user_rs, rs, fav, annotation=null) {
+function choose_many_options(user_rs, rs, annotation=null) {
 
     user_rs == null ? user_rs = "" : user_rs = user_rs.map((e) => e["answer"]);
     var user_col = localStorage.getItem("theme") == "dark" ? cols["polll-green"] : cols["polll-dark-green"];
-
-    graph_height = fav ? "300px" : "75%";
 
     return {
 
@@ -232,9 +225,7 @@ function choose_many_options(user_rs, rs, fav, annotation=null) {
 }
 
 
-function scale_graph_options(poll, fav) {
-
-    graph_height = fav ? "300px" : "75%";
+function scale_graph_options(poll) {
 
     // Unpack Arguments
     user_rs = poll["response"]

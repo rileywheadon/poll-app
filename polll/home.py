@@ -377,7 +377,8 @@ def profile(username):
     # Query information about for the favourite polls
     for id, poll in session["polls_favourited"].items():
         if len(session["polls_favourited"]) > 0:
-            session["polls_favourited"][id]["in_modal"] = True
+            session["polls_favourited"][id]["in_modal"] = False
+            session["polls_favourited"][id]["in_favourites"] = True
             session["polls_favourited"][id]["results"] = query_results(poll)
             session["polls_favourited"][id]["response"] = query_response(poll, user)
             if session["polls_favourited"][id]["poll_type"] == "NUMERIC_SCALE":
